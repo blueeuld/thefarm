@@ -977,15 +977,26 @@ class Account extends TF_Controller {
 		$events = $this->eventsbuilder->get_events();
         $_events = array();
 
+        $prev_id = 0;
+
         foreach ($events as $event) {
             for ($i = strtotime($event['start']); $i < strtotime($event['end']); $i += 1800) {  // 1800 = half hour, 86400 = one day
                 $tm = $i;
-
                 $dt = date('Y-m-d', $i);
+                $t = sprintf('%1$s', date('H:i', $tm));
 
-                $t = sprintf('%1$s', date('h:i A', $tm));
-                $t2 = sprintf('%1$s', date('H:i', $tm));
-                $_events[$dt][$t2] = $event;
+                if ($event['booking_item_id'] === $prev_id) {
+                    $event['title'] = '';
+                    $event['item_name'] = '';
+                    $event['class'] = 'noborder';
+                    $_events[$dt][$t] = $event;
+                }
+                else {
+                    $event['class'] = 'test';
+                    $_events[$dt][$t] = $event;
+                }
+
+                $prev_id = $event['booking_item_id'];
             }
         }
 

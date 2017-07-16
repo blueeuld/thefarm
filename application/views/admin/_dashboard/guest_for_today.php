@@ -14,7 +14,7 @@
 													<tbody>
 													<?php foreach ($bookings as $row) :?>
 													<tr>
-													<td><a class="guest-calendar" data-booking_id="<?php echo $row['booking_id'];?>" href="#"><?php echo $row['first_name'] . ' ' . $row['last_name'];?></a></td>
+													<td><a href="<?php echo site_url('backend/account/edit/'.$row['contact_id']);?>"><?php echo $row['first_name'] . ' ' . $row['last_name'];?></a></td>
 													<td><?php echo $row['room_name']; ?></td>
 													<td><a class="guest-calendar" data-booking_id="<?php echo $row['booking_id'];?>" href="#">View</a></td>
 													</tr>
