@@ -262,18 +262,18 @@ class Service extends TF_Controller {
 		$confirm = $this->input->get_post('confirm');
 		if ($id && $confirm && $confirm === 'y') {
 			//check if the item is in use.
-			$this->db->select('items.title');
-			$this->db->from('booking_items');
-			$this->db->join('items', 'booking_items.item_id = items.item_id');
-			$this->db->where('items.item_id', $id);
-			$q = $this->db->get();
-			if ($q->num_rows() > 0) {
-				$r = $q->row_array();
-				show_error($r['title'] . ' is currently in used.');
-				return;
-			}
+//			$this->db->select('items.title');
+//			$this->db->from('booking_items');
+//			$this->db->join('items', 'booking_items.item_id = items.item_id');
+//			$this->db->where('items.item_id', $id);
+//			$q = $this->db->get();
+//			if ($q->num_rows() > 0) {
+//				$r = $q->row_array();
+//				//show_error($r['title'] . ' is currently in used.');
+//				return;
+//			}
 
-			$this->db->delete('items', array('item_id' => $id));
+			$this->db->update('items', array('is_active' => 0), 'item_id='.$id);
 
 			if ($return = $this->input->get_post('return'))
 				redirect($return);

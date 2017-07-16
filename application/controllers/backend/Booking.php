@@ -314,7 +314,7 @@ class Booking extends TF_Controller {
 		
 		$data['services'] = $this->db->get('items')->result_array();
 
-		$statuses = array_merge(array('' => '-Select-'), get_statuses(1));
+		$statuses = array_merge(array('' => '-Select-'), get_booking_statuses());
 		$data['statuses'] = $statuses;
 
 		$data['booking_items'] = booking_items($data['booking_id']);
@@ -377,10 +377,12 @@ class Booking extends TF_Controller {
 
 			//@TODO add verification.
 
-			$this->db->delete('bookings', array('booking_id' => $id));
-			$this->db->delete('booking_items', array('booking_id' => $id));
-			$this->db->delete('booking_forms', array('booking_id' => $id));
-			$this->db->delete('booking_attachments', array('booking_id' => $id));
+            $this->db->update('bookings', array('is_active' => 0), 'booking_id='.$id);
+
+//			$this->db->delete('bookings', array('booking_id' => $id));
+//			$this->db->delete('booking_items', array('booking_id' => $id));
+//			$this->db->delete('booking_forms', array('booking_id' => $id));
+//			$this->db->delete('booking_attachments', array('booking_id' => $id));
 
 
 			if ($return = $this->input->get_post('return'))

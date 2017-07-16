@@ -83,6 +83,7 @@ class Availability
         $this->TF->db->join('bookings', 'bookings.booking_id = booking_items.booking_id', 'left');
         $this->TF->db->where_not_in('booking_events.status', array('cancelled', 'no-show'));
         $this->TF->db->where('bookings.booking_id='.$this->booking_id);
+        $this->TF->db->where('bookings.is_active', 1);
 
 
         if ($this->exclude_categories) {

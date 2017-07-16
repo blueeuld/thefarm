@@ -59,7 +59,18 @@
 
     }
 
-    var getAvailableServices = function (booking_id) {
+    var getAvailableServices = function(booking_id) {
+        $.get(TF.baseURL + 'calendar/get_available_services', {
+            booking_id: booking_id
+        }, function (data){
+            $('#available-services').html(data);
+            $('#available-services').find('select[name="item_id"]').on('change', function(){
+                getServiceInfo($(this).val());
+            });
+        });
+    }
+
+    var getAvailableServices2 = function (booking_id) {
         $.ajax({
             dataType: "json",
             url: TF.baseURL + 'calendar/get_available_services',
@@ -72,18 +83,40 @@
                 items.empty();
                 for (program_name in data) {
                     items.append('<optgroup label="' + program_name + '"></optgroup>');
-                    if (Object.prototype.toString.call(data[program_name]) === '[object Object]') {
-                        for (item_id in data[program_name]) {
-                            items.find('optgroup[label="' + program_name + '"]').append('<option value="' + item_id + '">' + data[program_name][item_id] + '</option>');
+                    var items = data[program_name];
+                    if (Object.prototype.toString.call(items) === '[object Object]') {
+                        for (item_id in items) {
+                            items.find('optgroup[label="' + program_name + '"]').append('<option value="' + item_id + '">' + items[item_id] + '</option>');
                         }
                     }
                     else {
-                        items.append('<option value="' + program_name + '">' + data[program_name] + '</option>');
+                        items.append('<option value="' + program_name + '">' + items + '</option>');
                     }
                 }
                 items.trigger('change');
             },
             type: "POST"
+        });
+    }
+
+    var getServiceInfo = function(item_id) {
+        $.getJSON(TF.baseURL + '/service/json/' + item_id, function (output) {
+
+            if (output) {
+
+                var item = output[0];
+                var duration = parseInt(item.duration);
+                var max_provider = parseInt(item.max_provider);
+                if (max_provider > 1) {
+                    $('select[name*=assigned_to]').attr('multiple', 'multiple');
+                }
+                else
+                    $('select[name*=assigned_to]').removeAttr('multiple');
+                $('select[name="start_time"]').attr('data-duration', duration);
+                $('select[name="start_date"]').attr('data-duration', duration);
+
+                calculateEndTime(duration);
+            }
         });
     }
 
@@ -193,6 +226,15 @@
 
         getAvailableRoomsAndPeople();
     };
+
+    // $('.scrollable').scroll(function() {
+    //     if ($(this).scrollTop() > 1){
+    //         $('.fc-byProviders-view thead').addClass("sticky");
+    //     }
+    //     else{
+    //         $('.fc-byProviders-view thead').removeClass("sticky");
+    //     }
+    // });
 
     var pageTop = function () {
         return $(".navbar").height();
@@ -324,7 +366,7 @@
             editable: TF.editable,
             droppable: TF.droppable,
             eventLimit: false,
-            height: 'auto',
+            height: 750,
             resourceLabelText: TF.resource_name,
             resources: function (callback) {
                 loadResources(callback);
@@ -586,7 +628,6 @@
                 });
 
                 $('input[name="start_time"]').on("dp.update", function (e) {
-                    console.log(this);
                 });
 
                 modal.find('select[name="booking_id"]').on('change', function () {
@@ -599,6 +640,7 @@
                     }
                     else {
                         $('.new-guest').addClass('hidden');
+                        console.log(this);
                         getAvailableServices(this.value);
                         getBookingDates(this.value);
                     }
@@ -627,24 +669,7 @@
                 });
 
                 modal.find('select[name="item_id"]').on('change', function () {
-                    $.getJSON(TF.baseURL + '/service/json/' + $(this).val(), function (output) {
-
-                        if (output) {
-
-                            var item = output[0];
-                            var duration = parseInt(item.duration);
-                            var max_provider = parseInt(item.max_provider);
-                            if (max_provider > 1) {
-                                $('select[name*=assigned_to]').attr('multiple', 'multiple');
-                            }
-                            else
-                                $('select[name*=assigned_to]').removeAttr('multiple');
-                            $('select[name="start_time"]').attr('data-duration', duration);
-                            $('select[name="start_date"]').attr('data-duration', duration);
-
-                            calculateEndTime(duration);
-                        }
-                    });
+                    getServiceInfo($(this).val());
                 });
 
                 modal.find('select[name="start_date"]').on('change', function () {
@@ -660,8 +685,14 @@
                 });
 
                 modal.find('select[name="status"]').on('change', function () {
-                    if ($(this).val() === 'cancelled') modal.find('#collapseExample').show();
-                    else modal.find('#collapseExample').hide();
+                    var status = $(this).val();
+                    var $options = modal.find('#'+status+'Options');
+
+                    modal.find('.statusOptions').hide();
+
+                    if ($options.length > 0) {
+                        $options.show();
+                    }
                 });
 
 
