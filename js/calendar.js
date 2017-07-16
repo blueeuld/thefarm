@@ -59,7 +59,18 @@
 
     }
 
-    var getAvailableServices = function (booking_id) {
+    var getAvailableServices = function(booking_id) {
+        $.get(TF.baseURL + 'calendar/get_available_services', {
+            booking_id: booking_id
+        }, function (data){
+            $('#available-services').html(data);
+            $('#available-services').find('select[name="item_id"]').on('change', function(){
+                getServiceInfo($(this).val());
+            });
+        });
+    }
+
+    var getAvailableServices2 = function (booking_id) {
         $.ajax({
             dataType: "json",
             url: TF.baseURL + 'calendar/get_available_services',
@@ -72,18 +83,40 @@
                 items.empty();
                 for (program_name in data) {
                     items.append('<optgroup label="' + program_name + '"></optgroup>');
-                    if (Object.prototype.toString.call(data[program_name]) === '[object Object]') {
-                        for (item_id in data[program_name]) {
-                            items.find('optgroup[label="' + program_name + '"]').append('<option value="' + item_id + '">' + data[program_name][item_id] + '</option>');
+                    var items = data[program_name];
+                    if (Object.prototype.toString.call(items) === '[object Object]') {
+                        for (item_id in items) {
+                            items.find('optgroup[label="' + program_name + '"]').append('<option value="' + item_id + '">' + items[item_id] + '</option>');
                         }
                     }
                     else {
-                        items.append('<option value="' + program_name + '">' + data[program_name] + '</option>');
+                        items.append('<option value="' + program_name + '">' + items + '</option>');
                     }
                 }
                 items.trigger('change');
             },
             type: "POST"
+        });
+    }
+
+    var getServiceInfo = function(item_id) {
+        $.getJSON(TF.baseURL + '/service/json/' + item_id, function (output) {
+
+            if (output) {
+
+                var item = output[0];
+                var duration = parseInt(item.duration);
+                var max_provider = parseInt(item.max_provider);
+                if (max_provider > 1) {
+                    $('select[name*=assigned_to]').attr('multiple', 'multiple');
+                }
+                else
+                    $('select[name*=assigned_to]').removeAttr('multiple');
+                $('select[name="start_time"]').attr('data-duration', duration);
+                $('select[name="start_date"]').attr('data-duration', duration);
+
+                calculateEndTime(duration);
+            }
         });
     }
 
@@ -607,6 +640,7 @@
                     }
                     else {
                         $('.new-guest').addClass('hidden');
+                        console.log(this);
                         getAvailableServices(this.value);
                         getBookingDates(this.value);
                     }
@@ -635,24 +669,7 @@
                 });
 
                 modal.find('select[name="item_id"]').on('change', function () {
-                    $.getJSON(TF.baseURL + '/service/json/' + $(this).val(), function (output) {
-
-                        if (output) {
-
-                            var item = output[0];
-                            var duration = parseInt(item.duration);
-                            var max_provider = parseInt(item.max_provider);
-                            if (max_provider > 1) {
-                                $('select[name*=assigned_to]').attr('multiple', 'multiple');
-                            }
-                            else
-                                $('select[name*=assigned_to]').removeAttr('multiple');
-                            $('select[name="start_time"]').attr('data-duration', duration);
-                            $('select[name="start_date"]').attr('data-duration', duration);
-
-                            calculateEndTime(duration);
-                        }
-                    });
+                    getServiceInfo($(this).val());
                 });
 
                 modal.find('select[name="start_date"]').on('change', function () {

@@ -679,8 +679,13 @@ class Calendar extends TF_Controller
 
     public function get_available_services()
     {
+        $item_id = isset($_REQUEST['item_id']) ? $_REQUEST['item_id'] : '';
+        echo form_dropdown('item_id', available_booking_items($_REQUEST['booking_id']), $item_id,
+            'class="form-control" ' . ($item_id ? 'readonly' : ''));
+
+        /*
         $this->output->set_content_type('application/json')
-            ->set_output(json_encode(available_booking_items($_REQUEST['booking_id'])));
+            ->set_output(json_encode(available_booking_items($_REQUEST['booking_id'])));*/
     }
     
     public function get_booking_dates() {

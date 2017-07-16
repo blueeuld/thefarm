@@ -57,9 +57,9 @@ ob_start();
             <div class="form-group">
                 <label class="bold text-muted"><i class="fa fa-tasks"></i> Service</label>
                 <div class="form-group">
-                    <div class="input-group" style="width:100%">
+                    <div class="input-group" id="available-services" style="width:100%">
                         <?php echo form_dropdown('item_id', available_booking_items($booking_id), $item_id,
-                            'class="form-control" data-header="Select Service" data-live-search="true" ' . ($item_id ? 'readonly' : '')); ?>
+                            'class="form-control" ' . ($item_id ? 'readonly' : '')); ?>
                     </div>
                 </div>
                 <input type="checkbox" value="1" name="incl" <?php echo $incl ? 'checked' : '';?>> Included
