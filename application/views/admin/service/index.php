@@ -33,32 +33,6 @@
 									          
 									        </li>
 									      </ul>
-									      
-									  		<?php echo form_open('backend/services/' . $this->uri->segment(3), 'method="GET" class="navbar-form navbar-right form-inline filter"'); ?>
-											<div class="form-group">
-												<input type="text" name="keyword" class="form-control" placeholder="Search"
-													   value="<?php echo $this->input->get_post('keyword'); ?>">
-											</div>
-											<div class="form-group">
-												
-												<?php echo form_dropdown('category', $categories, $this->input->get_post('category'), 'class="selectpicker show-tick form-control"');?>
-												
-<!--
-												<select id="basic" name="category"
-														class="selectpicker show-tick form-control"
-														data-live-search="false">
-													<option value="">All</option>
-													<?php foreach ($categories as $cat_id => $cat_name) : ?>
-														<option
-															<?php if ($this->input->get_post('category') === $cat_id): ?>selected<?php endif; ?>
-															value="<?php echo $cat_id; ?>"><?php echo $cat_name; ?></option>
-													<?php endforeach ?>
-												</select>
--->
-											</div>
-											<button class="btn btn-default-dark  pull-right" type="submit">Update
-											</button>
-											<?php echo form_close(); ?>
 			                        </div>
 		                        </div>
 		                        
