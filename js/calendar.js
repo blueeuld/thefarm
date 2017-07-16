@@ -194,14 +194,14 @@
         getAvailableRoomsAndPeople();
     };
 
-    $('.scrollable').scroll(function() {
-        if ($(this).scrollTop() > 1){
-            $('.fc-byProviders-view thead').addClass("sticky");
-        }
-        else{
-            $('.fc-byProviders-view thead').removeClass("sticky");
-        }
-    });
+    // $('.scrollable').scroll(function() {
+    //     if ($(this).scrollTop() > 1){
+    //         $('.fc-byProviders-view thead').addClass("sticky");
+    //     }
+    //     else{
+    //         $('.fc-byProviders-view thead').removeClass("sticky");
+    //     }
+    // });
 
     var pageTop = function () {
         return $(".navbar").height();
@@ -333,7 +333,7 @@
             editable: TF.editable,
             droppable: TF.droppable,
             eventLimit: false,
-            height: 'auto',
+            height: 750,
             resourceLabelText: TF.resource_name,
             resources: function (callback) {
                 loadResources(callback);
