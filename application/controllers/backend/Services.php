@@ -29,6 +29,8 @@ class Services extends TF_Controller {
 			$this->db->where('categories.cat_id', $this->input->get_post('category'));
 			$this->db->or_where('categories.parent_id', $this->input->get_post('category'));
 		}
+
+		$this->db->where('is_active', 1);
 		
 		$this->db->order_by('title', 'asc');
 

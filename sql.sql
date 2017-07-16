@@ -33,18 +33,18 @@ UPDATE tf_contacts SET position = REPLACE(LOWER(TRIM(position)),' ', '-') WHERE 
 UPDATE tf_contacts SET position = NULL WHERE position = '';
 ALTER TABLE tf_contacts ADD CONSTRAINT `position_fk` FOREIGN KEY (`position`) REFERENCES `tf_position` (`position_cd`);
 
-ALTER TABLE tf_groups MODIFY COLUMN group_id INT;
+ALTER TABLE tf_groups MODIFY COLUMN group_id INT AUTO_INCREMENT NOT NULL;
 ALTER TABLE tf_users MODIFY COLUMN contact_id INT;
 ALTER TABLE tf_users MODIFY COLUMN location_id INT NULL;
 ALTER TABLE tf_users MODIFY COLUMN group_id INT;
-ALTER TABLE tf_locations MODIFY COLUMN location_id INT;
-ALTER TABLE tf_contacts MODIFY COLUMN contact_id INT;
-ALTER TABLE tf_files MODIFY COLUMN file_id INT;
+ALTER TABLE tf_locations MODIFY COLUMN location_id INT AUTO_INCREMENT NOT NULL;
+ALTER TABLE tf_contacts MODIFY COLUMN contact_id INT AUTO_INCREMENT NOT NULL;
+ALTER TABLE tf_files MODIFY COLUMN file_id INT AUTO_INCREMENT NOT NULL;
 
 /** Items **/
 ALTER TABLE tf_items ENGINE = InnoDB;
 ALTER TABLE tf_items MODIFY COLUMN item_image INT;
-ALTER TABLE tf_items MODIFY COLUMN item_id INT;
+ALTER TABLE tf_items MODIFY COLUMN item_id INT AUTO_INCREMENT NOT NULL;
 ALTER TABLE tf_items CHANGE COLUMN default_time time_settings VARCHAR(100) NOT NULL;
 ALTER TABLE tf_items ADD CONSTRAINT `item_image_fk` FOREIGN KEY(`item_image`) REFERENCES `tf_files`(`file_id`);
 
@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS tf_item_day_time_settings (
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /** Facilities **/
-ALTER TABLE tf_facilities MODIFY COLUMN facility_id INT NOT NULL;
+ALTER TABLE tf_facilities MODIFY COLUMN facility_id INT  AUTO_INCREMENT NOT NULL;
 ALTER TABLE tf_facilities MODIFY COLUMN location_id INT NULL;
 
 UPDATE tf_facilities SET location_id = NULL WHERE location_id = 0;
@@ -73,7 +73,7 @@ ALTER TABLE tf_items_related_users MODIFY COLUMN contact_id INT NOT NULL;
 
 /** Categories **/
 ALTER TABLE tf_categories ENGINE = InnoDB;
-ALTER TABLE tf_categories MODIFY COLUMN cat_id INT NOT NULL;
+ALTER TABLE tf_categories MODIFY COLUMN cat_id INT AUTO_INCREMENT NOT NULL;
 ALTER TABLE tf_categories MODIFY COLUMN parent_id INT NOT NULL;
 ALTER TABLE tf_categories MODIFY COLUMN location_id INT NOT NULL;
 ALTER TABLE tf_categories MODIFY COLUMN cat_image INT NULL;
@@ -108,11 +108,11 @@ ALTER TABLE tf_users ADD CONSTRAINT `group_fk` FOREIGN KEY (`group_id`) REFERENC
 
 /*Forms */
 ALTER TABLE tf_forms ENGINE = InnoDB;
-ALTER TABLE tf_forms MODIFY COLUMN form_id INT;
+ALTER TABLE tf_forms MODIFY COLUMN form_id INT AUTO_INCREMENT NOT NULL;
 
 /*Fields */
 ALTER TABLE tf_fields ENGINE = InnoDB;
-ALTER TABLE tf_fields MODIFY COLUMN field_id INT;
+ALTER TABLE tf_fields MODIFY COLUMN field_id INT AUTO_INCREMENT NOT NULL;
 
 /*Form Fields*/
 ALTER TABLE tf_form_fields ENGINE = InnoDB;
@@ -124,7 +124,7 @@ ALTER TABLE tf_package_types ENGINE = InnoDB;
 
 /*Packages*/
 ALTER TABLE tf_packages ENGINE = InnoDB;
-ALTER TABLE tf_packages MODIFY COLUMN package_id INT;
+ALTER TABLE tf_packages MODIFY COLUMN package_id INT AUTO_INCREMENT NOT NULL;
 
 /*Package Items*/
 ALTER TABLE tf_package_items ENGINE = InnoDB;
@@ -135,7 +135,7 @@ ALTER TABLE tf_package_items ADD CONSTRAINT `package_item_item_fk` FOREIGN KEY (
 
 /*Bookings*/
 ALTER TABLE tf_bookings ENGINE = InnoDB;
-ALTER TABLE tf_bookings MODIFY COLUMN booking_id INT;
+ALTER TABLE tf_bookings MODIFY COLUMN booking_id INT AUTO_INCREMENT NOT NULL;
 ALTER TABLE tf_bookings MODIFY COLUMN package_id INT NULL;
 ALTER TABLE tf_bookings MODIFY COLUMN room_id INT NULL;
 
@@ -165,7 +165,7 @@ CONSTRAINT form_entries_field_fk FOREIGN KEY (field_id) REFERENCES tf_fields(fie
 
 /** Booking Items **/
 ALTER TABLE tf_booking_items ENGINE = InnoDB;
-ALTER TABLE tf_booking_items MODIFY COLUMN booking_item_id INT;
+ALTER TABLE tf_booking_items MODIFY COLUMN booking_item_id INT AUTO_INCREMENT NOT NULL;
 ALTER TABLE tf_booking_items MODIFY COLUMN item_id INT NOT NULL;
 ALTER TABLE tf_booking_items MODIFY COLUMN booking_id INT NOT NULL;
 
@@ -179,7 +179,7 @@ UPDATE tf_booking_items booking_items SET amount = (SELECT item.amount FROM tf_i
 /** Booking Events **/
 ALTER TABLE tf_booking_events ENGINE = InnoDB;
 
-ALTER TABLE tf_booking_events MODIFY COLUMN event_id INT;
+ALTER TABLE tf_booking_events MODIFY COLUMN event_id INT AUTO_INCREMENT NOT NULL;
 ALTER TABLE tf_booking_events MODIFY COLUMN facility_id INT;
 ALTER TABLE tf_booking_events MODIFY COLUMN author_id INT;
 ALTER TABLE tf_booking_events MODIFY COLUMN called_by INT;
@@ -289,6 +289,7 @@ ALTER TABLE tf_booking_events ADD COLUMN foc INT(1) NOT NULL;
 ALTER TABLE tf_booking_items DROP COLUMN amount;
 
 ALTER TABLE tf_bookings ADD COLUMN is_active INT(1) NOT NULL DEFAULT 1;
+ALTER TABLE tf_items ADD COLUMN is_active INT(1) NOT NULL DEFAULT 1;
 
 DELETE FROM tf_booking_events WHERE event_id=0;
 

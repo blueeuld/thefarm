@@ -450,6 +450,7 @@ class Account extends TF_Controller {
             $this->db->join('bookings', 'bookings.booking_id = booking_items.booking_id', 'left');
             $this->db->join('items', 'booking_items.item_id=items.item_id', 'left');
             $this->db->where('event_id = ', $event_id);
+            $this->db->where('items.is_active', 1);
             $query = $this->db->get();
             $event_data = $query->row_array();
             

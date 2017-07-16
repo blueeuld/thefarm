@@ -718,6 +718,22 @@ function get_provider_day_schedule($contact_id, $date) {
     return '';
 }
 
+function get_provider_day_schedule_2($contact_id, $date) {
+    $TF =& get_instance();
+    $TF->db->select('start_date, end_date');
+    $TF->db->from('user_work_plan_time');
+    $TF->db->where('contact_id', $contact_id);
+    $TF->db->where('DATE_FORMAT(start_date, \'%Y-%m-%d\') = \''.$date.'\'');
+    $q = $TF->db->get();
+
+    if ($q->num_rows() > 0) {
+        $result = $q->row_array();
+        return [$result['start_date'], $result['end_date']];
+    }
+
+    return [];
+}
+
 function is_past_date($date) {
     $date = new DateTime($date);
     $now = new DateTime();

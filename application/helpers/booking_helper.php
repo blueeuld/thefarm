@@ -57,6 +57,7 @@ function available_booking_items($booking_id = 0, $categories = false)
 	    $TF->db->from('items, booking_items');
 	    $TF->db->join('bookings', 'bookings.booking_id = booking_items.booking_id');
 	    $TF->db->where('items.item_id = booking_items.item_id');
+	    $TF->db->where('items.is_active', 1);
 	    if ($booking_id)
 	        $TF->db->where('bookings.booking_id = '.$booking_id);
 		$TF->db->order_by('items.title', 'ASC');
@@ -87,6 +88,7 @@ function available_booking_items($booking_id = 0, $categories = false)
     $TF->db->from('items');
     $TF->db->join('item_categories', 'items.item_id = item_categories.item_id');
     $TF->db->join('categories', 'categories.cat_id = item_categories.category_id');
+    $TF->db->where('items.is_active', 1);
     if ($exclude_items)
         $TF->db->where('items.item_id NOT IN ('.implode(', ', $exclude_items).')');
         
@@ -130,6 +132,7 @@ function booking_items($booking_id, $booking_status = -1, $available_only = fals
     $TF->db->from('items');
     $TF->db->join('booking_items', 'items.item_id = booking_items.item_id', 'left');
     $TF->db->join('bookings', 'booking_items.booking_id = bookings.booking_id');
+    $TF->db->where('items.is_active', 1);
 
     if ($TF->session->userdata('location'))
     {

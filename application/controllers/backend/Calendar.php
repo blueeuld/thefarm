@@ -136,25 +136,25 @@ class Calendar extends TF_Controller
                         $row = $query->row_array();
                         $data['booking_item_id'] = $row['booking_item_id'];
                     } else {
-//                        $this->db->insert('booking_items', array(
-//                            'booking_id' => $booking_id,
-//                            'item_id' => $item_id,
-//                            'quantity' => 1,
-//                            'included' => $included,
-//                            'foc' => $foc,
-//                            'upsell' => $status === 'foc' ? 0 : 1
-//                        ));
-//                        $data['booking_item_id'] = $this->db->insert_id();
+                        $this->db->insert('booking_items', array(
+                            'booking_id' => $booking_id,
+                            'item_id' => $item_id,
+                            'quantity' => 1,
+                            'included' => $included,
+                            'foc' => $foc,
+                            'upsell' => $status === 'foc' ? 0 : 1
+                        ));
+                        $data['booking_item_id'] = $this->db->insert_id();
                     }
                 } else {
-//                    $this->db->insert('booking_items', array(
-//                        'booking_id' => $booking_id,
-//                        'item_id' => $item_id,
-//                        'quantity' => 1,
-//                        'included' => $included,
-//                        'foc' => $foc,
-//                    ));
-//                    $data['booking_item_id'] = $this->db->insert_id();
+                    $this->db->insert('booking_items', array(
+                        'booking_id' => $booking_id,
+                        'item_id' => $item_id,
+                        'quantity' => 1,
+                        'included' => $included,
+                        'foc' => $foc,
+                    ));
+                    $data['booking_item_id'] = $this->db->insert_id();
                 }
             }
 
@@ -754,7 +754,9 @@ class Calendar extends TF_Controller
                 'title' => $contact['first_name'] . "\n" . $work_plan,
                 'position' => $position, 
                 'hidden' => true,
-                'eventClassName' => 'contact-id-' . $contact['contact_id']);
+                'eventClassName' => 'contact-id-' . $contact['contact_id'],
+                'workPlan' => get_provider_day_schedule_2($contact['contact_id'], $date)
+            );
             $resources[] = $info;
             if (!isset($positions[$position])) $contact['position'] = array();
             $positions[$position][] = $info;

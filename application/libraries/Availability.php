@@ -108,6 +108,8 @@ class Availability
 
         $query = $this->TF->db->get();
 
+//        $this->errors[] = $this->TF->db->last_query();
+
         if ($query->num_rows() > 0) {
             $guest_schedules = $query->result_array();
 
