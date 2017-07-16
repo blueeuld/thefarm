@@ -204,12 +204,7 @@ ob_start();
 
     <script>
         $(document).ready(function(){
-
             $('.selectpicker').selectpicker('render');
-
-            $('input[name="first_name"]').on('blur', function(){
-                console.log(this.value);
-            }) ;
         });
     </script>
 

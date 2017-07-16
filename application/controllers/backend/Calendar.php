@@ -30,7 +30,7 @@ class Calendar extends TF_Controller
 
             $update_calendar_views = $this->input->get_post('update_calendar_views');
 
-            if ($booking_id === 0) {
+            if (!$booking_id) {
                 // create the guest.
                 $first_name = $this->input->get_post('first_name');
                 $last_name = $this->input->get_post('last_name');
@@ -227,10 +227,13 @@ class Calendar extends TF_Controller
                     if ($assignedTo) {
                         $event_users = array();
                         foreach ($assignedTo as $user) {
-                            $event_users[] = array('event_id' => $event_id, 'staff_id' => $user);
+                            if ($user)
+                                $event_users[] = array('event_id' => $event_id, 'staff_id' => $user);
                         }
-                        $this->db->delete('booking_event_users', 'event_id=' . $event_id);
-                        $this->db->insert_batch('booking_event_users', $event_users);
+                        if ($event_users) {
+                            $this->db->delete('booking_event_users', 'event_id=' . $event_id);
+                            $this->db->insert_batch('booking_event_users', $event_users);
+                        }
                     }
 
                     $current_user = get_current_user_data();

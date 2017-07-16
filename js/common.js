@@ -364,7 +364,6 @@ $(document).ready(function(){
 			});
 			
 			modalform.find('button.btn-delete-item').on('click', function(){
-				console.log($(this).parents('tr'));
 				$(this).parents('tr').first().remove();
 			});
 			

@@ -595,7 +595,6 @@
                 });
 
                 $('input[name="start_time"]').on("dp.update", function (e) {
-                    console.log(this);
                 });
 
                 modal.find('select[name="booking_id"]').on('change', function () {
