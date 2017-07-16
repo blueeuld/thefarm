@@ -31,6 +31,7 @@ function get_bookings($contact_id, $status = -1) {
     $TF->db->select('bookings.*');
     $TF->db->from('bookings');
     $TF->db->where('bookings.guest_id', $contact_id);
+    $TF->db->where('is_active', 1);
 
     if ($status !== -1)
         $TF->db->where('bookings.status = ', $status);

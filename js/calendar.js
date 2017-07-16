@@ -194,6 +194,15 @@
         getAvailableRoomsAndPeople();
     };
 
+    $('.scrollable').scroll(function() {
+        if ($(this).scrollTop() > 1){
+            $('.fc-byProviders-view thead').addClass("sticky");
+        }
+        else{
+            $('.fc-byProviders-view thead').removeClass("sticky");
+        }
+    });
+
     var pageTop = function () {
         return $(".navbar").height();
     }
@@ -660,8 +669,14 @@
                 });
 
                 modal.find('select[name="status"]').on('change', function () {
-                    if ($(this).val() === 'cancelled') modal.find('#collapseExample').show();
-                    else modal.find('#collapseExample').hide();
+                    var status = $(this).val();
+                    var $options = modal.find('#'+status+'Options');
+
+                    modal.find('.statusOptions').hide();
+
+                    if ($options.length > 0) {
+                        $options.show();
+                    }
                 });
 
 

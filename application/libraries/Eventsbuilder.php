@@ -255,6 +255,7 @@ class EventsBuilder
         $this->TF->db->join('packages', 'bookings.package_id = packages.package_id', 'left');
         $this->TF->db->join('package_types', 'packages.package_type_id = package_types.package_type_id', 'left');
 
+        $this->TF->db->where('bookings.is_active', 1);
 
         if ($this->event_id) {
             $this->TF->db->where('booking_events.event_id', $this->event_id);

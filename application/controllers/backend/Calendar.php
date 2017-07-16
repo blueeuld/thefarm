@@ -13,8 +13,8 @@ class Calendar extends TF_Controller
 
         if ($_POST) {
             $this->load->helper('event');
-            $booking_id = (int)$this->input->get_post('booking_id');
-            $event_id = (int)$this->input->get_post('event_id');
+            $booking_id = $this->input->get_post('booking_id') ? $this->input->get_post('booking_id') : NULL;
+            $event_id = $this->input->get_post('event_id') ? $this->input->get_post('event_id') : NULL;
             $item_id = $this->input->get_post('item_id');
             $end_date = $this->input->get_post('end_date');
             $end_time = $this->input->get_post('end_time');
@@ -24,8 +24,8 @@ class Calendar extends TF_Controller
             $notes = $this->input->get_post('notes');
             $booking_item_id = (int)$this->input->get_post('booking_item_id');
             $event_title = $this->input->get_post('event_title') ? $this->input->get_post('event_title') : '';
-            $included = (int)$this->input->get_post('included');
-            $not_included = (int)$this->input->get_post('not_included');
+            $included = (int)$this->input->get_post('incl');
+            $not_included = (int)$this->input->get_post('not_incl');
             $foc = (int)$this->input->get_post('foc');
 
             $update_calendar_views = $this->input->get_post('update_calendar_views');
@@ -65,22 +65,31 @@ class Calendar extends TF_Controller
                 'all_day' => 0,
                 'status' => $status,
                 'event_title' => $event_title,
-                'called_by' => 0,
-                'cancelled_by' => 0,
+                'called_by' => NULL,
+                'cancelled_by' => NULL,
                 'cancelled_reason' => '',
                 'date_cancelled' => 0,
                 'notes' => $notes,
+                'incl' => $included,
+                'not_incl' => $not_included,
+                'foc' => $foc,
+                'incl_os_done_number' => $this->input->get_post('incl_os_done_number'),
+                'incl_os_done_amount' => $this->input->get_post('incl_os_done_amount'),
+                'foc_os_done_number' => $this->input->get_post('foc_os_done_number'),
+                'foc_os_done_amount' => $this->input->get_post('foc_os_done_amount'),
+                'not_incl_os_done_number' => $this->input->get_post('not_incl_os_done_number'),
+                'not_incl_os_done_amount' => $this->input->get_post('not_incl_os_done_amount'),
             );
 
             if ($status === 'cancelled') {
-                $data['called_by'] = (int)$this->input->get_post('called_by');
-                $data['cancelled_by'] = (int)$this->input->get_post('cancelled_by');
+                $data['called_by'] = $this->input->get_post('called_by') ? $this->input->get_post('called_by') : NULL;
+                $data['cancelled_by'] = $this->input->get_post('cancelled_by') ? $this->input->get_post('cancelled_by') : NULL;
                 $data['cancelled_reason'] = $this->input->get_post('cancelled_reason');
                 $data['date_cancelled'] = strtotime($this->input->get_post('date_cancelled'));
             }
 
-            $data['start_dt'] = date('c', strtotime($start_date . ' ' . $start_time));
-            $data['end_dt'] = date('c', strtotime($end_date . ' ' . $end_time));
+            $data['start_dt'] = date('Y-m-d H:i:s', strtotime($start_date . ' ' . $start_time));
+            $data['end_dt'] = date('Y-m-d H:i:s', strtotime($end_date . ' ' . $end_time));
 
             if ($facility = $this->input->get_post('facility_id')) {
                 $data['facility_id'] = $facility;
@@ -98,13 +107,13 @@ class Calendar extends TF_Controller
             $params = array();
             $params['room'] = isset($data['facility_id']) ? $data['facility_id'] : false;
             $params['people'] = $assignedTo;
-            $params['start'] = date('Y-m-d H:i:s', strtotime($data['start_dt']));
-            $params['end'] = date('Y-m-d H:i:s', strtotime($data['end_dt']));
+            $params['start'] = $data['start_dt'];
+            $params['end'] = $data['end_dt'];
             $params['event'] = $event_id;
             $params['status'] = $status;
             $params['booking_id'] = $booking_id;
             $params['item_id'] = $item_id;
-            $params['exclude_status'] = array('cancelled', 'completed', 'no show');
+            $params['exclude_status'] = array('cancelled', 'completed', 'no-show');
 
             $this->load->library('availability', $params);
             if (!$this->availability->validate()) {
@@ -127,25 +136,25 @@ class Calendar extends TF_Controller
                         $row = $query->row_array();
                         $data['booking_item_id'] = $row['booking_item_id'];
                     } else {
-                        $this->db->insert('booking_items', array(
-                            'booking_id' => $booking_id,
-                            'item_id' => $item_id,
-                            'quantity' => 1,
-                            'included' => $included,
-                            'foc' => $foc,
-                            'upsell' => $status === 'foc' ? 0 : 1
-                        ));
-                        $data['booking_item_id'] = $this->db->insert_id();
+//                        $this->db->insert('booking_items', array(
+//                            'booking_id' => $booking_id,
+//                            'item_id' => $item_id,
+//                            'quantity' => 1,
+//                            'included' => $included,
+//                            'foc' => $foc,
+//                            'upsell' => $status === 'foc' ? 0 : 1
+//                        ));
+//                        $data['booking_item_id'] = $this->db->insert_id();
                     }
                 } else {
-                    $this->db->insert('booking_items', array(
-                        'booking_id' => $booking_id,
-                        'item_id' => $item_id,
-                        'quantity' => 1,
-                        'included' => $included,
-                        'foc' => $foc,
-                    ));
-                    $data['booking_item_id'] = $this->db->insert_id();
+//                    $this->db->insert('booking_items', array(
+//                        'booking_id' => $booking_id,
+//                        'item_id' => $item_id,
+//                        'quantity' => 1,
+//                        'included' => $included,
+//                        'foc' => $foc,
+//                    ));
+//                    $data['booking_item_id'] = $this->db->insert_id();
                 }
             }
 
@@ -208,6 +217,7 @@ class Calendar extends TF_Controller
             } else {
                 $data['author_id'] = get_current_user_id();
                 $data['entry_date'] = now();
+
                 $this->db->insert('booking_events', $data);
                 $event_id = $this->db->insert_id();
                 $item_data = $this->item->get($item_id);
@@ -308,8 +318,41 @@ class Calendar extends TF_Controller
             }
         }
 
-        $styles = get_statuses_style(2);
+
         $inline_css = array();
+        $inline_css[] = array('name' => array(
+            '.fc-event-included',
+            '.fc-event-included .fc-bg',
+            '.fc-event-included .fc-content',
+            '.fc-event-included .fc-content .fc-time',
+            '.fc-event-included .fc-content .fc-title'
+        ), 'style' => 'background-color: #FFFF00;');
+
+        $inline_css[] = array('name' => array(
+            '.fc-event-upsell',
+            '.fc-event-upsell .fc-bg',
+            '.fc-event-upsell .fc-content',
+            '.fc-event-upsell .fc-content .fc-time',
+            '.fc-event-upsell .fc-content .fc-title'
+        ), 'style' => 'background-color: #E6E6FA;');
+
+        $inline_css[] = array('name' => array(
+            '.fc-event-foc',
+            '.fc-event-foc .fc-bg',
+            '.fc-event-foc .fc-content',
+            '.fc-event-foc .fc-content .fc-time',
+            '.fc-event-foc .fc-content .fc-title'
+        ), 'style' => 'background-color: #FFA500');
+
+        $inline_css[] = array('name' => array(
+            '.fc-event-alacarte',
+            '.fc-event-alacarte .fc-bg',
+            '.fc-event-alacarte .fc-content',
+            '.fc-event-alacarte .fc-content .fc-time',
+            '.fc-event-alacarte .fc-content .fc-title'
+        ), 'style' => 'background-color: #FFA500');
+
+        $styles = get_event_status_styles();
         foreach ($styles as $status => $style) {
             $inline_css[] = array(
                 'name' => array(
@@ -321,46 +364,14 @@ class Calendar extends TF_Controller
                 'style' => $style);
         }
 
-        $inline_css[] = array('name' => array(
-            '.fc-event-included',
-            '.fc-event-included .fc-bg',
-            '.fc-event-included .fc-content',
-            '.fc-event-included .fc-content .fc-time',
-            '.fc-event-included .fc-content .fc-title'
-        ), 'style' => 'background-color: #FFFF00 !important; color: #000; color:#788288 !important;');
 
-        $inline_css[] = array('name' => array(
-            '.fc-event-upsell',
-            '.fc-event-upsell .fc-bg',
-            '.fc-event-upsell .fc-content',
-            '.fc-event-upsell .fc-content .fc-time',
-            '.fc-event-upsell .fc-content .fc-title'
-        ), 'style' => 'background-color: #E6E6FA !important; color: #000;');
-
-        $inline_css[] = array('name' => array(
-            '.fc-event-foc',
-            '.fc-event-foc .fc-bg',
-            '.fc-event-foc .fc-content',
-            '.fc-event-foc .fc-content .fc-time',
-            '.fc-event-foc .fc-content .fc-title'
-        ), 'style' => 'background-color: #FFA500 !important;');
-
-        $inline_css[] = array('name' => array(
-            '.fc-event-alacarte',
-            '.fc-event-alacarte .fc-bg',
-            '.fc-event-alacarte .fc-content',
-            '.fc-event-alacarte .fc-content .fc-time',
-            '.fc-event-alacarte .fc-content .fc-title'
-        ), 'style' => 'background-color: #FFA500 !important;');
-
-
-        $statuses = get_statuses(2);
+        $statuses = get_event_statuses();
 
         
         $default_view = $this->session->userdata('default_calendar_view');
 
         $data = array();
-        $data['statuses'] = get_statuses(2);
+        $data['statuses'] = get_event_statuses();
 		$data['locations'] = $this->session->userdata('location'); // $locations;
         $data['inline_css'] = $inline_css;
         $inline_js = array(
@@ -516,7 +527,7 @@ class Calendar extends TF_Controller
             $resources[] = $info;
         }
 
-        $styles = get_statuses_style(2);
+        $styles = get_event_status_styles();
         $inline_css = array();
         foreach ($styles as $status => $style) {
             $inline_css[] = array(
@@ -563,7 +574,7 @@ class Calendar extends TF_Controller
 
 
         $data = array();
-        $data['statuses'] = get_statuses(2);
+        $data['statuses'] = get_event_statuses();
         $data['inline_css'] = $inline_css;
         $data['inline_js'] = array(
             'resources' => $resources,
@@ -588,7 +599,7 @@ class Calendar extends TF_Controller
             'show_off_providers' => false,
             'viewFullDetails' => true, //!tf_current_user_can('edit_calendar'),
             'canChange' => true,
-            'statuses' => get_statuses(2),
+            'statuses' => get_event_statuses(),
             'selected_statuses' => $this->session->userdata('calendar_view_status') ? $this->session->userdata('calendar_view_status') : array(),
             'selected_positions' => $this->session->userdata('calendar_view_positions') ? $this->session->userdata('calendar_view_positions') : array(),
         );
@@ -829,6 +840,7 @@ class Calendar extends TF_Controller
             $this->db->from('bookings');
             $this->db->where('bookings.guest_id = ', $this->session->userdata('user_id'));
             $this->db->where('bookings.status', 'confirmed');
+            $this->db->where('bookings.is_active', 1);
             $this->db->limit(1);
             $result = $this->db->get()->row_array();
             $booking_id = $result['booking_id'];
@@ -881,7 +893,7 @@ class Calendar extends TF_Controller
 
         $events = get_events($booking_id, 0, 'contact_id', $start, $start, false, 'confirmed', $statuses, $locations);
 
-        $styles = get_statuses_style(2);
+        $styles = get_event_status_styles();
         $inline_css = array();
         foreach ($styles as $status => $style) {
             $inline_css[] = array(

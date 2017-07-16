@@ -83,6 +83,7 @@ class Availability
         $this->TF->db->join('bookings', 'bookings.booking_id = booking_items.booking_id', 'left');
         $this->TF->db->where_not_in('booking_events.status', array('cancelled', 'no-show'));
         $this->TF->db->where('bookings.booking_id='.$this->booking_id);
+        $this->TF->db->where('bookings.is_active', 1);
 
 
         if ($this->exclude_categories) {
@@ -106,8 +107,6 @@ class Availability
         $this->TF->db->where("((start_dt BETWEEN '$check_in' AND '$check_out') OR (end_dt BETWEEN '$check_in' AND '$check_out') OR ('$check_in' BETWEEN start_dt AND end_dt))");
 
         $query = $this->TF->db->get();
-
-//        $this->errors[] = $this->TF->db->last_query();
 
         if ($query->num_rows() > 0) {
             $guest_schedules = $query->result_array();
