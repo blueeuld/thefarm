@@ -69,7 +69,7 @@
 								href="<?php echo site_url('backend/settings'); ?>"><i class="md md-settings"></i>Settings</a>
 						</li>
 					<?php endif; ?>
-					<li class="hidden-lg hidden-md"><a href="<?php echo site_url('login'); ?>">Logout</a></li>
+					<li class="hidden-lg hidden-md"><a href="<?php echo site_url('logout?return=/'); ?>">Logout</a></li>
 				</ul>
 				
 				<ul class="nav navbar-nav navbar-right m-n hidden-xs nav-user user">
@@ -91,7 +91,7 @@
 								<?php echo img(array('src' => get_current_user_photo())); ?> </span> <?php echo $this->session->userdata('screen_name'); ?>
 							<b class="caret"></b> </a>
 						<ul class="dropdown-menu animated fadeInRight">
-							<li><a href="<?php echo site_url('login'); ?>">Logout</a></li>
+							<li><a href="<?php echo site_url('logout?return=/'); ?>">Logout</a></li>
 						</ul>
 					</li>
 				</ul>
