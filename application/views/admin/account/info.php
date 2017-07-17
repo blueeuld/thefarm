@@ -60,7 +60,7 @@
     <div class="form-group">
         <label for="" class="col-sm-3 control-label">Position</label>
         <div class="col-sm-9">
-            <?php echo form_input('position', $account['position']); ?>
+            <?php echo form_dropdown('position', $positions, $account['position'], 'class="form-control"'); ?>
         </div>
     </div>
 
