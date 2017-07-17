@@ -30,7 +30,7 @@ class Account extends TF_Controller {
             'weight' => $this->input->get_post('weight'),
             'phone' => $this->input->get_post('phone'),
             'nickname' => $this->input->get_post('nickname'),
-            'position' => $this->input->get_post('position'),
+            'position' => $this->input->get_post('position') ? $this->input->get_post('position') : null,
             'date_joined' => date('Y-m-d', strtotime($this->input->get_post('date_joined'))),
         );
 
@@ -151,7 +151,7 @@ class Account extends TF_Controller {
                 'phone' => '',
                 'email' => '',
                 'title' => '',
-                'position' => '', //edited
+                'position' => null, //edited
                 'recent_booking' => 0,
                 'group_id' => 5, //Guest,
                 'work_plan' => '',
@@ -204,6 +204,20 @@ class Account extends TF_Controller {
         $data['nationalities'] = nationalities();
 
         $data['countries'] = countries();
+
+        $positions = ['' => ''];
+
+        $this->db->select('*');
+        $this->db->from('position');
+        $query = $this->db->get();
+        if ($query->num_rows()) {
+            $results = $query->result_array();
+            foreach ($results as $row) {
+                $positions[$row['position_cd']] = $row['position_value'];
+            }
+        }
+
+        $data['positions'] = $positions;
 
         $this->db->select('items.*, items_related_users.contact_id');
         $this->db->from('items');
