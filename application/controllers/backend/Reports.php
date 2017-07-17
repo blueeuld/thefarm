@@ -164,19 +164,22 @@ class Reports extends TF_Controller {
 	public function pdf() {
 
 		$params = array();
-		$params['start'] = $_REQUEST['date'];
-		$params['end'] = $_REQUEST['date'];
+		$params['start'] = date('Y-m-d', strtotime($_REQUEST['date']));
 		$params['locations'] = (int)$this->uri->segment(4);
+
 		$this->load->library('Eventsbuilder', $params);
 		$this->eventsbuilder->build();
 		
 		$query = $this->db->get_where('locations', 'location_id='.$params['locations']);
 		$location = $query->row_array();
+
+
 		
 		$data['data'] = $this->eventsbuilder->get_events();
 		$data['location_name'] = $location['location'];
 		$data['date'] = date('d-M-y', strtotime($_REQUEST['date']));
-		$this->load->view('admin/reports/daily-sales', $data);
+
+        $this->load->view('admin/reports/daily-sales', $data);
 	}
 	
 	

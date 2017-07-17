@@ -75,7 +75,13 @@ class EventsBuilder
         'bookings.package_id',
         'bookings.title as package_name',
         'booking_events.item_id as event_item_id',
-        'packages.package_type'
+        'packages.package_type',
+        'booking_events.incl_os_done_amount',
+        'booking_events.incl_os_done_number',
+        'booking_events.not_incl_os_done_amount',
+        'booking_events.not_incl_os_done_number',
+        'booking_events.foc_os_done_amount',
+        'booking_events.foc_os_done_number'
     );
 
     private $events;
@@ -295,9 +301,12 @@ class EventsBuilder
             }
 
 
-            if ($this->start) {
+            if ($this->start && $this->end) {
 //                $this->TF->db->where("DATE_FORMAT(tf_booking_events.start_dt, '%Y-%m-%d') BETWEEN '{$this->start}' AND '{$this->end}'");
                 $this->TF->db->where("tf_booking_events.start_dt BETWEEN '{$this->start}' AND '{$this->end}'");
+            }
+            elseif ($this->start) {
+                $this->TF->db->where("DATE_FORMAT(tf_booking_events.start_dt, '%Y-%m-%d') = '{$this->start}'");
             }
 
             if ($this->event_status) {
