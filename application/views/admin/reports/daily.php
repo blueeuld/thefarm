@@ -55,6 +55,16 @@
 							<div class="container-fluid ">
 								
 								<div id="main">
+
+                                    <form target="_blank" action="<?php echo site_url('backend/reports/pdf');?>" class="validate" method="get">
+                                    <p>
+                                        <label for="date">Select Date</label><br />
+                                        <input id="date" name="date" type="text" class="datepicker required" /> <br /><br /> <input type="submit" value="Generate Report" class="btn btn-success" />
+                                    </p>
+                                    </form>
+
+                                    <!--
+
 									<div class="table-responsive">
 										<table id="" data-table
 											   class="table table-striped table-hover dt-responsive dataTable no-footer dtr-inline">
@@ -88,6 +98,7 @@
 											</tbody>
 										</table>
 									</div>
+									-->
 								</div>
 							</div>
 						</div>

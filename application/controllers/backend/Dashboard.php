@@ -26,6 +26,7 @@ class Dashboard extends TF_Controller {
 		$this->db->join('packages', 'bookings.package_id = packages.package_id', 'left');
 		$this->db->join('package_types', 'package_types.package_type_id = packages.package_type_id', 'left');
 		$this->db->join('items', 'bookings.room_id = items.item_id', 'left');
+		$this->db->where('bookings.is_active', 1);
 		$this->db->where(sprintf('\'%s\' BETWEEN FROM_UNIXTIME(tf_bookings.start_date) AND FROM_UNIXTIME(tf_bookings.end_date)', date('Y-m-d')));
 
 		$query = $this->db->get();

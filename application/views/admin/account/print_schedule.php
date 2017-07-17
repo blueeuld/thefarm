@@ -12,6 +12,14 @@
         table th.time, table td.time {
             width: 175px;
         }
+
+        table td.noborder {
+            border: none;
+        }
+
+        table td.test {
+            border-bottom: none !important;
+        }
     </style>
 </head>
 
@@ -57,8 +65,9 @@
             if ($event && isset($event[$t4])) {
 
                 $backgroundColor = $event[$t4]['bg_color'];
+                $class = $event[$t4]['class'];
 
-                echo '<td align="center" width="200" style="background-color: '.$backgroundColor.'">'.($event[$t4]['title'] ? $event[$t4]['title'] : $event[$t4]['item_name']).'</td>';
+                echo '<td align="center" width="200" class="'.$class.'" style="background-color: '.$backgroundColor.'">'.($event[$t4]['title'] ? $event[$t4]['title'] : $event[$t4]['item_name']).'</td>';
                 //echo '<td align="center" class="time">'.$t.'-'.$t1.'</td>';
             }
             else {
