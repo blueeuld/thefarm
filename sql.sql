@@ -294,3 +294,5 @@ ALTER TABLE tf_items ADD COLUMN is_active INT(1) NOT NULL DEFAULT 1;
 DELETE FROM tf_booking_events WHERE event_id=0;
 
 UPDATE tf_users SET calendar_view_status = NULL;
+
+ALTER TABLE tf_items ADD COLUMN item_icon VARCHAR(50);

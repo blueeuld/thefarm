@@ -24,6 +24,7 @@
 <link rel="stylesheet" href="/css/bootstrap-timepicker.css">
 <link rel="stylesheet" href="/js/summernote/summernote.css">
 <link rel="stylesheet" href="/css/BootSideMenu.css">
+<link rel="stylesheet" href="/css/common.css" type="text/css">
 
 <script src="/js/app.js"></script>
 <script src="/js/jquery-ui.min.js"></script>
