@@ -14,7 +14,8 @@
         }
 
         table td.noborder {
-            border: none;
+            border-top: none;
+            border-bottom: none;
         }
 
         table td.test {
