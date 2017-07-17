@@ -17,7 +17,7 @@ class Booking extends TF_Controller {
 		$guest_id = (int)$this->input->get_post('guest_id');
         $original_status = (int)$this->input->get_post('original_status');
         $personalized = (int)$this->input->get_post('personalized');
-        $room_id = (int)$this->input->get_post('room_id');
+        $room_id = $this->input->get_post('room_id') ? $this->input->get_post('room_id') : null;
 		$status = $this->input->get_post('status');
 		$package_id = (int)$this->input->get_post('package_id');
         $data = array(
@@ -323,6 +323,7 @@ class Booking extends TF_Controller {
 		$this->db->from('items');
 		$this->db->join('item_categories', 'items.item_id = item_categories.item_id');
 		$this->db->where('item_categories.category_id', 8);
+		$this->db->where('items.is_active', 1);
 		$this->db->order_by('items.title');
 		$query = $this->db->get();
 		$facilities = $query->result_array();
