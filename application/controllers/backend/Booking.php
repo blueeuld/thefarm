@@ -19,10 +19,10 @@ class Booking extends TF_Controller {
         $personalized = (int)$this->input->get_post('personalized');
         $room_id = $this->input->get_post('room_id') ? $this->input->get_post('room_id') : null;
 		$status = $this->input->get_post('status');
-		$package_id = (int)$this->input->get_post('package_id');
+		$package_id = $this->input->get_post('package_id') ? $this->input->get_post('package_id') : null;
         $data = array(
 			'title' => $this->input->get_post('title'),
-			'package_id' => $personalized === 0 ? $package_id : 0,
+			'package_id' => $package_id,
 			'status' => $status,
 			'guest_id' => $guest_id,
 			'fax' => (int)$this->input->get_post('fax'),
@@ -294,10 +294,10 @@ class Booking extends TF_Controller {
 			'title' => '',
 			'notes' => '',
 			'status' => '',
-			'package_id' => 0,
+			'package_id' => null,
 			'fax' => 1,
             'personalized' => 0,
-            'room_id' => 0,
+            'room_id' => null,
             'restrictions' => '',
 		);
 
