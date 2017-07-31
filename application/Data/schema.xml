@@ -1,0 +1,860 @@
+<?xml version="1.0" encoding="utf-8"?>
+<database name="default" defaultIdMethod="native" namespace="TheFarm" defaultPhpNamingMethod="underscore">
+  <table name="tf_booking_attachments" idMethod="native" phpName="BookingAttachments" namespace="Models">
+    <column name="booking_id" phpName="BookingId" type="INTEGER" primaryKey="true" required="true" defaultValue="0"/>
+    <column name="file_id" phpName="FileId" type="INTEGER" primaryKey="true" required="true" defaultValue="0"/>
+    <foreign-key foreignTable="tf_bookings" name="booking_attachment_booking_fk">
+      <reference local="booking_id" foreign="booking_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="tf_files" name="booking_attachment_file_fk">
+      <reference local="file_id" foreign="file_id"/>
+    </foreign-key>
+    <index name="booking_attachment_file_fk">
+      <index-column name="file_id"/>
+    </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="tf_booking_event_users" idMethod="native" phpName="BookingEventUsers" namespace="Models">
+    <column name="event_id" phpName="EventId" type="INTEGER" primaryKey="true" required="true" defaultValue="0"/>
+    <column name="staff_id" phpName="StaffId" type="INTEGER" primaryKey="true" required="true" defaultValue="0"/>
+    <foreign-key foreignTable="tf_booking_events" name="booking_event_user_event_fk">
+      <reference local="event_id" foreign="event_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="tf_contacts" name="booking_event_user_user_fk">
+      <reference local="staff_id" foreign="contact_id"/>
+    </foreign-key>
+    <index name="booking_event_user_user_fk">
+      <index-column name="staff_id"/>
+    </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="tf_booking_events" idMethod="native" phpName="BookingEvents" namespace="Models">
+    <column name="event_id" phpName="EventId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="event_title" phpName="EventTitle" type="VARCHAR" size="100" required="true"/>
+    <column name="start_dt" phpName="StartDt" type="TIMESTAMP"/>
+    <column name="end_dt" phpName="EndDt" type="TIMESTAMP"/>
+    <column name="facility_id" phpName="FacilityId" type="INTEGER"/>
+    <column name="all_day" phpName="AllDay" type="INTEGER" size="1" required="true"/>
+    <column name="status" phpName="Status" type="VARCHAR" size="16"/>
+    <column name="author_id" phpName="AuthorId" type="INTEGER"/>
+    <column name="entry_date" phpName="EntryDate" type="INTEGER" size="10" defaultValue="0"/>
+    <column name="edit_date" phpName="EditDate" type="INTEGER" size="10" defaultValue="0"/>
+    <column name="notes" phpName="Notes" type="VARCHAR" size="255" defaultValue=""/>
+    <column name="called_by" phpName="CalledBy" type="INTEGER"/>
+    <column name="cancelled_by" phpName="CancelledBy" type="INTEGER"/>
+    <column name="cancelled_reason" phpName="CancelledReason" type="VARCHAR" size="50" defaultValue=""/>
+    <column name="date_cancelled" phpName="DateCancelled" type="INTEGER" size="10" defaultValue="0"/>
+    <column name="personalized" phpName="Personalized" type="VARCHAR" size="100" defaultValue=""/>
+    <column name="booking_item_id" phpName="BookingItemId" type="INTEGER"/>
+    <column name="is_active" phpName="IsActive" type="VARCHAR" size="1" defaultValue="n"/>
+    <column name="deleted_date" phpName="DeletedDate" type="INTEGER" size="10" defaultValue="0"/>
+    <column name="deleted_by" phpName="DeletedBy" type="INTEGER"/>
+    <column name="item_id" phpName="ItemId" type="INTEGER"/>
+    <column name="is_kids" phpName="IsKids" type="VARCHAR" size="1" defaultValue="n"/>
+    <column name="incl_os_done_number" phpName="InclOsDoneNumber" type="VARCHAR" size="20"/>
+    <column name="incl_os_done_amount" phpName="InclOsDoneAmount" type="DECIMAL" size="10" scale="2" required="true" defaultValue="0.00"/>
+    <column name="foc_os_done_number" phpName="FocOsDoneNumber" type="VARCHAR" size="20"/>
+    <column name="foc_os_done_amount" phpName="FocOsDoneAmount" type="DECIMAL" size="10" scale="2" required="true" defaultValue="0.00"/>
+    <column name="not_incl_os_done_number" phpName="NotInclOsDoneNumber" type="VARCHAR" size="20"/>
+    <column name="not_incl_os_done_amount" phpName="NotInclOsDoneAmount" type="DECIMAL" size="10" scale="2" required="true" defaultValue="0.00"/>
+    <column name="incl" phpName="Incl" type="INTEGER" size="1" required="true"/>
+    <column name="not_incl" phpName="NotIncl" type="INTEGER" size="1" required="true"/>
+    <column name="foc" phpName="Foc" type="INTEGER" size="1" required="true"/>
+    <foreign-key foreignTable="tf_contacts" name="booking_event_author_fk">
+      <reference local="author_id" foreign="contact_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="tf_booking_items" name="booking_event_booking_item_by_fk">
+      <reference local="booking_item_id" foreign="booking_item_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="tf_contacts" name="booking_event_called_by_fk">
+      <reference local="called_by" foreign="contact_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="tf_contacts" name="booking_event_cancelled_by_fk">
+      <reference local="cancelled_by" foreign="contact_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="tf_contacts" name="booking_event_deleted_by_fk">
+      <reference local="deleted_by" foreign="contact_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="tf_facilities" name="booking_event_facility_fk">
+      <reference local="facility_id" foreign="facility_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="tf_items" name="booking_event_item_by_fk">
+      <reference local="item_id" foreign="item_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="tf_event_status" name="booking_event_status_fk">
+      <reference local="status" foreign="status_cd"/>
+    </foreign-key>
+    <index name="booking_event_facility_fk">
+      <index-column name="facility_id"/>
+    </index>
+    <index name="booking_event_author_fk">
+      <index-column name="author_id"/>
+    </index>
+    <index name="booking_event_called_by_fk">
+      <index-column name="called_by"/>
+    </index>
+    <index name="booking_event_cancelled_by_fk">
+      <index-column name="cancelled_by"/>
+    </index>
+    <index name="booking_event_deleted_by_fk">
+      <index-column name="deleted_by"/>
+    </index>
+    <index name="booking_event_item_by_fk">
+      <index-column name="item_id"/>
+    </index>
+    <index name="booking_event_booking_item_by_fk">
+      <index-column name="booking_item_id"/>
+    </index>
+    <index name="booking_event_status_fk">
+      <index-column name="status"/>
+    </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="tf_booking_forms" idMethod="native" phpName="BookingForms" namespace="Models">
+    <column name="booking_id" phpName="BookingId" type="INTEGER" size="5" primaryKey="true" required="true"/>
+    <column name="form_id" phpName="FormId" type="INTEGER" size="5" primaryKey="true" required="true"/>
+    <column name="required" phpName="Required" type="VARCHAR" size="1" required="true" defaultValue="n"/>
+    <column name="submitted" phpName="Submitted" type="VARCHAR" size="1" required="true" defaultValue="n"/>
+    <column name="notify_user_on_submit" phpName="NotifyUserOnSubmit" type="VARCHAR" size="255" required="true" defaultValue=""/>
+    <column name="submitted_date" phpName="SubmittedDate" type="INTEGER" size="10" defaultValue="0"/>
+    <column name="completed_by" phpName="CompletedBy" type="INTEGER"/>
+    <column name="completed_date" phpName="CompletedDate" type="INTEGER" size="10" sqlType="int(10) unsigned" defaultValue="0"/>
+    <index name="booking_form_completed_fk">
+      <index-column name="completed_by"/>
+    </index>
+    <index name="booking_form_fk">
+      <index-column name="form_id"/>
+    </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="MyISAM"/>
+    </vendor>
+  </table>
+  <table name="tf_booking_items" idMethod="native" phpName="BookingItems" namespace="Models">
+    <column name="booking_item_id" phpName="BookingItemId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="booking_id" phpName="BookingId" type="INTEGER" required="true"/>
+    <column name="item_id" phpName="ItemId" type="INTEGER" required="true"/>
+    <column name="quantity" phpName="Quantity" type="INTEGER" size="5" required="true"/>
+    <column name="included" phpName="Included" type="INTEGER" size="1" required="true"/>
+    <column name="foc" phpName="Foc" type="INTEGER" size="1" required="true" defaultValue="0"/>
+    <column name="upsell" phpName="Upsell" type="INTEGER" size="1" required="true" defaultValue="0"/>
+    <column name="inventory" phpName="Inventory" type="INTEGER" size="5" defaultValue="0"/>
+    <column name="upgrade" phpName="Upgrade" type="SMALLINT" size="1" defaultValue="0"/>
+    <foreign-key foreignTable="tf_bookings" name="booking_item_booking_fk">
+      <reference local="booking_id" foreign="booking_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="tf_items" name="booking_item_item_fk">
+      <reference local="item_id" foreign="item_id"/>
+    </foreign-key>
+    <index name="booking_item_item_fk">
+      <index-column name="item_id"/>
+    </index>
+    <index name="booking_item_booking_fk">
+      <index-column name="booking_id"/>
+    </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="tf_booking_status" idMethod="native" phpName="BookingStatus" namespace="Models">
+    <column name="status_cd" phpName="StatusCd" type="VARCHAR" size="20" primaryKey="true" required="true"/>
+    <column name="status_value" phpName="StatusValue" type="VARCHAR" size="50" required="true"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="tf_bookings" idMethod="native" phpName="Bookings" namespace="Models">
+    <column name="booking_id" phpName="BookingId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="title" phpName="Title" type="VARCHAR" size="200" required="true"/>
+    <column name="package_id" phpName="PackageId" type="INTEGER"/>
+    <column name="start_date" phpName="StartDate" type="INTEGER" required="true"/>
+    <column name="end_date" phpName="EndDate" type="INTEGER" required="true"/>
+    <column name="notes" phpName="Notes" type="LONGVARCHAR" required="true"/>
+    <column name="status" phpName="Status" type="VARCHAR" size="16"/>
+    <column name="guest_id" phpName="GuestId" type="INTEGER"/>
+    <column name="fax" phpName="Fax" type="SMALLINT" size="3" defaultValue="0"/>
+    <column name="author_id" phpName="AuthorId" type="INTEGER" size="5" defaultValue="1"/>
+    <column name="entry_date" phpName="EntryDate" type="INTEGER" size="10" defaultValue="0"/>
+    <column name="edit_date" phpName="EditDate" type="INTEGER" size="10" defaultValue="0"/>
+    <column name="personalized" phpName="Personalized" type="SMALLINT" size="1" defaultValue="0"/>
+    <column name="room_id" phpName="RoomId" type="INTEGER"/>
+    <column name="restrictions" phpName="Restrictions" type="LONGVARCHAR" required="true"/>
+    <column name="package_type_id" phpName="PackageTypeId" type="INTEGER"/>
+    <column name="is_active" phpName="IsActive" type="BOOLEAN" required="true" defaultValue="1"/>
+    <foreign-key foreignTable="tf_contacts" name="booking_author_fk">
+      <reference local="author_id" foreign="contact_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="tf_contacts" name="booking_guest_fk">
+      <reference local="guest_id" foreign="contact_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="tf_packages" name="booking_package_fk">
+      <reference local="package_id" foreign="package_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="tf_items" name="booking_room_fk">
+      <reference local="room_id" foreign="item_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="tf_event_status" name="booking_status_fk">
+      <reference local="status" foreign="status_cd"/>
+    </foreign-key>
+    <index name="booking_package_fk">
+      <index-column name="package_id"/>
+    </index>
+    <index name="booking_guest_fk">
+      <index-column name="guest_id"/>
+    </index>
+    <index name="booking_author_fk">
+      <index-column name="author_id"/>
+    </index>
+    <index name="booking_room_fk">
+      <index-column name="room_id"/>
+    </index>
+    <index name="booking_status_fk">
+      <index-column name="status"/>
+    </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="tf_categories" idMethod="native" phpName="Categories" namespace="Models">
+    <column name="cat_id" phpName="CatId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="cat_name" phpName="CatName" type="VARCHAR" size="255" required="true"/>
+    <column name="cat_image" phpName="CatImage" type="INTEGER"/>
+    <column name="cat_body" phpName="CatBody" type="LONGVARCHAR" required="true"/>
+    <column name="parent_id" phpName="ParentId" type="INTEGER" required="true"/>
+    <column name="location_id" phpName="LocationId" type="INTEGER" required="true"/>
+    <column name="cat_bg_color" phpName="CatBgColor" type="VARCHAR" size="1" defaultValue=""/>
+    <foreign-key foreignTable="tf_files" name="category_image_fk">
+      <reference local="cat_image" foreign="file_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="tf_locations" name="category_location_fk">
+      <reference local="location_id" foreign="location_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="tf_categories" name="category_parent_fk">
+      <reference local="parent_id" foreign="cat_id"/>
+    </foreign-key>
+    <index name="category_parent_fk">
+      <index-column name="parent_id"/>
+    </index>
+    <index name="category_location_fk">
+      <index-column name="location_id"/>
+    </index>
+    <index name="category_image_fk">
+      <index-column name="cat_image"/>
+    </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="tf_contact_status" idMethod="native" phpName="ContactStatus" namespace="Models">
+    <column name="status_cd" phpName="StatusCd" type="VARCHAR" size="20" primaryKey="true" required="true"/>
+    <column name="status_value" phpName="StatusValue" type="VARCHAR" size="50" required="true"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="tf_contacts" idMethod="native" phpName="Contacts" namespace="Models">
+    <column name="contact_id" phpName="ContactId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="first_name" phpName="FirstName" type="VARCHAR" size="100" required="true"/>
+    <column name="last_name" phpName="LastName" type="VARCHAR" size="100" required="true"/>
+    <column name="middle_name" phpName="MiddleName" type="VARCHAR" size="100" required="true"/>
+    <column name="email" phpName="Email" type="VARCHAR" size="100" required="true" defaultValue=""/>
+    <column name="title" phpName="Title" type="VARCHAR" size="10"/>
+    <column name="date_joined" phpName="DateJoined" type="DATE"/>
+    <column name="avatar" phpName="Avatar" type="VARCHAR" size="255" required="true" defaultValue=""/>
+    <column name="civil_status" phpName="CivilStatus" type="VARCHAR" size="20" required="true" defaultValue=""/>
+    <column name="nationality" phpName="Nationality" type="VARCHAR" size="100" required="true" defaultValue=""/>
+    <column name="country_dominicile" phpName="CountryDominicile" type="VARCHAR" size="3" required="true" defaultValue="PH"/>
+    <column name="etnic_origin" phpName="EtnicOrigin" type="VARCHAR" size="255" required="true" defaultValue=""/>
+    <column name="dob" phpName="Dob" type="DATE"/>
+    <column name="place_of_birth" phpName="PlaceOfBirth" type="VARCHAR" size="255" required="true"/>
+    <column name="age" phpName="Age" type="INTEGER" size="3" defaultValue="0"/>
+    <column name="gender" phpName="Gender" type="VARCHAR" size="10" required="true" defaultValue=""/>
+    <column name="height" phpName="Height" type="VARCHAR" size="10" required="true" defaultValue=""/>
+    <column name="weight" phpName="Weight" type="VARCHAR" size="10" required="true" defaultValue=""/>
+    <column name="phone" phpName="Phone" type="VARCHAR" size="50" defaultValue=""/>
+    <column name="position_cd" phpName="PositionCd" type="VARCHAR" size="50"/>
+    <column name="is_active" phpName="IsActive" type="BOOLEAN" required="true" />
+    <column name="verification_key" phpName="VerificationKey" type="VARCHAR" size="255" defaultValue=""/>
+    <column name="verified" phpName="Verified" type="VARCHAR" size="1" required="true" defaultValue="n"/>
+    <column name="nickname" phpName="Nickname" type="VARCHAR" size="50" defaultValue=""/>
+    <column name="bio" phpName="Bio" type="LONGVARCHAR" required="true"/>
+    <column name="approved" phpName="Approved" type="VARCHAR" size="1" required="true" defaultValue="y"/>
+    <column name="activation_code" phpName="ActivationCode" type="INTEGER"/>
+    <column name="active" phpName="Active" type="VARCHAR" size="1" required="true" defaultValue="n"/>
+    <foreign-key foreignTable="tf_position" name="position_fk">
+      <reference local="position_cd" foreign="position_cd"/>
+    </foreign-key>
+    <index name="position_fk">
+      <index-column name="position_cd"/>
+    </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="tf_event_status" idMethod="native" phpName="EventStatus" namespace="Models">
+    <column name="status_cd" phpName="StatusCd" type="VARCHAR" size="20" primaryKey="true" required="true"/>
+    <column name="status_value" phpName="StatusValue" type="VARCHAR" size="50" required="true"/>
+    <column name="status_order" phpName="StatusOrder" type="SMALLINT" size="3"/>
+    <column name="status_style" phpName="StatusStyle" type="VARCHAR" size="200"/>
+    <column name="include_in_sales" phpName="IncludeInSales" type="VARCHAR" size="1"/>
+    <column name="include_in_duplicate_checking" phpName="IncludeInDuplicateChecking" type="VARCHAR" size="1"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="tf_facilities" idMethod="native" phpName="Facilities" namespace="Models">
+    <column name="facility_id" phpName="FacilityId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="facility_name" phpName="FacilityName" type="VARCHAR" size="255" required="true"/>
+    <column name="bg_color" phpName="BgColor" type="VARCHAR" size="7" required="true"/>
+    <column name="max_accomodation" phpName="MaxAccomodation" type="INTEGER" size="5" required="true"/>
+    <column name="location_id" phpName="LocationId" type="INTEGER"/>
+    <column name="abbr" phpName="Abbr" type="VARCHAR" size="16" required="true" defaultValue=""/>
+    <column name="status" phpName="Status" type="SMALLINT" size="1" required="true" defaultValue="1"/>
+    <foreign-key foreignTable="tf_locations" name="location_fk1">
+      <reference local="location_id" foreign="location_id"/>
+    </foreign-key>
+    <index name="location_fk1">
+      <index-column name="location_id"/>
+    </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="tf_fields" idMethod="native" phpName="Fields" namespace="Models">
+    <column name="field_id" phpName="FieldId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="field_name" phpName="FieldName" type="VARCHAR" size="100" required="true"/>
+    <column name="field_label" phpName="FieldLabel" type="VARCHAR" size="255" required="true"/>
+    <column name="field_type" phpName="FieldType" type="VARCHAR" size="32" required="true"/>
+    <column name="settings" phpName="Settings" type="LONGVARCHAR" required="true"/>
+    <column name="required" phpName="Required" type="CHAR" required="true"/>
+    <column name="entry_date" phpName="EntryDate" type="INTEGER" size="10" required="true"/>
+    <column name="edit_date" phpName="EditDate" type="INTEGER" size="10" required="true"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="tf_files" idMethod="native" phpName="Files" namespace="Models">
+    <column name="file_id" phpName="FileId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="title" phpName="Title" type="VARCHAR" size="255" required="true"/>
+    <column name="file_name" phpName="FileName" type="VARCHAR" size="255" required="true"/>
+    <column name="file_size" phpName="FileSize" type="INTEGER" required="true"/>
+    <column name="upload_id" phpName="UploadId" type="INTEGER" size="5" required="true"/>
+    <column name="upload_date" phpName="UploadDate" type="INTEGER" size="10" required="true"/>
+    <column name="location_id" phpName="LocationId" type="INTEGER" size="5" sqlType="int(5) unsigned" required="true"/>
+    <column name="last_viewed" phpName="LastViewed" type="INTEGER" size="10" sqlType="int(10) unsigned"/>
+    <column name="viewed_by" phpName="ViewedBy" type="INTEGER" size="5" sqlType="int(5) unsigned"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="tf_form_entries" idMethod="native" phpName="FormEntries" namespace="Models">
+    <column name="entry_id" phpName="EntryId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="booking_id" phpName="BookingId" type="INTEGER"/>
+    <column name="form_id" phpName="FormId" type="INTEGER" required="true"/>
+    <column name="field_id" phpName="FieldId" type="INTEGER" required="true"/>
+    <column name="field_text_value" phpName="FieldTextValue" type="VARCHAR" size="100"/>
+    <column name="field_dropdown_value" phpName="FieldDropdownValue" type="VARCHAR" size="100"/>
+    <column name="field_checkboxes_value" phpName="FieldCheckboxesValue" type="VARCHAR" size="100"/>
+    <foreign-key foreignTable="tf_bookings" name="form_entries_booking_fk">
+      <reference local="booking_id" foreign="booking_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="tf_fields" name="form_entries_field_fk">
+      <reference local="field_id" foreign="field_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="tf_forms" name="form_entries_form_fk">
+      <reference local="form_id" foreign="form_id"/>
+    </foreign-key>
+    <index name="form_entries_booking_fk">
+      <index-column name="booking_id"/>
+    </index>
+    <index name="form_entries_form_fk">
+      <index-column name="form_id"/>
+    </index>
+    <index name="form_entries_field_fk">
+      <index-column name="field_id"/>
+    </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="tf_form_entries_1" idMethod="native" phpName="FormEntries1" namespace="Models">
+    <column name="entry_id" phpName="EntryId" type="INTEGER" size="5" sqlType="int(5) unsigned" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="booking_id" phpName="BookingId" type="INTEGER" size="5" required="true"/>
+    <column name="field_id_29" phpName="FieldId29" type="LONGVARCHAR"/>
+    <column name="field_id_52" phpName="FieldId52" type="LONGVARCHAR"/>
+    <column name="field_id_54" phpName="FieldId54" type="LONGVARCHAR"/>
+    <column name="field_id_53" phpName="FieldId53" type="LONGVARCHAR"/>
+    <column name="field_id_55" phpName="FieldId55" type="LONGVARCHAR"/>
+    <column name="field_id_58" phpName="FieldId58" type="LONGVARCHAR"/>
+    <column name="field_id_57" phpName="FieldId57" type="LONGVARCHAR"/>
+    <column name="field_id_56" phpName="FieldId56" type="LONGVARCHAR"/>
+    <column name="field_id_51" phpName="FieldId51" type="LONGVARCHAR"/>
+    <column name="field_id_50" phpName="FieldId50" type="LONGVARCHAR"/>
+    <column name="field_id_49" phpName="FieldId49" type="LONGVARCHAR"/>
+    <column name="field_id_48" phpName="FieldId48" type="LONGVARCHAR"/>
+    <column name="field_id_47" phpName="FieldId47" type="LONGVARCHAR"/>
+    <column name="field_id_46" phpName="FieldId46" type="LONGVARCHAR"/>
+    <column name="field_id_45" phpName="FieldId45" type="LONGVARCHAR"/>
+    <column name="field_id_44" phpName="FieldId44" type="LONGVARCHAR"/>
+    <column name="field_id_43" phpName="FieldId43" type="LONGVARCHAR"/>
+    <column name="field_id_42" phpName="FieldId42" type="LONGVARCHAR"/>
+    <column name="field_id_41" phpName="FieldId41" type="LONGVARCHAR"/>
+    <column name="field_id_40" phpName="FieldId40" type="LONGVARCHAR"/>
+    <column name="field_id_37" phpName="FieldId37" type="LONGVARCHAR"/>
+    <column name="field_id_35" phpName="FieldId35" type="LONGVARCHAR"/>
+    <column name="field_id_33" phpName="FieldId33" type="LONGVARCHAR"/>
+    <column name="field_id_32" phpName="FieldId32" type="LONGVARCHAR"/>
+    <column name="field_id_31" phpName="FieldId31" type="LONGVARCHAR"/>
+    <column name="field_id_30" phpName="FieldId30" type="LONGVARCHAR"/>
+    <column name="field_id_28" phpName="FieldId28" type="LONGVARCHAR"/>
+    <column name="field_id_26" phpName="FieldId26" type="LONGVARCHAR"/>
+    <column name="field_id_25" phpName="FieldId25" type="LONGVARCHAR"/>
+    <column name="field_id_19" phpName="FieldId19" type="LONGVARCHAR"/>
+    <column name="field_id_18" phpName="FieldId18" type="LONGVARCHAR"/>
+    <column name="field_id_17" phpName="FieldId17" type="LONGVARCHAR"/>
+    <column name="field_id_6" phpName="FieldId6" type="LONGVARCHAR"/>
+    <column name="field_id_5" phpName="FieldId5" type="LONGVARCHAR"/>
+    <column name="field_id_4" phpName="FieldId4" type="LONGVARCHAR"/>
+    <column name="field_id_2" phpName="FieldId2" type="LONGVARCHAR"/>
+    <column name="field_id_1" phpName="FieldId1" type="LONGVARCHAR"/>
+    <column name="author_id" phpName="AuthorId" type="INTEGER" size="5" required="true"/>
+    <column name="entry_date" phpName="EntryDate" type="INTEGER" size="10" required="true"/>
+    <column name="edit_date" phpName="EditDate" type="INTEGER" size="10" required="true"/>
+    <column name="completed_by" phpName="CompletedBy" type="INTEGER" size="5" sqlType="int(5) unsigned"/>
+    <column name="completed_date" phpName="CompletedDate" type="INTEGER" size="10" sqlType="int(10) unsigned"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="MyISAM"/>
+    </vendor>
+  </table>
+  <table name="tf_form_entries_2" idMethod="native" phpName="FormEntries2" namespace="Models">
+    <column name="entry_id" phpName="EntryId" type="INTEGER" size="5" sqlType="int(5) unsigned" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="booking_id" phpName="BookingId" type="INTEGER" size="5" required="true"/>
+    <column name="author_id" phpName="AuthorId" type="INTEGER" size="5" required="true"/>
+    <column name="entry_date" phpName="EntryDate" type="INTEGER" size="10" required="true"/>
+    <column name="edit_date" phpName="EditDate" type="INTEGER" size="10" required="true"/>
+    <column name="completed_by" phpName="CompletedBy" type="INTEGER" size="5" sqlType="int(5) unsigned"/>
+    <column name="completed_date" phpName="CompletedDate" type="INTEGER" size="10" sqlType="int(10) unsigned"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="MyISAM"/>
+    </vendor>
+  </table>
+  <table name="tf_form_entries_3" idMethod="native" phpName="FormEntries3" namespace="Models">
+    <column name="entry_id" phpName="EntryId" type="INTEGER" size="5" sqlType="int(5) unsigned" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="booking_id" phpName="BookingId" type="INTEGER" size="5" required="true"/>
+    <column name="author_id" phpName="AuthorId" type="INTEGER" size="5" required="true"/>
+    <column name="entry_date" phpName="EntryDate" type="INTEGER" size="10" required="true"/>
+    <column name="edit_date" phpName="EditDate" type="INTEGER" size="10" required="true"/>
+    <column name="completed_by" phpName="CompletedBy" type="INTEGER" size="5" sqlType="int(5) unsigned"/>
+    <column name="completed_date" phpName="CompletedDate" type="INTEGER" size="10" sqlType="int(10) unsigned"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="MyISAM"/>
+    </vendor>
+  </table>
+  <table name="tf_form_entries_5" idMethod="native" phpName="FormEntries5" namespace="Models">
+    <column name="entry_id" phpName="EntryId" type="INTEGER" size="5" sqlType="int(5) unsigned" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="booking_id" phpName="BookingId" type="INTEGER" size="5" required="true"/>
+    <column name="author_id" phpName="AuthorId" type="INTEGER" size="5" required="true"/>
+    <column name="entry_date" phpName="EntryDate" type="INTEGER" size="10" required="true"/>
+    <column name="edit_date" phpName="EditDate" type="INTEGER" size="10" required="true"/>
+    <column name="completed_by" phpName="CompletedBy" type="INTEGER" size="5" sqlType="int(5) unsigned"/>
+    <column name="completed_date" phpName="CompletedDate" type="INTEGER" size="10" sqlType="int(10) unsigned"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="MyISAM"/>
+    </vendor>
+  </table>
+  <table name="tf_form_entries_6" idMethod="native" phpName="FormEntries6" namespace="Models">
+    <column name="entry_id" phpName="EntryId" type="INTEGER" size="5" sqlType="int(5) unsigned" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="booking_id" phpName="BookingId" type="INTEGER" size="5" required="true"/>
+    <column name="field_id_18" phpName="FieldId18" type="LONGVARCHAR"/>
+    <column name="field_id_17" phpName="FieldId17" type="LONGVARCHAR"/>
+    <column name="field_id_5" phpName="FieldId5" type="LONGVARCHAR"/>
+    <column name="field_id_4" phpName="FieldId4" type="LONGVARCHAR"/>
+    <column name="author_id" phpName="AuthorId" type="INTEGER" size="5" required="true"/>
+    <column name="entry_date" phpName="EntryDate" type="INTEGER" size="10" required="true"/>
+    <column name="edit_date" phpName="EditDate" type="INTEGER" size="10" required="true"/>
+    <column name="completed_by" phpName="CompletedBy" type="INTEGER" size="5" sqlType="int(5) unsigned"/>
+    <column name="completed_date" phpName="CompletedDate" type="INTEGER" size="10" sqlType="int(10) unsigned"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="MyISAM"/>
+    </vendor>
+  </table>
+  <table name="tf_form_entries_8" idMethod="native" phpName="FormEntries8" namespace="Models">
+    <column name="entry_id" phpName="EntryId" type="INTEGER" size="5" sqlType="int(5) unsigned" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="booking_id" phpName="BookingId" type="INTEGER" size="5" required="true"/>
+    <column name="field_id_196" phpName="FieldId196" type="LONGVARCHAR"/>
+    <column name="author_id" phpName="AuthorId" type="INTEGER" size="5" required="true"/>
+    <column name="entry_date" phpName="EntryDate" type="INTEGER" size="10" required="true"/>
+    <column name="edit_date" phpName="EditDate" type="INTEGER" size="10" required="true"/>
+    <column name="completed_by" phpName="CompletedBy" type="INTEGER" size="5" required="true"/>
+    <column name="completed_date" phpName="CompletedDate" type="INTEGER" size="10" required="true"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="MyISAM"/>
+    </vendor>
+  </table>
+  <table name="tf_form_entries_9" idMethod="native" phpName="FormEntries9" namespace="Models">
+    <column name="entry_id" phpName="EntryId" type="INTEGER" size="5" sqlType="int(5) unsigned" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="booking_id" phpName="BookingId" type="INTEGER" size="5" required="true"/>
+    <column name="field_id_197" phpName="FieldId197" type="LONGVARCHAR"/>
+    <column name="author_id" phpName="AuthorId" type="INTEGER" size="5" required="true"/>
+    <column name="entry_date" phpName="EntryDate" type="INTEGER" size="10" required="true"/>
+    <column name="edit_date" phpName="EditDate" type="INTEGER" size="10" required="true"/>
+    <column name="completed_by" phpName="CompletedBy" type="INTEGER" size="5" required="true"/>
+    <column name="completed_date" phpName="CompletedDate" type="INTEGER" size="10" required="true"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="MyISAM"/>
+    </vendor>
+  </table>
+  <table name="tf_form_fields" idMethod="native" phpName="FormFields" namespace="Models">
+    <column name="field_id" phpName="FieldId" type="INTEGER" primaryKey="true" required="true" defaultValue="0"/>
+    <column name="form_id" phpName="FormId" type="INTEGER" primaryKey="true" required="true" defaultValue="0"/>
+    <column name="guest_only" phpName="GuestOnly" type="CHAR" required="true"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="tf_forms" idMethod="native" phpName="Forms" namespace="Models">
+    <column name="form_id" phpName="FormId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="form_name" phpName="FormName" type="VARCHAR" size="255" required="true"/>
+    <column name="form_html" phpName="FormHtml" type="LONGVARCHAR" required="true"/>
+    <column name="field_ids" phpName="FieldIds" type="LONGVARCHAR" required="true"/>
+    <column name="author_id" phpName="AuthorId" type="INTEGER" size="5" required="true"/>
+    <column name="entry_date" phpName="EntryDate" type="INTEGER" size="10" required="true"/>
+    <column name="edit_date" phpName="EditDate" type="INTEGER" size="10" required="true"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="tf_groups" idMethod="native" phpName="Groups" namespace="Models">
+    <column name="group_id" phpName="GroupId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="group_cd" phpName="GroupCd" type="VARCHAR" size="40" required="true"/>
+    <column name="group_name" phpName="GroupName" type="VARCHAR" size="100" required="true"/>
+    <column name="default_calendar_view" phpName="DefaultCalendarView" type="VARCHAR" size="50"/>
+    <column name="include_in_provider_list" phpName="IncludeInProviderList" type="VARCHAR" size="1" defaultValue="n"/>
+    <column name="can_view_other_profiles" phpName="CanViewOtherProfiles" type="VARCHAR" size="1" defaultValue="n"/>
+    <column name="can_edit_other_profiles" phpName="CanEditOtherProfiles" type="VARCHAR" size="1" defaultValue="n"/>
+    <column name="can_delete_services" phpName="CanDeleteServices" type="VARCHAR" size="1" defaultValue="n"/>
+    <column name="can_edit_services" phpName="CanEditServices" type="VARCHAR" size="1" defaultValue="n"/>
+    <column name="can_add_schedule" phpName="CanAddSchedule" type="VARCHAR" size="1" defaultValue="y"/>
+    <column name="can_admin_guest" phpName="CanAdminGuest" type="VARCHAR" size="1" defaultValue="n"/>
+    <column name="can_admin_calendar" phpName="CanAdminCalendar" type="VARCHAR" size="1" defaultValue="n"/>
+    <column name="can_admin_providers" phpName="CanAdminProviders" type="VARCHAR" size="1" defaultValue="n"/>
+    <column name="can_admin_services" phpName="CanAdminServices" type="VARCHAR" size="1" defaultValue="n"/>
+    <column name="can_admin_facilities" phpName="CanAdminFacilities" type="VARCHAR" size="1" defaultValue="n"/>
+    <column name="can_admin_activities" phpName="CanAdminActivities" type="VARCHAR" size="1" defaultValue="n"/>
+    <column name="can_admin_packages" phpName="CanAdminPackages" type="VARCHAR" size="1" defaultValue="n"/>
+    <column name="can_admin_reports" phpName="CanAdminReports" type="VARCHAR" size="1" defaultValue="n"/>
+    <column name="location" phpName="Location" type="VARCHAR" size="16" required="true" defaultValue=""/>
+    <column name="forms" phpName="Forms" type="VARCHAR" size="64" required="true"/>
+    <column name="can_view_schedules_1" phpName="CanViewSchedules1" type="VARCHAR" size="1" defaultValue="n"/>
+    <column name="can_edit_schedules_1" phpName="CanEditSchedules1" type="VARCHAR" size="1" defaultValue="n"/>
+    <column name="can_view_schedules_2" phpName="CanViewSchedules2" type="VARCHAR" size="1" defaultValue="n"/>
+    <column name="can_edit_schedules_2" phpName="CanEditSchedules2" type="VARCHAR" size="1" defaultValue="n"/>
+    <column name="can_view_schedules_3" phpName="CanViewSchedules3" type="VARCHAR" size="1" defaultValue="n"/>
+    <column name="can_edit_schedules_3" phpName="CanEditSchedules3" type="VARCHAR" size="1" defaultValue="n"/>
+    <column name="include_in_audit_list" phpName="IncludeInAuditList" type="VARCHAR" size="1" defaultValue="n"/>
+    <column name="can_edit_completed_forms" phpName="CanEditCompletedForms" type="VARCHAR" size="1" defaultValue="n"/>
+    <column name="can_assign_schedules" phpName="CanAssignSchedules" type="VARCHAR" size="1" defaultValue="n"/>
+    <column name="can_view_other_schedule" phpName="CanViewOtherSchedule" type="VARCHAR" size="1" defaultValue="n"/>
+    <column name="can_view_schedules_4" phpName="CanViewSchedules4" type="VARCHAR" size="1" defaultValue="n"/>
+    <column name="can_edit_schedules_4" phpName="CanEditSchedules4" type="VARCHAR" size="1" defaultValue="n"/>
+    <column name="can_view_schedules_5" phpName="CanViewSchedules5" type="VARCHAR" size="1" defaultValue="n"/>
+    <column name="can_edit_schedules_5" phpName="CanEditSchedules5" type="VARCHAR" size="1" defaultValue="n"/>
+    <column name="can_view_schedules_6" phpName="CanViewSchedules6" type="VARCHAR" size="1" defaultValue="n"/>
+    <column name="can_edit_schedules_6" phpName="CanEditSchedules6" type="VARCHAR" size="1" defaultValue="n"/>
+    <column name="can_view_schedules_7" phpName="CanViewSchedules7" type="VARCHAR" size="1" defaultValue="n"/>
+    <column name="can_edit_schedules_7" phpName="CanEditSchedules7" type="VARCHAR" size="1" defaultValue="n"/>
+    <column name="can_view_dashboard" phpName="CanViewDashboard" type="VARCHAR" size="1" defaultValue="n"/>
+    <column name="notify_on_bookings" phpName="NotifyOnBookings" type="VARCHAR" size="1" defaultValue="n"/>
+    <column name="can_manage_guest_bookings" phpName="CanManageGuestBookings" type="VARCHAR" size="1" defaultValue="n"/>
+    <column name="can_manage_guest_forms" phpName="CanManageGuestForms" type="VARCHAR" size="1" defaultValue="n"/>
+    <column name="can_view_financial" phpName="CanViewFinancial" type="VARCHAR" size="1" defaultValue="n"/>
+    <column name="can_view_today_bookings" phpName="CanViewTodayBookings" type="VARCHAR" size="1" defaultValue="n"/>
+    <column name="dashboard_top" phpName="DashboardTop" type="VARCHAR" required="true"/>
+    <column name="dashboard_middle" phpName="DashboardMiddle" type="VARCHAR" required="true"/>
+    <column name="dashboard_bottom" phpName="DashboardBottom" type="VARCHAR" required="true"/>
+    <column name="calendar_header_right" phpName="CalendarHeaderRight" type="VARCHAR" required="true"/>
+    <column name="can_manage_guest_settings" phpName="CanManageGuestSettings" type="VARCHAR" size="1" defaultValue="n"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="tf_item_categories" idMethod="native" phpName="ItemCategories" namespace="Models">
+    <column name="item_id" phpName="ItemId" type="INTEGER" primaryKey="true" required="true"/>
+    <column name="category_id" phpName="CategoryId" type="INTEGER" primaryKey="true" required="true"/>
+    <foreign-key foreignTable="tf_categories" name="item_category_category_fk">
+      <reference local="category_id" foreign="cat_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="tf_items" name="item_category_item_fk">
+      <reference local="item_id" foreign="item_id"/>
+    </foreign-key>
+    <index name="item_category_item_fk">
+      <index-column name="item_id"/>
+    </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="tf_item_day_time_settings" idMethod="native" phpName="ItemDayTimeSettings" namespace="Models">
+    <column name="item_id" phpName="ItemId" type="INTEGER" required="true"/>
+    <column name="day_settings" phpName="DaySettings" type="VARCHAR" size="50"/>
+    <column name="time_settings" phpName="TimeSettings" type="VARCHAR" size="50"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="tf_items" idMethod="native" phpName="Items" namespace="Models">
+    <column name="item_id" phpName="ItemId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="title" phpName="Title" type="VARCHAR" size="255" required="true"/>
+    <column name="description" phpName="Description" type="LONGVARCHAR" required="true"/>
+    <column name="duration" phpName="Duration" type="INTEGER" size="5" sqlType="int(5) unsigned" required="true"/>
+    <column name="amount" phpName="Amount" type="INTEGER" size="5" sqlType="int(5) unsigned" required="true"/>
+    <column name="uom" phpName="Uom" type="VARCHAR" size="10" required="true"/>
+    <column name="abbr" phpName="Abbr" type="VARCHAR" size="16"/>
+    <column name="max_provider" phpName="MaxProvider" type="INTEGER" size="3" defaultValue="1"/>
+    <column name="for_sale" phpName="ForSale" type="VARCHAR" size="1" required="true" defaultValue="y"/>
+    <column name="item_image" phpName="ItemImage" type="INTEGER"/>
+    <column name="bookable" phpName="Bookable" type="VARCHAR" size="1" required="true" defaultValue="y"/>
+    <column name="time_settings" phpName="TimeSettings" type="VARCHAR" size="100" required="true"/>
+    <column name="is_active" phpName="IsActive" type="INTEGER" size="1" required="true" defaultValue="1"/>
+    <column name="item_icon" phpName="ItemIcon" type="VARCHAR" size="50"/>
+    <foreign-key foreignTable="tf_files" name="item_image_fk">
+      <reference local="item_image" foreign="file_id"/>
+    </foreign-key>
+    <index name="item_image_fk">
+      <index-column name="item_image"/>
+    </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="tf_items_related_facilities" idMethod="native" phpName="ItemsRelatedFacilities" namespace="Models">
+    <column name="item_id" phpName="ItemId" type="INTEGER" primaryKey="true" required="true"/>
+    <column name="facility_id" phpName="FacilityId" type="INTEGER" primaryKey="true" required="true"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="tf_items_related_forms" idMethod="native" phpName="ItemsRelatedForms" namespace="Models">
+    <column name="form_id" phpName="FormId" type="INTEGER" size="5" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="item_id" phpName="ItemId" type="VARCHAR" size="255" primaryKey="true" required="true"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="tf_items_related_users" idMethod="native" phpName="ItemsRelatedUsers" namespace="Models">
+    <column name="item_id" phpName="ItemId" type="INTEGER" required="true"/>
+    <column name="contact_id" phpName="ContactId" type="INTEGER" required="true"/>
+    <foreign-key foreignTable="tf_contacts" name="contact_fk1">
+      <reference local="contact_id" foreign="contact_id"/>
+    </foreign-key>
+    <index name="contact_fk1">
+      <index-column name="contact_id"/>
+    </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="tf_locations" idMethod="native" phpName="Locations" namespace="Models">
+    <column name="location_id" phpName="LocationId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="location" phpName="Location" type="VARCHAR" size="255" required="true"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="tf_messages" idMethod="native" phpName="Messages" namespace="Models">
+    <column name="message_id" phpName="MessageId" type="INTEGER" size="5" sqlType="int(5) unsigned" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="message" phpName="Message" type="VARCHAR" size="255" required="true"/>
+    <column name="sender" phpName="Sender" type="INTEGER" size="5" required="true"/>
+    <column name="receiver" phpName="Receiver" type="INTEGER" size="5" required="true"/>
+    <column name="date_sent" phpName="DateSent" type="TIMESTAMP" required="true"/>
+    <column name="date_read" phpName="DateRead" type="TIMESTAMP" required="true"/>
+    <column name="message_type" phpName="MessageType" type="VARCHAR" size="16" required="true"/>
+    <column name="received" phpName="Received" type="SMALLINT" size="1" required="true" defaultValue="0"/>
+    <column name="receiver_email" phpName="ReceiverEmail" type="VARCHAR" size="255"/>
+    <column name="subject" phpName="Subject" type="VARCHAR" size="255"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="MyISAM"/>
+    </vendor>
+  </table>
+  <table name="tf_migrations" idMethod="native" phpName="Migrations" namespace="Models">
+    <column name="version" phpName="Version" type="BIGINT" required="true"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="MyISAM"/>
+    </vendor>
+  </table>
+  <table name="tf_package_items" idMethod="native" phpName="PackageItems" namespace="Models">
+    <column name="package_id" phpName="PackageId" type="INTEGER" primaryKey="true" required="true" defaultValue="0"/>
+    <column name="item_id" phpName="ItemId" type="INTEGER" primaryKey="true" required="true" defaultValue="0"/>
+    <column name="quantity" phpName="Quantity" type="INTEGER" size="5" sqlType="int(5) unsigned" required="true"/>
+    <foreign-key foreignTable="tf_items" name="package_item_item_fk">
+      <reference local="item_id" foreign="item_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="tf_packages" name="package_item_package_fk">
+      <reference local="package_id" foreign="package_id"/>
+    </foreign-key>
+    <index name="package_item_item_fk">
+      <index-column name="item_id"/>
+    </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="tf_package_types" idMethod="native" phpName="PackageTypes" namespace="Models">
+    <column name="package_type_id" phpName="PackageTypeId" type="INTEGER" size="5" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="package_type_name" phpName="PackageTypeName" type="VARCHAR" size="200"/>
+    <column name="description" phpName="Description" type="LONGVARCHAR"/>
+    <column name="package_image" phpName="PackageImage" type="INTEGER" size="5"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="tf_packages" idMethod="native" phpName="Packages" namespace="Models">
+    <column name="package_id" phpName="PackageId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="package_name" phpName="PackageName" type="VARCHAR" size="255" required="true"/>
+    <column name="package_type" phpName="PackageType" type="VARCHAR" size="255" required="true"/>
+    <column name="duration" phpName="Duration" type="SMALLINT" size="3" required="true"/>
+    <column name="package_type_id" phpName="PackageTypeId" type="INTEGER" size="5" required="true"/>
+    <column name="personalized" phpName="Personalized" type="SMALLINT" size="1" required="true" defaultValue="0"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="tf_position" idMethod="native" phpName="Position" namespace="Models">
+    <column name="position_cd" phpName="PositionCd" type="VARCHAR" size="50" primaryKey="true" required="true" defaultValue=""/>
+    <column name="position_value" phpName="PositionValue" type="VARCHAR" size="50"/>
+    <column name="position_order" phpName="PositionOrder" type="INTEGER" size="3"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="tf_sessions" idMethod="native" phpName="Sessions" namespace="Models">
+    <column name="id" phpName="Id" type="VARCHAR" size="40" required="true"/>
+    <column name="ip_address" phpName="IpAddress" type="VARCHAR" size="45" required="true"/>
+    <column name="timestamp" phpName="Timestamp" type="INTEGER" size="10" sqlType="int(10) unsigned" required="true" defaultValue="0"/>
+    <column name="data" phpName="Data" type="BLOB" required="true"/>
+    <index name="ci_sessions_timestamp">
+      <index-column name="timestamp"/>
+    </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="MyISAM"/>
+    </vendor>
+  </table>
+  <table name="tf_sites" idMethod="native" phpName="Sites" namespace="Models">
+    <column name="site_id" phpName="SiteId" type="INTEGER" size="5" sqlType="int(5) unsigned" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="site_title" phpName="SiteTitle" type="VARCHAR" size="255" required="true"/>
+    <column name="site_system_preferences" phpName="SiteSystemPreferences" type="LONGVARCHAR" required="true"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="MyISAM"/>
+    </vendor>
+  </table>
+  <table name="tf_status_groups" idMethod="native" phpName="StatusGroups" namespace="Models">
+    <column name="group_id" phpName="GroupId" type="INTEGER" size="5" sqlType="int(5) unsigned" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="group_cd" phpName="GroupCd" type="VARCHAR" size="40" required="true"/>
+    <column name="group_name" phpName="GroupName" type="VARCHAR" size="255" required="true"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="MyISAM"/>
+    </vendor>
+  </table>
+  <table name="tf_statuses" idMethod="native" phpName="Statuses" namespace="Models">
+    <column name="status_id" phpName="StatusId" type="INTEGER" size="5" sqlType="int(5) unsigned" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="group_id" phpName="GroupId" type="INTEGER" size="5" required="true"/>
+    <column name="status_cd" phpName="StatusCd" type="VARCHAR" size="40" required="true"/>
+    <column name="status_name" phpName="StatusName" type="VARCHAR" size="255" required="true"/>
+    <column name="status_order" phpName="StatusOrder" type="INTEGER" size="2" required="true"/>
+    <column name="status_style" phpName="StatusStyle" type="LONGVARCHAR"/>
+    <column name="include_in_sales" phpName="IncludeInSales" type="VARCHAR" size="1" defaultValue="y"/>
+    <column name="include_in_duplicate_checking" phpName="IncludeInDuplicateChecking" type="VARCHAR" size="1" defaultValue="y"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="MyISAM"/>
+    </vendor>
+  </table>
+  <table name="tf_title" idMethod="native" phpName="Title" namespace="Models">
+    <column name="title_cd" phpName="TitleCd" type="VARCHAR" size="20" primaryKey="true" required="true"/>
+    <column name="title_value" phpName="TitleValue" type="VARCHAR" size="50"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="tf_upload_prefs" idMethod="native" phpName="UploadPrefs" namespace="Models">
+    <column name="upload_id" phpName="UploadId" type="INTEGER" size="5" sqlType="int(5) unsigned" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="name" phpName="Name" type="VARCHAR" size="255" required="true"/>
+    <column name="max_size" phpName="MaxSize" type="INTEGER" required="true"/>
+    <column name="max_height" phpName="MaxHeight" type="INTEGER" required="true"/>
+    <column name="max_width" phpName="MaxWidth" type="INTEGER" required="true"/>
+    <column name="upload_path" phpName="UploadPath" type="VARCHAR" size="255" required="true"/>
+    <column name="allowed_types" phpName="AllowedTypes" type="VARCHAR" size="100" required="true"/>
+    <column name="url" phpName="Url" type="VARCHAR" size="255" required="true"/>
+    <column name="location_id" phpName="LocationId" type="INTEGER" size="5" sqlType="int(5) unsigned" required="true"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="MyISAM"/>
+    </vendor>
+  </table>
+  <table name="tf_user_work_plan_code" idMethod="native" phpName="UserWorkPlanCode" namespace="Models">
+    <column name="work_plan_cd" phpName="WorkPlanCd" type="VARCHAR" size="32" primaryKey="true" required="true"/>
+    <column name="work_plan_name" phpName="WorkPlanName" type="VARCHAR" size="100" required="true"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="MyISAM"/>
+    </vendor>
+  </table>
+  <table name="tf_user_work_plan_day" idMethod="native" phpName="UserWorkPlanDay" namespace="Models">
+    <column name="contact_id" phpName="ContactId" type="INTEGER" size="5" required="true"/>
+    <column name="date" phpName="Date" type="DATE" required="true"/>
+    <column name="work_code" phpName="WorkCode" type="VARCHAR" size="16" required="true"/>
+    <unique name="contact_id">
+      <unique-column name="contact_id"/>
+      <unique-column name="date"/>
+    </unique>
+    <vendor type="mysql">
+      <parameter name="Engine" value="MyISAM"/>
+    </vendor>
+  </table>
+  <table name="tf_user_work_plan_time" idMethod="native" phpName="UserWorkPlanTime" namespace="Models">
+    <column name="contact_id" phpName="ContactId" type="INTEGER" size="5" required="true"/>
+    <column name="start_date" phpName="StartDate" type="TIMESTAMP" required="true"/>
+    <column name="end_date" phpName="EndDate" type="TIMESTAMP" required="true"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="MyISAM"/>
+    </vendor>
+  </table>
+  <table name="tf_users" idMethod="native" phpName="Users" namespace="Models">
+    <column name="contact_id" phpName="ContactId" type="INTEGER" primaryKey="true" required="true" defaultValue="0"/>
+    <column name="username" phpName="Username" type="VARCHAR" size="100" required="true"/>
+    <column name="group_id" phpName="GroupId" type="INTEGER"/>
+    <column name="last_login" phpName="LastLogin" type="INTEGER" size="10" required="true"/>
+    <column name="password" phpName="Password" type="VARCHAR" size="100" required="true"/>
+    <column name="work_plan" phpName="WorkPlan" type="LONGVARCHAR" required="true"/>
+    <column name="work_plan_code" phpName="WorkPlanCode" type="LONGVARCHAR"/>
+    <column name="location_id" phpName="LocationId" type="INTEGER"/>
+    <column name="facebook_id" phpName="FacebookId" type="VARCHAR" size="50" required="true"/>
+    <column name="order" phpName="Order" type="INTEGER" size="5" required="true" defaultValue="0"/>
+    <column name="calendar_view_positions" phpName="CalendarViewPositions" type="VARCHAR" size="100" defaultValue=""/>
+    <column name="calendar_view_status" phpName="CalendarViewStatus" type="VARCHAR" size="255"/>
+    <column name="calendar_show_my_schedule_only" phpName="CalendarShowMyScheduleOnly" type="VARCHAR" size="1" defaultValue="y"/>
+    <column name="calendar_view_locations" phpName="CalendarViewLocations" type="VARCHAR" size="100" defaultValue=""/>
+    <column name="preferences" phpName="Preferences" type="LONGVARCHAR"/>
+    <column name="calendar_show_no_schedule" phpName="CalendarShowNoSchedule" type="VARCHAR" size="1" defaultValue="y"/>
+    <foreign-key foreignTable="tf_contacts" name="contact_fk">
+      <reference local="contact_id" foreign="contact_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="tf_groups" name="group_fk">
+      <reference local="group_id" foreign="group_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="tf_locations" name="location_fk">
+      <reference local="location_id" foreign="location_id"/>
+    </foreign-key>
+    <index name="location_fk">
+      <index-column name="location_id"/>
+    </index>
+    <index name="group_fk">
+      <index-column name="group_id"/>
+    </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+</database>

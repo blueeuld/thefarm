@@ -8,10 +8,10 @@ class User extends CI_Controller {
 
         $userType = $this->uri->segment(3);
 
-        $search = \TheFarm\Models\ContactsQuery::create();
+        $search = \TheFarm\Models\ContactQuery::create();
 
         if ($userType && $userType === 'guest') {
-            $search = $search->useUsersQuery()
+            $search = $search->useUserQuery()
                 ->filterByGroupId(5)->endUse();
         }
 
