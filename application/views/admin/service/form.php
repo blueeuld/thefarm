@@ -1,5 +1,56 @@
 <?php
 ob_start();
+$iconsFA = array("fa-adjust", "fa-adn", "fa-align-center", "fa-align-justify", "fa-align-left", "fa-align-right",
+    "fa-ambulance", "fa-anchor", "fa-android", "fa-apple", "fa-archive", "fa-asterisk", "fa-backward", "fa-ban", "fa-barcode", "fa-bars",
+    "fa-beer", "fa-bell", "fa-bell-o",
+    "fa-bolt", "fa-bomb", "fa-book",
+    "fa-bookmark", "fa-bookmark-o", "fa-briefcase", "fa-btc", "fa-bug", "fa-building", "fa-building-o", "fa-bullhorn", "fa-bullseye", "fa-calendar",
+    "fa-calendar-o", "fa-camera", "fa-camera-retro", "fa-car",
+    "fa-certificate", "fa-chain-broken", "fa-child",
+    "fa-circle", "fa-circle-o", "fa-circle-o-notch", "fa-circle-thin", "fa-clipboard", "fa-clock-o", "fa-cloud",
+    "fa-coffee", "fa-cog", "fa-cogs", "fa-columns", "fa-comment", "fa-comment-o", "fa-comments", "fa-comments-o", "fa-compass", "fa-compress",
+    "fa-credit-card", "fa-crop", "fa-css3", "fa-cube", "fa-cubes", "fa-cutlery", "fa-database",
+    "fa-delicious", "fa-desktop", "fa-deviantart", "fa-digg", "fa-dot-circle-o", "fa-download", "fa-eject", "fa-ellipsis-h", "fa-ellipsis-v",
+    "fa-empire", "fa-envelope", "fa-envelope-o", "fa-envelope-square", "fa-eraser", "fa-exchange", "fa-exclamation", "fa-exclamation-circle",
+    "fa-exclamation-triangle", "fa-expand", "fa-external-link", "fa-external-link-square", "fa-eye", "fa-eye-slash",
+    "fa-fast-backward", "fa-fast-forward", "fa-fax", "fa-female", "fa-fighter-jet",
+    "fa-film", "fa-filter", "fa-fire", "fa-fire-extinguisher", "fa-flag",
+    "fa-flag-checkered", "fa-flag-o", "fa-flask", "fa-floppy-o", "fa-folder", "fa-folder-o", "fa-folder-open", "fa-folder-open-o", "fa-font",
+    "fa-forward", "fa-frown-o", "fa-gamepad", "fa-gift", "fa-git", "fa-git-square",
+    "fa-glass", "fa-globe",
+    "fa-graduation-cap", "fa-hacker-news",
+    "fa-hdd-o", "fa-header", "fa-headphones", "fa-heart", "fa-heart-o", "fa-history",
+    "fa-home", "fa-hospital-o",
+    "fa-inbox", "fa-indent", "fa-info", "fa-info-circle", "fa-inr", "fa-joomla", "fa-jpy", "fa-key",
+    "fa-keyboard-o", "fa-krw", "fa-language", "fa-laptop", "fa-leaf", "fa-lemon-o", "fa-level-down", "fa-level-up", "fa-life-ring", "fa-lightbulb-o",
+    "fa-link", "fa-list", "fa-list-alt", "fa-list-ol", "fa-list-ul", "fa-location-arrow", "fa-lock", "fa-magic", "fa-magnet", "fa-male", "fa-map-marker",
+    "fa-medkit", "fa-microphone", "fa-microphone-slash", "fa-minus",
+    "fa-minus-circle", "fa-minus-square", "fa-minus-square-o", "fa-mobile", "fa-money", "fa-moon-o", "fa-music",
+    "fa-outdent", "fa-pagelines", "fa-paper-plane",
+    "fa-paper-plane-o", "fa-paperclip", "fa-paragraph", "fa-pause", "fa-paw", "fa-pencil", "fa-pencil-square", "fa-pencil-square-o", "fa-phone",
+    "fa-phone-square", "fa-picture-o", "fa-pied-piper", "fa-pied-piper-alt", "fa-plane", "fa-play", "fa-play-circle",
+    "fa-play-circle-o", "fa-plus", "fa-plus-circle", "fa-plus-square", "fa-plus-square-o", "fa-power-off", "fa-print", "fa-puzzle-piece", "fa-qq", "fa-qrcode", "fa-question",
+    "fa-question-circle", "fa-quote-left", "fa-quote-right", "fa-random",  "fa-rebel", "fa-recycle", "fa-reddit", "fa-reddit-square", "fa-refresh",
+    "fa-repeat", "fa-reply", "fa-reply-all", "fa-retweet", "fa-road", "fa-rocket", "fa-rss", "fa-rss-square", "fa-rub", "fa-scissors", "fa-search", "fa-search-minus",
+    "fa-search-plus", "fa-share", "fa-share-alt", "fa-share-alt-square", "fa-share-square", "fa-share-square-o", "fa-shield",
+    "fa-shopping-cart", "fa-sign-in", "fa-sign-out", "fa-signal", "fa-simplybuilt", "fa-sitemap", "fa-sliders", "fa-smile-o",
+    "fa-sort", "fa-sort-alpha-asc", "fa-sort-alpha-desc", "fa-sort-amount-asc", "fa-sort-amount-desc", "fa-sort-asc", "fa-sort-desc",
+    "fa-sort-numeric-asc", "fa-sort-numeric-desc", "fa-soundcloud", "fa-space-shuttle", "fa-spinner", "fa-spoon", "fa-spotify", "fa-square", "fa-square-o", "fa-star",
+    "fa-star-half", "fa-star-half-o", "fa-star-o", "fa-steam", "fa-steam-square", "fa-step-backward", "fa-step-forward", "fa-stethoscope", "fa-stop",
+    "fa-suitcase", "fa-sun-o", "fa-table",
+    "fa-tablet", "fa-tachometer", "fa-tag", "fa-tags", "fa-tasks", "fa-taxi", "fa-th", "fa-th-large", "fa-th-list",
+    "fa-thumb-tack", "fa-thumbs-down", "fa-thumbs-o-down",
+    "fa-thumbs-o-up", "fa-thumbs-up", "fa-ticket", "fa-times", "fa-times-circle", "fa-times-circle-o", "fa-tint",
+    "fa-trash-o", "fa-tree", "fa-trophy", "fa-truck", "fa-umbrella",
+    "fa-university", "fa-unlock", "fa-usd", "fa-user", "fa-user-md",
+    "fa-users", "fa-video-camera",
+    "fa-wheelchair",
+    "fa-wrench");
+
+$thumbnail = [
+    'images/glass.png' => 'Glass'
+];
+
 ?>
 
 <ul class="nav nav-tabs">
@@ -11,7 +62,7 @@ ob_start();
 
 <div class="tab-content">
     <div role="tabpanel" class="tab-pane active" id="details">
-        <br />
+        <br/>
         <div class="row">
 
             <div class="col-lg-2">
@@ -21,7 +72,7 @@ ob_start();
                 </p>
             </div>
 
-            <div class="col-lg-10">
+            <div class="col-lg-8">
                 <p>
                     <input type="text" class="form-control" name="title" placeholder="Title of your service"
                            value="<?php echo $title; ?>">
@@ -29,6 +80,18 @@ ob_start();
                 <label class="bold text-muted"><i class="fa fa-clock"></i>Categories</label>
                 <p>
                     <?php echo form_multiselect('item_categories[]', $categories, $item_categories, 'class="multi-select" data-header="Select categories"'); ?>
+                </p>
+            </div>
+
+            <div class="col-lg-2">
+                <p>
+                    <select name="item_icon" class="selectpicker form-control">
+                        <option value="">(no icon)</option>
+                        <?php foreach ($thumbnail as $image => $text) : ?>
+                            <option data-thumbnail="<?php echo $image; ?>"
+                                    value="<?php echo $image; ?>"><?php echo $text; ?></option>
+                        <?php endforeach; ?>
+                    </select>
                 </p>
             </div>
 
@@ -130,24 +193,29 @@ ob_start();
     </div>
     <div role="tabpanel" class="tab-pane" id="providers">
         <p>
-            <br />
+            <br/>
             <?php echo form_multiselect('related_user_ids[]', $providers, $related_user_ids, 'class="multi-select" data-header="Select providers" data-live-search="true"'); ?>
         </p>
     </div>
     <div role="tabpanel" class="tab-pane" id="forms">
 
         <p>
-            <br />
+            <br/>
             <?php echo form_multiselect('related_form_ids[]', $forms, $related_form_ids, 'class="multi-select" data-header="Select questionaires/forms" data-live-search="true"'); ?>
         </p>
     </div>
     <div role="tabpanel" class="tab-pane" id="facilities">
         <p>
-            <br />
+            <br/>
             <?php echo form_multiselect('related_facility_ids[]', $facilities, $related_facility_ids, 'class="multi-select" data-header="Select facilities" data-live-search="true"'); ?>
         </p>
     </div>
 </div>
+<script>
+    $(document).ready(function () {
+        $('.selectpicker').selectpicker();
+    })
+</script>
 
 <?php
 $contents = ob_get_clean();

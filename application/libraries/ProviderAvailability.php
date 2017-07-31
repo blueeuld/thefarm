@@ -14,7 +14,7 @@ class ProviderAvailability {
 		'first_name', 
 		'last_name', 
 		'nickname', 
-		'position'
+		'position_cd'
 	);
 	
 	public function __construct($params) {

@@ -22,6 +22,11 @@ $qstr = $qstr ? $qstr.'&return='.$return : '?return=' . $return;
     
                             <div class="container-fluid ">
                             <div id="main">
+
+                                <div class="alignleft">
+                                    <a href="#" class="btn btn-lg btn-success"><i class="fa fa-plus-circle"></i> Add Guest</a>
+                                </div>
+
                                 <?php if ($pagination_links) : ?>
                                     <div class="text-center">
                                     <?php echo $pagination_links;?>

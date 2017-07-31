@@ -14,7 +14,7 @@ class Users extends TF_Controller {
             $this->db->where("(first_name LIKE '%$keyword%' OR last_name LIKE '%$keyword%' OR email LIKE '%$keyword%')");
         }
 
-        $this->db->where('contacts.deleted = 0');
+        $this->db->where('contacts.is_active = 0');
         $query = $this->db->get('contacts');
 
         $contacts = array();

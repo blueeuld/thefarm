@@ -37,7 +37,7 @@ class Contacts extends TF_Controller {
 	        $this->db->where('groups.include_in_provider_list', 'y');
 	    }
 
-        $this->db->where('contacts.deleted = 0');        
+        $this->db->where('contacts.is_active = 0');
         $this->db->order_by('contacts.first_name', 'ASC');        
 		$result = $this->db->get('contacts')->result_array();
 		
@@ -98,7 +98,7 @@ class Contacts extends TF_Controller {
 	            $this->db->where_in('users.location_id', $this->session->userdata('location_id'));
 	    }
 	        
-        $this->db->where('contacts.deleted = 0');
+        $this->db->where('contacts.is_active = 0');
         if ($active_booking) {
         	$this->db->having('recent_booking > ', 0);
         }
@@ -122,7 +122,7 @@ class Contacts extends TF_Controller {
 	            $this->db->where_in('users.location_id', $this->session->userdata('location_id'));
 	    }
 
-        $this->db->where('contacts.deleted = 0');
+        $this->db->where('contacts.is_active = 0');
 		if ($active_booking) {
         	$this->db->having('recent_booking > ', 0);
         }

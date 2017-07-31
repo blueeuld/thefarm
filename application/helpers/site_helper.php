@@ -673,7 +673,7 @@ function get_available_providers($from, $locations = array()) {
 	
 	$TF =& get_instance();
 	
-	$TF->db->select('contacts.first_name, contacts.last_name, contacts.contact_id, user_work_plan_day.work_code, contacts.position');
+	$TF->db->select('contacts.first_name, contacts.last_name, contacts.contact_id, user_work_plan_day.work_code, contacts.position_cd');
     $TF->db->from('user_work_plan_day');
 	$TF->db->join('user_work_plan_code', 'user_work_plan_day.work_code = user_work_plan_code.work_plan_cd');
     $TF->db->join('contacts', 'contacts.contact_id = user_work_plan_day.contact_id');
@@ -691,7 +691,7 @@ function get_available_providers($from, $locations = array()) {
 
 	$TF->db->where('contacts.deleted', 0);
 	$TF->db->where('groups.include_in_provider_list = "y"');
-	$TF->db->order_by("FIELD(tf_contacts.position, 'Doctor', 'Medical Secretary', 'Therapist', 'HS Therapist', 'Nutritionist', 'Fitness', 'Medical Custodian', '')");
+	$TF->db->order_by("FIELD(tf_contacts.position_cd, 'Doctor', 'Medical Secretary', 'Therapist', 'HS Therapist', 'Nutritionist', 'Fitness', 'Medical Custodian', '')");
 	$query = $TF->db->get();
 
 	if ($query->num_rows() > 0) return $query->result_array();

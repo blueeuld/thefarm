@@ -446,7 +446,7 @@ class Calendar extends TF_Controller
 	    //$this->db->join('package_types', 'packages.package_type_id = package_types.package_type_id');
 	    $this->db->join('contacts', 'bookings.guest_id = contacts.contact_id');
 	    $this->db->where('\''.$date.'\' BETWEEN FROM_UNIXTIME(tf_bookings.start_date) AND FROM_UNIXTIME(tf_bookings.end_date)');
-        $this->db->where('contacts.deleted', 0);
+        $this->db->where('contacts.is_active', 0);
 	    $query = $this->db->get();
 	    $results = $query->result_array();
 
@@ -746,7 +746,7 @@ class Calendar extends TF_Controller
         $codes = get_schedule_codes();
         $positions = array();
         foreach ($contacts as $contact) {
-            $position = $contact['position'];
+            $position = $contact['position_cd'];
             if ($position === '') $position = 'Others';
 
             $work_plan = $contact['work_code'];
@@ -1010,7 +1010,7 @@ class Calendar extends TF_Controller
         $event_id = $this->uri->segment(4);
 
         $this->db->update('booking_events', array(
-            'deleted' => 'y',
+            'is_active' => 'y',
             'deleted_by' => get_current_user_id(),
             'deleted_date' => now()), 'event_id=' . (int)$event_id);
 

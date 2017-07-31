@@ -30,7 +30,7 @@ class Account extends TF_Controller {
             'weight' => $this->input->get_post('weight'),
             'phone' => $this->input->get_post('phone'),
             'nickname' => $this->input->get_post('nickname'),
-            'position' => $this->input->get_post('position') ? $this->input->get_post('position') : null,
+            'position_cd' => $this->input->get_post('position') ? $this->input->get_post('position') : null,
             'date_joined' => date('Y-m-d', strtotime($this->input->get_post('date_joined'))),
         );
 
@@ -151,7 +151,7 @@ class Account extends TF_Controller {
                 'phone' => '',
                 'email' => '',
                 'title' => '',
-                'position' => null, //edited
+                'position_cd' => null, //edited
                 'recent_booking' => 0,
                 'group_id' => 5, //Guest,
                 'work_plan' => '',
@@ -275,7 +275,7 @@ class Account extends TF_Controller {
         $this->db->join('booking_event_users', 'booking_events.event_id = booking_event_users.event_id', 'left');
         $this->db->join('contacts', 'contacts.contact_id = booking_event_users.staff_id', 'left');
         $this->db->where_in('item_categories.category_id', array(4, 9));
-        $this->db->where('booking_events.deleted', 'n');
+        $this->db->where('booking_events.is_active', 'n');
 		$this->db->order_by('booking_events.start_dt', 'asc');
 		$results = $this->db->get();
         $data['activities'] = $results->result_array();
@@ -721,7 +721,7 @@ class Account extends TF_Controller {
         
         if ($id && $confirm && $confirm === 'y') {
 
-           $this->db->update('contacts', array('deleted' => 1), array('contact_id' => $id));
+           $this->db->update('contacts', array('is_active' => 1), array('contact_id' => $id));
 			
 // 			$this->db->delete('contacts', array('contact_id' => $id));
 // 			$this->db->delete('users', array('contact_id' => $id));
@@ -743,7 +743,7 @@ class Account extends TF_Controller {
         $this->db->join('booking_event_users', 'booking_events.event_id = booking_event_users.event_id', 'left');
         $this->db->join('contacts', 'contacts.contact_id = booking_event_users.staff_id', 'left');
         $this->db->where_in('item_categories.category_id', array(4, 9));
-        $this->db->where('booking_events.deleted', 'n');
+        $this->db->where('booking_events.is_active', 'n');
 		$this->db->order_by('booking_events.start_dt', 'desc');
 		$results = $this->db->get();
         $data['activities'] = $results->result_array();

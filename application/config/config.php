@@ -512,3 +512,22 @@ $config['rewrite_short_tags'] = FALSE;
 | Array:		array('10.0.1.200', '192.168.5.0/24')
 */
 $config['proxy_ips'] = '';
+
+
+spl_autoload_extensions('.php');
+
+spl_autoload_register(function($className){
+
+    if( strpos($className,'\\') !== false ){
+        // Name spaced Classes
+        $classFile = str_replace('\\','/',$className);
+
+        if($className[0] !== '/'){
+            $classFile = APPPATH.'Data'.DIRECTORY_SEPARATOR.$classFile.'.php';
+        }
+
+        if (file_exists($classFile))
+            require_once ($classFile);
+
+    }
+});

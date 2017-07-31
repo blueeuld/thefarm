@@ -1,5 +1,6 @@
 <html>
 <head>
+    <link href="/css/font-awesome.css" />
     <style>
         body, td, span, th{
             font-family: Calibri,Arial,Candara,Segoe,Segoe UI,Optima,Arial,sans-serif;
@@ -68,7 +69,15 @@
                 $backgroundColor = $event[$t4]['bg_color'];
                 $class = $event[$t4]['class'];
 
-                echo '<td align="center" width="200" class="'.$class.'" style="background-color: '.$backgroundColor.'">'.($event[$t4]['title'] ? $event[$t4]['title'] : $event[$t4]['item_name']).'</td>';
+                if ($event[$t4]['item_icon']) {
+                    $content = '<img src="/'.$event[$t4]['item_icon'].'" style="float: left" width="20" />';
+                }
+                else {
+                    $content = '<center>'.($event[$t4]['title'] ? $event[$t4]['title'] : $event[$t4]['item_name']).'</center>';
+                }
+
+
+                echo '<td width="200" class="'.$class.'" style="background-color: '.$backgroundColor.'">'.$content.'</td>';
                 //echo '<td align="center" class="time">'.$t.'-'.$t1.'</td>';
             }
             else {

@@ -20,11 +20,13 @@
         <div class="col-sm-9">
             <div class="media">
 
-                <?php if ($account['avatar']) : ?>
-                    <div class="media-left">
-                        <img src="<?php echo $account['avatar'];?>" width="80" alt="person">
-                    </div>
-                <?php endif; ?>
+                <div class="media-left">
+                    <?php if ($account['avatar']) : ?>
+                    <img src="<?php echo $account['avatar'];?>" width="80" alt="person">
+                    <?php else : ?>
+                    <img src="/images/noprofile.png" width="80" />
+                    <?php endif; ?>
+                </div>
 
                 <div class="media-body media-middle">
                     <input type="file" name="avatar" class="filestyle">
@@ -60,7 +62,7 @@
     <div class="form-group">
         <label for="" class="col-sm-3 control-label">Position</label>
         <div class="col-sm-9">
-            <?php echo form_dropdown('position', $positions, $account['position'], 'class="form-control"'); ?>
+            <?php echo form_dropdown('position', $positions, $account['position_cd'], 'class="form-control"'); ?>
         </div>
     </div>
 

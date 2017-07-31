@@ -19,6 +19,7 @@ class Service extends TF_Controller {
 			'amount' => (float)$this->input->get_post('amount'),
 			'max_provider' => (int)$this->input->get_post('max_provider'),
 			'description' => $this->input->get_post('description'),
+            'item_icon' => $this->input->get_post('item_icon')
 		);
 		
 		$config = get_upload_config(1);

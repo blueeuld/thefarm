@@ -1,6 +1,7 @@
 {
     "require" : {
         "mpdf/mpdf":"6.1.3",
-        "facebook/graph-sdk" : "*"
+        "facebook/graph-sdk" : "*",
+        "propel/propel": "~2.0@dev"
     }
 }

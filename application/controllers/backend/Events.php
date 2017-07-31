@@ -126,7 +126,7 @@ class Events extends TF_Controller {
         $this->db->join('facilities', 'facilities.facility_id = booking_events.facility_id', 'left');
         $this->db->join('booking_event_users', 'booking_events.event_id = booking_event_users.event_id', 'left');
         $this->db->join('contacts', 'contacts.contact_id = booking_event_users.staff_id', 'left');
-        $this->db->where('booking_events.deleted', 'n');
+        $this->db->where('booking_events.is_active', 'n');
         $this->db->where('booking_events.is_kids', $is_kids);
 		$this->db->order_by('booking_events.start_dt', 'asc');
 		$results = $this->db->get();
@@ -261,7 +261,7 @@ class Events extends TF_Controller {
         $event_id = $this->uri->segment(4);
 
         $this->db->update('booking_events', array(
-            'deleted' => 'y',
+            'is_active' => 'y',
             'deleted_by' => get_current_user_id(),
             'deleted_date' => now()), 'event_id=' . (int)$event_id);
 

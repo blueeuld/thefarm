@@ -42,7 +42,7 @@ class Login extends TF_Controller {
 
 			$this->db->where('username' , $username);
 			$this->db->where('password' , do_hash($password));
-			$this->db->where('deleted', 0);
+			$this->db->where('is_active', 0);
 
 			$query = $this->db->get();
 

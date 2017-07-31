@@ -24,6 +24,12 @@ $qstr = $qstr ? $qstr.'&return='.$return : '?return=' . $return;
 								
 								<div id="main">
 
+                                    <div class="row" style="padding-bottom: 20px">
+                                        <div class="col-md-12 col-lg-12">
+                                            <a class="btn btn-default" href="<?php echo site_url('backend/contacts/guest');?>">Back</a>
+                                        </div>
+                                    </div>
+
 									<div class="row">
 										
 										<div class="col-md-12 col-lg-12">
@@ -80,7 +86,7 @@ $qstr = $qstr ? $qstr.'&return='.$return : '?return=' . $return;
 												</ul>
 												
 												<!-- Tab panes -->
-												<div class="tab-content tab-content-default">
+												<div class="tab-content tab-content-default" style="margin-top: 20px;">
 													
 													<?php if (current_user_can('can_view_other_profiles') || $contact_id === 0 || $contact_id === get_current_user_id()) : ?>
 														<div role="tabpanel" class="tab-pane" id="account">

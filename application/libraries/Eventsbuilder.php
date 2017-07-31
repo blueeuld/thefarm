@@ -66,6 +66,7 @@ class EventsBuilder
         'items.duration', 'SUM(tf_items.amount) as price',
         'items.item_id',
         'items.abbr as item_abbr',
+        'items.item_icon',
         'categories.location_id',
         'booking_items.upsell',
         'booking_items.foc',
