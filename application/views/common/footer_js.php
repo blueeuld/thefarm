@@ -70,6 +70,10 @@
 
         $(document).ready(function () {
 
+            if ($('.dataTable').length > 0) {
+                $('.dataTable').DataTable();
+            }
+
             if ($('form[name="login-form"]').length > 0) {
                 $('form[name="login-form"]').validate({
                     submitHandler: function (form) {

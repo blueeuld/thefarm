@@ -130,35 +130,26 @@ class Contacts extends TF_Controller {
         
         $page =intval($this->input->get_post('p'));
         $this->db->limit(15, $page);
-        
-        $this->load->library('pagination');
-        
-        $config['base_url'] = site_url('backend/contacts/'.$this->view);
-        $config['total_rows'] = $total_guest;
-        $config['per_page'] = 15;
-        $config['enable_query_strings'] = TRUE;
-        $config['page_query_string'] = TRUE;
-        $config['full_tag_open'] = '<ul class="pagination">';
-        $config['full_tag_close'] = '</ul>';
-        $config['num_tag_open'] = '<li>';
-        $config['num_tag_close'] = '</li>';
-        $config['next_tag_open'] = '<li>';
-        $config['next_tag_close'] = '</li>';
-        $config['prev_tag_open'] = '<li>';
-        $config['prev_tag_close'] = '</li>';
-        $config['first_tag_open'] = '<li>';
-        $config['first_tag_close'] = '</li>';
-        $config['last_tag_open'] = '<li>';
-        $config['last_tag_close'] = '</li>';
-        $config['cur_tag_open'] = '<li class="active"><a href="#">';
-        $config['cur_tag_close'] = '</a></li>';
-        $config['query_string_segment'] = 'p';
-        $config['reuse_query_string'] = FALSE;
-        
-        $this->pagination->initialize($config);
-        
-        $data['pagination_links'] = $this->pagination->create_links();
-        $data['contacts'] = $this->db->get('contacts')->result_array();
+
+        $search = \TheFarm\Models\ContactQuery::create();
+        if ($this->view === 'guest') {
+            $search = $search->useUserQuery()->useGroupQuery()->filterByGroupCd('guest')->endUse()->endUse();
+        }
+        elseif ($this->view === 'provider') {
+            $search = $search->useUserQuery()->useGroupQuery()->filterByIncludeInProviderList('y')->endUse()->endUse();
+        }
+
+        //$search = $search->filterByIsActive(true);
+
+        $contacts = $search->find();
+        $contactsArr = [];
+        foreach ($contacts as $key => $contact) {
+            $contactsArr[$key] = $contact->toArray();
+            $contactsArr[$key]['User'] = $contact->getUser()->toArray();
+            $contactsArr[$key]['User']['Group'] = $contact->getUser()->getGroup()->toArray();
+        }
+
+        $data['contacts'] = $contactsArr;
 
         $data['view'] = $this->view;
 

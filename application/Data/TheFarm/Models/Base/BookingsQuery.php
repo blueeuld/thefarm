@@ -64,25 +64,25 @@ use TheFarm\Models\Map\BookingsTableMap;
  * @method     ChildBookingsQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildBookingsQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
  *
- * @method     ChildBookingsQuery leftJoinContactsRelatedByAuthorId($relationAlias = null) Adds a LEFT JOIN clause to the query using the ContactsRelatedByAuthorId relation
- * @method     ChildBookingsQuery rightJoinContactsRelatedByAuthorId($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ContactsRelatedByAuthorId relation
- * @method     ChildBookingsQuery innerJoinContactsRelatedByAuthorId($relationAlias = null) Adds a INNER JOIN clause to the query using the ContactsRelatedByAuthorId relation
+ * @method     ChildBookingsQuery leftJoinContactRelatedByAuthorId($relationAlias = null) Adds a LEFT JOIN clause to the query using the ContactRelatedByAuthorId relation
+ * @method     ChildBookingsQuery rightJoinContactRelatedByAuthorId($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ContactRelatedByAuthorId relation
+ * @method     ChildBookingsQuery innerJoinContactRelatedByAuthorId($relationAlias = null) Adds a INNER JOIN clause to the query using the ContactRelatedByAuthorId relation
  *
- * @method     ChildBookingsQuery joinWithContactsRelatedByAuthorId($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the ContactsRelatedByAuthorId relation
+ * @method     ChildBookingsQuery joinWithContactRelatedByAuthorId($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the ContactRelatedByAuthorId relation
  *
- * @method     ChildBookingsQuery leftJoinWithContactsRelatedByAuthorId() Adds a LEFT JOIN clause and with to the query using the ContactsRelatedByAuthorId relation
- * @method     ChildBookingsQuery rightJoinWithContactsRelatedByAuthorId() Adds a RIGHT JOIN clause and with to the query using the ContactsRelatedByAuthorId relation
- * @method     ChildBookingsQuery innerJoinWithContactsRelatedByAuthorId() Adds a INNER JOIN clause and with to the query using the ContactsRelatedByAuthorId relation
+ * @method     ChildBookingsQuery leftJoinWithContactRelatedByAuthorId() Adds a LEFT JOIN clause and with to the query using the ContactRelatedByAuthorId relation
+ * @method     ChildBookingsQuery rightJoinWithContactRelatedByAuthorId() Adds a RIGHT JOIN clause and with to the query using the ContactRelatedByAuthorId relation
+ * @method     ChildBookingsQuery innerJoinWithContactRelatedByAuthorId() Adds a INNER JOIN clause and with to the query using the ContactRelatedByAuthorId relation
  *
- * @method     ChildBookingsQuery leftJoinContactsRelatedByGuestId($relationAlias = null) Adds a LEFT JOIN clause to the query using the ContactsRelatedByGuestId relation
- * @method     ChildBookingsQuery rightJoinContactsRelatedByGuestId($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ContactsRelatedByGuestId relation
- * @method     ChildBookingsQuery innerJoinContactsRelatedByGuestId($relationAlias = null) Adds a INNER JOIN clause to the query using the ContactsRelatedByGuestId relation
+ * @method     ChildBookingsQuery leftJoinContactRelatedByGuestId($relationAlias = null) Adds a LEFT JOIN clause to the query using the ContactRelatedByGuestId relation
+ * @method     ChildBookingsQuery rightJoinContactRelatedByGuestId($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ContactRelatedByGuestId relation
+ * @method     ChildBookingsQuery innerJoinContactRelatedByGuestId($relationAlias = null) Adds a INNER JOIN clause to the query using the ContactRelatedByGuestId relation
  *
- * @method     ChildBookingsQuery joinWithContactsRelatedByGuestId($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the ContactsRelatedByGuestId relation
+ * @method     ChildBookingsQuery joinWithContactRelatedByGuestId($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the ContactRelatedByGuestId relation
  *
- * @method     ChildBookingsQuery leftJoinWithContactsRelatedByGuestId() Adds a LEFT JOIN clause and with to the query using the ContactsRelatedByGuestId relation
- * @method     ChildBookingsQuery rightJoinWithContactsRelatedByGuestId() Adds a RIGHT JOIN clause and with to the query using the ContactsRelatedByGuestId relation
- * @method     ChildBookingsQuery innerJoinWithContactsRelatedByGuestId() Adds a INNER JOIN clause and with to the query using the ContactsRelatedByGuestId relation
+ * @method     ChildBookingsQuery leftJoinWithContactRelatedByGuestId() Adds a LEFT JOIN clause and with to the query using the ContactRelatedByGuestId relation
+ * @method     ChildBookingsQuery rightJoinWithContactRelatedByGuestId() Adds a RIGHT JOIN clause and with to the query using the ContactRelatedByGuestId relation
+ * @method     ChildBookingsQuery innerJoinWithContactRelatedByGuestId() Adds a INNER JOIN clause and with to the query using the ContactRelatedByGuestId relation
  *
  * @method     ChildBookingsQuery leftJoinPackages($relationAlias = null) Adds a LEFT JOIN clause to the query using the Packages relation
  * @method     ChildBookingsQuery rightJoinPackages($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Packages relation
@@ -144,7 +144,7 @@ use TheFarm\Models\Map\BookingsTableMap;
  * @method     ChildBookingsQuery rightJoinWithFormEntries() Adds a RIGHT JOIN clause and with to the query using the FormEntries relation
  * @method     ChildBookingsQuery innerJoinWithFormEntries() Adds a INNER JOIN clause and with to the query using the FormEntries relation
  *
- * @method     \TheFarm\Models\ContactsQuery|\TheFarm\Models\PackagesQuery|\TheFarm\Models\ItemsQuery|\TheFarm\Models\EventStatusQuery|\TheFarm\Models\BookingAttachmentsQuery|\TheFarm\Models\BookingItemsQuery|\TheFarm\Models\FormEntriesQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \TheFarm\Models\ContactQuery|\TheFarm\Models\PackagesQuery|\TheFarm\Models\ItemsQuery|\TheFarm\Models\EventStatusQuery|\TheFarm\Models\BookingAttachmentsQuery|\TheFarm\Models\BookingItemsQuery|\TheFarm\Models\FormEntriesQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildBookings findOne(ConnectionInterface $con = null) Return the first ChildBookings matching the query
  * @method     ChildBookings findOneOrCreate(ConnectionInterface $con = null) Return the first ChildBookings matching the query, or a new ChildBookings object populated from the query conditions when no match is found
@@ -645,7 +645,7 @@ abstract class BookingsQuery extends ModelCriteria
      * $query->filterByGuestId(array('min' => 12)); // WHERE guest_id > 12
      * </code>
      *
-     * @see       filterByContactsRelatedByGuestId()
+     * @see       filterByContactRelatedByGuestId()
      *
      * @param     mixed $guestId The value to use as filter.
      *              Use scalar values for equality.
@@ -729,7 +729,7 @@ abstract class BookingsQuery extends ModelCriteria
      * $query->filterByAuthorId(array('min' => 12)); // WHERE author_id > 12
      * </code>
      *
-     * @see       filterByContactsRelatedByAuthorId()
+     * @see       filterByContactRelatedByAuthorId()
      *
      * @param     mixed $authorId The value to use as filter.
      *              Use scalar values for equality.
@@ -1022,44 +1022,44 @@ abstract class BookingsQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \TheFarm\Models\Contacts object
+     * Filter the query by a related \TheFarm\Models\Contact object
      *
-     * @param \TheFarm\Models\Contacts|ObjectCollection $contacts The related object(s) to use as filter
+     * @param \TheFarm\Models\Contact|ObjectCollection $contact The related object(s) to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
      * @return ChildBookingsQuery The current query, for fluid interface
      */
-    public function filterByContactsRelatedByAuthorId($contacts, $comparison = null)
+    public function filterByContactRelatedByAuthorId($contact, $comparison = null)
     {
-        if ($contacts instanceof \TheFarm\Models\Contacts) {
+        if ($contact instanceof \TheFarm\Models\Contact) {
             return $this
-                ->addUsingAlias(BookingsTableMap::COL_AUTHOR_ID, $contacts->getContactId(), $comparison);
-        } elseif ($contacts instanceof ObjectCollection) {
+                ->addUsingAlias(BookingsTableMap::COL_AUTHOR_ID, $contact->getContactId(), $comparison);
+        } elseif ($contact instanceof ObjectCollection) {
             if (null === $comparison) {
                 $comparison = Criteria::IN;
             }
 
             return $this
-                ->addUsingAlias(BookingsTableMap::COL_AUTHOR_ID, $contacts->toKeyValue('PrimaryKey', 'ContactId'), $comparison);
+                ->addUsingAlias(BookingsTableMap::COL_AUTHOR_ID, $contact->toKeyValue('PrimaryKey', 'ContactId'), $comparison);
         } else {
-            throw new PropelException('filterByContactsRelatedByAuthorId() only accepts arguments of type \TheFarm\Models\Contacts or Collection');
+            throw new PropelException('filterByContactRelatedByAuthorId() only accepts arguments of type \TheFarm\Models\Contact or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the ContactsRelatedByAuthorId relation
+     * Adds a JOIN clause to the query using the ContactRelatedByAuthorId relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildBookingsQuery The current query, for fluid interface
      */
-    public function joinContactsRelatedByAuthorId($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function joinContactRelatedByAuthorId($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('ContactsRelatedByAuthorId');
+        $relationMap = $tableMap->getRelation('ContactRelatedByAuthorId');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -1074,14 +1074,14 @@ abstract class BookingsQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'ContactsRelatedByAuthorId');
+            $this->addJoinObject($join, 'ContactRelatedByAuthorId');
         }
 
         return $this;
     }
 
     /**
-     * Use the ContactsRelatedByAuthorId relation Contacts object
+     * Use the ContactRelatedByAuthorId relation Contact object
      *
      * @see useQuery()
      *
@@ -1089,54 +1089,54 @@ abstract class BookingsQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \TheFarm\Models\ContactsQuery A secondary query class using the current class as primary query
+     * @return \TheFarm\Models\ContactQuery A secondary query class using the current class as primary query
      */
-    public function useContactsRelatedByAuthorIdQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function useContactRelatedByAuthorIdQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         return $this
-            ->joinContactsRelatedByAuthorId($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'ContactsRelatedByAuthorId', '\TheFarm\Models\ContactsQuery');
+            ->joinContactRelatedByAuthorId($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'ContactRelatedByAuthorId', '\TheFarm\Models\ContactQuery');
     }
 
     /**
-     * Filter the query by a related \TheFarm\Models\Contacts object
+     * Filter the query by a related \TheFarm\Models\Contact object
      *
-     * @param \TheFarm\Models\Contacts|ObjectCollection $contacts The related object(s) to use as filter
+     * @param \TheFarm\Models\Contact|ObjectCollection $contact The related object(s) to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
      * @return ChildBookingsQuery The current query, for fluid interface
      */
-    public function filterByContactsRelatedByGuestId($contacts, $comparison = null)
+    public function filterByContactRelatedByGuestId($contact, $comparison = null)
     {
-        if ($contacts instanceof \TheFarm\Models\Contacts) {
+        if ($contact instanceof \TheFarm\Models\Contact) {
             return $this
-                ->addUsingAlias(BookingsTableMap::COL_GUEST_ID, $contacts->getContactId(), $comparison);
-        } elseif ($contacts instanceof ObjectCollection) {
+                ->addUsingAlias(BookingsTableMap::COL_GUEST_ID, $contact->getContactId(), $comparison);
+        } elseif ($contact instanceof ObjectCollection) {
             if (null === $comparison) {
                 $comparison = Criteria::IN;
             }
 
             return $this
-                ->addUsingAlias(BookingsTableMap::COL_GUEST_ID, $contacts->toKeyValue('PrimaryKey', 'ContactId'), $comparison);
+                ->addUsingAlias(BookingsTableMap::COL_GUEST_ID, $contact->toKeyValue('PrimaryKey', 'ContactId'), $comparison);
         } else {
-            throw new PropelException('filterByContactsRelatedByGuestId() only accepts arguments of type \TheFarm\Models\Contacts or Collection');
+            throw new PropelException('filterByContactRelatedByGuestId() only accepts arguments of type \TheFarm\Models\Contact or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the ContactsRelatedByGuestId relation
+     * Adds a JOIN clause to the query using the ContactRelatedByGuestId relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildBookingsQuery The current query, for fluid interface
      */
-    public function joinContactsRelatedByGuestId($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function joinContactRelatedByGuestId($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('ContactsRelatedByGuestId');
+        $relationMap = $tableMap->getRelation('ContactRelatedByGuestId');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -1151,14 +1151,14 @@ abstract class BookingsQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'ContactsRelatedByGuestId');
+            $this->addJoinObject($join, 'ContactRelatedByGuestId');
         }
 
         return $this;
     }
 
     /**
-     * Use the ContactsRelatedByGuestId relation Contacts object
+     * Use the ContactRelatedByGuestId relation Contact object
      *
      * @see useQuery()
      *
@@ -1166,13 +1166,13 @@ abstract class BookingsQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \TheFarm\Models\ContactsQuery A secondary query class using the current class as primary query
+     * @return \TheFarm\Models\ContactQuery A secondary query class using the current class as primary query
      */
-    public function useContactsRelatedByGuestIdQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function useContactRelatedByGuestIdQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         return $this
-            ->joinContactsRelatedByGuestId($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'ContactsRelatedByGuestId', '\TheFarm\Models\ContactsQuery');
+            ->joinContactRelatedByGuestId($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'ContactRelatedByGuestId', '\TheFarm\Models\ContactQuery');
     }
 
     /**

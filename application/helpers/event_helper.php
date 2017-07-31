@@ -98,7 +98,7 @@ function get_events($booking_id = false, $event_id = false,
 			}
         }
 
-        $TF->db->where('booking_events.deleted', 'n');
+        $TF->db->where('booking_events.is_active', 'n');
     }
 
     $query = $TF->db->get();

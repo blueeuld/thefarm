@@ -128,7 +128,7 @@ function booking_items($booking_id, $booking_status = -1, $available_only = fals
     	booking_items.quantity, booking_items.included, 
     	items.duration, items.uom, booking_items.booking_item_id, 
     	booking_items.upsell, booking_items.foc, 
-    	(SELECT COUNT(*) FROM tf_booking_events events WHERE events.booking_item_id=tf_booking_items.booking_item_id AND events.deleted = 0) AS inventory');
+    	(SELECT COUNT(*) FROM tf_booking_events events WHERE events.booking_item_id=tf_booking_items.booking_item_id AND events.is_active = 0) AS inventory');
     $TF->db->from('items');
     $TF->db->join('booking_items', 'items.item_id = booking_items.item_id', 'left');
     $TF->db->join('bookings', 'booking_items.booking_id = bookings.booking_id');

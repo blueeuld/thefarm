@@ -34,17 +34,17 @@ use TheFarm\Models\Map\ItemsRelatedUsersTableMap;
  * @method     ChildItemsRelatedUsersQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildItemsRelatedUsersQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
  *
- * @method     ChildItemsRelatedUsersQuery leftJoinContacts($relationAlias = null) Adds a LEFT JOIN clause to the query using the Contacts relation
- * @method     ChildItemsRelatedUsersQuery rightJoinContacts($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Contacts relation
- * @method     ChildItemsRelatedUsersQuery innerJoinContacts($relationAlias = null) Adds a INNER JOIN clause to the query using the Contacts relation
+ * @method     ChildItemsRelatedUsersQuery leftJoinContact($relationAlias = null) Adds a LEFT JOIN clause to the query using the Contact relation
+ * @method     ChildItemsRelatedUsersQuery rightJoinContact($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Contact relation
+ * @method     ChildItemsRelatedUsersQuery innerJoinContact($relationAlias = null) Adds a INNER JOIN clause to the query using the Contact relation
  *
- * @method     ChildItemsRelatedUsersQuery joinWithContacts($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Contacts relation
+ * @method     ChildItemsRelatedUsersQuery joinWithContact($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Contact relation
  *
- * @method     ChildItemsRelatedUsersQuery leftJoinWithContacts() Adds a LEFT JOIN clause and with to the query using the Contacts relation
- * @method     ChildItemsRelatedUsersQuery rightJoinWithContacts() Adds a RIGHT JOIN clause and with to the query using the Contacts relation
- * @method     ChildItemsRelatedUsersQuery innerJoinWithContacts() Adds a INNER JOIN clause and with to the query using the Contacts relation
+ * @method     ChildItemsRelatedUsersQuery leftJoinWithContact() Adds a LEFT JOIN clause and with to the query using the Contact relation
+ * @method     ChildItemsRelatedUsersQuery rightJoinWithContact() Adds a RIGHT JOIN clause and with to the query using the Contact relation
+ * @method     ChildItemsRelatedUsersQuery innerJoinWithContact() Adds a INNER JOIN clause and with to the query using the Contact relation
  *
- * @method     \TheFarm\Models\ContactsQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \TheFarm\Models\ContactQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildItemsRelatedUsers findOne(ConnectionInterface $con = null) Return the first ChildItemsRelatedUsers matching the query
  * @method     ChildItemsRelatedUsers findOneOrCreate(ConnectionInterface $con = null) Return the first ChildItemsRelatedUsers matching the query, or a new ChildItemsRelatedUsers object populated from the query conditions when no match is found
@@ -213,7 +213,7 @@ abstract class ItemsRelatedUsersQuery extends ModelCriteria
      * $query->filterByContactId(array('min' => 12)); // WHERE contact_id > 12
      * </code>
      *
-     * @see       filterByContacts()
+     * @see       filterByContact()
      *
      * @param     mixed $contactId The value to use as filter.
      *              Use scalar values for equality.
@@ -247,44 +247,44 @@ abstract class ItemsRelatedUsersQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \TheFarm\Models\Contacts object
+     * Filter the query by a related \TheFarm\Models\Contact object
      *
-     * @param \TheFarm\Models\Contacts|ObjectCollection $contacts The related object(s) to use as filter
+     * @param \TheFarm\Models\Contact|ObjectCollection $contact The related object(s) to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
      * @return ChildItemsRelatedUsersQuery The current query, for fluid interface
      */
-    public function filterByContacts($contacts, $comparison = null)
+    public function filterByContact($contact, $comparison = null)
     {
-        if ($contacts instanceof \TheFarm\Models\Contacts) {
+        if ($contact instanceof \TheFarm\Models\Contact) {
             return $this
-                ->addUsingAlias(ItemsRelatedUsersTableMap::COL_CONTACT_ID, $contacts->getContactId(), $comparison);
-        } elseif ($contacts instanceof ObjectCollection) {
+                ->addUsingAlias(ItemsRelatedUsersTableMap::COL_CONTACT_ID, $contact->getContactId(), $comparison);
+        } elseif ($contact instanceof ObjectCollection) {
             if (null === $comparison) {
                 $comparison = Criteria::IN;
             }
 
             return $this
-                ->addUsingAlias(ItemsRelatedUsersTableMap::COL_CONTACT_ID, $contacts->toKeyValue('PrimaryKey', 'ContactId'), $comparison);
+                ->addUsingAlias(ItemsRelatedUsersTableMap::COL_CONTACT_ID, $contact->toKeyValue('PrimaryKey', 'ContactId'), $comparison);
         } else {
-            throw new PropelException('filterByContacts() only accepts arguments of type \TheFarm\Models\Contacts or Collection');
+            throw new PropelException('filterByContact() only accepts arguments of type \TheFarm\Models\Contact or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the Contacts relation
+     * Adds a JOIN clause to the query using the Contact relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildItemsRelatedUsersQuery The current query, for fluid interface
      */
-    public function joinContacts($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinContact($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Contacts');
+        $relationMap = $tableMap->getRelation('Contact');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -299,14 +299,14 @@ abstract class ItemsRelatedUsersQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'Contacts');
+            $this->addJoinObject($join, 'Contact');
         }
 
         return $this;
     }
 
     /**
-     * Use the Contacts relation Contacts object
+     * Use the Contact relation Contact object
      *
      * @see useQuery()
      *
@@ -314,13 +314,13 @@ abstract class ItemsRelatedUsersQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \TheFarm\Models\ContactsQuery A secondary query class using the current class as primary query
+     * @return \TheFarm\Models\ContactQuery A secondary query class using the current class as primary query
      */
-    public function useContactsQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useContactQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinContacts($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Contacts', '\TheFarm\Models\ContactsQuery');
+            ->joinContact($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Contact', '\TheFarm\Models\ContactQuery');
     }
 
     /**

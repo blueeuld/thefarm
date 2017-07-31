@@ -257,7 +257,7 @@
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
   </table>
-  <table name="tf_contacts" idMethod="native" phpName="Contacts" namespace="Models">
+  <table name="tf_contacts" idMethod="native" phpName="Contact" namespace="Models">
     <column name="contact_id" phpName="ContactId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="first_name" phpName="FirstName" type="VARCHAR" size="100" required="true"/>
     <column name="last_name" phpName="LastName" type="VARCHAR" size="100" required="true"/>
@@ -529,7 +529,7 @@
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
   </table>
-  <table name="tf_groups" idMethod="native" phpName="Groups" namespace="Models">
+  <table name="tf_groups" idMethod="native" phpName="Group" namespace="Models">
     <column name="group_id" phpName="GroupId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="group_cd" phpName="GroupCd" type="VARCHAR" size="40" required="true"/>
     <column name="group_name" phpName="GroupName" type="VARCHAR" size="100" required="true"/>
@@ -821,7 +821,7 @@
       <parameter name="Engine" value="MyISAM"/>
     </vendor>
   </table>
-  <table name="tf_users" idMethod="native" phpName="Users" namespace="Models">
+  <table name="tf_users" idMethod="native" phpName="User" namespace="Models">
     <column name="contact_id" phpName="ContactId" type="INTEGER" primaryKey="true" required="true" defaultValue="0"/>
     <column name="username" phpName="Username" type="VARCHAR" size="100" required="true"/>
     <column name="group_id" phpName="GroupId" type="INTEGER"/>
@@ -831,7 +831,7 @@
     <column name="work_plan_code" phpName="WorkPlanCode" type="LONGVARCHAR"/>
     <column name="location_id" phpName="LocationId" type="INTEGER"/>
     <column name="facebook_id" phpName="FacebookId" type="VARCHAR" size="50" required="true"/>
-    <column name="order" phpName="Order" type="INTEGER" size="5" required="true" defaultValue="0"/>
+    <column name="user_order" phpName="UserOrder" type="INTEGER" size="5" required="true" defaultValue="0"/>
     <column name="calendar_view_positions" phpName="CalendarViewPositions" type="VARCHAR" size="100" defaultValue=""/>
     <column name="calendar_view_status" phpName="CalendarViewStatus" type="VARCHAR" size="255"/>
     <column name="calendar_show_my_schedule_only" phpName="CalendarShowMyScheduleOnly" type="VARCHAR" size="1" defaultValue="y"/>

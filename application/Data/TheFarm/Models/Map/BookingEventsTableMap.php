@@ -314,7 +314,7 @@ class BookingEventsTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('ContactsRelatedByAuthorId', '\\TheFarm\\Models\\Contacts', RelationMap::MANY_TO_ONE, array (
+        $this->addRelation('ContactRelatedByAuthorId', '\\TheFarm\\Models\\Contact', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
     0 => ':author_id',
@@ -328,21 +328,21 @@ class BookingEventsTableMap extends TableMap
     1 => ':booking_item_id',
   ),
 ), null, null, null, false);
-        $this->addRelation('ContactsRelatedByCalledBy', '\\TheFarm\\Models\\Contacts', RelationMap::MANY_TO_ONE, array (
+        $this->addRelation('ContactRelatedByCalledBy', '\\TheFarm\\Models\\Contact', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
     0 => ':called_by',
     1 => ':contact_id',
   ),
 ), null, null, null, false);
-        $this->addRelation('ContactsRelatedByCancelledBy', '\\TheFarm\\Models\\Contacts', RelationMap::MANY_TO_ONE, array (
+        $this->addRelation('ContactRelatedByCancelledBy', '\\TheFarm\\Models\\Contact', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
     0 => ':cancelled_by',
     1 => ':contact_id',
   ),
 ), null, null, null, false);
-        $this->addRelation('ContactsRelatedByDeletedBy', '\\TheFarm\\Models\\Contacts', RelationMap::MANY_TO_ONE, array (
+        $this->addRelation('ContactRelatedByDeletedBy', '\\TheFarm\\Models\\Contact', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
     0 => ':deleted_by',

@@ -230,14 +230,14 @@ class BookingsTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('ContactsRelatedByAuthorId', '\\TheFarm\\Models\\Contacts', RelationMap::MANY_TO_ONE, array (
+        $this->addRelation('ContactRelatedByAuthorId', '\\TheFarm\\Models\\Contact', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
     0 => ':author_id',
     1 => ':contact_id',
   ),
 ), null, null, null, false);
-        $this->addRelation('ContactsRelatedByGuestId', '\\TheFarm\\Models\\Contacts', RelationMap::MANY_TO_ONE, array (
+        $this->addRelation('ContactRelatedByGuestId', '\\TheFarm\\Models\\Contact', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
     0 => ':guest_id',

@@ -146,13 +146,13 @@ class PositionTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('Contacts', '\\TheFarm\\Models\\Contacts', RelationMap::ONE_TO_MANY, array (
+        $this->addRelation('Contact', '\\TheFarm\\Models\\Contact', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
     0 => ':position_cd',
     1 => ':position_cd',
   ),
-), null, null, 'Contactss', false);
+), null, null, 'Contacts', false);
     } // buildRelations()
 
     /**

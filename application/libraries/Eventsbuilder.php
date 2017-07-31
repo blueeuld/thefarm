@@ -337,7 +337,7 @@ class EventsBuilder
                 $this->TF->db->where_in('categories.location_id', $this->locations);
             }
 
-            $this->TF->db->where('booking_events.deleted', 'n');
+            $this->TF->db->where('booking_events.is_active', 'n');
         }
 
         if ($this->report_group_by) {

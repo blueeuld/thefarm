@@ -141,7 +141,7 @@ class ItemsRelatedUsersTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('Contacts', '\\TheFarm\\Models\\Contacts', RelationMap::MANY_TO_ONE, array (
+        $this->addRelation('Contact', '\\TheFarm\\Models\\Contact', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
     0 => ':contact_id',

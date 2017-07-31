@@ -689,7 +689,7 @@ function get_available_providers($from, $locations = array()) {
 			$TF->db->where_in('users.location_id', $locations);
 	}
 
-	$TF->db->where('contacts.deleted', 0);
+	$TF->db->where('contacts.is_active', 0);
 	$TF->db->where('groups.include_in_provider_list = "y"');
 	$TF->db->order_by("FIELD(tf_contacts.position_cd, 'Doctor', 'Medical Secretary', 'Therapist', 'HS Therapist', 'Nutritionist', 'Fitness', 'Medical Custodian', '')");
 	$query = $TF->db->get();

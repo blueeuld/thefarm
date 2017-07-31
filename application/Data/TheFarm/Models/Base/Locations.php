@@ -22,12 +22,12 @@ use TheFarm\Models\Facilities as ChildFacilities;
 use TheFarm\Models\FacilitiesQuery as ChildFacilitiesQuery;
 use TheFarm\Models\Locations as ChildLocations;
 use TheFarm\Models\LocationsQuery as ChildLocationsQuery;
-use TheFarm\Models\Users as ChildUsers;
-use TheFarm\Models\UsersQuery as ChildUsersQuery;
+use TheFarm\Models\User as ChildUser;
+use TheFarm\Models\UserQuery as ChildUserQuery;
 use TheFarm\Models\Map\CategoriesTableMap;
 use TheFarm\Models\Map\FacilitiesTableMap;
 use TheFarm\Models\Map\LocationsTableMap;
-use TheFarm\Models\Map\UsersTableMap;
+use TheFarm\Models\Map\UserTableMap;
 
 /**
  * Base class that represents a row from the 'tf_locations' table.
@@ -97,10 +97,10 @@ abstract class Locations implements ActiveRecordInterface
     protected $collFacilitiessPartial;
 
     /**
-     * @var        ObjectCollection|ChildUsers[] Collection to store aggregation of ChildUsers objects.
+     * @var        ObjectCollection|ChildUser[] Collection to store aggregation of ChildUser objects.
      */
-    protected $collUserss;
-    protected $collUserssPartial;
+    protected $collUsers;
+    protected $collUsersPartial;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -124,9 +124,9 @@ abstract class Locations implements ActiveRecordInterface
 
     /**
      * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildUsers[]
+     * @var ObjectCollection|ChildUser[]
      */
-    protected $userssScheduledForDeletion = null;
+    protected $usersScheduledForDeletion = null;
 
     /**
      * Initializes internal state of TheFarm\Models\Base\Locations object.
@@ -527,7 +527,7 @@ abstract class Locations implements ActiveRecordInterface
 
             $this->collFacilitiess = null;
 
-            $this->collUserss = null;
+            $this->collUsers = null;
 
         } // if (deep)
     }
@@ -678,18 +678,18 @@ abstract class Locations implements ActiveRecordInterface
                 }
             }
 
-            if ($this->userssScheduledForDeletion !== null) {
-                if (!$this->userssScheduledForDeletion->isEmpty()) {
-                    foreach ($this->userssScheduledForDeletion as $users) {
+            if ($this->usersScheduledForDeletion !== null) {
+                if (!$this->usersScheduledForDeletion->isEmpty()) {
+                    foreach ($this->usersScheduledForDeletion as $user) {
                         // need to save related object because we set the relation to null
-                        $users->save($con);
+                        $user->save($con);
                     }
-                    $this->userssScheduledForDeletion = null;
+                    $this->usersScheduledForDeletion = null;
                 }
             }
 
-            if ($this->collUserss !== null) {
-                foreach ($this->collUserss as $referrerFK) {
+            if ($this->collUsers !== null) {
+                foreach ($this->collUsers as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -882,20 +882,20 @@ abstract class Locations implements ActiveRecordInterface
 
                 $result[$key] = $this->collFacilitiess->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
-            if (null !== $this->collUserss) {
+            if (null !== $this->collUsers) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'userss';
+                        $key = 'users';
                         break;
                     case TableMap::TYPE_FIELDNAME:
                         $key = 'tf_userss';
                         break;
                     default:
-                        $key = 'Userss';
+                        $key = 'Users';
                 }
 
-                $result[$key] = $this->collUserss->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+                $result[$key] = $this->collUsers->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1121,9 +1121,9 @@ abstract class Locations implements ActiveRecordInterface
                 }
             }
 
-            foreach ($this->getUserss() as $relObj) {
+            foreach ($this->getUsers() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addUsers($relObj->copy($deepCopy));
+                    $copyObj->addUser($relObj->copy($deepCopy));
                 }
             }
 
@@ -1176,8 +1176,8 @@ abstract class Locations implements ActiveRecordInterface
             $this->initFacilitiess();
             return;
         }
-        if ('Users' == $relationName) {
-            $this->initUserss();
+        if ('User' == $relationName) {
+            $this->initUsers();
             return;
         }
     }
@@ -1683,31 +1683,31 @@ abstract class Locations implements ActiveRecordInterface
     }
 
     /**
-     * Clears out the collUserss collection
+     * Clears out the collUsers collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
      * @return void
-     * @see        addUserss()
+     * @see        addUsers()
      */
-    public function clearUserss()
+    public function clearUsers()
     {
-        $this->collUserss = null; // important to set this to NULL since that means it is uninitialized
+        $this->collUsers = null; // important to set this to NULL since that means it is uninitialized
     }
 
     /**
-     * Reset is the collUserss collection loaded partially.
+     * Reset is the collUsers collection loaded partially.
      */
-    public function resetPartialUserss($v = true)
+    public function resetPartialUsers($v = true)
     {
-        $this->collUserssPartial = $v;
+        $this->collUsersPartial = $v;
     }
 
     /**
-     * Initializes the collUserss collection.
+     * Initializes the collUsers collection.
      *
-     * By default this just sets the collUserss collection to an empty array (like clearcollUserss());
+     * By default this just sets the collUsers collection to an empty array (like clearcollUsers());
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
@@ -1716,20 +1716,20 @@ abstract class Locations implements ActiveRecordInterface
      *
      * @return void
      */
-    public function initUserss($overrideExisting = true)
+    public function initUsers($overrideExisting = true)
     {
-        if (null !== $this->collUserss && !$overrideExisting) {
+        if (null !== $this->collUsers && !$overrideExisting) {
             return;
         }
 
-        $collectionClassName = UsersTableMap::getTableMap()->getCollectionClassName();
+        $collectionClassName = UserTableMap::getTableMap()->getCollectionClassName();
 
-        $this->collUserss = new $collectionClassName;
-        $this->collUserss->setModel('\TheFarm\Models\Users');
+        $this->collUsers = new $collectionClassName;
+        $this->collUsers->setModel('\TheFarm\Models\User');
     }
 
     /**
-     * Gets an array of ChildUsers objects which contain a foreign key that references this object.
+     * Gets an array of ChildUser objects which contain a foreign key that references this object.
      *
      * If the $criteria is not null, it is used to always fetch the results from the database.
      * Otherwise the results are fetched from the database the first time, then cached.
@@ -1739,108 +1739,108 @@ abstract class Locations implements ActiveRecordInterface
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildUsers[] List of ChildUsers objects
+     * @return ObjectCollection|ChildUser[] List of ChildUser objects
      * @throws PropelException
      */
-    public function getUserss(Criteria $criteria = null, ConnectionInterface $con = null)
+    public function getUsers(Criteria $criteria = null, ConnectionInterface $con = null)
     {
-        $partial = $this->collUserssPartial && !$this->isNew();
-        if (null === $this->collUserss || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collUserss) {
+        $partial = $this->collUsersPartial && !$this->isNew();
+        if (null === $this->collUsers || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collUsers) {
                 // return empty collection
-                $this->initUserss();
+                $this->initUsers();
             } else {
-                $collUserss = ChildUsersQuery::create(null, $criteria)
+                $collUsers = ChildUserQuery::create(null, $criteria)
                     ->filterByLocations($this)
                     ->find($con);
 
                 if (null !== $criteria) {
-                    if (false !== $this->collUserssPartial && count($collUserss)) {
-                        $this->initUserss(false);
+                    if (false !== $this->collUsersPartial && count($collUsers)) {
+                        $this->initUsers(false);
 
-                        foreach ($collUserss as $obj) {
-                            if (false == $this->collUserss->contains($obj)) {
-                                $this->collUserss->append($obj);
+                        foreach ($collUsers as $obj) {
+                            if (false == $this->collUsers->contains($obj)) {
+                                $this->collUsers->append($obj);
                             }
                         }
 
-                        $this->collUserssPartial = true;
+                        $this->collUsersPartial = true;
                     }
 
-                    return $collUserss;
+                    return $collUsers;
                 }
 
-                if ($partial && $this->collUserss) {
-                    foreach ($this->collUserss as $obj) {
+                if ($partial && $this->collUsers) {
+                    foreach ($this->collUsers as $obj) {
                         if ($obj->isNew()) {
-                            $collUserss[] = $obj;
+                            $collUsers[] = $obj;
                         }
                     }
                 }
 
-                $this->collUserss = $collUserss;
-                $this->collUserssPartial = false;
+                $this->collUsers = $collUsers;
+                $this->collUsersPartial = false;
             }
         }
 
-        return $this->collUserss;
+        return $this->collUsers;
     }
 
     /**
-     * Sets a collection of ChildUsers objects related by a one-to-many relationship
+     * Sets a collection of ChildUser objects related by a one-to-many relationship
      * to the current object.
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param      Collection $userss A Propel collection.
+     * @param      Collection $users A Propel collection.
      * @param      ConnectionInterface $con Optional connection object
      * @return $this|ChildLocations The current object (for fluent API support)
      */
-    public function setUserss(Collection $userss, ConnectionInterface $con = null)
+    public function setUsers(Collection $users, ConnectionInterface $con = null)
     {
-        /** @var ChildUsers[] $userssToDelete */
-        $userssToDelete = $this->getUserss(new Criteria(), $con)->diff($userss);
+        /** @var ChildUser[] $usersToDelete */
+        $usersToDelete = $this->getUsers(new Criteria(), $con)->diff($users);
 
 
-        $this->userssScheduledForDeletion = $userssToDelete;
+        $this->usersScheduledForDeletion = $usersToDelete;
 
-        foreach ($userssToDelete as $usersRemoved) {
-            $usersRemoved->setLocations(null);
+        foreach ($usersToDelete as $userRemoved) {
+            $userRemoved->setLocations(null);
         }
 
-        $this->collUserss = null;
-        foreach ($userss as $users) {
-            $this->addUsers($users);
+        $this->collUsers = null;
+        foreach ($users as $user) {
+            $this->addUser($user);
         }
 
-        $this->collUserss = $userss;
-        $this->collUserssPartial = false;
+        $this->collUsers = $users;
+        $this->collUsersPartial = false;
 
         return $this;
     }
 
     /**
-     * Returns the number of related Users objects.
+     * Returns the number of related User objects.
      *
      * @param      Criteria $criteria
      * @param      boolean $distinct
      * @param      ConnectionInterface $con
-     * @return int             Count of related Users objects.
+     * @return int             Count of related User objects.
      * @throws PropelException
      */
-    public function countUserss(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function countUsers(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
     {
-        $partial = $this->collUserssPartial && !$this->isNew();
-        if (null === $this->collUserss || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collUserss) {
+        $partial = $this->collUsersPartial && !$this->isNew();
+        if (null === $this->collUsers || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collUsers) {
                 return 0;
             }
 
             if ($partial && !$criteria) {
-                return count($this->getUserss());
+                return count($this->getUsers());
             }
 
-            $query = ChildUsersQuery::create(null, $criteria);
+            $query = ChildUserQuery::create(null, $criteria);
             if ($distinct) {
                 $query->distinct();
             }
@@ -1850,28 +1850,28 @@ abstract class Locations implements ActiveRecordInterface
                 ->count($con);
         }
 
-        return count($this->collUserss);
+        return count($this->collUsers);
     }
 
     /**
-     * Method called to associate a ChildUsers object to this object
-     * through the ChildUsers foreign key attribute.
+     * Method called to associate a ChildUser object to this object
+     * through the ChildUser foreign key attribute.
      *
-     * @param  ChildUsers $l ChildUsers
+     * @param  ChildUser $l ChildUser
      * @return $this|\TheFarm\Models\Locations The current object (for fluent API support)
      */
-    public function addUsers(ChildUsers $l)
+    public function addUser(ChildUser $l)
     {
-        if ($this->collUserss === null) {
-            $this->initUserss();
-            $this->collUserssPartial = true;
+        if ($this->collUsers === null) {
+            $this->initUsers();
+            $this->collUsersPartial = true;
         }
 
-        if (!$this->collUserss->contains($l)) {
-            $this->doAddUsers($l);
+        if (!$this->collUsers->contains($l)) {
+            $this->doAddUser($l);
 
-            if ($this->userssScheduledForDeletion and $this->userssScheduledForDeletion->contains($l)) {
-                $this->userssScheduledForDeletion->remove($this->userssScheduledForDeletion->search($l));
+            if ($this->usersScheduledForDeletion and $this->usersScheduledForDeletion->contains($l)) {
+                $this->usersScheduledForDeletion->remove($this->usersScheduledForDeletion->search($l));
             }
         }
 
@@ -1879,29 +1879,29 @@ abstract class Locations implements ActiveRecordInterface
     }
 
     /**
-     * @param ChildUsers $users The ChildUsers object to add.
+     * @param ChildUser $user The ChildUser object to add.
      */
-    protected function doAddUsers(ChildUsers $users)
+    protected function doAddUser(ChildUser $user)
     {
-        $this->collUserss[]= $users;
-        $users->setLocations($this);
+        $this->collUsers[]= $user;
+        $user->setLocations($this);
     }
 
     /**
-     * @param  ChildUsers $users The ChildUsers object to remove.
+     * @param  ChildUser $user The ChildUser object to remove.
      * @return $this|ChildLocations The current object (for fluent API support)
      */
-    public function removeUsers(ChildUsers $users)
+    public function removeUser(ChildUser $user)
     {
-        if ($this->getUserss()->contains($users)) {
-            $pos = $this->collUserss->search($users);
-            $this->collUserss->remove($pos);
-            if (null === $this->userssScheduledForDeletion) {
-                $this->userssScheduledForDeletion = clone $this->collUserss;
-                $this->userssScheduledForDeletion->clear();
+        if ($this->getUsers()->contains($user)) {
+            $pos = $this->collUsers->search($user);
+            $this->collUsers->remove($pos);
+            if (null === $this->usersScheduledForDeletion) {
+                $this->usersScheduledForDeletion = clone $this->collUsers;
+                $this->usersScheduledForDeletion->clear();
             }
-            $this->userssScheduledForDeletion[]= $users;
-            $users->setLocations(null);
+            $this->usersScheduledForDeletion[]= $user;
+            $user->setLocations(null);
         }
 
         return $this;
@@ -1913,7 +1913,7 @@ abstract class Locations implements ActiveRecordInterface
      * an identical criteria, it returns the collection.
      * Otherwise if this Locations is new, it will return
      * an empty collection; or if this Locations has previously
-     * been saved, it will retrieve related Userss from storage.
+     * been saved, it will retrieve related Users from storage.
      *
      * This method is protected by default in order to keep the public
      * api reasonable.  You can provide public methods for those you
@@ -1922,14 +1922,14 @@ abstract class Locations implements ActiveRecordInterface
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildUsers[] List of ChildUsers objects
+     * @return ObjectCollection|ChildUser[] List of ChildUser objects
      */
-    public function getUserssJoinContacts(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getUsersJoinContact(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
-        $query = ChildUsersQuery::create(null, $criteria);
-        $query->joinWith('Contacts', $joinBehavior);
+        $query = ChildUserQuery::create(null, $criteria);
+        $query->joinWith('Contact', $joinBehavior);
 
-        return $this->getUserss($query, $con);
+        return $this->getUsers($query, $con);
     }
 
 
@@ -1938,7 +1938,7 @@ abstract class Locations implements ActiveRecordInterface
      * an identical criteria, it returns the collection.
      * Otherwise if this Locations is new, it will return
      * an empty collection; or if this Locations has previously
-     * been saved, it will retrieve related Userss from storage.
+     * been saved, it will retrieve related Users from storage.
      *
      * This method is protected by default in order to keep the public
      * api reasonable.  You can provide public methods for those you
@@ -1947,14 +1947,14 @@ abstract class Locations implements ActiveRecordInterface
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildUsers[] List of ChildUsers objects
+     * @return ObjectCollection|ChildUser[] List of ChildUser objects
      */
-    public function getUserssJoinGroups(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getUsersJoinGroup(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
-        $query = ChildUsersQuery::create(null, $criteria);
-        $query->joinWith('Groups', $joinBehavior);
+        $query = ChildUserQuery::create(null, $criteria);
+        $query->joinWith('Group', $joinBehavior);
 
-        return $this->getUserss($query, $con);
+        return $this->getUsers($query, $con);
     }
 
     /**
@@ -1994,8 +1994,8 @@ abstract class Locations implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
-            if ($this->collUserss) {
-                foreach ($this->collUserss as $o) {
+            if ($this->collUsers) {
+                foreach ($this->collUsers as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
@@ -2003,7 +2003,7 @@ abstract class Locations implements ActiveRecordInterface
 
         $this->collCategoriess = null;
         $this->collFacilitiess = null;
-        $this->collUserss = null;
+        $this->collUsers = null;
     }
 
     /**

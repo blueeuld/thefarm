@@ -2,8 +2,9 @@
 $return = urlencode($_SERVER["REQUEST_URI"]);
 $qstr = $_SERVER['QUERY_STRING'] ? '?'.$_SERVER['QUERY_STRING'] : '';
 $qstr = $qstr ? $qstr.'&return='.$return : '?return=' . $return;
+
 ?>
-							<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" class="app">
 <head>
     <?php $this->load->view('admin/_common/head', array('title' => 'Contacts')); ?>
@@ -21,93 +22,81 @@ $qstr = $qstr ? $qstr.'&return='.$return : '?return=' . $return;
 	                        <?php $this->load->view('admin/_common/search_bar', array('title' => ucfirst($view), 'qstr' => $qstr)); ?>
     
                             <div class="container-fluid ">
-                            <div id="main">
+                                <div id="main">
 
-                                <div class="alignleft">
-                                    <a href="#" class="btn btn-lg btn-success"><i class="fa fa-plus-circle"></i> Add Guest</a>
-                                </div>
-
-                                <?php if ($pagination_links) : ?>
-                                    <div class="text-center">
-                                    <?php echo $pagination_links;?>
+                                    <div class="alignleft">
+                                        <a href="#" class="btn btn-lg btn-success"><i class="fa fa-plus-circle"></i> Add Guest</a>
                                     </div>
-                                <?php endif; ?>
-                                        
-                                <div class="table-responsive"> 
-                                    
-                                    <table class="table">
-                                        <thead>
-                                        <tr class="text-uppercase">
-                                            <th class="text-center">Date Joined</th>
-                                            <th>Full Name</th>
-                                            <th>Email</th>
-                                            <th>Group</th>
-                                            <?php if ($view === 'Guest') : ?>
-                                            <th class="text-center">Booking</th>
-                                            <?php endif; ?>
-                                            <th class="text-center">Verified?</th>
-                                            <th class="text-center">Active?</th>
-                                            <th class="text-center">Approved?</th>
-                                            <th class="text-right">Action</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <?php $i = 0; ?>
-                                        <?php foreach ($contacts as $row) : ?>
-                                            <tr class="contacts" id="contact-<?php echo $row['contact_id'];?>">
-                                                <td class="text-muted text-uppercase text-center">
-                                                    <?php if ($row['date_joined'] !== '0000-00-00'): ?>
-                                                    <?php echo date('m/d/Y', strtotime($row['date_joined'])) ?>
-                                                    <?php endif; ?>
-                                                </td>
-                                                <td>
-                                                    <?php echo anchor('backend/account/edit/' . $row['contact_id'].$qstr, $row['first_name'] . ' ' . $row['last_name'], 'class="text-regular"'); ?>
-                                                   </td>
-                                                <td><?php echo $row['email']; ?></td>
-                                                <td><?php echo $row['group_name']; ?></td>
+
+                                    <div class="table-responsive">
+
+                                        <table class="dataTable table">
+                                            <thead>
+                                            <tr class="text-uppercase">
+                                                <th class="date-joined text-center">Date Joined</th>
+                                                <th>Full Name</th>
+                                                <th>Email</th>
+                                                <th>Group</th>
                                                 <?php if ($view === 'Guest') : ?>
-                                                <td class="text-center">
-                                                    <?php if (isset($row['recent_booking']) && $row['recent_booking']) : ?>
-                                                        <a href="<?php echo site_url('backend/account/edit/'.$row['contact_id'].'/'.$row['recent_booking']).$qstr;?>" class="btn btn-xs"><i class="md md-schedule"></i></a>
-                                                    <?php endif; ?>
-                                                </td>
+                                                <th class="booking text-center">Booking</th>
                                                 <?php endif; ?>
-                                                
-                                                
-                                                <td class="text-center">
-	                                                <?php form_toggle_button('btn-verify', $row['contact_id'], array('Yes', 'No'), $row['verified']);?>
-                                                </td>
-                                                
-                                                <td class="text-center">
-	                                                <?php form_toggle_button('btn-active', $row['contact_id'], array('Yes', 'No'), $row['active']);?>
-                                                </td>
-                                                
-                                                <td class="text-center">
-	                                                <?php form_toggle_button('btn-approve', $row['contact_id'], array('Yes', 'No'), $row['approved']);?>
-                                                </td>
-                                                
-                                                <td class="text-right">
-                                                    
-                                                    <a href="<?php echo site_url('backend/account/edit/' . $row['contact_id']).$qstr; ?>"
-                                                       class="btn btn-xs btn-icon btn-primary"><i class="fa fa-pencil"></i></a>
-                        
-                                                    <a href="<?php echo site_url('backend/account/delete/' . $row['contact_id']); ?>" class="btn btn-xs btn-icon btn-default btn-confirm" title="Are you sure you want to delete <b><?php echo $row['first_name'] . ' ' . $row['last_name'];?></b>?"><i class="fa fa-trash-o"></i></a>
-                                                    
-                                                    
-                                                    
-                                                </td>
+                                                <th class="verified text-center">Verified?</th>
+                                                <th class="active text-center">Active?</th>
+                                                <th class="approved text-center">Approved?</th>
+                                                <th class="actions text-right">Action</th>
                                             </tr>
-                                            <?php $i++; ?>
-                                        <?php endforeach ?>
-                                        </tbody>
-                                    </table>
-                                </div>
-    
-                                <?php if ($pagination_links) : ?>
-                                    <div class="text-center">
-                                        <?php echo $pagination_links;?>
+                                            </thead>
+                                            <tbody>
+                                            <?php $i = 0; ?>
+                                            <?php foreach ($contacts as $row) : ?>
+                                                <tr class="contacts" id="contact-<?php echo $row['ContactId'];?>">
+                                                    <td class="text-muted text-uppercase text-center">
+                                                        <?php if ($row['DateJoined'] !== '0000-00-00'): ?>
+                                                        <?php echo date('m/d/Y', strtotime($row['DateJoined'])) ?>
+                                                        <?php endif; ?>
+                                                    </td>
+                                                    <td>
+                                                        <?php echo anchor('backend/account/edit/' . $row['ContactId'].$qstr, $row['FirstName'] . ' ' . $row['LastName'], 'class="text-regular"'); ?>
+                                                       </td>
+                                                    <td><?php echo $row['Email']; ?></td>
+                                                    <td><?php echo $row['User']['Group']['GroupName']; ?></td>
+                                                    <?php if ($view === 'Guest') : ?>
+                                                    <td class="text-center">
+                                                        <?php if (isset($row['recent_booking']) && $row['recent_booking']) : ?>
+                                                            <a href="<?php echo site_url('backend/account/edit/'.$row['ContactId'].'/'.$row['recent_booking']).$qstr;?>" class="btn btn-xs"><i class="md md-schedule"></i></a>
+                                                        <?php endif; ?>
+                                                    </td>
+                                                    <?php endif; ?>
+
+
+                                                    <td class="text-center">
+                                                        <?php form_toggle_button('btn-verify', $row['ContactId'], array('Yes', 'No'), $row['Verified']);?>
+                                                    </td>
+
+                                                    <td class="text-center">
+                                                        <?php form_toggle_button('btn-active', $row['ContactId'], array('Yes', 'No'), $row['Active']);?>
+                                                    </td>
+
+                                                    <td class="text-center">
+                                                        <?php form_toggle_button('btn-approve', $row['ContactId'], array('Yes', 'No'), $row['Approved']);?>
+                                                    </td>
+
+                                                    <td class="text-right">
+
+                                                        <a href="<?php echo site_url('backend/account/edit/' . $row['ContactId']).$qstr; ?>"
+                                                           class="btn btn-xs btn-icon btn-primary"><i class="fa fa-pencil"></i></a>
+
+                                                        <a href="<?php echo site_url('backend/account/delete/' . $row['ContactId']); ?>" class="btn btn-xs btn-icon btn-default btn-confirm" title="Are you sure you want to delete <b><?php echo $row['FirstName'] . ' ' . $row['LastName'];?></b>?"><i class="fa fa-trash-o"></i></a>
+
+
+
+                                                    </td>
+                                                </tr>
+                                                <?php $i++; ?>
+                                            <?php endforeach ?>
+                                            </tbody>
+                                        </table>
                                     </div>
-                                <?php endif; ?>
                                 </div>
                             </div>
                         </div>

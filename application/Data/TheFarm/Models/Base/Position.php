@@ -16,11 +16,11 @@ use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
-use TheFarm\Models\Contacts as ChildContacts;
-use TheFarm\Models\ContactsQuery as ChildContactsQuery;
+use TheFarm\Models\Contact as ChildContact;
+use TheFarm\Models\ContactQuery as ChildContactQuery;
 use TheFarm\Models\Position as ChildPosition;
 use TheFarm\Models\PositionQuery as ChildPositionQuery;
-use TheFarm\Models\Map\ContactsTableMap;
+use TheFarm\Models\Map\ContactTableMap;
 use TheFarm\Models\Map\PositionTableMap;
 
 /**
@@ -87,10 +87,10 @@ abstract class Position implements ActiveRecordInterface
     protected $position_order;
 
     /**
-     * @var        ObjectCollection|ChildContacts[] Collection to store aggregation of ChildContacts objects.
+     * @var        ObjectCollection|ChildContact[] Collection to store aggregation of ChildContact objects.
      */
-    protected $collContactss;
-    protected $collContactssPartial;
+    protected $collContacts;
+    protected $collContactsPartial;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -102,9 +102,9 @@ abstract class Position implements ActiveRecordInterface
 
     /**
      * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildContacts[]
+     * @var ObjectCollection|ChildContact[]
      */
-    protected $contactssScheduledForDeletion = null;
+    protected $contactsScheduledForDeletion = null;
 
     /**
      * Applies default values to this object.
@@ -551,7 +551,7 @@ abstract class Position implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->collContactss = null;
+            $this->collContacts = null;
 
         } // if (deep)
     }
@@ -667,18 +667,18 @@ abstract class Position implements ActiveRecordInterface
                 $this->resetModified();
             }
 
-            if ($this->contactssScheduledForDeletion !== null) {
-                if (!$this->contactssScheduledForDeletion->isEmpty()) {
-                    foreach ($this->contactssScheduledForDeletion as $contacts) {
+            if ($this->contactsScheduledForDeletion !== null) {
+                if (!$this->contactsScheduledForDeletion->isEmpty()) {
+                    foreach ($this->contactsScheduledForDeletion as $contact) {
                         // need to save related object because we set the relation to null
-                        $contacts->save($con);
+                        $contact->save($con);
                     }
-                    $this->contactssScheduledForDeletion = null;
+                    $this->contactsScheduledForDeletion = null;
                 }
             }
 
-            if ($this->collContactss !== null) {
-                foreach ($this->collContactss as $referrerFK) {
+            if ($this->collContacts !== null) {
+                foreach ($this->collContacts as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -840,20 +840,20 @@ abstract class Position implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->collContactss) {
+            if (null !== $this->collContacts) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'contactss';
+                        $key = 'contacts';
                         break;
                     case TableMap::TYPE_FIELDNAME:
                         $key = 'tf_contactss';
                         break;
                     default:
-                        $key = 'Contactss';
+                        $key = 'Contacts';
                 }
 
-                $result[$key] = $this->collContactss->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+                $result[$key] = $this->collContacts->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1078,9 +1078,9 @@ abstract class Position implements ActiveRecordInterface
             // the getter/setter methods for fkey referrer objects.
             $copyObj->setNew(false);
 
-            foreach ($this->getContactss() as $relObj) {
+            foreach ($this->getContacts() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addContacts($relObj->copy($deepCopy));
+                    $copyObj->addContact($relObj->copy($deepCopy));
                 }
             }
 
@@ -1124,38 +1124,38 @@ abstract class Position implements ActiveRecordInterface
      */
     public function initRelation($relationName)
     {
-        if ('Contacts' == $relationName) {
-            $this->initContactss();
+        if ('Contact' == $relationName) {
+            $this->initContacts();
             return;
         }
     }
 
     /**
-     * Clears out the collContactss collection
+     * Clears out the collContacts collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
      * @return void
-     * @see        addContactss()
+     * @see        addContacts()
      */
-    public function clearContactss()
+    public function clearContacts()
     {
-        $this->collContactss = null; // important to set this to NULL since that means it is uninitialized
+        $this->collContacts = null; // important to set this to NULL since that means it is uninitialized
     }
 
     /**
-     * Reset is the collContactss collection loaded partially.
+     * Reset is the collContacts collection loaded partially.
      */
-    public function resetPartialContactss($v = true)
+    public function resetPartialContacts($v = true)
     {
-        $this->collContactssPartial = $v;
+        $this->collContactsPartial = $v;
     }
 
     /**
-     * Initializes the collContactss collection.
+     * Initializes the collContacts collection.
      *
-     * By default this just sets the collContactss collection to an empty array (like clearcollContactss());
+     * By default this just sets the collContacts collection to an empty array (like clearcollContacts());
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
@@ -1164,20 +1164,20 @@ abstract class Position implements ActiveRecordInterface
      *
      * @return void
      */
-    public function initContactss($overrideExisting = true)
+    public function initContacts($overrideExisting = true)
     {
-        if (null !== $this->collContactss && !$overrideExisting) {
+        if (null !== $this->collContacts && !$overrideExisting) {
             return;
         }
 
-        $collectionClassName = ContactsTableMap::getTableMap()->getCollectionClassName();
+        $collectionClassName = ContactTableMap::getTableMap()->getCollectionClassName();
 
-        $this->collContactss = new $collectionClassName;
-        $this->collContactss->setModel('\TheFarm\Models\Contacts');
+        $this->collContacts = new $collectionClassName;
+        $this->collContacts->setModel('\TheFarm\Models\Contact');
     }
 
     /**
-     * Gets an array of ChildContacts objects which contain a foreign key that references this object.
+     * Gets an array of ChildContact objects which contain a foreign key that references this object.
      *
      * If the $criteria is not null, it is used to always fetch the results from the database.
      * Otherwise the results are fetched from the database the first time, then cached.
@@ -1187,108 +1187,108 @@ abstract class Position implements ActiveRecordInterface
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildContacts[] List of ChildContacts objects
+     * @return ObjectCollection|ChildContact[] List of ChildContact objects
      * @throws PropelException
      */
-    public function getContactss(Criteria $criteria = null, ConnectionInterface $con = null)
+    public function getContacts(Criteria $criteria = null, ConnectionInterface $con = null)
     {
-        $partial = $this->collContactssPartial && !$this->isNew();
-        if (null === $this->collContactss || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collContactss) {
+        $partial = $this->collContactsPartial && !$this->isNew();
+        if (null === $this->collContacts || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collContacts) {
                 // return empty collection
-                $this->initContactss();
+                $this->initContacts();
             } else {
-                $collContactss = ChildContactsQuery::create(null, $criteria)
+                $collContacts = ChildContactQuery::create(null, $criteria)
                     ->filterByPosition($this)
                     ->find($con);
 
                 if (null !== $criteria) {
-                    if (false !== $this->collContactssPartial && count($collContactss)) {
-                        $this->initContactss(false);
+                    if (false !== $this->collContactsPartial && count($collContacts)) {
+                        $this->initContacts(false);
 
-                        foreach ($collContactss as $obj) {
-                            if (false == $this->collContactss->contains($obj)) {
-                                $this->collContactss->append($obj);
+                        foreach ($collContacts as $obj) {
+                            if (false == $this->collContacts->contains($obj)) {
+                                $this->collContacts->append($obj);
                             }
                         }
 
-                        $this->collContactssPartial = true;
+                        $this->collContactsPartial = true;
                     }
 
-                    return $collContactss;
+                    return $collContacts;
                 }
 
-                if ($partial && $this->collContactss) {
-                    foreach ($this->collContactss as $obj) {
+                if ($partial && $this->collContacts) {
+                    foreach ($this->collContacts as $obj) {
                         if ($obj->isNew()) {
-                            $collContactss[] = $obj;
+                            $collContacts[] = $obj;
                         }
                     }
                 }
 
-                $this->collContactss = $collContactss;
-                $this->collContactssPartial = false;
+                $this->collContacts = $collContacts;
+                $this->collContactsPartial = false;
             }
         }
 
-        return $this->collContactss;
+        return $this->collContacts;
     }
 
     /**
-     * Sets a collection of ChildContacts objects related by a one-to-many relationship
+     * Sets a collection of ChildContact objects related by a one-to-many relationship
      * to the current object.
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param      Collection $contactss A Propel collection.
+     * @param      Collection $contacts A Propel collection.
      * @param      ConnectionInterface $con Optional connection object
      * @return $this|ChildPosition The current object (for fluent API support)
      */
-    public function setContactss(Collection $contactss, ConnectionInterface $con = null)
+    public function setContacts(Collection $contacts, ConnectionInterface $con = null)
     {
-        /** @var ChildContacts[] $contactssToDelete */
-        $contactssToDelete = $this->getContactss(new Criteria(), $con)->diff($contactss);
+        /** @var ChildContact[] $contactsToDelete */
+        $contactsToDelete = $this->getContacts(new Criteria(), $con)->diff($contacts);
 
 
-        $this->contactssScheduledForDeletion = $contactssToDelete;
+        $this->contactsScheduledForDeletion = $contactsToDelete;
 
-        foreach ($contactssToDelete as $contactsRemoved) {
-            $contactsRemoved->setPosition(null);
+        foreach ($contactsToDelete as $contactRemoved) {
+            $contactRemoved->setPosition(null);
         }
 
-        $this->collContactss = null;
-        foreach ($contactss as $contacts) {
-            $this->addContacts($contacts);
+        $this->collContacts = null;
+        foreach ($contacts as $contact) {
+            $this->addContact($contact);
         }
 
-        $this->collContactss = $contactss;
-        $this->collContactssPartial = false;
+        $this->collContacts = $contacts;
+        $this->collContactsPartial = false;
 
         return $this;
     }
 
     /**
-     * Returns the number of related Contacts objects.
+     * Returns the number of related Contact objects.
      *
      * @param      Criteria $criteria
      * @param      boolean $distinct
      * @param      ConnectionInterface $con
-     * @return int             Count of related Contacts objects.
+     * @return int             Count of related Contact objects.
      * @throws PropelException
      */
-    public function countContactss(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function countContacts(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
     {
-        $partial = $this->collContactssPartial && !$this->isNew();
-        if (null === $this->collContactss || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collContactss) {
+        $partial = $this->collContactsPartial && !$this->isNew();
+        if (null === $this->collContacts || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collContacts) {
                 return 0;
             }
 
             if ($partial && !$criteria) {
-                return count($this->getContactss());
+                return count($this->getContacts());
             }
 
-            $query = ChildContactsQuery::create(null, $criteria);
+            $query = ChildContactQuery::create(null, $criteria);
             if ($distinct) {
                 $query->distinct();
             }
@@ -1298,28 +1298,28 @@ abstract class Position implements ActiveRecordInterface
                 ->count($con);
         }
 
-        return count($this->collContactss);
+        return count($this->collContacts);
     }
 
     /**
-     * Method called to associate a ChildContacts object to this object
-     * through the ChildContacts foreign key attribute.
+     * Method called to associate a ChildContact object to this object
+     * through the ChildContact foreign key attribute.
      *
-     * @param  ChildContacts $l ChildContacts
+     * @param  ChildContact $l ChildContact
      * @return $this|\TheFarm\Models\Position The current object (for fluent API support)
      */
-    public function addContacts(ChildContacts $l)
+    public function addContact(ChildContact $l)
     {
-        if ($this->collContactss === null) {
-            $this->initContactss();
-            $this->collContactssPartial = true;
+        if ($this->collContacts === null) {
+            $this->initContacts();
+            $this->collContactsPartial = true;
         }
 
-        if (!$this->collContactss->contains($l)) {
-            $this->doAddContacts($l);
+        if (!$this->collContacts->contains($l)) {
+            $this->doAddContact($l);
 
-            if ($this->contactssScheduledForDeletion and $this->contactssScheduledForDeletion->contains($l)) {
-                $this->contactssScheduledForDeletion->remove($this->contactssScheduledForDeletion->search($l));
+            if ($this->contactsScheduledForDeletion and $this->contactsScheduledForDeletion->contains($l)) {
+                $this->contactsScheduledForDeletion->remove($this->contactsScheduledForDeletion->search($l));
             }
         }
 
@@ -1327,29 +1327,29 @@ abstract class Position implements ActiveRecordInterface
     }
 
     /**
-     * @param ChildContacts $contacts The ChildContacts object to add.
+     * @param ChildContact $contact The ChildContact object to add.
      */
-    protected function doAddContacts(ChildContacts $contacts)
+    protected function doAddContact(ChildContact $contact)
     {
-        $this->collContactss[]= $contacts;
-        $contacts->setPosition($this);
+        $this->collContacts[]= $contact;
+        $contact->setPosition($this);
     }
 
     /**
-     * @param  ChildContacts $contacts The ChildContacts object to remove.
+     * @param  ChildContact $contact The ChildContact object to remove.
      * @return $this|ChildPosition The current object (for fluent API support)
      */
-    public function removeContacts(ChildContacts $contacts)
+    public function removeContact(ChildContact $contact)
     {
-        if ($this->getContactss()->contains($contacts)) {
-            $pos = $this->collContactss->search($contacts);
-            $this->collContactss->remove($pos);
-            if (null === $this->contactssScheduledForDeletion) {
-                $this->contactssScheduledForDeletion = clone $this->collContactss;
-                $this->contactssScheduledForDeletion->clear();
+        if ($this->getContacts()->contains($contact)) {
+            $pos = $this->collContacts->search($contact);
+            $this->collContacts->remove($pos);
+            if (null === $this->contactsScheduledForDeletion) {
+                $this->contactsScheduledForDeletion = clone $this->collContacts;
+                $this->contactsScheduledForDeletion->clear();
             }
-            $this->contactssScheduledForDeletion[]= $contacts;
-            $contacts->setPosition(null);
+            $this->contactsScheduledForDeletion[]= $contact;
+            $contact->setPosition(null);
         }
 
         return $this;
@@ -1384,14 +1384,14 @@ abstract class Position implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
-            if ($this->collContactss) {
-                foreach ($this->collContactss as $o) {
+            if ($this->collContacts) {
+                foreach ($this->collContacts as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
         } // if ($deep)
 
-        $this->collContactss = null;
+        $this->collContacts = null;
     }
 
     /**

@@ -154,13 +154,13 @@ class LocationsTableMap extends TableMap
     1 => ':location_id',
   ),
 ), null, null, 'Facilitiess', false);
-        $this->addRelation('Users', '\\TheFarm\\Models\\Users', RelationMap::ONE_TO_MANY, array (
+        $this->addRelation('User', '\\TheFarm\\Models\\User', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
     0 => ':location_id',
     1 => ':location_id',
   ),
-), null, null, 'Userss', false);
+), null, null, 'Users', false);
     } // buildRelations()
 
     /**

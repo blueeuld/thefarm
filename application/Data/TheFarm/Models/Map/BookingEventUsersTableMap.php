@@ -147,7 +147,7 @@ class BookingEventUsersTableMap extends TableMap
     1 => ':event_id',
   ),
 ), null, null, null, false);
-        $this->addRelation('Contacts', '\\TheFarm\\Models\\Contacts', RelationMap::MANY_TO_ONE, array (
+        $this->addRelation('Contact', '\\TheFarm\\Models\\Contact', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
     0 => ':staff_id',

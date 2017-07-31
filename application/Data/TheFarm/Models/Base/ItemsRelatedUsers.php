@@ -15,8 +15,8 @@ use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
-use TheFarm\Models\Contacts as ChildContacts;
-use TheFarm\Models\ContactsQuery as ChildContactsQuery;
+use TheFarm\Models\Contact as ChildContact;
+use TheFarm\Models\ContactQuery as ChildContactQuery;
 use TheFarm\Models\ItemsRelatedUsersQuery as ChildItemsRelatedUsersQuery;
 use TheFarm\Models\Map\ItemsRelatedUsersTableMap;
 
@@ -76,9 +76,9 @@ abstract class ItemsRelatedUsers implements ActiveRecordInterface
     protected $contact_id;
 
     /**
-     * @var        ChildContacts
+     * @var        ChildContact
      */
-    protected $aContacts;
+    protected $aContact;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -370,8 +370,8 @@ abstract class ItemsRelatedUsers implements ActiveRecordInterface
             $this->modifiedColumns[ItemsRelatedUsersTableMap::COL_CONTACT_ID] = true;
         }
 
-        if ($this->aContacts !== null && $this->aContacts->getContactId() !== $v) {
-            $this->aContacts = null;
+        if ($this->aContact !== null && $this->aContact->getContactId() !== $v) {
+            $this->aContact = null;
         }
 
         return $this;
@@ -448,8 +448,8 @@ abstract class ItemsRelatedUsers implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-        if ($this->aContacts !== null && $this->contact_id !== $this->aContacts->getContactId()) {
-            $this->aContacts = null;
+        if ($this->aContact !== null && $this->contact_id !== $this->aContact->getContactId()) {
+            $this->aContact = null;
         }
     } // ensureConsistency
 
@@ -490,7 +490,7 @@ abstract class ItemsRelatedUsers implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->aContacts = null;
+            $this->aContact = null;
         } // if (deep)
     }
 
@@ -599,11 +599,11 @@ abstract class ItemsRelatedUsers implements ActiveRecordInterface
             // method.  This object relates to these object(s) by a
             // foreign key reference.
 
-            if ($this->aContacts !== null) {
-                if ($this->aContacts->isModified() || $this->aContacts->isNew()) {
-                    $affectedRows += $this->aContacts->save($con);
+            if ($this->aContact !== null) {
+                if ($this->aContact->isModified() || $this->aContact->isNew()) {
+                    $affectedRows += $this->aContact->save($con);
                 }
-                $this->setContacts($this->aContacts);
+                $this->setContact($this->aContact);
             }
 
             if ($this->isNew() || $this->isModified()) {
@@ -762,20 +762,20 @@ abstract class ItemsRelatedUsers implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->aContacts) {
+            if (null !== $this->aContact) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'contacts';
+                        $key = 'contact';
                         break;
                     case TableMap::TYPE_FIELDNAME:
                         $key = 'tf_contacts';
                         break;
                     default:
-                        $key = 'Contacts';
+                        $key = 'Contact';
                 }
 
-                $result[$key] = $this->aContacts->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+                $result[$key] = $this->aContact->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
         }
 
@@ -1015,13 +1015,13 @@ abstract class ItemsRelatedUsers implements ActiveRecordInterface
     }
 
     /**
-     * Declares an association between this object and a ChildContacts object.
+     * Declares an association between this object and a ChildContact object.
      *
-     * @param  ChildContacts $v
+     * @param  ChildContact $v
      * @return $this|\TheFarm\Models\ItemsRelatedUsers The current object (for fluent API support)
      * @throws PropelException
      */
-    public function setContacts(ChildContacts $v = null)
+    public function setContact(ChildContact $v = null)
     {
         if ($v === null) {
             $this->setContactId(NULL);
@@ -1029,10 +1029,10 @@ abstract class ItemsRelatedUsers implements ActiveRecordInterface
             $this->setContactId($v->getContactId());
         }
 
-        $this->aContacts = $v;
+        $this->aContact = $v;
 
         // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildContacts object, it will not be re-added.
+        // If this object has already been added to the ChildContact object, it will not be re-added.
         if ($v !== null) {
             $v->addItemsRelatedUsers($this);
         }
@@ -1043,26 +1043,26 @@ abstract class ItemsRelatedUsers implements ActiveRecordInterface
 
 
     /**
-     * Get the associated ChildContacts object
+     * Get the associated ChildContact object
      *
      * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildContacts The associated ChildContacts object.
+     * @return ChildContact The associated ChildContact object.
      * @throws PropelException
      */
-    public function getContacts(ConnectionInterface $con = null)
+    public function getContact(ConnectionInterface $con = null)
     {
-        if ($this->aContacts === null && ($this->contact_id !== null)) {
-            $this->aContacts = ChildContactsQuery::create()->findPk($this->contact_id, $con);
+        if ($this->aContact === null && ($this->contact_id !== null)) {
+            $this->aContact = ChildContactQuery::create()->findPk($this->contact_id, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aContacts->addItemsRelatedUserss($this);
+                $this->aContact->addItemsRelatedUserss($this);
              */
         }
 
-        return $this->aContacts;
+        return $this->aContact;
     }
 
     /**
@@ -1072,8 +1072,8 @@ abstract class ItemsRelatedUsers implements ActiveRecordInterface
      */
     public function clear()
     {
-        if (null !== $this->aContacts) {
-            $this->aContacts->removeItemsRelatedUsers($this);
+        if (null !== $this->aContact) {
+            $this->aContact->removeItemsRelatedUsers($this);
         }
         $this->item_id = null;
         $this->contact_id = null;
@@ -1097,7 +1097,7 @@ abstract class ItemsRelatedUsers implements ActiveRecordInterface
         if ($deep) {
         } // if ($deep)
 
-        $this->aContacts = null;
+        $this->aContact = null;
     }
 
     /**
