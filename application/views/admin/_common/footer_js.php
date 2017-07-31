@@ -99,8 +99,6 @@
 
 					if (ul.find('li').length === 0) {}
 
-					console.log();
-
 					/*
                      position: absolute;
                      width: auto;
