@@ -968,14 +968,13 @@ class Calendar extends TF_Controller
     public function unassigned_events() {
 	    $params = array();
 	    $params['locations'] = $this->session->userdata('location_id');
-	    $params['unassigned_only'] = true;
+	    $params['unassignedOnly'] = true;
 	    $params['categories'] = array(1, 2, 9);
 	    $params['upcoming'] = true;
-	    $params['upcoming_duration'] = 'P7D';
-	    $this->load->library('Eventsbuilder', $params);
-	    
-	    $this->eventsbuilder->build();
-        $this->output->set_content_type('application/json')->set_output(json_encode($this->eventsbuilder->get_events()));
+	    $params['upcomingThreshold'] = 'P7D';
+	    $this->load->library('Event', $params);
+
+        $this->output->set_content_type('application/json')->set_output(json_encode($this->event->get_events()));
     }
 
     public function ics()

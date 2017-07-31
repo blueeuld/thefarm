@@ -26,7 +26,7 @@ $qstr = $qstr ? $qstr.'&return='.$return : '?return=' . $return;
 
                                     <div class="row" style="padding-bottom: 20px">
                                         <div class="col-md-12 col-lg-12">
-                                            <a class="btn btn-default" href="<?php echo site_url('backend/contacts/guest');?>">Back</a>
+                                            <a class="btn btn-default" href="<?php echo $this->input->get_post('return');?>">Back</a>
                                         </div>
                                     </div>
 

@@ -52,7 +52,7 @@ class ProviderAvailability {
 	        
         $this->TF->db->where('groups.include_in_provider_list = "y"');        
 		$this->TF->db->where("((start_date BETWEEN '$check_in' AND '$check_out') OR (end_date BETWEEN '$check_in' AND '$check_out') OR ('$check_in' BETWEEN start_date AND end_date))");
-		$this->TF->db->order_by('users.order', 'asc');
+		$this->TF->db->order_by('users.user_order', 'asc');
 
 		$q = $this->TF->db->get();
 

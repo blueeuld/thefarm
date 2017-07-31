@@ -25,7 +25,7 @@ $qstr = $qstr ? $qstr.'&return='.$return : '?return=' . $return;
                                 <div id="main">
 
                                     <div class="alignleft">
-                                        <a href="#" class="btn btn-lg btn-success"><i class="fa fa-plus-circle"></i> Add Guest</a>
+                                        <a href="#" class="btn btn-lg btn-success"><i class="fa fa-plus-circle"></i> Add <?php echo ucfirst($view);?></a>
                                     </div>
 
                                     <div class="table-responsive">
