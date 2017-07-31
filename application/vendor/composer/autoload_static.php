@@ -28,6 +28,10 @@ class ComposerStaticInited24491b4ba5916b3c819f70792c5032
         array (
             'Psr\\Log\\' => 8,
         ),
+        'M' => 
+        array (
+            'Monolog\\' => 8,
+        ),
         'F' => 
         array (
             'Facebook\\' => 9,
@@ -74,6 +78,10 @@ class ComposerStaticInited24491b4ba5916b3c819f70792c5032
         'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
+        ),
+        'Monolog\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
         ),
         'Facebook\\' => 
         array (

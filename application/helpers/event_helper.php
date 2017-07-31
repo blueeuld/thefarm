@@ -242,3 +242,14 @@ function get_event_users($event_id)
     return false;
 
 }
+
+function to_full_calendar_events ($events) {
+
+    $eventsArray = [];
+    foreach($events as $event) {
+
+    }
+
+    return $eventsArray;
+
+}

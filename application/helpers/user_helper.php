@@ -184,7 +184,7 @@ function get_provider_list($exclude = array(), $include = array(), $positions = 
 	}
 	
 	$TF->db->where('groups.include_in_provider_list = "y"');
-	$TF->db->order_by('order', 'asc');
+	$TF->db->order_by('user_order', 'asc');
 	$query = $TF->db->get('contacts');
 	
 	

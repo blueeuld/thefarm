@@ -513,7 +513,6 @@ $config['rewrite_short_tags'] = FALSE;
 */
 $config['proxy_ips'] = '';
 
-
 spl_autoload_extensions('.php');
 
 spl_autoload_register(function($className){
