@@ -238,7 +238,7 @@ class UserTableMap extends TableMap
     1 => ':group_id',
   ),
 ), null, null, null, false);
-        $this->addRelation('Locations', '\\TheFarm\\Models\\Locations', RelationMap::MANY_TO_ONE, array (
+        $this->addRelation('Location', '\\TheFarm\\Models\\Location', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
     0 => ':location_id',

@@ -16,18 +16,18 @@ use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
-use TheFarm\Models\BookingAttachments as ChildBookingAttachments;
-use TheFarm\Models\BookingAttachmentsQuery as ChildBookingAttachmentsQuery;
-use TheFarm\Models\Categories as ChildCategories;
-use TheFarm\Models\CategoriesQuery as ChildCategoriesQuery;
+use TheFarm\Models\BookingAttachment as ChildBookingAttachment;
+use TheFarm\Models\BookingAttachmentQuery as ChildBookingAttachmentQuery;
+use TheFarm\Models\Category as ChildCategory;
+use TheFarm\Models\CategoryQuery as ChildCategoryQuery;
 use TheFarm\Models\Files as ChildFiles;
 use TheFarm\Models\FilesQuery as ChildFilesQuery;
-use TheFarm\Models\Items as ChildItems;
-use TheFarm\Models\ItemsQuery as ChildItemsQuery;
-use TheFarm\Models\Map\BookingAttachmentsTableMap;
-use TheFarm\Models\Map\CategoriesTableMap;
+use TheFarm\Models\Item as ChildItem;
+use TheFarm\Models\ItemQuery as ChildItemQuery;
+use TheFarm\Models\Map\BookingAttachmentTableMap;
+use TheFarm\Models\Map\CategoryTableMap;
 use TheFarm\Models\Map\FilesTableMap;
-use TheFarm\Models\Map\ItemsTableMap;
+use TheFarm\Models\Map\ItemTableMap;
 
 /**
  * Base class that represents a row from the 'tf_files' table.
@@ -134,22 +134,22 @@ abstract class Files implements ActiveRecordInterface
     protected $viewed_by;
 
     /**
-     * @var        ObjectCollection|ChildBookingAttachments[] Collection to store aggregation of ChildBookingAttachments objects.
+     * @var        ObjectCollection|ChildBookingAttachment[] Collection to store aggregation of ChildBookingAttachment objects.
      */
-    protected $collBookingAttachmentss;
-    protected $collBookingAttachmentssPartial;
+    protected $collBookingAttachments;
+    protected $collBookingAttachmentsPartial;
 
     /**
-     * @var        ObjectCollection|ChildCategories[] Collection to store aggregation of ChildCategories objects.
+     * @var        ObjectCollection|ChildCategory[] Collection to store aggregation of ChildCategory objects.
      */
-    protected $collCategoriess;
-    protected $collCategoriessPartial;
+    protected $collCategories;
+    protected $collCategoriesPartial;
 
     /**
-     * @var        ObjectCollection|ChildItems[] Collection to store aggregation of ChildItems objects.
+     * @var        ObjectCollection|ChildItem[] Collection to store aggregation of ChildItem objects.
      */
-    protected $collItemss;
-    protected $collItemssPartial;
+    protected $collItems;
+    protected $collItemsPartial;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -161,21 +161,21 @@ abstract class Files implements ActiveRecordInterface
 
     /**
      * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildBookingAttachments[]
+     * @var ObjectCollection|ChildBookingAttachment[]
      */
-    protected $bookingAttachmentssScheduledForDeletion = null;
+    protected $bookingAttachmentsScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildCategories[]
+     * @var ObjectCollection|ChildCategory[]
      */
-    protected $categoriessScheduledForDeletion = null;
+    protected $categoriesScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildItems[]
+     * @var ObjectCollection|ChildItem[]
      */
-    protected $itemssScheduledForDeletion = null;
+    protected $itemsScheduledForDeletion = null;
 
     /**
      * Initializes internal state of TheFarm\Models\Base\Files object.
@@ -803,11 +803,11 @@ abstract class Files implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->collBookingAttachmentss = null;
+            $this->collBookingAttachments = null;
 
-            $this->collCategoriess = null;
+            $this->collCategories = null;
 
-            $this->collItemss = null;
+            $this->collItems = null;
 
         } // if (deep)
     }
@@ -923,53 +923,53 @@ abstract class Files implements ActiveRecordInterface
                 $this->resetModified();
             }
 
-            if ($this->bookingAttachmentssScheduledForDeletion !== null) {
-                if (!$this->bookingAttachmentssScheduledForDeletion->isEmpty()) {
-                    \TheFarm\Models\BookingAttachmentsQuery::create()
-                        ->filterByPrimaryKeys($this->bookingAttachmentssScheduledForDeletion->getPrimaryKeys(false))
+            if ($this->bookingAttachmentsScheduledForDeletion !== null) {
+                if (!$this->bookingAttachmentsScheduledForDeletion->isEmpty()) {
+                    \TheFarm\Models\BookingAttachmentQuery::create()
+                        ->filterByPrimaryKeys($this->bookingAttachmentsScheduledForDeletion->getPrimaryKeys(false))
                         ->delete($con);
-                    $this->bookingAttachmentssScheduledForDeletion = null;
+                    $this->bookingAttachmentsScheduledForDeletion = null;
                 }
             }
 
-            if ($this->collBookingAttachmentss !== null) {
-                foreach ($this->collBookingAttachmentss as $referrerFK) {
+            if ($this->collBookingAttachments !== null) {
+                foreach ($this->collBookingAttachments as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
             }
 
-            if ($this->categoriessScheduledForDeletion !== null) {
-                if (!$this->categoriessScheduledForDeletion->isEmpty()) {
-                    foreach ($this->categoriessScheduledForDeletion as $categories) {
+            if ($this->categoriesScheduledForDeletion !== null) {
+                if (!$this->categoriesScheduledForDeletion->isEmpty()) {
+                    foreach ($this->categoriesScheduledForDeletion as $category) {
                         // need to save related object because we set the relation to null
-                        $categories->save($con);
+                        $category->save($con);
                     }
-                    $this->categoriessScheduledForDeletion = null;
+                    $this->categoriesScheduledForDeletion = null;
                 }
             }
 
-            if ($this->collCategoriess !== null) {
-                foreach ($this->collCategoriess as $referrerFK) {
+            if ($this->collCategories !== null) {
+                foreach ($this->collCategories as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
             }
 
-            if ($this->itemssScheduledForDeletion !== null) {
-                if (!$this->itemssScheduledForDeletion->isEmpty()) {
-                    foreach ($this->itemssScheduledForDeletion as $items) {
+            if ($this->itemsScheduledForDeletion !== null) {
+                if (!$this->itemsScheduledForDeletion->isEmpty()) {
+                    foreach ($this->itemsScheduledForDeletion as $item) {
                         // need to save related object because we set the relation to null
-                        $items->save($con);
+                        $item->save($con);
                     }
-                    $this->itemssScheduledForDeletion = null;
+                    $this->itemsScheduledForDeletion = null;
                 }
             }
 
-            if ($this->collItemss !== null) {
-                foreach ($this->collItemss as $referrerFK) {
+            if ($this->collItems !== null) {
+                foreach ($this->collItems as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -1202,50 +1202,50 @@ abstract class Files implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->collBookingAttachmentss) {
+            if (null !== $this->collBookingAttachments) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'bookingAttachmentss';
+                        $key = 'bookingAttachments';
                         break;
                     case TableMap::TYPE_FIELDNAME:
                         $key = 'tf_booking_attachmentss';
                         break;
                     default:
-                        $key = 'BookingAttachmentss';
+                        $key = 'BookingAttachments';
                 }
 
-                $result[$key] = $this->collBookingAttachmentss->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+                $result[$key] = $this->collBookingAttachments->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
-            if (null !== $this->collCategoriess) {
+            if (null !== $this->collCategories) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'categoriess';
+                        $key = 'categories';
                         break;
                     case TableMap::TYPE_FIELDNAME:
                         $key = 'tf_categoriess';
                         break;
                     default:
-                        $key = 'Categoriess';
+                        $key = 'Categories';
                 }
 
-                $result[$key] = $this->collCategoriess->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+                $result[$key] = $this->collCategories->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
-            if (null !== $this->collItemss) {
+            if (null !== $this->collItems) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'itemss';
+                        $key = 'items';
                         break;
                     case TableMap::TYPE_FIELDNAME:
                         $key = 'tf_itemss';
                         break;
                     default:
-                        $key = 'Itemss';
+                        $key = 'Items';
                 }
 
-                $result[$key] = $this->collItemss->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+                $result[$key] = $this->collItems->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1529,21 +1529,21 @@ abstract class Files implements ActiveRecordInterface
             // the getter/setter methods for fkey referrer objects.
             $copyObj->setNew(false);
 
-            foreach ($this->getBookingAttachmentss() as $relObj) {
+            foreach ($this->getBookingAttachments() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addBookingAttachments($relObj->copy($deepCopy));
+                    $copyObj->addBookingAttachment($relObj->copy($deepCopy));
                 }
             }
 
-            foreach ($this->getCategoriess() as $relObj) {
+            foreach ($this->getCategories() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addCategories($relObj->copy($deepCopy));
+                    $copyObj->addCategory($relObj->copy($deepCopy));
                 }
             }
 
-            foreach ($this->getItemss() as $relObj) {
+            foreach ($this->getItems() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addItems($relObj->copy($deepCopy));
+                    $copyObj->addItem($relObj->copy($deepCopy));
                 }
             }
 
@@ -1588,46 +1588,46 @@ abstract class Files implements ActiveRecordInterface
      */
     public function initRelation($relationName)
     {
-        if ('BookingAttachments' == $relationName) {
-            $this->initBookingAttachmentss();
+        if ('BookingAttachment' == $relationName) {
+            $this->initBookingAttachments();
             return;
         }
-        if ('Categories' == $relationName) {
-            $this->initCategoriess();
+        if ('Category' == $relationName) {
+            $this->initCategories();
             return;
         }
-        if ('Items' == $relationName) {
-            $this->initItemss();
+        if ('Item' == $relationName) {
+            $this->initItems();
             return;
         }
     }
 
     /**
-     * Clears out the collBookingAttachmentss collection
+     * Clears out the collBookingAttachments collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
      * @return void
-     * @see        addBookingAttachmentss()
+     * @see        addBookingAttachments()
      */
-    public function clearBookingAttachmentss()
+    public function clearBookingAttachments()
     {
-        $this->collBookingAttachmentss = null; // important to set this to NULL since that means it is uninitialized
+        $this->collBookingAttachments = null; // important to set this to NULL since that means it is uninitialized
     }
 
     /**
-     * Reset is the collBookingAttachmentss collection loaded partially.
+     * Reset is the collBookingAttachments collection loaded partially.
      */
-    public function resetPartialBookingAttachmentss($v = true)
+    public function resetPartialBookingAttachments($v = true)
     {
-        $this->collBookingAttachmentssPartial = $v;
+        $this->collBookingAttachmentsPartial = $v;
     }
 
     /**
-     * Initializes the collBookingAttachmentss collection.
+     * Initializes the collBookingAttachments collection.
      *
-     * By default this just sets the collBookingAttachmentss collection to an empty array (like clearcollBookingAttachmentss());
+     * By default this just sets the collBookingAttachments collection to an empty array (like clearcollBookingAttachments());
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
@@ -1636,20 +1636,20 @@ abstract class Files implements ActiveRecordInterface
      *
      * @return void
      */
-    public function initBookingAttachmentss($overrideExisting = true)
+    public function initBookingAttachments($overrideExisting = true)
     {
-        if (null !== $this->collBookingAttachmentss && !$overrideExisting) {
+        if (null !== $this->collBookingAttachments && !$overrideExisting) {
             return;
         }
 
-        $collectionClassName = BookingAttachmentsTableMap::getTableMap()->getCollectionClassName();
+        $collectionClassName = BookingAttachmentTableMap::getTableMap()->getCollectionClassName();
 
-        $this->collBookingAttachmentss = new $collectionClassName;
-        $this->collBookingAttachmentss->setModel('\TheFarm\Models\BookingAttachments');
+        $this->collBookingAttachments = new $collectionClassName;
+        $this->collBookingAttachments->setModel('\TheFarm\Models\BookingAttachment');
     }
 
     /**
-     * Gets an array of ChildBookingAttachments objects which contain a foreign key that references this object.
+     * Gets an array of ChildBookingAttachment objects which contain a foreign key that references this object.
      *
      * If the $criteria is not null, it is used to always fetch the results from the database.
      * Otherwise the results are fetched from the database the first time, then cached.
@@ -1659,111 +1659,111 @@ abstract class Files implements ActiveRecordInterface
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildBookingAttachments[] List of ChildBookingAttachments objects
+     * @return ObjectCollection|ChildBookingAttachment[] List of ChildBookingAttachment objects
      * @throws PropelException
      */
-    public function getBookingAttachmentss(Criteria $criteria = null, ConnectionInterface $con = null)
+    public function getBookingAttachments(Criteria $criteria = null, ConnectionInterface $con = null)
     {
-        $partial = $this->collBookingAttachmentssPartial && !$this->isNew();
-        if (null === $this->collBookingAttachmentss || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collBookingAttachmentss) {
+        $partial = $this->collBookingAttachmentsPartial && !$this->isNew();
+        if (null === $this->collBookingAttachments || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collBookingAttachments) {
                 // return empty collection
-                $this->initBookingAttachmentss();
+                $this->initBookingAttachments();
             } else {
-                $collBookingAttachmentss = ChildBookingAttachmentsQuery::create(null, $criteria)
+                $collBookingAttachments = ChildBookingAttachmentQuery::create(null, $criteria)
                     ->filterByFiles($this)
                     ->find($con);
 
                 if (null !== $criteria) {
-                    if (false !== $this->collBookingAttachmentssPartial && count($collBookingAttachmentss)) {
-                        $this->initBookingAttachmentss(false);
+                    if (false !== $this->collBookingAttachmentsPartial && count($collBookingAttachments)) {
+                        $this->initBookingAttachments(false);
 
-                        foreach ($collBookingAttachmentss as $obj) {
-                            if (false == $this->collBookingAttachmentss->contains($obj)) {
-                                $this->collBookingAttachmentss->append($obj);
+                        foreach ($collBookingAttachments as $obj) {
+                            if (false == $this->collBookingAttachments->contains($obj)) {
+                                $this->collBookingAttachments->append($obj);
                             }
                         }
 
-                        $this->collBookingAttachmentssPartial = true;
+                        $this->collBookingAttachmentsPartial = true;
                     }
 
-                    return $collBookingAttachmentss;
+                    return $collBookingAttachments;
                 }
 
-                if ($partial && $this->collBookingAttachmentss) {
-                    foreach ($this->collBookingAttachmentss as $obj) {
+                if ($partial && $this->collBookingAttachments) {
+                    foreach ($this->collBookingAttachments as $obj) {
                         if ($obj->isNew()) {
-                            $collBookingAttachmentss[] = $obj;
+                            $collBookingAttachments[] = $obj;
                         }
                     }
                 }
 
-                $this->collBookingAttachmentss = $collBookingAttachmentss;
-                $this->collBookingAttachmentssPartial = false;
+                $this->collBookingAttachments = $collBookingAttachments;
+                $this->collBookingAttachmentsPartial = false;
             }
         }
 
-        return $this->collBookingAttachmentss;
+        return $this->collBookingAttachments;
     }
 
     /**
-     * Sets a collection of ChildBookingAttachments objects related by a one-to-many relationship
+     * Sets a collection of ChildBookingAttachment objects related by a one-to-many relationship
      * to the current object.
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param      Collection $bookingAttachmentss A Propel collection.
+     * @param      Collection $bookingAttachments A Propel collection.
      * @param      ConnectionInterface $con Optional connection object
      * @return $this|ChildFiles The current object (for fluent API support)
      */
-    public function setBookingAttachmentss(Collection $bookingAttachmentss, ConnectionInterface $con = null)
+    public function setBookingAttachments(Collection $bookingAttachments, ConnectionInterface $con = null)
     {
-        /** @var ChildBookingAttachments[] $bookingAttachmentssToDelete */
-        $bookingAttachmentssToDelete = $this->getBookingAttachmentss(new Criteria(), $con)->diff($bookingAttachmentss);
+        /** @var ChildBookingAttachment[] $bookingAttachmentsToDelete */
+        $bookingAttachmentsToDelete = $this->getBookingAttachments(new Criteria(), $con)->diff($bookingAttachments);
 
 
         //since at least one column in the foreign key is at the same time a PK
         //we can not just set a PK to NULL in the lines below. We have to store
         //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
-        $this->bookingAttachmentssScheduledForDeletion = clone $bookingAttachmentssToDelete;
+        $this->bookingAttachmentsScheduledForDeletion = clone $bookingAttachmentsToDelete;
 
-        foreach ($bookingAttachmentssToDelete as $bookingAttachmentsRemoved) {
-            $bookingAttachmentsRemoved->setFiles(null);
+        foreach ($bookingAttachmentsToDelete as $bookingAttachmentRemoved) {
+            $bookingAttachmentRemoved->setFiles(null);
         }
 
-        $this->collBookingAttachmentss = null;
-        foreach ($bookingAttachmentss as $bookingAttachments) {
-            $this->addBookingAttachments($bookingAttachments);
+        $this->collBookingAttachments = null;
+        foreach ($bookingAttachments as $bookingAttachment) {
+            $this->addBookingAttachment($bookingAttachment);
         }
 
-        $this->collBookingAttachmentss = $bookingAttachmentss;
-        $this->collBookingAttachmentssPartial = false;
+        $this->collBookingAttachments = $bookingAttachments;
+        $this->collBookingAttachmentsPartial = false;
 
         return $this;
     }
 
     /**
-     * Returns the number of related BookingAttachments objects.
+     * Returns the number of related BookingAttachment objects.
      *
      * @param      Criteria $criteria
      * @param      boolean $distinct
      * @param      ConnectionInterface $con
-     * @return int             Count of related BookingAttachments objects.
+     * @return int             Count of related BookingAttachment objects.
      * @throws PropelException
      */
-    public function countBookingAttachmentss(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function countBookingAttachments(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
     {
-        $partial = $this->collBookingAttachmentssPartial && !$this->isNew();
-        if (null === $this->collBookingAttachmentss || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collBookingAttachmentss) {
+        $partial = $this->collBookingAttachmentsPartial && !$this->isNew();
+        if (null === $this->collBookingAttachments || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collBookingAttachments) {
                 return 0;
             }
 
             if ($partial && !$criteria) {
-                return count($this->getBookingAttachmentss());
+                return count($this->getBookingAttachments());
             }
 
-            $query = ChildBookingAttachmentsQuery::create(null, $criteria);
+            $query = ChildBookingAttachmentQuery::create(null, $criteria);
             if ($distinct) {
                 $query->distinct();
             }
@@ -1773,28 +1773,28 @@ abstract class Files implements ActiveRecordInterface
                 ->count($con);
         }
 
-        return count($this->collBookingAttachmentss);
+        return count($this->collBookingAttachments);
     }
 
     /**
-     * Method called to associate a ChildBookingAttachments object to this object
-     * through the ChildBookingAttachments foreign key attribute.
+     * Method called to associate a ChildBookingAttachment object to this object
+     * through the ChildBookingAttachment foreign key attribute.
      *
-     * @param  ChildBookingAttachments $l ChildBookingAttachments
+     * @param  ChildBookingAttachment $l ChildBookingAttachment
      * @return $this|\TheFarm\Models\Files The current object (for fluent API support)
      */
-    public function addBookingAttachments(ChildBookingAttachments $l)
+    public function addBookingAttachment(ChildBookingAttachment $l)
     {
-        if ($this->collBookingAttachmentss === null) {
-            $this->initBookingAttachmentss();
-            $this->collBookingAttachmentssPartial = true;
+        if ($this->collBookingAttachments === null) {
+            $this->initBookingAttachments();
+            $this->collBookingAttachmentsPartial = true;
         }
 
-        if (!$this->collBookingAttachmentss->contains($l)) {
-            $this->doAddBookingAttachments($l);
+        if (!$this->collBookingAttachments->contains($l)) {
+            $this->doAddBookingAttachment($l);
 
-            if ($this->bookingAttachmentssScheduledForDeletion and $this->bookingAttachmentssScheduledForDeletion->contains($l)) {
-                $this->bookingAttachmentssScheduledForDeletion->remove($this->bookingAttachmentssScheduledForDeletion->search($l));
+            if ($this->bookingAttachmentsScheduledForDeletion and $this->bookingAttachmentsScheduledForDeletion->contains($l)) {
+                $this->bookingAttachmentsScheduledForDeletion->remove($this->bookingAttachmentsScheduledForDeletion->search($l));
             }
         }
 
@@ -1802,29 +1802,29 @@ abstract class Files implements ActiveRecordInterface
     }
 
     /**
-     * @param ChildBookingAttachments $bookingAttachments The ChildBookingAttachments object to add.
+     * @param ChildBookingAttachment $bookingAttachment The ChildBookingAttachment object to add.
      */
-    protected function doAddBookingAttachments(ChildBookingAttachments $bookingAttachments)
+    protected function doAddBookingAttachment(ChildBookingAttachment $bookingAttachment)
     {
-        $this->collBookingAttachmentss[]= $bookingAttachments;
-        $bookingAttachments->setFiles($this);
+        $this->collBookingAttachments[]= $bookingAttachment;
+        $bookingAttachment->setFiles($this);
     }
 
     /**
-     * @param  ChildBookingAttachments $bookingAttachments The ChildBookingAttachments object to remove.
+     * @param  ChildBookingAttachment $bookingAttachment The ChildBookingAttachment object to remove.
      * @return $this|ChildFiles The current object (for fluent API support)
      */
-    public function removeBookingAttachments(ChildBookingAttachments $bookingAttachments)
+    public function removeBookingAttachment(ChildBookingAttachment $bookingAttachment)
     {
-        if ($this->getBookingAttachmentss()->contains($bookingAttachments)) {
-            $pos = $this->collBookingAttachmentss->search($bookingAttachments);
-            $this->collBookingAttachmentss->remove($pos);
-            if (null === $this->bookingAttachmentssScheduledForDeletion) {
-                $this->bookingAttachmentssScheduledForDeletion = clone $this->collBookingAttachmentss;
-                $this->bookingAttachmentssScheduledForDeletion->clear();
+        if ($this->getBookingAttachments()->contains($bookingAttachment)) {
+            $pos = $this->collBookingAttachments->search($bookingAttachment);
+            $this->collBookingAttachments->remove($pos);
+            if (null === $this->bookingAttachmentsScheduledForDeletion) {
+                $this->bookingAttachmentsScheduledForDeletion = clone $this->collBookingAttachments;
+                $this->bookingAttachmentsScheduledForDeletion->clear();
             }
-            $this->bookingAttachmentssScheduledForDeletion[]= clone $bookingAttachments;
-            $bookingAttachments->setFiles(null);
+            $this->bookingAttachmentsScheduledForDeletion[]= clone $bookingAttachment;
+            $bookingAttachment->setFiles(null);
         }
 
         return $this;
@@ -1836,7 +1836,7 @@ abstract class Files implements ActiveRecordInterface
      * an identical criteria, it returns the collection.
      * Otherwise if this Files is new, it will return
      * an empty collection; or if this Files has previously
-     * been saved, it will retrieve related BookingAttachmentss from storage.
+     * been saved, it will retrieve related BookingAttachments from storage.
      *
      * This method is protected by default in order to keep the public
      * api reasonable.  You can provide public methods for those you
@@ -1845,42 +1845,42 @@ abstract class Files implements ActiveRecordInterface
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildBookingAttachments[] List of ChildBookingAttachments objects
+     * @return ObjectCollection|ChildBookingAttachment[] List of ChildBookingAttachment objects
      */
-    public function getBookingAttachmentssJoinBookings(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getBookingAttachmentsJoinBooking(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
-        $query = ChildBookingAttachmentsQuery::create(null, $criteria);
-        $query->joinWith('Bookings', $joinBehavior);
+        $query = ChildBookingAttachmentQuery::create(null, $criteria);
+        $query->joinWith('Booking', $joinBehavior);
 
-        return $this->getBookingAttachmentss($query, $con);
+        return $this->getBookingAttachments($query, $con);
     }
 
     /**
-     * Clears out the collCategoriess collection
+     * Clears out the collCategories collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
      * @return void
-     * @see        addCategoriess()
+     * @see        addCategories()
      */
-    public function clearCategoriess()
+    public function clearCategories()
     {
-        $this->collCategoriess = null; // important to set this to NULL since that means it is uninitialized
+        $this->collCategories = null; // important to set this to NULL since that means it is uninitialized
     }
 
     /**
-     * Reset is the collCategoriess collection loaded partially.
+     * Reset is the collCategories collection loaded partially.
      */
-    public function resetPartialCategoriess($v = true)
+    public function resetPartialCategories($v = true)
     {
-        $this->collCategoriessPartial = $v;
+        $this->collCategoriesPartial = $v;
     }
 
     /**
-     * Initializes the collCategoriess collection.
+     * Initializes the collCategories collection.
      *
-     * By default this just sets the collCategoriess collection to an empty array (like clearcollCategoriess());
+     * By default this just sets the collCategories collection to an empty array (like clearcollCategories());
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
@@ -1889,20 +1889,20 @@ abstract class Files implements ActiveRecordInterface
      *
      * @return void
      */
-    public function initCategoriess($overrideExisting = true)
+    public function initCategories($overrideExisting = true)
     {
-        if (null !== $this->collCategoriess && !$overrideExisting) {
+        if (null !== $this->collCategories && !$overrideExisting) {
             return;
         }
 
-        $collectionClassName = CategoriesTableMap::getTableMap()->getCollectionClassName();
+        $collectionClassName = CategoryTableMap::getTableMap()->getCollectionClassName();
 
-        $this->collCategoriess = new $collectionClassName;
-        $this->collCategoriess->setModel('\TheFarm\Models\Categories');
+        $this->collCategories = new $collectionClassName;
+        $this->collCategories->setModel('\TheFarm\Models\Category');
     }
 
     /**
-     * Gets an array of ChildCategories objects which contain a foreign key that references this object.
+     * Gets an array of ChildCategory objects which contain a foreign key that references this object.
      *
      * If the $criteria is not null, it is used to always fetch the results from the database.
      * Otherwise the results are fetched from the database the first time, then cached.
@@ -1912,108 +1912,108 @@ abstract class Files implements ActiveRecordInterface
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildCategories[] List of ChildCategories objects
+     * @return ObjectCollection|ChildCategory[] List of ChildCategory objects
      * @throws PropelException
      */
-    public function getCategoriess(Criteria $criteria = null, ConnectionInterface $con = null)
+    public function getCategories(Criteria $criteria = null, ConnectionInterface $con = null)
     {
-        $partial = $this->collCategoriessPartial && !$this->isNew();
-        if (null === $this->collCategoriess || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collCategoriess) {
+        $partial = $this->collCategoriesPartial && !$this->isNew();
+        if (null === $this->collCategories || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collCategories) {
                 // return empty collection
-                $this->initCategoriess();
+                $this->initCategories();
             } else {
-                $collCategoriess = ChildCategoriesQuery::create(null, $criteria)
+                $collCategories = ChildCategoryQuery::create(null, $criteria)
                     ->filterByFiles($this)
                     ->find($con);
 
                 if (null !== $criteria) {
-                    if (false !== $this->collCategoriessPartial && count($collCategoriess)) {
-                        $this->initCategoriess(false);
+                    if (false !== $this->collCategoriesPartial && count($collCategories)) {
+                        $this->initCategories(false);
 
-                        foreach ($collCategoriess as $obj) {
-                            if (false == $this->collCategoriess->contains($obj)) {
-                                $this->collCategoriess->append($obj);
+                        foreach ($collCategories as $obj) {
+                            if (false == $this->collCategories->contains($obj)) {
+                                $this->collCategories->append($obj);
                             }
                         }
 
-                        $this->collCategoriessPartial = true;
+                        $this->collCategoriesPartial = true;
                     }
 
-                    return $collCategoriess;
+                    return $collCategories;
                 }
 
-                if ($partial && $this->collCategoriess) {
-                    foreach ($this->collCategoriess as $obj) {
+                if ($partial && $this->collCategories) {
+                    foreach ($this->collCategories as $obj) {
                         if ($obj->isNew()) {
-                            $collCategoriess[] = $obj;
+                            $collCategories[] = $obj;
                         }
                     }
                 }
 
-                $this->collCategoriess = $collCategoriess;
-                $this->collCategoriessPartial = false;
+                $this->collCategories = $collCategories;
+                $this->collCategoriesPartial = false;
             }
         }
 
-        return $this->collCategoriess;
+        return $this->collCategories;
     }
 
     /**
-     * Sets a collection of ChildCategories objects related by a one-to-many relationship
+     * Sets a collection of ChildCategory objects related by a one-to-many relationship
      * to the current object.
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param      Collection $categoriess A Propel collection.
+     * @param      Collection $categories A Propel collection.
      * @param      ConnectionInterface $con Optional connection object
      * @return $this|ChildFiles The current object (for fluent API support)
      */
-    public function setCategoriess(Collection $categoriess, ConnectionInterface $con = null)
+    public function setCategories(Collection $categories, ConnectionInterface $con = null)
     {
-        /** @var ChildCategories[] $categoriessToDelete */
-        $categoriessToDelete = $this->getCategoriess(new Criteria(), $con)->diff($categoriess);
+        /** @var ChildCategory[] $categoriesToDelete */
+        $categoriesToDelete = $this->getCategories(new Criteria(), $con)->diff($categories);
 
 
-        $this->categoriessScheduledForDeletion = $categoriessToDelete;
+        $this->categoriesScheduledForDeletion = $categoriesToDelete;
 
-        foreach ($categoriessToDelete as $categoriesRemoved) {
-            $categoriesRemoved->setFiles(null);
+        foreach ($categoriesToDelete as $categoryRemoved) {
+            $categoryRemoved->setFiles(null);
         }
 
-        $this->collCategoriess = null;
-        foreach ($categoriess as $categories) {
-            $this->addCategories($categories);
+        $this->collCategories = null;
+        foreach ($categories as $category) {
+            $this->addCategory($category);
         }
 
-        $this->collCategoriess = $categoriess;
-        $this->collCategoriessPartial = false;
+        $this->collCategories = $categories;
+        $this->collCategoriesPartial = false;
 
         return $this;
     }
 
     /**
-     * Returns the number of related Categories objects.
+     * Returns the number of related Category objects.
      *
      * @param      Criteria $criteria
      * @param      boolean $distinct
      * @param      ConnectionInterface $con
-     * @return int             Count of related Categories objects.
+     * @return int             Count of related Category objects.
      * @throws PropelException
      */
-    public function countCategoriess(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function countCategories(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
     {
-        $partial = $this->collCategoriessPartial && !$this->isNew();
-        if (null === $this->collCategoriess || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collCategoriess) {
+        $partial = $this->collCategoriesPartial && !$this->isNew();
+        if (null === $this->collCategories || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collCategories) {
                 return 0;
             }
 
             if ($partial && !$criteria) {
-                return count($this->getCategoriess());
+                return count($this->getCategories());
             }
 
-            $query = ChildCategoriesQuery::create(null, $criteria);
+            $query = ChildCategoryQuery::create(null, $criteria);
             if ($distinct) {
                 $query->distinct();
             }
@@ -2023,28 +2023,28 @@ abstract class Files implements ActiveRecordInterface
                 ->count($con);
         }
 
-        return count($this->collCategoriess);
+        return count($this->collCategories);
     }
 
     /**
-     * Method called to associate a ChildCategories object to this object
-     * through the ChildCategories foreign key attribute.
+     * Method called to associate a ChildCategory object to this object
+     * through the ChildCategory foreign key attribute.
      *
-     * @param  ChildCategories $l ChildCategories
+     * @param  ChildCategory $l ChildCategory
      * @return $this|\TheFarm\Models\Files The current object (for fluent API support)
      */
-    public function addCategories(ChildCategories $l)
+    public function addCategory(ChildCategory $l)
     {
-        if ($this->collCategoriess === null) {
-            $this->initCategoriess();
-            $this->collCategoriessPartial = true;
+        if ($this->collCategories === null) {
+            $this->initCategories();
+            $this->collCategoriesPartial = true;
         }
 
-        if (!$this->collCategoriess->contains($l)) {
-            $this->doAddCategories($l);
+        if (!$this->collCategories->contains($l)) {
+            $this->doAddCategory($l);
 
-            if ($this->categoriessScheduledForDeletion and $this->categoriessScheduledForDeletion->contains($l)) {
-                $this->categoriessScheduledForDeletion->remove($this->categoriessScheduledForDeletion->search($l));
+            if ($this->categoriesScheduledForDeletion and $this->categoriesScheduledForDeletion->contains($l)) {
+                $this->categoriesScheduledForDeletion->remove($this->categoriesScheduledForDeletion->search($l));
             }
         }
 
@@ -2052,29 +2052,29 @@ abstract class Files implements ActiveRecordInterface
     }
 
     /**
-     * @param ChildCategories $categories The ChildCategories object to add.
+     * @param ChildCategory $category The ChildCategory object to add.
      */
-    protected function doAddCategories(ChildCategories $categories)
+    protected function doAddCategory(ChildCategory $category)
     {
-        $this->collCategoriess[]= $categories;
-        $categories->setFiles($this);
+        $this->collCategories[]= $category;
+        $category->setFiles($this);
     }
 
     /**
-     * @param  ChildCategories $categories The ChildCategories object to remove.
+     * @param  ChildCategory $category The ChildCategory object to remove.
      * @return $this|ChildFiles The current object (for fluent API support)
      */
-    public function removeCategories(ChildCategories $categories)
+    public function removeCategory(ChildCategory $category)
     {
-        if ($this->getCategoriess()->contains($categories)) {
-            $pos = $this->collCategoriess->search($categories);
-            $this->collCategoriess->remove($pos);
-            if (null === $this->categoriessScheduledForDeletion) {
-                $this->categoriessScheduledForDeletion = clone $this->collCategoriess;
-                $this->categoriessScheduledForDeletion->clear();
+        if ($this->getCategories()->contains($category)) {
+            $pos = $this->collCategories->search($category);
+            $this->collCategories->remove($pos);
+            if (null === $this->categoriesScheduledForDeletion) {
+                $this->categoriesScheduledForDeletion = clone $this->collCategories;
+                $this->categoriesScheduledForDeletion->clear();
             }
-            $this->categoriessScheduledForDeletion[]= $categories;
-            $categories->setFiles(null);
+            $this->categoriesScheduledForDeletion[]= $category;
+            $category->setFiles(null);
         }
 
         return $this;
@@ -2086,7 +2086,7 @@ abstract class Files implements ActiveRecordInterface
      * an identical criteria, it returns the collection.
      * Otherwise if this Files is new, it will return
      * an empty collection; or if this Files has previously
-     * been saved, it will retrieve related Categoriess from storage.
+     * been saved, it will retrieve related Categories from storage.
      *
      * This method is protected by default in order to keep the public
      * api reasonable.  You can provide public methods for those you
@@ -2095,14 +2095,14 @@ abstract class Files implements ActiveRecordInterface
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildCategories[] List of ChildCategories objects
+     * @return ObjectCollection|ChildCategory[] List of ChildCategory objects
      */
-    public function getCategoriessJoinLocations(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getCategoriesJoinLocation(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
-        $query = ChildCategoriesQuery::create(null, $criteria);
-        $query->joinWith('Locations', $joinBehavior);
+        $query = ChildCategoryQuery::create(null, $criteria);
+        $query->joinWith('Location', $joinBehavior);
 
-        return $this->getCategoriess($query, $con);
+        return $this->getCategories($query, $con);
     }
 
 
@@ -2111,7 +2111,7 @@ abstract class Files implements ActiveRecordInterface
      * an identical criteria, it returns the collection.
      * Otherwise if this Files is new, it will return
      * an empty collection; or if this Files has previously
-     * been saved, it will retrieve related Categoriess from storage.
+     * been saved, it will retrieve related Categories from storage.
      *
      * This method is protected by default in order to keep the public
      * api reasonable.  You can provide public methods for those you
@@ -2120,42 +2120,42 @@ abstract class Files implements ActiveRecordInterface
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildCategories[] List of ChildCategories objects
+     * @return ObjectCollection|ChildCategory[] List of ChildCategory objects
      */
-    public function getCategoriessJoinCategoriesRelatedByParentId(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getCategoriesJoinCategoryRelatedByParentId(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
-        $query = ChildCategoriesQuery::create(null, $criteria);
-        $query->joinWith('CategoriesRelatedByParentId', $joinBehavior);
+        $query = ChildCategoryQuery::create(null, $criteria);
+        $query->joinWith('CategoryRelatedByParentId', $joinBehavior);
 
-        return $this->getCategoriess($query, $con);
+        return $this->getCategories($query, $con);
     }
 
     /**
-     * Clears out the collItemss collection
+     * Clears out the collItems collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
      * @return void
-     * @see        addItemss()
+     * @see        addItems()
      */
-    public function clearItemss()
+    public function clearItems()
     {
-        $this->collItemss = null; // important to set this to NULL since that means it is uninitialized
+        $this->collItems = null; // important to set this to NULL since that means it is uninitialized
     }
 
     /**
-     * Reset is the collItemss collection loaded partially.
+     * Reset is the collItems collection loaded partially.
      */
-    public function resetPartialItemss($v = true)
+    public function resetPartialItems($v = true)
     {
-        $this->collItemssPartial = $v;
+        $this->collItemsPartial = $v;
     }
 
     /**
-     * Initializes the collItemss collection.
+     * Initializes the collItems collection.
      *
-     * By default this just sets the collItemss collection to an empty array (like clearcollItemss());
+     * By default this just sets the collItems collection to an empty array (like clearcollItems());
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
@@ -2164,20 +2164,20 @@ abstract class Files implements ActiveRecordInterface
      *
      * @return void
      */
-    public function initItemss($overrideExisting = true)
+    public function initItems($overrideExisting = true)
     {
-        if (null !== $this->collItemss && !$overrideExisting) {
+        if (null !== $this->collItems && !$overrideExisting) {
             return;
         }
 
-        $collectionClassName = ItemsTableMap::getTableMap()->getCollectionClassName();
+        $collectionClassName = ItemTableMap::getTableMap()->getCollectionClassName();
 
-        $this->collItemss = new $collectionClassName;
-        $this->collItemss->setModel('\TheFarm\Models\Items');
+        $this->collItems = new $collectionClassName;
+        $this->collItems->setModel('\TheFarm\Models\Item');
     }
 
     /**
-     * Gets an array of ChildItems objects which contain a foreign key that references this object.
+     * Gets an array of ChildItem objects which contain a foreign key that references this object.
      *
      * If the $criteria is not null, it is used to always fetch the results from the database.
      * Otherwise the results are fetched from the database the first time, then cached.
@@ -2187,108 +2187,108 @@ abstract class Files implements ActiveRecordInterface
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildItems[] List of ChildItems objects
+     * @return ObjectCollection|ChildItem[] List of ChildItem objects
      * @throws PropelException
      */
-    public function getItemss(Criteria $criteria = null, ConnectionInterface $con = null)
+    public function getItems(Criteria $criteria = null, ConnectionInterface $con = null)
     {
-        $partial = $this->collItemssPartial && !$this->isNew();
-        if (null === $this->collItemss || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collItemss) {
+        $partial = $this->collItemsPartial && !$this->isNew();
+        if (null === $this->collItems || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collItems) {
                 // return empty collection
-                $this->initItemss();
+                $this->initItems();
             } else {
-                $collItemss = ChildItemsQuery::create(null, $criteria)
+                $collItems = ChildItemQuery::create(null, $criteria)
                     ->filterByFiles($this)
                     ->find($con);
 
                 if (null !== $criteria) {
-                    if (false !== $this->collItemssPartial && count($collItemss)) {
-                        $this->initItemss(false);
+                    if (false !== $this->collItemsPartial && count($collItems)) {
+                        $this->initItems(false);
 
-                        foreach ($collItemss as $obj) {
-                            if (false == $this->collItemss->contains($obj)) {
-                                $this->collItemss->append($obj);
+                        foreach ($collItems as $obj) {
+                            if (false == $this->collItems->contains($obj)) {
+                                $this->collItems->append($obj);
                             }
                         }
 
-                        $this->collItemssPartial = true;
+                        $this->collItemsPartial = true;
                     }
 
-                    return $collItemss;
+                    return $collItems;
                 }
 
-                if ($partial && $this->collItemss) {
-                    foreach ($this->collItemss as $obj) {
+                if ($partial && $this->collItems) {
+                    foreach ($this->collItems as $obj) {
                         if ($obj->isNew()) {
-                            $collItemss[] = $obj;
+                            $collItems[] = $obj;
                         }
                     }
                 }
 
-                $this->collItemss = $collItemss;
-                $this->collItemssPartial = false;
+                $this->collItems = $collItems;
+                $this->collItemsPartial = false;
             }
         }
 
-        return $this->collItemss;
+        return $this->collItems;
     }
 
     /**
-     * Sets a collection of ChildItems objects related by a one-to-many relationship
+     * Sets a collection of ChildItem objects related by a one-to-many relationship
      * to the current object.
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param      Collection $itemss A Propel collection.
+     * @param      Collection $items A Propel collection.
      * @param      ConnectionInterface $con Optional connection object
      * @return $this|ChildFiles The current object (for fluent API support)
      */
-    public function setItemss(Collection $itemss, ConnectionInterface $con = null)
+    public function setItems(Collection $items, ConnectionInterface $con = null)
     {
-        /** @var ChildItems[] $itemssToDelete */
-        $itemssToDelete = $this->getItemss(new Criteria(), $con)->diff($itemss);
+        /** @var ChildItem[] $itemsToDelete */
+        $itemsToDelete = $this->getItems(new Criteria(), $con)->diff($items);
 
 
-        $this->itemssScheduledForDeletion = $itemssToDelete;
+        $this->itemsScheduledForDeletion = $itemsToDelete;
 
-        foreach ($itemssToDelete as $itemsRemoved) {
-            $itemsRemoved->setFiles(null);
+        foreach ($itemsToDelete as $itemRemoved) {
+            $itemRemoved->setFiles(null);
         }
 
-        $this->collItemss = null;
-        foreach ($itemss as $items) {
-            $this->addItems($items);
+        $this->collItems = null;
+        foreach ($items as $item) {
+            $this->addItem($item);
         }
 
-        $this->collItemss = $itemss;
-        $this->collItemssPartial = false;
+        $this->collItems = $items;
+        $this->collItemsPartial = false;
 
         return $this;
     }
 
     /**
-     * Returns the number of related Items objects.
+     * Returns the number of related Item objects.
      *
      * @param      Criteria $criteria
      * @param      boolean $distinct
      * @param      ConnectionInterface $con
-     * @return int             Count of related Items objects.
+     * @return int             Count of related Item objects.
      * @throws PropelException
      */
-    public function countItemss(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function countItems(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
     {
-        $partial = $this->collItemssPartial && !$this->isNew();
-        if (null === $this->collItemss || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collItemss) {
+        $partial = $this->collItemsPartial && !$this->isNew();
+        if (null === $this->collItems || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collItems) {
                 return 0;
             }
 
             if ($partial && !$criteria) {
-                return count($this->getItemss());
+                return count($this->getItems());
             }
 
-            $query = ChildItemsQuery::create(null, $criteria);
+            $query = ChildItemQuery::create(null, $criteria);
             if ($distinct) {
                 $query->distinct();
             }
@@ -2298,28 +2298,28 @@ abstract class Files implements ActiveRecordInterface
                 ->count($con);
         }
 
-        return count($this->collItemss);
+        return count($this->collItems);
     }
 
     /**
-     * Method called to associate a ChildItems object to this object
-     * through the ChildItems foreign key attribute.
+     * Method called to associate a ChildItem object to this object
+     * through the ChildItem foreign key attribute.
      *
-     * @param  ChildItems $l ChildItems
+     * @param  ChildItem $l ChildItem
      * @return $this|\TheFarm\Models\Files The current object (for fluent API support)
      */
-    public function addItems(ChildItems $l)
+    public function addItem(ChildItem $l)
     {
-        if ($this->collItemss === null) {
-            $this->initItemss();
-            $this->collItemssPartial = true;
+        if ($this->collItems === null) {
+            $this->initItems();
+            $this->collItemsPartial = true;
         }
 
-        if (!$this->collItemss->contains($l)) {
-            $this->doAddItems($l);
+        if (!$this->collItems->contains($l)) {
+            $this->doAddItem($l);
 
-            if ($this->itemssScheduledForDeletion and $this->itemssScheduledForDeletion->contains($l)) {
-                $this->itemssScheduledForDeletion->remove($this->itemssScheduledForDeletion->search($l));
+            if ($this->itemsScheduledForDeletion and $this->itemsScheduledForDeletion->contains($l)) {
+                $this->itemsScheduledForDeletion->remove($this->itemsScheduledForDeletion->search($l));
             }
         }
 
@@ -2327,29 +2327,29 @@ abstract class Files implements ActiveRecordInterface
     }
 
     /**
-     * @param ChildItems $items The ChildItems object to add.
+     * @param ChildItem $item The ChildItem object to add.
      */
-    protected function doAddItems(ChildItems $items)
+    protected function doAddItem(ChildItem $item)
     {
-        $this->collItemss[]= $items;
-        $items->setFiles($this);
+        $this->collItems[]= $item;
+        $item->setFiles($this);
     }
 
     /**
-     * @param  ChildItems $items The ChildItems object to remove.
+     * @param  ChildItem $item The ChildItem object to remove.
      * @return $this|ChildFiles The current object (for fluent API support)
      */
-    public function removeItems(ChildItems $items)
+    public function removeItem(ChildItem $item)
     {
-        if ($this->getItemss()->contains($items)) {
-            $pos = $this->collItemss->search($items);
-            $this->collItemss->remove($pos);
-            if (null === $this->itemssScheduledForDeletion) {
-                $this->itemssScheduledForDeletion = clone $this->collItemss;
-                $this->itemssScheduledForDeletion->clear();
+        if ($this->getItems()->contains($item)) {
+            $pos = $this->collItems->search($item);
+            $this->collItems->remove($pos);
+            if (null === $this->itemsScheduledForDeletion) {
+                $this->itemsScheduledForDeletion = clone $this->collItems;
+                $this->itemsScheduledForDeletion->clear();
             }
-            $this->itemssScheduledForDeletion[]= $items;
-            $items->setFiles(null);
+            $this->itemsScheduledForDeletion[]= $item;
+            $item->setFiles(null);
         }
 
         return $this;
@@ -2389,26 +2389,26 @@ abstract class Files implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
-            if ($this->collBookingAttachmentss) {
-                foreach ($this->collBookingAttachmentss as $o) {
+            if ($this->collBookingAttachments) {
+                foreach ($this->collBookingAttachments as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
-            if ($this->collCategoriess) {
-                foreach ($this->collCategoriess as $o) {
+            if ($this->collCategories) {
+                foreach ($this->collCategories as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
-            if ($this->collItemss) {
-                foreach ($this->collItemss as $o) {
+            if ($this->collItems) {
+                foreach ($this->collItems as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
         } // if ($deep)
 
-        $this->collBookingAttachmentss = null;
-        $this->collCategoriess = null;
-        $this->collItemss = null;
+        $this->collBookingAttachments = null;
+        $this->collCategories = null;
+        $this->collItems = null;
     }
 
     /**

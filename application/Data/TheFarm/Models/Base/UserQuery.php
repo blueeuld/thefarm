@@ -82,17 +82,17 @@ use TheFarm\Models\Map\UserTableMap;
  * @method     ChildUserQuery rightJoinWithGroup() Adds a RIGHT JOIN clause and with to the query using the Group relation
  * @method     ChildUserQuery innerJoinWithGroup() Adds a INNER JOIN clause and with to the query using the Group relation
  *
- * @method     ChildUserQuery leftJoinLocations($relationAlias = null) Adds a LEFT JOIN clause to the query using the Locations relation
- * @method     ChildUserQuery rightJoinLocations($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Locations relation
- * @method     ChildUserQuery innerJoinLocations($relationAlias = null) Adds a INNER JOIN clause to the query using the Locations relation
+ * @method     ChildUserQuery leftJoinLocation($relationAlias = null) Adds a LEFT JOIN clause to the query using the Location relation
+ * @method     ChildUserQuery rightJoinLocation($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Location relation
+ * @method     ChildUserQuery innerJoinLocation($relationAlias = null) Adds a INNER JOIN clause to the query using the Location relation
  *
- * @method     ChildUserQuery joinWithLocations($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Locations relation
+ * @method     ChildUserQuery joinWithLocation($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Location relation
  *
- * @method     ChildUserQuery leftJoinWithLocations() Adds a LEFT JOIN clause and with to the query using the Locations relation
- * @method     ChildUserQuery rightJoinWithLocations() Adds a RIGHT JOIN clause and with to the query using the Locations relation
- * @method     ChildUserQuery innerJoinWithLocations() Adds a INNER JOIN clause and with to the query using the Locations relation
+ * @method     ChildUserQuery leftJoinWithLocation() Adds a LEFT JOIN clause and with to the query using the Location relation
+ * @method     ChildUserQuery rightJoinWithLocation() Adds a RIGHT JOIN clause and with to the query using the Location relation
+ * @method     ChildUserQuery innerJoinWithLocation() Adds a INNER JOIN clause and with to the query using the Location relation
  *
- * @method     \TheFarm\Models\ContactQuery|\TheFarm\Models\GroupQuery|\TheFarm\Models\LocationsQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \TheFarm\Models\ContactQuery|\TheFarm\Models\GroupQuery|\TheFarm\Models\LocationQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildUser findOne(ConnectionInterface $con = null) Return the first ChildUser matching the query
  * @method     ChildUser findOneOrCreate(ConnectionInterface $con = null) Return the first ChildUser matching the query, or a new ChildUser object populated from the query conditions when no match is found
@@ -576,7 +576,7 @@ abstract class UserQuery extends ModelCriteria
      * $query->filterByLocationId(array('min' => 12)); // WHERE location_id > 12
      * </code>
      *
-     * @see       filterByLocations()
+     * @see       filterByLocation()
      *
      * @param     mixed $locationId The value to use as filter.
      *              Use scalar values for equality.
@@ -980,44 +980,44 @@ abstract class UserQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \TheFarm\Models\Locations object
+     * Filter the query by a related \TheFarm\Models\Location object
      *
-     * @param \TheFarm\Models\Locations|ObjectCollection $locations The related object(s) to use as filter
+     * @param \TheFarm\Models\Location|ObjectCollection $location The related object(s) to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
      * @return ChildUserQuery The current query, for fluid interface
      */
-    public function filterByLocations($locations, $comparison = null)
+    public function filterByLocation($location, $comparison = null)
     {
-        if ($locations instanceof \TheFarm\Models\Locations) {
+        if ($location instanceof \TheFarm\Models\Location) {
             return $this
-                ->addUsingAlias(UserTableMap::COL_LOCATION_ID, $locations->getLocationId(), $comparison);
-        } elseif ($locations instanceof ObjectCollection) {
+                ->addUsingAlias(UserTableMap::COL_LOCATION_ID, $location->getLocationId(), $comparison);
+        } elseif ($location instanceof ObjectCollection) {
             if (null === $comparison) {
                 $comparison = Criteria::IN;
             }
 
             return $this
-                ->addUsingAlias(UserTableMap::COL_LOCATION_ID, $locations->toKeyValue('PrimaryKey', 'LocationId'), $comparison);
+                ->addUsingAlias(UserTableMap::COL_LOCATION_ID, $location->toKeyValue('PrimaryKey', 'LocationId'), $comparison);
         } else {
-            throw new PropelException('filterByLocations() only accepts arguments of type \TheFarm\Models\Locations or Collection');
+            throw new PropelException('filterByLocation() only accepts arguments of type \TheFarm\Models\Location or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the Locations relation
+     * Adds a JOIN clause to the query using the Location relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildUserQuery The current query, for fluid interface
      */
-    public function joinLocations($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function joinLocation($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Locations');
+        $relationMap = $tableMap->getRelation('Location');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -1032,14 +1032,14 @@ abstract class UserQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'Locations');
+            $this->addJoinObject($join, 'Location');
         }
 
         return $this;
     }
 
     /**
-     * Use the Locations relation Locations object
+     * Use the Location relation Location object
      *
      * @see useQuery()
      *
@@ -1047,13 +1047,13 @@ abstract class UserQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \TheFarm\Models\LocationsQuery A secondary query class using the current class as primary query
+     * @return \TheFarm\Models\LocationQuery A secondary query class using the current class as primary query
      */
-    public function useLocationsQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function useLocationQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         return $this
-            ->joinLocations($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Locations', '\TheFarm\Models\LocationsQuery');
+            ->joinLocation($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Location', '\TheFarm\Models\LocationQuery');
     }
 
     /**

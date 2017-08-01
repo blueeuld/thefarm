@@ -19,8 +19,8 @@ use TheFarm\Models\Contact as ChildContact;
 use TheFarm\Models\ContactQuery as ChildContactQuery;
 use TheFarm\Models\Group as ChildGroup;
 use TheFarm\Models\GroupQuery as ChildGroupQuery;
-use TheFarm\Models\Locations as ChildLocations;
-use TheFarm\Models\LocationsQuery as ChildLocationsQuery;
+use TheFarm\Models\Location as ChildLocation;
+use TheFarm\Models\LocationQuery as ChildLocationQuery;
 use TheFarm\Models\UserQuery as ChildUserQuery;
 use TheFarm\Models\Map\UserTableMap;
 
@@ -194,9 +194,9 @@ abstract class User implements ActiveRecordInterface
     protected $aGroup;
 
     /**
-     * @var        ChildLocations
+     * @var        ChildLocation
      */
-    protected $aLocations;
+    protected $aLocation;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -774,8 +774,8 @@ abstract class User implements ActiveRecordInterface
             $this->modifiedColumns[UserTableMap::COL_LOCATION_ID] = true;
         }
 
-        if ($this->aLocations !== null && $this->aLocations->getLocationId() !== $v) {
-            $this->aLocations = null;
+        if ($this->aLocation !== null && $this->aLocation->getLocationId() !== $v) {
+            $this->aLocation = null;
         }
 
         return $this;
@@ -1084,8 +1084,8 @@ abstract class User implements ActiveRecordInterface
         if ($this->aGroup !== null && $this->group_id !== $this->aGroup->getGroupId()) {
             $this->aGroup = null;
         }
-        if ($this->aLocations !== null && $this->location_id !== $this->aLocations->getLocationId()) {
-            $this->aLocations = null;
+        if ($this->aLocation !== null && $this->location_id !== $this->aLocation->getLocationId()) {
+            $this->aLocation = null;
         }
     } // ensureConsistency
 
@@ -1128,7 +1128,7 @@ abstract class User implements ActiveRecordInterface
 
             $this->aContact = null;
             $this->aGroup = null;
-            $this->aLocations = null;
+            $this->aLocation = null;
         } // if (deep)
     }
 
@@ -1251,11 +1251,11 @@ abstract class User implements ActiveRecordInterface
                 $this->setGroup($this->aGroup);
             }
 
-            if ($this->aLocations !== null) {
-                if ($this->aLocations->isModified() || $this->aLocations->isNew()) {
-                    $affectedRows += $this->aLocations->save($con);
+            if ($this->aLocation !== null) {
+                if ($this->aLocation->isModified() || $this->aLocation->isNew()) {
+                    $affectedRows += $this->aLocation->save($con);
                 }
-                $this->setLocations($this->aLocations);
+                $this->setLocation($this->aLocation);
             }
 
             if ($this->isNew() || $this->isModified()) {
@@ -1584,20 +1584,20 @@ abstract class User implements ActiveRecordInterface
 
                 $result[$key] = $this->aGroup->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
-            if (null !== $this->aLocations) {
+            if (null !== $this->aLocation) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'locations';
+                        $key = 'location';
                         break;
                     case TableMap::TYPE_FIELDNAME:
                         $key = 'tf_locations';
                         break;
                     default:
-                        $key = 'Locations';
+                        $key = 'Location';
                 }
 
-                $result[$key] = $this->aLocations->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+                $result[$key] = $this->aLocation->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
         }
 
@@ -2077,13 +2077,13 @@ abstract class User implements ActiveRecordInterface
     }
 
     /**
-     * Declares an association between this object and a ChildLocations object.
+     * Declares an association between this object and a ChildLocation object.
      *
-     * @param  ChildLocations $v
+     * @param  ChildLocation $v
      * @return $this|\TheFarm\Models\User The current object (for fluent API support)
      * @throws PropelException
      */
-    public function setLocations(ChildLocations $v = null)
+    public function setLocation(ChildLocation $v = null)
     {
         if ($v === null) {
             $this->setLocationId(NULL);
@@ -2091,10 +2091,10 @@ abstract class User implements ActiveRecordInterface
             $this->setLocationId($v->getLocationId());
         }
 
-        $this->aLocations = $v;
+        $this->aLocation = $v;
 
         // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildLocations object, it will not be re-added.
+        // If this object has already been added to the ChildLocation object, it will not be re-added.
         if ($v !== null) {
             $v->addUser($this);
         }
@@ -2105,26 +2105,26 @@ abstract class User implements ActiveRecordInterface
 
 
     /**
-     * Get the associated ChildLocations object
+     * Get the associated ChildLocation object
      *
      * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildLocations The associated ChildLocations object.
+     * @return ChildLocation The associated ChildLocation object.
      * @throws PropelException
      */
-    public function getLocations(ConnectionInterface $con = null)
+    public function getLocation(ConnectionInterface $con = null)
     {
-        if ($this->aLocations === null && ($this->location_id !== null)) {
-            $this->aLocations = ChildLocationsQuery::create()->findPk($this->location_id, $con);
+        if ($this->aLocation === null && ($this->location_id !== null)) {
+            $this->aLocation = ChildLocationQuery::create()->findPk($this->location_id, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aLocations->addUsers($this);
+                $this->aLocation->addUsers($this);
              */
         }
 
-        return $this->aLocations;
+        return $this->aLocation;
     }
 
     /**
@@ -2140,8 +2140,8 @@ abstract class User implements ActiveRecordInterface
         if (null !== $this->aGroup) {
             $this->aGroup->removeUser($this);
         }
-        if (null !== $this->aLocations) {
-            $this->aLocations->removeUser($this);
+        if (null !== $this->aLocation) {
+            $this->aLocation->removeUser($this);
         }
         $this->contact_id = null;
         $this->username = null;
@@ -2182,7 +2182,7 @@ abstract class User implements ActiveRecordInterface
 
         $this->aContact = null;
         $this->aGroup = null;
-        $this->aLocations = null;
+        $this->aLocation = null;
     }
 
     /**

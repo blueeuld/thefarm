@@ -182,27 +182,27 @@ class FilesTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('BookingAttachments', '\\TheFarm\\Models\\BookingAttachments', RelationMap::ONE_TO_MANY, array (
+        $this->addRelation('BookingAttachment', '\\TheFarm\\Models\\BookingAttachment', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
     0 => ':file_id',
     1 => ':file_id',
   ),
-), null, null, 'BookingAttachmentss', false);
-        $this->addRelation('Categories', '\\TheFarm\\Models\\Categories', RelationMap::ONE_TO_MANY, array (
+), null, null, 'BookingAttachments', false);
+        $this->addRelation('Category', '\\TheFarm\\Models\\Category', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
     0 => ':cat_image',
     1 => ':file_id',
   ),
-), null, null, 'Categoriess', false);
-        $this->addRelation('Items', '\\TheFarm\\Models\\Items', RelationMap::ONE_TO_MANY, array (
+), null, null, 'Categories', false);
+        $this->addRelation('Item', '\\TheFarm\\Models\\Item', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
     0 => ':item_image',
     1 => ':file_id',
   ),
-), null, null, 'Itemss', false);
+), null, null, 'Items', false);
     } // buildRelations()
 
     /**

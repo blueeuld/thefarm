@@ -303,62 +303,62 @@ class ContactTableMap extends TableMap
     1 => ':position_cd',
   ),
 ), null, null, null, false);
-        $this->addRelation('BookingEventUsers', '\\TheFarm\\Models\\BookingEventUsers', RelationMap::ONE_TO_MANY, array (
+        $this->addRelation('BookingEventUser', '\\TheFarm\\Models\\BookingEventUser', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
     0 => ':staff_id',
     1 => ':contact_id',
   ),
-), null, null, 'BookingEventUserss', false);
-        $this->addRelation('BookingEventsRelatedByAuthorId', '\\TheFarm\\Models\\BookingEvents', RelationMap::ONE_TO_MANY, array (
+), null, null, 'BookingEventUsers', false);
+        $this->addRelation('BookingEventRelatedByAuthorId', '\\TheFarm\\Models\\BookingEvent', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
     0 => ':author_id',
     1 => ':contact_id',
   ),
-), null, null, 'BookingEventssRelatedByAuthorId', false);
-        $this->addRelation('BookingEventsRelatedByCalledBy', '\\TheFarm\\Models\\BookingEvents', RelationMap::ONE_TO_MANY, array (
+), null, null, 'BookingEventsRelatedByAuthorId', false);
+        $this->addRelation('BookingEventRelatedByCalledBy', '\\TheFarm\\Models\\BookingEvent', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
     0 => ':called_by',
     1 => ':contact_id',
   ),
-), null, null, 'BookingEventssRelatedByCalledBy', false);
-        $this->addRelation('BookingEventsRelatedByCancelledBy', '\\TheFarm\\Models\\BookingEvents', RelationMap::ONE_TO_MANY, array (
+), null, null, 'BookingEventsRelatedByCalledBy', false);
+        $this->addRelation('BookingEventRelatedByCancelledBy', '\\TheFarm\\Models\\BookingEvent', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
     0 => ':cancelled_by',
     1 => ':contact_id',
   ),
-), null, null, 'BookingEventssRelatedByCancelledBy', false);
-        $this->addRelation('BookingEventsRelatedByDeletedBy', '\\TheFarm\\Models\\BookingEvents', RelationMap::ONE_TO_MANY, array (
+), null, null, 'BookingEventsRelatedByCancelledBy', false);
+        $this->addRelation('BookingEventRelatedByDeletedBy', '\\TheFarm\\Models\\BookingEvent', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
     0 => ':deleted_by',
     1 => ':contact_id',
   ),
-), null, null, 'BookingEventssRelatedByDeletedBy', false);
-        $this->addRelation('BookingsRelatedByAuthorId', '\\TheFarm\\Models\\Bookings', RelationMap::ONE_TO_MANY, array (
+), null, null, 'BookingEventsRelatedByDeletedBy', false);
+        $this->addRelation('BookingRelatedByAuthorId', '\\TheFarm\\Models\\Booking', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
     0 => ':author_id',
     1 => ':contact_id',
   ),
-), null, null, 'BookingssRelatedByAuthorId', false);
-        $this->addRelation('BookingsRelatedByGuestId', '\\TheFarm\\Models\\Bookings', RelationMap::ONE_TO_MANY, array (
+), null, null, 'BookingsRelatedByAuthorId', false);
+        $this->addRelation('BookingRelatedByGuestId', '\\TheFarm\\Models\\Booking', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
     0 => ':guest_id',
     1 => ':contact_id',
   ),
-), null, null, 'BookingssRelatedByGuestId', false);
-        $this->addRelation('ItemsRelatedUsers', '\\TheFarm\\Models\\ItemsRelatedUsers', RelationMap::ONE_TO_MANY, array (
+), null, null, 'BookingsRelatedByGuestId', false);
+        $this->addRelation('ItemsRelatedUser', '\\TheFarm\\Models\\ItemsRelatedUser', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
     0 => ':contact_id',
     1 => ':contact_id',
   ),
-), null, null, 'ItemsRelatedUserss', false);
+), null, null, 'ItemsRelatedUsers', false);
         $this->addRelation('User', '\\TheFarm\\Models\\User', RelationMap::ONE_TO_ONE, array (
   0 =>
   array (

@@ -822,17 +822,6 @@ CREATE TABLE `tf_messages`
 ) ENGINE=MyISAM;
 
 -- ---------------------------------------------------------------------
--- tf_migrations
--- ---------------------------------------------------------------------
-
-DROP TABLE IF EXISTS `tf_migrations`;
-
-CREATE TABLE `tf_migrations`
-(
-    `version` BIGINT NOT NULL
-) ENGINE=MyISAM;
-
--- ---------------------------------------------------------------------
 -- tf_package_items
 -- ---------------------------------------------------------------------
 
@@ -898,21 +887,6 @@ CREATE TABLE `tf_position`
     `position_order` INTEGER(3),
     PRIMARY KEY (`position_cd`)
 ) ENGINE=InnoDB;
-
--- ---------------------------------------------------------------------
--- tf_sessions
--- ---------------------------------------------------------------------
-
-DROP TABLE IF EXISTS `tf_sessions`;
-
-CREATE TABLE `tf_sessions`
-(
-    `id` VARCHAR(40) NOT NULL,
-    `ip_address` VARCHAR(45) NOT NULL,
-    `timestamp` int(10) unsigned DEFAULT 0 NOT NULL,
-    `data` BLOB NOT NULL,
-    INDEX `ci_sessions_timestamp` (`timestamp`)
-) ENGINE=MyISAM;
 
 -- ---------------------------------------------------------------------
 -- tf_sites

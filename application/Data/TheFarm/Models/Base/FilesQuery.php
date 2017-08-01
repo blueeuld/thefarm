@@ -48,37 +48,37 @@ use TheFarm\Models\Map\FilesTableMap;
  * @method     ChildFilesQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildFilesQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
  *
- * @method     ChildFilesQuery leftJoinBookingAttachments($relationAlias = null) Adds a LEFT JOIN clause to the query using the BookingAttachments relation
- * @method     ChildFilesQuery rightJoinBookingAttachments($relationAlias = null) Adds a RIGHT JOIN clause to the query using the BookingAttachments relation
- * @method     ChildFilesQuery innerJoinBookingAttachments($relationAlias = null) Adds a INNER JOIN clause to the query using the BookingAttachments relation
+ * @method     ChildFilesQuery leftJoinBookingAttachment($relationAlias = null) Adds a LEFT JOIN clause to the query using the BookingAttachment relation
+ * @method     ChildFilesQuery rightJoinBookingAttachment($relationAlias = null) Adds a RIGHT JOIN clause to the query using the BookingAttachment relation
+ * @method     ChildFilesQuery innerJoinBookingAttachment($relationAlias = null) Adds a INNER JOIN clause to the query using the BookingAttachment relation
  *
- * @method     ChildFilesQuery joinWithBookingAttachments($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the BookingAttachments relation
+ * @method     ChildFilesQuery joinWithBookingAttachment($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the BookingAttachment relation
  *
- * @method     ChildFilesQuery leftJoinWithBookingAttachments() Adds a LEFT JOIN clause and with to the query using the BookingAttachments relation
- * @method     ChildFilesQuery rightJoinWithBookingAttachments() Adds a RIGHT JOIN clause and with to the query using the BookingAttachments relation
- * @method     ChildFilesQuery innerJoinWithBookingAttachments() Adds a INNER JOIN clause and with to the query using the BookingAttachments relation
+ * @method     ChildFilesQuery leftJoinWithBookingAttachment() Adds a LEFT JOIN clause and with to the query using the BookingAttachment relation
+ * @method     ChildFilesQuery rightJoinWithBookingAttachment() Adds a RIGHT JOIN clause and with to the query using the BookingAttachment relation
+ * @method     ChildFilesQuery innerJoinWithBookingAttachment() Adds a INNER JOIN clause and with to the query using the BookingAttachment relation
  *
- * @method     ChildFilesQuery leftJoinCategories($relationAlias = null) Adds a LEFT JOIN clause to the query using the Categories relation
- * @method     ChildFilesQuery rightJoinCategories($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Categories relation
- * @method     ChildFilesQuery innerJoinCategories($relationAlias = null) Adds a INNER JOIN clause to the query using the Categories relation
+ * @method     ChildFilesQuery leftJoinCategory($relationAlias = null) Adds a LEFT JOIN clause to the query using the Category relation
+ * @method     ChildFilesQuery rightJoinCategory($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Category relation
+ * @method     ChildFilesQuery innerJoinCategory($relationAlias = null) Adds a INNER JOIN clause to the query using the Category relation
  *
- * @method     ChildFilesQuery joinWithCategories($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Categories relation
+ * @method     ChildFilesQuery joinWithCategory($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Category relation
  *
- * @method     ChildFilesQuery leftJoinWithCategories() Adds a LEFT JOIN clause and with to the query using the Categories relation
- * @method     ChildFilesQuery rightJoinWithCategories() Adds a RIGHT JOIN clause and with to the query using the Categories relation
- * @method     ChildFilesQuery innerJoinWithCategories() Adds a INNER JOIN clause and with to the query using the Categories relation
+ * @method     ChildFilesQuery leftJoinWithCategory() Adds a LEFT JOIN clause and with to the query using the Category relation
+ * @method     ChildFilesQuery rightJoinWithCategory() Adds a RIGHT JOIN clause and with to the query using the Category relation
+ * @method     ChildFilesQuery innerJoinWithCategory() Adds a INNER JOIN clause and with to the query using the Category relation
  *
- * @method     ChildFilesQuery leftJoinItems($relationAlias = null) Adds a LEFT JOIN clause to the query using the Items relation
- * @method     ChildFilesQuery rightJoinItems($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Items relation
- * @method     ChildFilesQuery innerJoinItems($relationAlias = null) Adds a INNER JOIN clause to the query using the Items relation
+ * @method     ChildFilesQuery leftJoinItem($relationAlias = null) Adds a LEFT JOIN clause to the query using the Item relation
+ * @method     ChildFilesQuery rightJoinItem($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Item relation
+ * @method     ChildFilesQuery innerJoinItem($relationAlias = null) Adds a INNER JOIN clause to the query using the Item relation
  *
- * @method     ChildFilesQuery joinWithItems($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Items relation
+ * @method     ChildFilesQuery joinWithItem($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Item relation
  *
- * @method     ChildFilesQuery leftJoinWithItems() Adds a LEFT JOIN clause and with to the query using the Items relation
- * @method     ChildFilesQuery rightJoinWithItems() Adds a RIGHT JOIN clause and with to the query using the Items relation
- * @method     ChildFilesQuery innerJoinWithItems() Adds a INNER JOIN clause and with to the query using the Items relation
+ * @method     ChildFilesQuery leftJoinWithItem() Adds a LEFT JOIN clause and with to the query using the Item relation
+ * @method     ChildFilesQuery rightJoinWithItem() Adds a RIGHT JOIN clause and with to the query using the Item relation
+ * @method     ChildFilesQuery innerJoinWithItem() Adds a INNER JOIN clause and with to the query using the Item relation
  *
- * @method     \TheFarm\Models\BookingAttachmentsQuery|\TheFarm\Models\CategoriesQuery|\TheFarm\Models\ItemsQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \TheFarm\Models\BookingAttachmentQuery|\TheFarm\Models\CategoryQuery|\TheFarm\Models\ItemQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildFiles findOne(ConnectionInterface $con = null) Return the first ChildFiles matching the query
  * @method     ChildFiles findOneOrCreate(ConnectionInterface $con = null) Return the first ChildFiles matching the query, or a new ChildFiles object populated from the query conditions when no match is found
@@ -642,40 +642,40 @@ abstract class FilesQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \TheFarm\Models\BookingAttachments object
+     * Filter the query by a related \TheFarm\Models\BookingAttachment object
      *
-     * @param \TheFarm\Models\BookingAttachments|ObjectCollection $bookingAttachments the related object to use as filter
+     * @param \TheFarm\Models\BookingAttachment|ObjectCollection $bookingAttachment the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildFilesQuery The current query, for fluid interface
      */
-    public function filterByBookingAttachments($bookingAttachments, $comparison = null)
+    public function filterByBookingAttachment($bookingAttachment, $comparison = null)
     {
-        if ($bookingAttachments instanceof \TheFarm\Models\BookingAttachments) {
+        if ($bookingAttachment instanceof \TheFarm\Models\BookingAttachment) {
             return $this
-                ->addUsingAlias(FilesTableMap::COL_FILE_ID, $bookingAttachments->getFileId(), $comparison);
-        } elseif ($bookingAttachments instanceof ObjectCollection) {
+                ->addUsingAlias(FilesTableMap::COL_FILE_ID, $bookingAttachment->getFileId(), $comparison);
+        } elseif ($bookingAttachment instanceof ObjectCollection) {
             return $this
-                ->useBookingAttachmentsQuery()
-                ->filterByPrimaryKeys($bookingAttachments->getPrimaryKeys())
+                ->useBookingAttachmentQuery()
+                ->filterByPrimaryKeys($bookingAttachment->getPrimaryKeys())
                 ->endUse();
         } else {
-            throw new PropelException('filterByBookingAttachments() only accepts arguments of type \TheFarm\Models\BookingAttachments or Collection');
+            throw new PropelException('filterByBookingAttachment() only accepts arguments of type \TheFarm\Models\BookingAttachment or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the BookingAttachments relation
+     * Adds a JOIN clause to the query using the BookingAttachment relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildFilesQuery The current query, for fluid interface
      */
-    public function joinBookingAttachments($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinBookingAttachment($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('BookingAttachments');
+        $relationMap = $tableMap->getRelation('BookingAttachment');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -690,14 +690,14 @@ abstract class FilesQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'BookingAttachments');
+            $this->addJoinObject($join, 'BookingAttachment');
         }
 
         return $this;
     }
 
     /**
-     * Use the BookingAttachments relation BookingAttachments object
+     * Use the BookingAttachment relation BookingAttachment object
      *
      * @see useQuery()
      *
@@ -705,50 +705,50 @@ abstract class FilesQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \TheFarm\Models\BookingAttachmentsQuery A secondary query class using the current class as primary query
+     * @return \TheFarm\Models\BookingAttachmentQuery A secondary query class using the current class as primary query
      */
-    public function useBookingAttachmentsQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useBookingAttachmentQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinBookingAttachments($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'BookingAttachments', '\TheFarm\Models\BookingAttachmentsQuery');
+            ->joinBookingAttachment($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'BookingAttachment', '\TheFarm\Models\BookingAttachmentQuery');
     }
 
     /**
-     * Filter the query by a related \TheFarm\Models\Categories object
+     * Filter the query by a related \TheFarm\Models\Category object
      *
-     * @param \TheFarm\Models\Categories|ObjectCollection $categories the related object to use as filter
+     * @param \TheFarm\Models\Category|ObjectCollection $category the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildFilesQuery The current query, for fluid interface
      */
-    public function filterByCategories($categories, $comparison = null)
+    public function filterByCategory($category, $comparison = null)
     {
-        if ($categories instanceof \TheFarm\Models\Categories) {
+        if ($category instanceof \TheFarm\Models\Category) {
             return $this
-                ->addUsingAlias(FilesTableMap::COL_FILE_ID, $categories->getCatImage(), $comparison);
-        } elseif ($categories instanceof ObjectCollection) {
+                ->addUsingAlias(FilesTableMap::COL_FILE_ID, $category->getCatImage(), $comparison);
+        } elseif ($category instanceof ObjectCollection) {
             return $this
-                ->useCategoriesQuery()
-                ->filterByPrimaryKeys($categories->getPrimaryKeys())
+                ->useCategoryQuery()
+                ->filterByPrimaryKeys($category->getPrimaryKeys())
                 ->endUse();
         } else {
-            throw new PropelException('filterByCategories() only accepts arguments of type \TheFarm\Models\Categories or Collection');
+            throw new PropelException('filterByCategory() only accepts arguments of type \TheFarm\Models\Category or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the Categories relation
+     * Adds a JOIN clause to the query using the Category relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildFilesQuery The current query, for fluid interface
      */
-    public function joinCategories($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function joinCategory($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Categories');
+        $relationMap = $tableMap->getRelation('Category');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -763,14 +763,14 @@ abstract class FilesQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'Categories');
+            $this->addJoinObject($join, 'Category');
         }
 
         return $this;
     }
 
     /**
-     * Use the Categories relation Categories object
+     * Use the Category relation Category object
      *
      * @see useQuery()
      *
@@ -778,50 +778,50 @@ abstract class FilesQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \TheFarm\Models\CategoriesQuery A secondary query class using the current class as primary query
+     * @return \TheFarm\Models\CategoryQuery A secondary query class using the current class as primary query
      */
-    public function useCategoriesQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function useCategoryQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         return $this
-            ->joinCategories($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Categories', '\TheFarm\Models\CategoriesQuery');
+            ->joinCategory($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Category', '\TheFarm\Models\CategoryQuery');
     }
 
     /**
-     * Filter the query by a related \TheFarm\Models\Items object
+     * Filter the query by a related \TheFarm\Models\Item object
      *
-     * @param \TheFarm\Models\Items|ObjectCollection $items the related object to use as filter
+     * @param \TheFarm\Models\Item|ObjectCollection $item the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildFilesQuery The current query, for fluid interface
      */
-    public function filterByItems($items, $comparison = null)
+    public function filterByItem($item, $comparison = null)
     {
-        if ($items instanceof \TheFarm\Models\Items) {
+        if ($item instanceof \TheFarm\Models\Item) {
             return $this
-                ->addUsingAlias(FilesTableMap::COL_FILE_ID, $items->getItemImage(), $comparison);
-        } elseif ($items instanceof ObjectCollection) {
+                ->addUsingAlias(FilesTableMap::COL_FILE_ID, $item->getItemImage(), $comparison);
+        } elseif ($item instanceof ObjectCollection) {
             return $this
-                ->useItemsQuery()
-                ->filterByPrimaryKeys($items->getPrimaryKeys())
+                ->useItemQuery()
+                ->filterByPrimaryKeys($item->getPrimaryKeys())
                 ->endUse();
         } else {
-            throw new PropelException('filterByItems() only accepts arguments of type \TheFarm\Models\Items or Collection');
+            throw new PropelException('filterByItem() only accepts arguments of type \TheFarm\Models\Item or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the Items relation
+     * Adds a JOIN clause to the query using the Item relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildFilesQuery The current query, for fluid interface
      */
-    public function joinItems($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function joinItem($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Items');
+        $relationMap = $tableMap->getRelation('Item');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -836,14 +836,14 @@ abstract class FilesQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'Items');
+            $this->addJoinObject($join, 'Item');
         }
 
         return $this;
     }
 
     /**
-     * Use the Items relation Items object
+     * Use the Item relation Item object
      *
      * @see useQuery()
      *
@@ -851,13 +851,13 @@ abstract class FilesQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \TheFarm\Models\ItemsQuery A secondary query class using the current class as primary query
+     * @return \TheFarm\Models\ItemQuery A secondary query class using the current class as primary query
      */
-    public function useItemsQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function useItemQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         return $this
-            ->joinItems($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Items', '\TheFarm\Models\ItemsQuery');
+            ->joinItem($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Item', '\TheFarm\Models\ItemQuery');
     }
 
     /**
