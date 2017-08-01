@@ -1,8 +1,0 @@
-{
-    "propel": {
-        "paths": {
-            "schemaDir": "\/Users\/marvin\/Sites\/thefarm\/webservice\/Data",
-            "phpDir": "\/Users\/marvin\/Sites\/thefarm\/webservice\/Data"
-        }
-    }
-}

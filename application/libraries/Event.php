@@ -73,7 +73,7 @@ class Event {
              }
 
              if ($event->getBookingEventUserss()->count() > 0) {
-                $eventsArray[$key]['Staff'] = $event->getBookingEventUsersJoinContact()->toArray();
+                $eventsArray[$key]['Staff'] = $event->getBookingEventUserssJoinContact()->toArray();
              }
 
          }
