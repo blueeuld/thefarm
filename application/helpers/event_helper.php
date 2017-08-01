@@ -246,8 +246,107 @@ function get_event_users($event_id)
 function to_full_calendar_events ($events) {
 
     $eventsArray = [];
-    foreach($events as $event) {
+    foreach($events as $eventData) {
 
+        $bookingItemData = $eventData['BookingItem'];
+        $itemData = $bookingItemData['Item'];
+        $guestData = $eventData['BookingItem']['Booking']['Guest'];
+
+        $classNames = array();
+        $event = [];
+        $event['id'] = $eventData['EventId'];
+        $event['event_id'] = $eventData['EventId'];
+        $event['title'] = $eventData['EventTitle'];
+        $event['editable'] = false;
+        $event['overlap'] = false;
+        $event['start'] = $eventData['StartDt'];
+        $event['end'] = $eventData['EndDt'];
+        $event['guest_name'] = $guestData['FirstName'] . ' ' . $guestData['LastName'];
+        $event['item_name'] = $itemData['Title'];
+        $event['status'] = $eventData['Status'];
+
+//        if ($event['location_id'] !== null && current_user_can('can_edit_schedules_' . $event['location_id'])) {
+//            $event['editable'] = true;
+//        }
+
+        if ($eventData['Incl'] === 1) {
+            $classNames[] = 'fc-event-included';
+        }
+
+        if ($bookingItemData['Upsell'] === '1') {
+            $classNames[] = 'fc-event-upsell';
+        }
+
+        if ($eventData['Foc'] === '1') {
+            $classNames[] = 'fc-event-foc';
+        }
+
+//        $resource_names = array();
+//        $event_users = get_event_users($event['event_id']);
+//        $event['users'] = $event_users;
+//        if ($this->resource_fld_name === 'contact_id') {
+//            $resourceIds = array();
+//            if ($event_users) {
+//                foreach ($event_users as $user) {
+//                    $resourceIds[] = $user['contact_id'];
+//                    $resource_names[] = $user['first_name'];
+//                }
+//            }
+//
+//            $event['provider'] = implode(',', $resource_names);
+//            if ($resourceIds)
+//                $event['resourceIds'] = $resourceIds;
+//        } else {
+//            if (isset($event[$this->resource_fld_name]))
+//                $event['resourceId'] = $event[$this->resource_fld_name];
+//        }
+
+        $status = url_title($eventData['Status'], 'underscore');
+
+        if ($status === 'receptionist') {
+            $event['Title'] = 'Receptionist';
+        }
+
+        $classNames[] = 'fc-event-status-' . $status;
+
+        $titles = array();
+
+        if ($itemData['Abbr']) {
+            $titles[] = $itemData['Abbr'];
+        } elseif ($itemData['Title']) {
+            $titles[] = $itemData['Title'];
+        }
+
+        if (isset($eventData['Facility'])) {
+            $facilityData = $eventData['Facility'];
+            if ($facilityData['Abbr']) {
+                $titles[] = $facilityData['Abbr'];
+            } elseif ($facilityData['FacilityName']) {
+                $titles[] = $facilityData['FacilityName'];
+            }
+        }
+
+        $event['titles'] = $titles;
+
+        if (true) {
+            $title = $guestData['FirstName'] . ' ' . $guestData['LastName'] . (count($titles) > 0 ? "\n" . implode('/', $titles) : '');
+        } else {
+            $event['backgroundColor'] = $eventData['bg_color'];
+            $title = (count($titles) > 0 ? implode('/', $titles) : '');
+        }
+
+        $event['show_tooltip'] = true;
+
+        if ($title === '') {
+            $title = $eventData['notes'];
+            $event['show_tooltip'] = false;
+        }
+
+        $event['title'] = $title;
+
+        $event['className'] = implode(' ', $classNames);
+
+        $eventsArray[] = $event;
     }
 
     return $eventsArray;

@@ -974,7 +974,9 @@ class Calendar extends TF_Controller
 	    $params['upcomingThreshold'] = 'P7D';
 	    $this->load->library('Event', $params);
 
-        $this->output->set_content_type('application/json')->set_output(json_encode($this->event->get_events()));
+	    $fcEvents = to_full_calendar_events($this->event->get_events());
+
+        $this->output->set_content_type('application/json')->set_output(json_encode($fcEvents));
     }
 
     public function ics()

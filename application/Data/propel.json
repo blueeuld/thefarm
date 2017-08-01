@@ -5,8 +5,8 @@
                 "default": {
                     "adapter": "mysql",
                     "dsn": "mysql:host=localhost;port=3306;dbname=scheduledb",
-                    "user": "marvin",
-                    "password": "marvin",
+                    "user": "root",
+                    "password": "",
                     "settings": {
                         "charset": "utf8"
                     }
