@@ -331,6 +331,23 @@ CREATE TABLE `tf_event_status`
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
+-- tf_email_instance
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `tf_email_instance`;
+
+CREATE TABLE `tf_email_instance`
+(
+    `email_instance_id` INTEGER NOT NULL AUTO_INCREMENT,
+    `email_subject` VARCHAR(100) NOT NULL,
+    `email_body` TEXT,
+    `from_email_address` VARCHAR(100) NOT NULL,
+    `to_email_address` VARCHAR(100) NOT NULL,
+    `email_status_cd` VARCHAR(20) NOT NULL,
+    PRIMARY KEY (`email_instance_id`)
+) ENGINE=InnoDB;
+
+-- ---------------------------------------------------------------------
 -- tf_facilities
 -- ---------------------------------------------------------------------
 

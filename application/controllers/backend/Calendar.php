@@ -207,9 +207,12 @@ class Calendar extends TF_Controller
                             'Duration : ' . $item_data['duration'] . ' minutes'."\n".
                             'Status : '.ucwords($data['status']);
 
-                        $headers = 'From: ' . $current_user['email'] . '<' . $current_user['first_name'] . ' ' . $current_user['last_name'] . ">\r\n" . 'CC: immarvin@gmail.com, jay_cruz@thefarm.com.ph' . "\r\n";
+                        // $headers = 'From: ' . $current_user['email'] . '<' . $current_user['first_name'] . ' ' . $current_user['last_name'] . ">\r\n" . 'CC: immarvin@gmail.com, jay_cruz@thefarm.com.ph' . "\r\n";
 
-                        mail($guest_data['email'], $message, $body, $headers);
+                        $emailApi = new EmailApi();
+                        $emailApi->sendEmail($message, $body, $guest_data['email'], 'immarvin@gmail.com');
+
+                        //mail($guest_data['email'], $message, $body, $headers);
                     }
 
                 }
@@ -291,9 +294,12 @@ class Calendar extends TF_Controller
                             'Price : P' . $item_data['amount'] . "\n" .
                             'Duration : ' . $item_data['duration'] . ' minutes';
 
-                        $headers = 'From: ' . $current_user['email'] . '<' . $current_user['first_name'] . ' ' . $current_user['last_name'] . ">\r\n" . 'CC: immarvin@gmail.com, jay_cruz@thefarm.com.ph' . "\r\n";
+                        //$headers = 'From: ' . $current_user['email'] . '<' . $current_user['first_name'] . ' ' . $current_user['last_name'] . ">\r\n" . 'CC: immarvin@gmail.com, jay_cruz@thefarm.com.ph' . "\r\n";
 
-                        mail($guest_data['email'], $message, $body, $headers);
+                        $emailApi = new EmailApi();
+                        $emailApi->sendEmail($message, $body, $current_user['email'], 'immarvin@gmail.com');
+
+                        //mail($guest_data['email'], $message, $body, $headers);
                     }
                 }
             }

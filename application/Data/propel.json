@@ -4,9 +4,10 @@
             "connections": {
                 "default": {
                     "adapter": "mysql",
+                    "classname": "Propel\\Runtime\\Connection\\DebugPDO",
                     "dsn": "mysql:host=localhost;port=3306;dbname=scheduledb",
-                    "user": "root",
-                    "password": "",
+                    "user": "marvin",
+                    "password": "marvin",
                     "settings": {
                         "charset": "utf8"
                     }
