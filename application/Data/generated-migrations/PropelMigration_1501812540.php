@@ -52,6 +52,8 @@ ALTER TABLE `tf_booking_event_users`
 ALTER TABLE `tf_booking_events`
 
   ADD `booking_id` INTEGER AFTER `event_id`;
+  
+  UPDATE tf_booking_events SET booking_id = (SELECT b);
 
 CREATE INDEX `fi_king_fk` ON `tf_booking_events` (`booking_id`);
 

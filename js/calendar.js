@@ -375,7 +375,7 @@
             editable: TF.editable,
             droppable: TF.droppable,
             eventLimit: false,
-            height: 750,
+            height: 400,
             resourceLabelText: TF.resource_name,
             resources: function (callback) {
                 loadResources(callback);
