@@ -11,12 +11,12 @@ use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\RelationMap;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Map\TableMapTrait;
-use TheFarm\Models\Files;
-use TheFarm\Models\FilesQuery;
+use TheFarm\Models\EmailInstance;
+use TheFarm\Models\EmailInstanceQuery;
 
 
 /**
- * This class defines the structure of the 'tf_files' table.
+ * This class defines the structure of the 'tf_email_instance' table.
  *
  *
  *
@@ -26,7 +26,7 @@ use TheFarm\Models\FilesQuery;
  * (i.e. if it's a text column type).
  *
  */
-class FilesTableMap extends TableMap
+class EmailInstanceTableMap extends TableMap
 {
     use InstancePoolTrait;
     use TableMapTrait;
@@ -34,7 +34,7 @@ class FilesTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = 'TheFarm.Models.Map.FilesTableMap';
+    const CLASS_NAME = 'TheFarm.Models.Map.EmailInstanceTableMap';
 
     /**
      * The default database name for this class
@@ -44,22 +44,22 @@ class FilesTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = 'tf_files';
+    const TABLE_NAME = 'tf_email_instance';
 
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\TheFarm\\Models\\Files';
+    const OM_CLASS = '\\TheFarm\\Models\\EmailInstance';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'TheFarm.Models.Files';
+    const CLASS_DEFAULT = 'TheFarm.Models.EmailInstance';
 
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 9;
+    const NUM_COLUMNS = 6;
 
     /**
      * The number of lazy-loaded columns
@@ -69,52 +69,37 @@ class FilesTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 9;
+    const NUM_HYDRATE_COLUMNS = 6;
 
     /**
-     * the column name for the file_id field
+     * the column name for the email_instance_id field
      */
-    const COL_FILE_ID = 'tf_files.file_id';
+    const COL_EMAIL_INSTANCE_ID = 'tf_email_instance.email_instance_id';
 
     /**
-     * the column name for the title field
+     * the column name for the email_subject field
      */
-    const COL_TITLE = 'tf_files.title';
+    const COL_EMAIL_SUBJECT = 'tf_email_instance.email_subject';
 
     /**
-     * the column name for the file_name field
+     * the column name for the email_body field
      */
-    const COL_FILE_NAME = 'tf_files.file_name';
+    const COL_EMAIL_BODY = 'tf_email_instance.email_body';
 
     /**
-     * the column name for the file_size field
+     * the column name for the from_email_address field
      */
-    const COL_FILE_SIZE = 'tf_files.file_size';
+    const COL_FROM_EMAIL_ADDRESS = 'tf_email_instance.from_email_address';
 
     /**
-     * the column name for the upload_id field
+     * the column name for the to_email_address field
      */
-    const COL_UPLOAD_ID = 'tf_files.upload_id';
+    const COL_TO_EMAIL_ADDRESS = 'tf_email_instance.to_email_address';
 
     /**
-     * the column name for the upload_date field
+     * the column name for the email_status_cd field
      */
-    const COL_UPLOAD_DATE = 'tf_files.upload_date';
-
-    /**
-     * the column name for the location_id field
-     */
-    const COL_LOCATION_ID = 'tf_files.location_id';
-
-    /**
-     * the column name for the last_viewed field
-     */
-    const COL_LAST_VIEWED = 'tf_files.last_viewed';
-
-    /**
-     * the column name for the viewed_by field
-     */
-    const COL_VIEWED_BY = 'tf_files.viewed_by';
+    const COL_EMAIL_STATUS_CD = 'tf_email_instance.email_status_cd';
 
     /**
      * The default string format for model objects of the related table
@@ -128,11 +113,11 @@ class FilesTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('FileId', 'Title', 'FileName', 'FileSize', 'UploadId', 'UploadDate', 'LocationId', 'LastViewed', 'ViewedBy', ),
-        self::TYPE_CAMELNAME     => array('fileId', 'title', 'fileName', 'fileSize', 'uploadId', 'uploadDate', 'locationId', 'lastViewed', 'viewedBy', ),
-        self::TYPE_COLNAME       => array(FilesTableMap::COL_FILE_ID, FilesTableMap::COL_TITLE, FilesTableMap::COL_FILE_NAME, FilesTableMap::COL_FILE_SIZE, FilesTableMap::COL_UPLOAD_ID, FilesTableMap::COL_UPLOAD_DATE, FilesTableMap::COL_LOCATION_ID, FilesTableMap::COL_LAST_VIEWED, FilesTableMap::COL_VIEWED_BY, ),
-        self::TYPE_FIELDNAME     => array('file_id', 'title', 'file_name', 'file_size', 'upload_id', 'upload_date', 'location_id', 'last_viewed', 'viewed_by', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
+        self::TYPE_PHPNAME       => array('EmailInstanceId', 'EmailSubject', 'EmailBody', 'FromEmailAddress', 'ToEmailAddress', 'EmailStatusCd', ),
+        self::TYPE_CAMELNAME     => array('emailInstanceId', 'emailSubject', 'emailBody', 'fromEmailAddress', 'toEmailAddress', 'emailStatusCd', ),
+        self::TYPE_COLNAME       => array(EmailInstanceTableMap::COL_EMAIL_INSTANCE_ID, EmailInstanceTableMap::COL_EMAIL_SUBJECT, EmailInstanceTableMap::COL_EMAIL_BODY, EmailInstanceTableMap::COL_FROM_EMAIL_ADDRESS, EmailInstanceTableMap::COL_TO_EMAIL_ADDRESS, EmailInstanceTableMap::COL_EMAIL_STATUS_CD, ),
+        self::TYPE_FIELDNAME     => array('email_instance_id', 'email_subject', 'email_body', 'from_email_address', 'to_email_address', 'email_status_cd', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
     );
 
     /**
@@ -142,11 +127,11 @@ class FilesTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('FileId' => 0, 'Title' => 1, 'FileName' => 2, 'FileSize' => 3, 'UploadId' => 4, 'UploadDate' => 5, 'LocationId' => 6, 'LastViewed' => 7, 'ViewedBy' => 8, ),
-        self::TYPE_CAMELNAME     => array('fileId' => 0, 'title' => 1, 'fileName' => 2, 'fileSize' => 3, 'uploadId' => 4, 'uploadDate' => 5, 'locationId' => 6, 'lastViewed' => 7, 'viewedBy' => 8, ),
-        self::TYPE_COLNAME       => array(FilesTableMap::COL_FILE_ID => 0, FilesTableMap::COL_TITLE => 1, FilesTableMap::COL_FILE_NAME => 2, FilesTableMap::COL_FILE_SIZE => 3, FilesTableMap::COL_UPLOAD_ID => 4, FilesTableMap::COL_UPLOAD_DATE => 5, FilesTableMap::COL_LOCATION_ID => 6, FilesTableMap::COL_LAST_VIEWED => 7, FilesTableMap::COL_VIEWED_BY => 8, ),
-        self::TYPE_FIELDNAME     => array('file_id' => 0, 'title' => 1, 'file_name' => 2, 'file_size' => 3, 'upload_id' => 4, 'upload_date' => 5, 'location_id' => 6, 'last_viewed' => 7, 'viewed_by' => 8, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
+        self::TYPE_PHPNAME       => array('EmailInstanceId' => 0, 'EmailSubject' => 1, 'EmailBody' => 2, 'FromEmailAddress' => 3, 'ToEmailAddress' => 4, 'EmailStatusCd' => 5, ),
+        self::TYPE_CAMELNAME     => array('emailInstanceId' => 0, 'emailSubject' => 1, 'emailBody' => 2, 'fromEmailAddress' => 3, 'toEmailAddress' => 4, 'emailStatusCd' => 5, ),
+        self::TYPE_COLNAME       => array(EmailInstanceTableMap::COL_EMAIL_INSTANCE_ID => 0, EmailInstanceTableMap::COL_EMAIL_SUBJECT => 1, EmailInstanceTableMap::COL_EMAIL_BODY => 2, EmailInstanceTableMap::COL_FROM_EMAIL_ADDRESS => 3, EmailInstanceTableMap::COL_TO_EMAIL_ADDRESS => 4, EmailInstanceTableMap::COL_EMAIL_STATUS_CD => 5, ),
+        self::TYPE_FIELDNAME     => array('email_instance_id' => 0, 'email_subject' => 1, 'email_body' => 2, 'from_email_address' => 3, 'to_email_address' => 4, 'email_status_cd' => 5, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
     );
 
     /**
@@ -159,22 +144,19 @@ class FilesTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('tf_files');
-        $this->setPhpName('Files');
+        $this->setName('tf_email_instance');
+        $this->setPhpName('EmailInstance');
         $this->setIdentifierQuoting(false);
-        $this->setClassName('\\TheFarm\\Models\\Files');
+        $this->setClassName('\\TheFarm\\Models\\EmailInstance');
         $this->setPackage('TheFarm.Models');
         $this->setUseIdGenerator(true);
         // columns
-        $this->addPrimaryKey('file_id', 'FileId', 'INTEGER', true, null, null);
-        $this->addColumn('title', 'Title', 'VARCHAR', true, 255, null);
-        $this->addColumn('file_name', 'FileName', 'VARCHAR', true, 255, null);
-        $this->addColumn('file_size', 'FileSize', 'INTEGER', true, null, null);
-        $this->addColumn('upload_id', 'UploadId', 'INTEGER', true, 5, null);
-        $this->addColumn('upload_date', 'UploadDate', 'INTEGER', true, 10, null);
-        $this->addColumn('location_id', 'LocationId', 'INTEGER', true, 5, null);
-        $this->addColumn('last_viewed', 'LastViewed', 'INTEGER', false, 10, null);
-        $this->addColumn('viewed_by', 'ViewedBy', 'INTEGER', false, 5, null);
+        $this->addPrimaryKey('email_instance_id', 'EmailInstanceId', 'INTEGER', true, null, null);
+        $this->addColumn('email_subject', 'EmailSubject', 'VARCHAR', true, 100, null);
+        $this->addColumn('email_body', 'EmailBody', 'LONGVARCHAR', false, null, null);
+        $this->addColumn('from_email_address', 'FromEmailAddress', 'VARCHAR', true, 100, null);
+        $this->addColumn('to_email_address', 'ToEmailAddress', 'VARCHAR', true, 100, null);
+        $this->addColumn('email_status_cd', 'EmailStatusCd', 'VARCHAR', true, 20, null);
     } // initialize()
 
     /**
@@ -182,27 +164,6 @@ class FilesTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('BookingAttachment', '\\TheFarm\\Models\\BookingAttachment', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':file_id',
-    1 => ':file_id',
-  ),
-), null, null, 'BookingAttachments', false);
-        $this->addRelation('Category', '\\TheFarm\\Models\\Category', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':cat_image',
-    1 => ':file_id',
-  ),
-), null, null, 'Categories', false);
-        $this->addRelation('Item', '\\TheFarm\\Models\\Item', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':item_image',
-    1 => ':file_id',
-  ),
-), null, null, 'Items', false);
     } // buildRelations()
 
     /**
@@ -221,11 +182,11 @@ class FilesTableMap extends TableMap
     public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
         // If the PK cannot be derived from the row, return NULL.
-        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('FileId', TableMap::TYPE_PHPNAME, $indexType)] === null) {
+        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('EmailInstanceId', TableMap::TYPE_PHPNAME, $indexType)] === null) {
             return null;
         }
 
-        return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('FileId', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('FileId', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('FileId', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('FileId', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('FileId', TableMap::TYPE_PHPNAME, $indexType)];
+        return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('EmailInstanceId', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('EmailInstanceId', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('EmailInstanceId', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('EmailInstanceId', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('EmailInstanceId', TableMap::TYPE_PHPNAME, $indexType)];
     }
 
     /**
@@ -245,7 +206,7 @@ class FilesTableMap extends TableMap
         return (int) $row[
             $indexType == TableMap::TYPE_NUM
                 ? 0 + $offset
-                : self::translateFieldName('FileId', TableMap::TYPE_PHPNAME, $indexType)
+                : self::translateFieldName('EmailInstanceId', TableMap::TYPE_PHPNAME, $indexType)
         ];
     }
 
@@ -262,7 +223,7 @@ class FilesTableMap extends TableMap
      */
     public static function getOMClass($withPrefix = true)
     {
-        return $withPrefix ? FilesTableMap::CLASS_DEFAULT : FilesTableMap::OM_CLASS;
+        return $withPrefix ? EmailInstanceTableMap::CLASS_DEFAULT : EmailInstanceTableMap::OM_CLASS;
     }
 
     /**
@@ -276,22 +237,22 @@ class FilesTableMap extends TableMap
      *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
-     * @return array           (Files object, last column rank)
+     * @return array           (EmailInstance object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        $key = FilesTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
-        if (null !== ($obj = FilesTableMap::getInstanceFromPool($key))) {
+        $key = EmailInstanceTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
+        if (null !== ($obj = EmailInstanceTableMap::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $offset, true); // rehydrate
-            $col = $offset + FilesTableMap::NUM_HYDRATE_COLUMNS;
+            $col = $offset + EmailInstanceTableMap::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = FilesTableMap::OM_CLASS;
-            /** @var Files $obj */
+            $cls = EmailInstanceTableMap::OM_CLASS;
+            /** @var EmailInstance $obj */
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
-            FilesTableMap::addInstanceToPool($obj, $key);
+            EmailInstanceTableMap::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
@@ -314,18 +275,18 @@ class FilesTableMap extends TableMap
         $cls = static::getOMClass(false);
         // populate the object(s)
         while ($row = $dataFetcher->fetch()) {
-            $key = FilesTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
-            if (null !== ($obj = FilesTableMap::getInstanceFromPool($key))) {
+            $key = EmailInstanceTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
+            if (null !== ($obj = EmailInstanceTableMap::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
                 $results[] = $obj;
             } else {
-                /** @var Files $obj */
+                /** @var EmailInstance $obj */
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                FilesTableMap::addInstanceToPool($obj, $key);
+                EmailInstanceTableMap::addInstanceToPool($obj, $key);
             } // if key exists
         }
 
@@ -346,25 +307,19 @@ class FilesTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(FilesTableMap::COL_FILE_ID);
-            $criteria->addSelectColumn(FilesTableMap::COL_TITLE);
-            $criteria->addSelectColumn(FilesTableMap::COL_FILE_NAME);
-            $criteria->addSelectColumn(FilesTableMap::COL_FILE_SIZE);
-            $criteria->addSelectColumn(FilesTableMap::COL_UPLOAD_ID);
-            $criteria->addSelectColumn(FilesTableMap::COL_UPLOAD_DATE);
-            $criteria->addSelectColumn(FilesTableMap::COL_LOCATION_ID);
-            $criteria->addSelectColumn(FilesTableMap::COL_LAST_VIEWED);
-            $criteria->addSelectColumn(FilesTableMap::COL_VIEWED_BY);
+            $criteria->addSelectColumn(EmailInstanceTableMap::COL_EMAIL_INSTANCE_ID);
+            $criteria->addSelectColumn(EmailInstanceTableMap::COL_EMAIL_SUBJECT);
+            $criteria->addSelectColumn(EmailInstanceTableMap::COL_EMAIL_BODY);
+            $criteria->addSelectColumn(EmailInstanceTableMap::COL_FROM_EMAIL_ADDRESS);
+            $criteria->addSelectColumn(EmailInstanceTableMap::COL_TO_EMAIL_ADDRESS);
+            $criteria->addSelectColumn(EmailInstanceTableMap::COL_EMAIL_STATUS_CD);
         } else {
-            $criteria->addSelectColumn($alias . '.file_id');
-            $criteria->addSelectColumn($alias . '.title');
-            $criteria->addSelectColumn($alias . '.file_name');
-            $criteria->addSelectColumn($alias . '.file_size');
-            $criteria->addSelectColumn($alias . '.upload_id');
-            $criteria->addSelectColumn($alias . '.upload_date');
-            $criteria->addSelectColumn($alias . '.location_id');
-            $criteria->addSelectColumn($alias . '.last_viewed');
-            $criteria->addSelectColumn($alias . '.viewed_by');
+            $criteria->addSelectColumn($alias . '.email_instance_id');
+            $criteria->addSelectColumn($alias . '.email_subject');
+            $criteria->addSelectColumn($alias . '.email_body');
+            $criteria->addSelectColumn($alias . '.from_email_address');
+            $criteria->addSelectColumn($alias . '.to_email_address');
+            $criteria->addSelectColumn($alias . '.email_status_cd');
         }
     }
 
@@ -377,7 +332,7 @@ class FilesTableMap extends TableMap
      */
     public static function getTableMap()
     {
-        return Propel::getServiceContainer()->getDatabaseMap(FilesTableMap::DATABASE_NAME)->getTable(FilesTableMap::TABLE_NAME);
+        return Propel::getServiceContainer()->getDatabaseMap(EmailInstanceTableMap::DATABASE_NAME)->getTable(EmailInstanceTableMap::TABLE_NAME);
     }
 
     /**
@@ -385,16 +340,16 @@ class FilesTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-        $dbMap = Propel::getServiceContainer()->getDatabaseMap(FilesTableMap::DATABASE_NAME);
-        if (!$dbMap->hasTable(FilesTableMap::TABLE_NAME)) {
-            $dbMap->addTableObject(new FilesTableMap());
+        $dbMap = Propel::getServiceContainer()->getDatabaseMap(EmailInstanceTableMap::DATABASE_NAME);
+        if (!$dbMap->hasTable(EmailInstanceTableMap::TABLE_NAME)) {
+            $dbMap->addTableObject(new EmailInstanceTableMap());
         }
     }
 
     /**
-     * Performs a DELETE on the database, given a Files or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a EmailInstance or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or Files object or primary key or array of primary keys
+     * @param mixed               $values Criteria or EmailInstance object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param  ConnectionInterface $con the connection to use
      * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -405,27 +360,27 @@ class FilesTableMap extends TableMap
      public static function doDelete($values, ConnectionInterface $con = null)
      {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(FilesTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(EmailInstanceTableMap::DATABASE_NAME);
         }
 
         if ($values instanceof Criteria) {
             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \TheFarm\Models\Files) { // it's a model object
+        } elseif ($values instanceof \TheFarm\Models\EmailInstance) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(FilesTableMap::DATABASE_NAME);
-            $criteria->add(FilesTableMap::COL_FILE_ID, (array) $values, Criteria::IN);
+            $criteria = new Criteria(EmailInstanceTableMap::DATABASE_NAME);
+            $criteria->add(EmailInstanceTableMap::COL_EMAIL_INSTANCE_ID, (array) $values, Criteria::IN);
         }
 
-        $query = FilesQuery::create()->mergeWith($criteria);
+        $query = EmailInstanceQuery::create()->mergeWith($criteria);
 
         if ($values instanceof Criteria) {
-            FilesTableMap::clearInstancePool();
+            EmailInstanceTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
             foreach ((array) $values as $singleval) {
-                FilesTableMap::removeInstanceFromPool($singleval);
+                EmailInstanceTableMap::removeInstanceFromPool($singleval);
             }
         }
 
@@ -433,20 +388,20 @@ class FilesTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the tf_files table.
+     * Deletes all rows from the tf_email_instance table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public static function doDeleteAll(ConnectionInterface $con = null)
     {
-        return FilesQuery::create()->doDeleteAll($con);
+        return EmailInstanceQuery::create()->doDeleteAll($con);
     }
 
     /**
-     * Performs an INSERT on the database, given a Files or Criteria object.
+     * Performs an INSERT on the database, given a EmailInstance or Criteria object.
      *
-     * @param mixed               $criteria Criteria or Files object containing data that is used to create the INSERT statement.
+     * @param mixed               $criteria Criteria or EmailInstance object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
@@ -455,22 +410,22 @@ class FilesTableMap extends TableMap
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(FilesTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(EmailInstanceTableMap::DATABASE_NAME);
         }
 
         if ($criteria instanceof Criteria) {
             $criteria = clone $criteria; // rename for clarity
         } else {
-            $criteria = $criteria->buildCriteria(); // build Criteria from Files object
+            $criteria = $criteria->buildCriteria(); // build Criteria from EmailInstance object
         }
 
-        if ($criteria->containsKey(FilesTableMap::COL_FILE_ID) && $criteria->keyContainsValue(FilesTableMap::COL_FILE_ID) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.FilesTableMap::COL_FILE_ID.')');
+        if ($criteria->containsKey(EmailInstanceTableMap::COL_EMAIL_INSTANCE_ID) && $criteria->keyContainsValue(EmailInstanceTableMap::COL_EMAIL_INSTANCE_ID) ) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.EmailInstanceTableMap::COL_EMAIL_INSTANCE_ID.')');
         }
 
 
         // Set the correct dbName
-        $query = FilesQuery::create()->mergeWith($criteria);
+        $query = EmailInstanceQuery::create()->mergeWith($criteria);
 
         // use transaction because $criteria could contain info
         // for more than one table (I guess, conceivably)
@@ -479,7 +434,7 @@ class FilesTableMap extends TableMap
         });
     }
 
-} // FilesTableMap
+} // EmailInstanceTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-FilesTableMap::buildTableMap();
+EmailInstanceTableMap::buildTableMap();

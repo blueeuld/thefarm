@@ -16,29 +16,32 @@ use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
-use TheFarm\Models\Booking as ChildBooking;
-use TheFarm\Models\BookingEvent as ChildBookingEvent;
-use TheFarm\Models\BookingEventQuery as ChildBookingEventQuery;
-use TheFarm\Models\BookingQuery as ChildBookingQuery;
-use TheFarm\Models\EventStatus as ChildEventStatus;
-use TheFarm\Models\EventStatusQuery as ChildEventStatusQuery;
-use TheFarm\Models\Map\BookingEventTableMap;
-use TheFarm\Models\Map\BookingTableMap;
-use TheFarm\Models\Map\EventStatusTableMap;
+use TheFarm\Models\Category as ChildCategory;
+use TheFarm\Models\CategoryQuery as ChildCategoryQuery;
+use TheFarm\Models\Facility as ChildFacility;
+use TheFarm\Models\FacilityQuery as ChildFacilityQuery;
+use TheFarm\Models\Location as ChildLocation;
+use TheFarm\Models\LocationQuery as ChildLocationQuery;
+use TheFarm\Models\User as ChildUser;
+use TheFarm\Models\UserQuery as ChildUserQuery;
+use TheFarm\Models\Map\CategoryTableMap;
+use TheFarm\Models\Map\FacilityTableMap;
+use TheFarm\Models\Map\LocationTableMap;
+use TheFarm\Models\Map\UserTableMap;
 
 /**
- * Base class that represents a row from the 'tf_event_status' table.
+ * Base class that represents a row from the 'tf_locations' table.
  *
  *
  *
  * @package    propel.generator.TheFarm.Models.Base
  */
-abstract class EventStatus implements ActiveRecordInterface
+abstract class Location implements ActiveRecordInterface
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\TheFarm\\Models\\Map\\EventStatusTableMap';
+    const TABLE_MAP = '\\TheFarm\\Models\\Map\\LocationTableMap';
 
 
     /**
@@ -68,58 +71,36 @@ abstract class EventStatus implements ActiveRecordInterface
     protected $virtualColumns = array();
 
     /**
-     * The value for the status_cd field.
-     *
-     * @var        string
-     */
-    protected $status_cd;
-
-    /**
-     * The value for the status_value field.
-     *
-     * @var        string
-     */
-    protected $status_value;
-
-    /**
-     * The value for the status_order field.
+     * The value for the location_id field.
      *
      * @var        int
      */
-    protected $status_order;
+    protected $location_id;
 
     /**
-     * The value for the status_style field.
+     * The value for the location field.
      *
      * @var        string
      */
-    protected $status_style;
+    protected $location;
 
     /**
-     * The value for the include_in_sales field.
-     *
-     * @var        string
+     * @var        ObjectCollection|ChildCategory[] Collection to store aggregation of ChildCategory objects.
      */
-    protected $include_in_sales;
+    protected $collCategories;
+    protected $collCategoriesPartial;
 
     /**
-     * The value for the include_in_duplicate_checking field.
-     *
-     * @var        string
+     * @var        ObjectCollection|ChildFacility[] Collection to store aggregation of ChildFacility objects.
      */
-    protected $include_in_duplicate_checking;
+    protected $collFacilities;
+    protected $collFacilitiesPartial;
 
     /**
-     * @var        ObjectCollection|ChildBookingEvent[] Collection to store aggregation of ChildBookingEvent objects.
+     * @var        ObjectCollection|ChildUser[] Collection to store aggregation of ChildUser objects.
      */
-    protected $collBookingEvents;
-    protected $collBookingEventsPartial;
-
-    /**
-     * @var        ObjectCollection|ChildBooking[] Collection to store aggregation of ChildBooking objects.
-     */
-    protected $collBookings;
-    protected $collBookingsPartial;
+    protected $collUsers;
+    protected $collUsersPartial;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -131,18 +112,24 @@ abstract class EventStatus implements ActiveRecordInterface
 
     /**
      * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildBookingEvent[]
+     * @var ObjectCollection|ChildCategory[]
      */
-    protected $bookingEventsScheduledForDeletion = null;
+    protected $categoriesScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildBooking[]
+     * @var ObjectCollection|ChildFacility[]
      */
-    protected $bookingsScheduledForDeletion = null;
+    protected $facilitiesScheduledForDeletion = null;
 
     /**
-     * Initializes internal state of TheFarm\Models\Base\EventStatus object.
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildUser[]
+     */
+    protected $usersScheduledForDeletion = null;
+
+    /**
+     * Initializes internal state of TheFarm\Models\Base\Location object.
      */
     public function __construct()
     {
@@ -237,9 +224,9 @@ abstract class EventStatus implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>EventStatus</code> instance.  If
-     * <code>obj</code> is an instance of <code>EventStatus</code>, delegates to
-     * <code>equals(EventStatus)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>Location</code> instance.  If
+     * <code>obj</code> is an instance of <code>Location</code>, delegates to
+     * <code>equals(Location)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
@@ -305,7 +292,7 @@ abstract class EventStatus implements ActiveRecordInterface
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
      *
-     * @return $this|EventStatus The current object, for fluid interface
+     * @return $this|Location The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -367,184 +354,64 @@ abstract class EventStatus implements ActiveRecordInterface
     }
 
     /**
-     * Get the [status_cd] column value.
-     *
-     * @return string
-     */
-    public function getStatusCd()
-    {
-        return $this->status_cd;
-    }
-
-    /**
-     * Get the [status_value] column value.
-     *
-     * @return string
-     */
-    public function getStatusValue()
-    {
-        return $this->status_value;
-    }
-
-    /**
-     * Get the [status_order] column value.
+     * Get the [location_id] column value.
      *
      * @return int
      */
-    public function getStatusOrder()
+    public function getLocationId()
     {
-        return $this->status_order;
+        return $this->location_id;
     }
 
     /**
-     * Get the [status_style] column value.
+     * Get the [location] column value.
      *
      * @return string
      */
-    public function getStatusStyle()
+    public function getLocation()
     {
-        return $this->status_style;
+        return $this->location;
     }
 
     /**
-     * Get the [include_in_sales] column value.
-     *
-     * @return string
-     */
-    public function getIncludeInSales()
-    {
-        return $this->include_in_sales;
-    }
-
-    /**
-     * Get the [include_in_duplicate_checking] column value.
-     *
-     * @return string
-     */
-    public function getIncludeInDuplicateChecking()
-    {
-        return $this->include_in_duplicate_checking;
-    }
-
-    /**
-     * Set the value of [status_cd] column.
-     *
-     * @param string $v new value
-     * @return $this|\TheFarm\Models\EventStatus The current object (for fluent API support)
-     */
-    public function setStatusCd($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->status_cd !== $v) {
-            $this->status_cd = $v;
-            $this->modifiedColumns[EventStatusTableMap::COL_STATUS_CD] = true;
-        }
-
-        return $this;
-    } // setStatusCd()
-
-    /**
-     * Set the value of [status_value] column.
-     *
-     * @param string $v new value
-     * @return $this|\TheFarm\Models\EventStatus The current object (for fluent API support)
-     */
-    public function setStatusValue($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->status_value !== $v) {
-            $this->status_value = $v;
-            $this->modifiedColumns[EventStatusTableMap::COL_STATUS_VALUE] = true;
-        }
-
-        return $this;
-    } // setStatusValue()
-
-    /**
-     * Set the value of [status_order] column.
+     * Set the value of [location_id] column.
      *
      * @param int $v new value
-     * @return $this|\TheFarm\Models\EventStatus The current object (for fluent API support)
+     * @return $this|\TheFarm\Models\Location The current object (for fluent API support)
      */
-    public function setStatusOrder($v)
+    public function setLocationId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
         }
 
-        if ($this->status_order !== $v) {
-            $this->status_order = $v;
-            $this->modifiedColumns[EventStatusTableMap::COL_STATUS_ORDER] = true;
+        if ($this->location_id !== $v) {
+            $this->location_id = $v;
+            $this->modifiedColumns[LocationTableMap::COL_LOCATION_ID] = true;
         }
 
         return $this;
-    } // setStatusOrder()
+    } // setLocationId()
 
     /**
-     * Set the value of [status_style] column.
+     * Set the value of [location] column.
      *
      * @param string $v new value
-     * @return $this|\TheFarm\Models\EventStatus The current object (for fluent API support)
+     * @return $this|\TheFarm\Models\Location The current object (for fluent API support)
      */
-    public function setStatusStyle($v)
+    public function setLocation($v)
     {
         if ($v !== null) {
             $v = (string) $v;
         }
 
-        if ($this->status_style !== $v) {
-            $this->status_style = $v;
-            $this->modifiedColumns[EventStatusTableMap::COL_STATUS_STYLE] = true;
+        if ($this->location !== $v) {
+            $this->location = $v;
+            $this->modifiedColumns[LocationTableMap::COL_LOCATION] = true;
         }
 
         return $this;
-    } // setStatusStyle()
-
-    /**
-     * Set the value of [include_in_sales] column.
-     *
-     * @param string $v new value
-     * @return $this|\TheFarm\Models\EventStatus The current object (for fluent API support)
-     */
-    public function setIncludeInSales($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->include_in_sales !== $v) {
-            $this->include_in_sales = $v;
-            $this->modifiedColumns[EventStatusTableMap::COL_INCLUDE_IN_SALES] = true;
-        }
-
-        return $this;
-    } // setIncludeInSales()
-
-    /**
-     * Set the value of [include_in_duplicate_checking] column.
-     *
-     * @param string $v new value
-     * @return $this|\TheFarm\Models\EventStatus The current object (for fluent API support)
-     */
-    public function setIncludeInDuplicateChecking($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->include_in_duplicate_checking !== $v) {
-            $this->include_in_duplicate_checking = $v;
-            $this->modifiedColumns[EventStatusTableMap::COL_INCLUDE_IN_DUPLICATE_CHECKING] = true;
-        }
-
-        return $this;
-    } // setIncludeInDuplicateChecking()
+    } // setLocation()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -582,23 +449,11 @@ abstract class EventStatus implements ActiveRecordInterface
     {
         try {
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : EventStatusTableMap::translateFieldName('StatusCd', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->status_cd = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : LocationTableMap::translateFieldName('LocationId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->location_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : EventStatusTableMap::translateFieldName('StatusValue', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->status_value = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : EventStatusTableMap::translateFieldName('StatusOrder', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->status_order = (null !== $col) ? (int) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : EventStatusTableMap::translateFieldName('StatusStyle', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->status_style = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : EventStatusTableMap::translateFieldName('IncludeInSales', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->include_in_sales = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : EventStatusTableMap::translateFieldName('IncludeInDuplicateChecking', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->include_in_duplicate_checking = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : LocationTableMap::translateFieldName('Location', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->location = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -607,10 +462,10 @@ abstract class EventStatus implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 6; // 6 = EventStatusTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 2; // 2 = LocationTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(sprintf('Error populating %s object', '\\TheFarm\\Models\\EventStatus'), 0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\TheFarm\\Models\\Location'), 0, $e);
         }
     }
 
@@ -652,13 +507,13 @@ abstract class EventStatus implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(EventStatusTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(LocationTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildEventStatusQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildLocationQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -668,9 +523,11 @@ abstract class EventStatus implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->collBookingEvents = null;
+            $this->collCategories = null;
 
-            $this->collBookings = null;
+            $this->collFacilities = null;
+
+            $this->collUsers = null;
 
         } // if (deep)
     }
@@ -681,8 +538,8 @@ abstract class EventStatus implements ActiveRecordInterface
      * @param      ConnectionInterface $con
      * @return void
      * @throws PropelException
-     * @see EventStatus::setDeleted()
-     * @see EventStatus::isDeleted()
+     * @see Location::setDeleted()
+     * @see Location::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -691,11 +548,11 @@ abstract class EventStatus implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(EventStatusTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(LocationTableMap::DATABASE_NAME);
         }
 
         $con->transaction(function () use ($con) {
-            $deleteQuery = ChildEventStatusQuery::create()
+            $deleteQuery = ChildLocationQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -730,7 +587,7 @@ abstract class EventStatus implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(EventStatusTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(LocationTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
@@ -749,7 +606,7 @@ abstract class EventStatus implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                EventStatusTableMap::addInstanceToPool($this);
+                LocationTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -786,36 +643,53 @@ abstract class EventStatus implements ActiveRecordInterface
                 $this->resetModified();
             }
 
-            if ($this->bookingEventsScheduledForDeletion !== null) {
-                if (!$this->bookingEventsScheduledForDeletion->isEmpty()) {
-                    foreach ($this->bookingEventsScheduledForDeletion as $bookingEvent) {
-                        // need to save related object because we set the relation to null
-                        $bookingEvent->save($con);
-                    }
-                    $this->bookingEventsScheduledForDeletion = null;
+            if ($this->categoriesScheduledForDeletion !== null) {
+                if (!$this->categoriesScheduledForDeletion->isEmpty()) {
+                    \TheFarm\Models\CategoryQuery::create()
+                        ->filterByPrimaryKeys($this->categoriesScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->categoriesScheduledForDeletion = null;
                 }
             }
 
-            if ($this->collBookingEvents !== null) {
-                foreach ($this->collBookingEvents as $referrerFK) {
+            if ($this->collCategories !== null) {
+                foreach ($this->collCategories as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
             }
 
-            if ($this->bookingsScheduledForDeletion !== null) {
-                if (!$this->bookingsScheduledForDeletion->isEmpty()) {
-                    foreach ($this->bookingsScheduledForDeletion as $booking) {
+            if ($this->facilitiesScheduledForDeletion !== null) {
+                if (!$this->facilitiesScheduledForDeletion->isEmpty()) {
+                    foreach ($this->facilitiesScheduledForDeletion as $facility) {
                         // need to save related object because we set the relation to null
-                        $booking->save($con);
+                        $facility->save($con);
                     }
-                    $this->bookingsScheduledForDeletion = null;
+                    $this->facilitiesScheduledForDeletion = null;
                 }
             }
 
-            if ($this->collBookings !== null) {
-                foreach ($this->collBookings as $referrerFK) {
+            if ($this->collFacilities !== null) {
+                foreach ($this->collFacilities as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->usersScheduledForDeletion !== null) {
+                if (!$this->usersScheduledForDeletion->isEmpty()) {
+                    foreach ($this->usersScheduledForDeletion as $user) {
+                        // need to save related object because we set the relation to null
+                        $user->save($con);
+                    }
+                    $this->usersScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collUsers !== null) {
+                foreach ($this->collUsers as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -842,29 +716,21 @@ abstract class EventStatus implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
+        $this->modifiedColumns[LocationTableMap::COL_LOCATION_ID] = true;
+        if (null !== $this->location_id) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . LocationTableMap::COL_LOCATION_ID . ')');
+        }
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(EventStatusTableMap::COL_STATUS_CD)) {
-            $modifiedColumns[':p' . $index++]  = 'status_cd';
+        if ($this->isColumnModified(LocationTableMap::COL_LOCATION_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'location_id';
         }
-        if ($this->isColumnModified(EventStatusTableMap::COL_STATUS_VALUE)) {
-            $modifiedColumns[':p' . $index++]  = 'status_value';
-        }
-        if ($this->isColumnModified(EventStatusTableMap::COL_STATUS_ORDER)) {
-            $modifiedColumns[':p' . $index++]  = 'status_order';
-        }
-        if ($this->isColumnModified(EventStatusTableMap::COL_STATUS_STYLE)) {
-            $modifiedColumns[':p' . $index++]  = 'status_style';
-        }
-        if ($this->isColumnModified(EventStatusTableMap::COL_INCLUDE_IN_SALES)) {
-            $modifiedColumns[':p' . $index++]  = 'include_in_sales';
-        }
-        if ($this->isColumnModified(EventStatusTableMap::COL_INCLUDE_IN_DUPLICATE_CHECKING)) {
-            $modifiedColumns[':p' . $index++]  = 'include_in_duplicate_checking';
+        if ($this->isColumnModified(LocationTableMap::COL_LOCATION)) {
+            $modifiedColumns[':p' . $index++]  = 'location';
         }
 
         $sql = sprintf(
-            'INSERT INTO tf_event_status (%s) VALUES (%s)',
+            'INSERT INTO tf_locations (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -873,23 +739,11 @@ abstract class EventStatus implements ActiveRecordInterface
             $stmt = $con->prepare($sql);
             foreach ($modifiedColumns as $identifier => $columnName) {
                 switch ($columnName) {
-                    case 'status_cd':
-                        $stmt->bindValue($identifier, $this->status_cd, PDO::PARAM_STR);
+                    case 'location_id':
+                        $stmt->bindValue($identifier, $this->location_id, PDO::PARAM_INT);
                         break;
-                    case 'status_value':
-                        $stmt->bindValue($identifier, $this->status_value, PDO::PARAM_STR);
-                        break;
-                    case 'status_order':
-                        $stmt->bindValue($identifier, $this->status_order, PDO::PARAM_INT);
-                        break;
-                    case 'status_style':
-                        $stmt->bindValue($identifier, $this->status_style, PDO::PARAM_STR);
-                        break;
-                    case 'include_in_sales':
-                        $stmt->bindValue($identifier, $this->include_in_sales, PDO::PARAM_STR);
-                        break;
-                    case 'include_in_duplicate_checking':
-                        $stmt->bindValue($identifier, $this->include_in_duplicate_checking, PDO::PARAM_STR);
+                    case 'location':
+                        $stmt->bindValue($identifier, $this->location, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -898,6 +752,13 @@ abstract class EventStatus implements ActiveRecordInterface
             Propel::log($e->getMessage(), Propel::LOG_ERR);
             throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), 0, $e);
         }
+
+        try {
+            $pk = $con->lastInsertId();
+        } catch (Exception $e) {
+            throw new PropelException('Unable to get autoincrement id.', 0, $e);
+        }
+        $this->setLocationId($pk);
 
         $this->setNew(false);
     }
@@ -930,7 +791,7 @@ abstract class EventStatus implements ActiveRecordInterface
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = EventStatusTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = LocationTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -947,22 +808,10 @@ abstract class EventStatus implements ActiveRecordInterface
     {
         switch ($pos) {
             case 0:
-                return $this->getStatusCd();
+                return $this->getLocationId();
                 break;
             case 1:
-                return $this->getStatusValue();
-                break;
-            case 2:
-                return $this->getStatusOrder();
-                break;
-            case 3:
-                return $this->getStatusStyle();
-                break;
-            case 4:
-                return $this->getIncludeInSales();
-                break;
-            case 5:
-                return $this->getIncludeInDuplicateChecking();
+                return $this->getLocation();
                 break;
             default:
                 return null;
@@ -988,18 +837,14 @@ abstract class EventStatus implements ActiveRecordInterface
     public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
 
-        if (isset($alreadyDumpedObjects['EventStatus'][$this->hashCode()])) {
+        if (isset($alreadyDumpedObjects['Location'][$this->hashCode()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['EventStatus'][$this->hashCode()] = true;
-        $keys = EventStatusTableMap::getFieldNames($keyType);
+        $alreadyDumpedObjects['Location'][$this->hashCode()] = true;
+        $keys = LocationTableMap::getFieldNames($keyType);
         $result = array(
-            $keys[0] => $this->getStatusCd(),
-            $keys[1] => $this->getStatusValue(),
-            $keys[2] => $this->getStatusOrder(),
-            $keys[3] => $this->getStatusStyle(),
-            $keys[4] => $this->getIncludeInSales(),
-            $keys[5] => $this->getIncludeInDuplicateChecking(),
+            $keys[0] => $this->getLocationId(),
+            $keys[1] => $this->getLocation(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1007,35 +852,50 @@ abstract class EventStatus implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->collBookingEvents) {
+            if (null !== $this->collCategories) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'bookingEvents';
+                        $key = 'categories';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = 'tf_booking_eventss';
+                        $key = 'tf_categoriess';
                         break;
                     default:
-                        $key = 'BookingEvents';
+                        $key = 'Categories';
                 }
 
-                $result[$key] = $this->collBookingEvents->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+                $result[$key] = $this->collCategories->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
-            if (null !== $this->collBookings) {
+            if (null !== $this->collFacilities) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'bookings';
+                        $key = 'facilities';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = 'tf_bookingss';
+                        $key = 'tf_facilitiess';
                         break;
                     default:
-                        $key = 'Bookings';
+                        $key = 'Facilities';
                 }
 
-                $result[$key] = $this->collBookings->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+                $result[$key] = $this->collFacilities->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collUsers) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'users';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'tf_userss';
+                        break;
+                    default:
+                        $key = 'Users';
+                }
+
+                $result[$key] = $this->collUsers->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1051,11 +911,11 @@ abstract class EventStatus implements ActiveRecordInterface
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
-     * @return $this|\TheFarm\Models\EventStatus
+     * @return $this|\TheFarm\Models\Location
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = EventStatusTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = LocationTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -1066,28 +926,16 @@ abstract class EventStatus implements ActiveRecordInterface
      *
      * @param  int $pos position in xml schema
      * @param  mixed $value field value
-     * @return $this|\TheFarm\Models\EventStatus
+     * @return $this|\TheFarm\Models\Location
      */
     public function setByPosition($pos, $value)
     {
         switch ($pos) {
             case 0:
-                $this->setStatusCd($value);
+                $this->setLocationId($value);
                 break;
             case 1:
-                $this->setStatusValue($value);
-                break;
-            case 2:
-                $this->setStatusOrder($value);
-                break;
-            case 3:
-                $this->setStatusStyle($value);
-                break;
-            case 4:
-                $this->setIncludeInSales($value);
-                break;
-            case 5:
-                $this->setIncludeInDuplicateChecking($value);
+                $this->setLocation($value);
                 break;
         } // switch()
 
@@ -1113,25 +961,13 @@ abstract class EventStatus implements ActiveRecordInterface
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = EventStatusTableMap::getFieldNames($keyType);
+        $keys = LocationTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) {
-            $this->setStatusCd($arr[$keys[0]]);
+            $this->setLocationId($arr[$keys[0]]);
         }
         if (array_key_exists($keys[1], $arr)) {
-            $this->setStatusValue($arr[$keys[1]]);
-        }
-        if (array_key_exists($keys[2], $arr)) {
-            $this->setStatusOrder($arr[$keys[2]]);
-        }
-        if (array_key_exists($keys[3], $arr)) {
-            $this->setStatusStyle($arr[$keys[3]]);
-        }
-        if (array_key_exists($keys[4], $arr)) {
-            $this->setIncludeInSales($arr[$keys[4]]);
-        }
-        if (array_key_exists($keys[5], $arr)) {
-            $this->setIncludeInDuplicateChecking($arr[$keys[5]]);
+            $this->setLocation($arr[$keys[1]]);
         }
     }
 
@@ -1152,7 +988,7 @@ abstract class EventStatus implements ActiveRecordInterface
      * @param string $data The source data to import from
      * @param string $keyType The type of keys the array uses.
      *
-     * @return $this|\TheFarm\Models\EventStatus The current object, for fluid interface
+     * @return $this|\TheFarm\Models\Location The current object, for fluid interface
      */
     public function importFrom($parser, $data, $keyType = TableMap::TYPE_PHPNAME)
     {
@@ -1172,25 +1008,13 @@ abstract class EventStatus implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(EventStatusTableMap::DATABASE_NAME);
+        $criteria = new Criteria(LocationTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(EventStatusTableMap::COL_STATUS_CD)) {
-            $criteria->add(EventStatusTableMap::COL_STATUS_CD, $this->status_cd);
+        if ($this->isColumnModified(LocationTableMap::COL_LOCATION_ID)) {
+            $criteria->add(LocationTableMap::COL_LOCATION_ID, $this->location_id);
         }
-        if ($this->isColumnModified(EventStatusTableMap::COL_STATUS_VALUE)) {
-            $criteria->add(EventStatusTableMap::COL_STATUS_VALUE, $this->status_value);
-        }
-        if ($this->isColumnModified(EventStatusTableMap::COL_STATUS_ORDER)) {
-            $criteria->add(EventStatusTableMap::COL_STATUS_ORDER, $this->status_order);
-        }
-        if ($this->isColumnModified(EventStatusTableMap::COL_STATUS_STYLE)) {
-            $criteria->add(EventStatusTableMap::COL_STATUS_STYLE, $this->status_style);
-        }
-        if ($this->isColumnModified(EventStatusTableMap::COL_INCLUDE_IN_SALES)) {
-            $criteria->add(EventStatusTableMap::COL_INCLUDE_IN_SALES, $this->include_in_sales);
-        }
-        if ($this->isColumnModified(EventStatusTableMap::COL_INCLUDE_IN_DUPLICATE_CHECKING)) {
-            $criteria->add(EventStatusTableMap::COL_INCLUDE_IN_DUPLICATE_CHECKING, $this->include_in_duplicate_checking);
+        if ($this->isColumnModified(LocationTableMap::COL_LOCATION)) {
+            $criteria->add(LocationTableMap::COL_LOCATION, $this->location);
         }
 
         return $criteria;
@@ -1208,8 +1032,8 @@ abstract class EventStatus implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = ChildEventStatusQuery::create();
-        $criteria->add(EventStatusTableMap::COL_STATUS_CD, $this->status_cd);
+        $criteria = ChildLocationQuery::create();
+        $criteria->add(LocationTableMap::COL_LOCATION_ID, $this->location_id);
 
         return $criteria;
     }
@@ -1222,7 +1046,7 @@ abstract class EventStatus implements ActiveRecordInterface
      */
     public function hashCode()
     {
-        $validPk = null !== $this->getStatusCd();
+        $validPk = null !== $this->getLocationId();
 
         $validPrimaryKeyFKs = 0;
         $primaryKeyFKs = [];
@@ -1238,22 +1062,22 @@ abstract class EventStatus implements ActiveRecordInterface
 
     /**
      * Returns the primary key for this object (row).
-     * @return string
+     * @return int
      */
     public function getPrimaryKey()
     {
-        return $this->getStatusCd();
+        return $this->getLocationId();
     }
 
     /**
-     * Generic method to set the primary key (status_cd column).
+     * Generic method to set the primary key (location_id column).
      *
-     * @param       string $key Primary key.
+     * @param       int $key Primary key.
      * @return void
      */
     public function setPrimaryKey($key)
     {
-        $this->setStatusCd($key);
+        $this->setLocationId($key);
     }
 
     /**
@@ -1262,7 +1086,7 @@ abstract class EventStatus implements ActiveRecordInterface
      */
     public function isPrimaryKeyNull()
     {
-        return null === $this->getStatusCd();
+        return null === $this->getLocationId();
     }
 
     /**
@@ -1271,34 +1095,35 @@ abstract class EventStatus implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \TheFarm\Models\EventStatus (or compatible) type.
+     * @param      object $copyObj An object of \TheFarm\Models\Location (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setStatusCd($this->getStatusCd());
-        $copyObj->setStatusValue($this->getStatusValue());
-        $copyObj->setStatusOrder($this->getStatusOrder());
-        $copyObj->setStatusStyle($this->getStatusStyle());
-        $copyObj->setIncludeInSales($this->getIncludeInSales());
-        $copyObj->setIncludeInDuplicateChecking($this->getIncludeInDuplicateChecking());
+        $copyObj->setLocation($this->getLocation());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
             // the getter/setter methods for fkey referrer objects.
             $copyObj->setNew(false);
 
-            foreach ($this->getBookingEvents() as $relObj) {
+            foreach ($this->getCategories() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addBookingEvent($relObj->copy($deepCopy));
+                    $copyObj->addCategory($relObj->copy($deepCopy));
                 }
             }
 
-            foreach ($this->getBookings() as $relObj) {
+            foreach ($this->getFacilities() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addBooking($relObj->copy($deepCopy));
+                    $copyObj->addFacility($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getUsers() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addUser($relObj->copy($deepCopy));
                 }
             }
 
@@ -1306,6 +1131,7 @@ abstract class EventStatus implements ActiveRecordInterface
 
         if ($makeNew) {
             $copyObj->setNew(true);
+            $copyObj->setLocationId(NULL); // this is a auto-increment column, so set to default value
         }
     }
 
@@ -1318,7 +1144,7 @@ abstract class EventStatus implements ActiveRecordInterface
      * objects.
      *
      * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return \TheFarm\Models\EventStatus Clone of current object.
+     * @return \TheFarm\Models\Location Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1342,42 +1168,46 @@ abstract class EventStatus implements ActiveRecordInterface
      */
     public function initRelation($relationName)
     {
-        if ('BookingEvent' == $relationName) {
-            $this->initBookingEvents();
+        if ('Category' == $relationName) {
+            $this->initCategories();
             return;
         }
-        if ('Booking' == $relationName) {
-            $this->initBookings();
+        if ('Facility' == $relationName) {
+            $this->initFacilities();
+            return;
+        }
+        if ('User' == $relationName) {
+            $this->initUsers();
             return;
         }
     }
 
     /**
-     * Clears out the collBookingEvents collection
+     * Clears out the collCategories collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
      * @return void
-     * @see        addBookingEvents()
+     * @see        addCategories()
      */
-    public function clearBookingEvents()
+    public function clearCategories()
     {
-        $this->collBookingEvents = null; // important to set this to NULL since that means it is uninitialized
+        $this->collCategories = null; // important to set this to NULL since that means it is uninitialized
     }
 
     /**
-     * Reset is the collBookingEvents collection loaded partially.
+     * Reset is the collCategories collection loaded partially.
      */
-    public function resetPartialBookingEvents($v = true)
+    public function resetPartialCategories($v = true)
     {
-        $this->collBookingEventsPartial = $v;
+        $this->collCategoriesPartial = $v;
     }
 
     /**
-     * Initializes the collBookingEvents collection.
+     * Initializes the collCategories collection.
      *
-     * By default this just sets the collBookingEvents collection to an empty array (like clearcollBookingEvents());
+     * By default this just sets the collCategories collection to an empty array (like clearcollCategories());
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
@@ -1386,162 +1216,162 @@ abstract class EventStatus implements ActiveRecordInterface
      *
      * @return void
      */
-    public function initBookingEvents($overrideExisting = true)
+    public function initCategories($overrideExisting = true)
     {
-        if (null !== $this->collBookingEvents && !$overrideExisting) {
+        if (null !== $this->collCategories && !$overrideExisting) {
             return;
         }
 
-        $collectionClassName = BookingEventTableMap::getTableMap()->getCollectionClassName();
+        $collectionClassName = CategoryTableMap::getTableMap()->getCollectionClassName();
 
-        $this->collBookingEvents = new $collectionClassName;
-        $this->collBookingEvents->setModel('\TheFarm\Models\BookingEvent');
+        $this->collCategories = new $collectionClassName;
+        $this->collCategories->setModel('\TheFarm\Models\Category');
     }
 
     /**
-     * Gets an array of ChildBookingEvent objects which contain a foreign key that references this object.
+     * Gets an array of ChildCategory objects which contain a foreign key that references this object.
      *
      * If the $criteria is not null, it is used to always fetch the results from the database.
      * Otherwise the results are fetched from the database the first time, then cached.
      * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildEventStatus is new, it will return
+     * If this ChildLocation is new, it will return
      * an empty collection or the current collection; the criteria is ignored on a new object.
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildBookingEvent[] List of ChildBookingEvent objects
+     * @return ObjectCollection|ChildCategory[] List of ChildCategory objects
      * @throws PropelException
      */
-    public function getBookingEvents(Criteria $criteria = null, ConnectionInterface $con = null)
+    public function getCategories(Criteria $criteria = null, ConnectionInterface $con = null)
     {
-        $partial = $this->collBookingEventsPartial && !$this->isNew();
-        if (null === $this->collBookingEvents || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collBookingEvents) {
+        $partial = $this->collCategoriesPartial && !$this->isNew();
+        if (null === $this->collCategories || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collCategories) {
                 // return empty collection
-                $this->initBookingEvents();
+                $this->initCategories();
             } else {
-                $collBookingEvents = ChildBookingEventQuery::create(null, $criteria)
-                    ->filterByEventStatus($this)
+                $collCategories = ChildCategoryQuery::create(null, $criteria)
+                    ->filterByLocation($this)
                     ->find($con);
 
                 if (null !== $criteria) {
-                    if (false !== $this->collBookingEventsPartial && count($collBookingEvents)) {
-                        $this->initBookingEvents(false);
+                    if (false !== $this->collCategoriesPartial && count($collCategories)) {
+                        $this->initCategories(false);
 
-                        foreach ($collBookingEvents as $obj) {
-                            if (false == $this->collBookingEvents->contains($obj)) {
-                                $this->collBookingEvents->append($obj);
+                        foreach ($collCategories as $obj) {
+                            if (false == $this->collCategories->contains($obj)) {
+                                $this->collCategories->append($obj);
                             }
                         }
 
-                        $this->collBookingEventsPartial = true;
+                        $this->collCategoriesPartial = true;
                     }
 
-                    return $collBookingEvents;
+                    return $collCategories;
                 }
 
-                if ($partial && $this->collBookingEvents) {
-                    foreach ($this->collBookingEvents as $obj) {
+                if ($partial && $this->collCategories) {
+                    foreach ($this->collCategories as $obj) {
                         if ($obj->isNew()) {
-                            $collBookingEvents[] = $obj;
+                            $collCategories[] = $obj;
                         }
                     }
                 }
 
-                $this->collBookingEvents = $collBookingEvents;
-                $this->collBookingEventsPartial = false;
+                $this->collCategories = $collCategories;
+                $this->collCategoriesPartial = false;
             }
         }
 
-        return $this->collBookingEvents;
+        return $this->collCategories;
     }
 
     /**
-     * Sets a collection of ChildBookingEvent objects related by a one-to-many relationship
+     * Sets a collection of ChildCategory objects related by a one-to-many relationship
      * to the current object.
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param      Collection $bookingEvents A Propel collection.
+     * @param      Collection $categories A Propel collection.
      * @param      ConnectionInterface $con Optional connection object
-     * @return $this|ChildEventStatus The current object (for fluent API support)
+     * @return $this|ChildLocation The current object (for fluent API support)
      */
-    public function setBookingEvents(Collection $bookingEvents, ConnectionInterface $con = null)
+    public function setCategories(Collection $categories, ConnectionInterface $con = null)
     {
-        /** @var ChildBookingEvent[] $bookingEventsToDelete */
-        $bookingEventsToDelete = $this->getBookingEvents(new Criteria(), $con)->diff($bookingEvents);
+        /** @var ChildCategory[] $categoriesToDelete */
+        $categoriesToDelete = $this->getCategories(new Criteria(), $con)->diff($categories);
 
 
-        $this->bookingEventsScheduledForDeletion = $bookingEventsToDelete;
+        $this->categoriesScheduledForDeletion = $categoriesToDelete;
 
-        foreach ($bookingEventsToDelete as $bookingEventRemoved) {
-            $bookingEventRemoved->setEventStatus(null);
+        foreach ($categoriesToDelete as $categoryRemoved) {
+            $categoryRemoved->setLocation(null);
         }
 
-        $this->collBookingEvents = null;
-        foreach ($bookingEvents as $bookingEvent) {
-            $this->addBookingEvent($bookingEvent);
+        $this->collCategories = null;
+        foreach ($categories as $category) {
+            $this->addCategory($category);
         }
 
-        $this->collBookingEvents = $bookingEvents;
-        $this->collBookingEventsPartial = false;
+        $this->collCategories = $categories;
+        $this->collCategoriesPartial = false;
 
         return $this;
     }
 
     /**
-     * Returns the number of related BookingEvent objects.
+     * Returns the number of related Category objects.
      *
      * @param      Criteria $criteria
      * @param      boolean $distinct
      * @param      ConnectionInterface $con
-     * @return int             Count of related BookingEvent objects.
+     * @return int             Count of related Category objects.
      * @throws PropelException
      */
-    public function countBookingEvents(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function countCategories(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
     {
-        $partial = $this->collBookingEventsPartial && !$this->isNew();
-        if (null === $this->collBookingEvents || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collBookingEvents) {
+        $partial = $this->collCategoriesPartial && !$this->isNew();
+        if (null === $this->collCategories || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collCategories) {
                 return 0;
             }
 
             if ($partial && !$criteria) {
-                return count($this->getBookingEvents());
+                return count($this->getCategories());
             }
 
-            $query = ChildBookingEventQuery::create(null, $criteria);
+            $query = ChildCategoryQuery::create(null, $criteria);
             if ($distinct) {
                 $query->distinct();
             }
 
             return $query
-                ->filterByEventStatus($this)
+                ->filterByLocation($this)
                 ->count($con);
         }
 
-        return count($this->collBookingEvents);
+        return count($this->collCategories);
     }
 
     /**
-     * Method called to associate a ChildBookingEvent object to this object
-     * through the ChildBookingEvent foreign key attribute.
+     * Method called to associate a ChildCategory object to this object
+     * through the ChildCategory foreign key attribute.
      *
-     * @param  ChildBookingEvent $l ChildBookingEvent
-     * @return $this|\TheFarm\Models\EventStatus The current object (for fluent API support)
+     * @param  ChildCategory $l ChildCategory
+     * @return $this|\TheFarm\Models\Location The current object (for fluent API support)
      */
-    public function addBookingEvent(ChildBookingEvent $l)
+    public function addCategory(ChildCategory $l)
     {
-        if ($this->collBookingEvents === null) {
-            $this->initBookingEvents();
-            $this->collBookingEventsPartial = true;
+        if ($this->collCategories === null) {
+            $this->initCategories();
+            $this->collCategoriesPartial = true;
         }
 
-        if (!$this->collBookingEvents->contains($l)) {
-            $this->doAddBookingEvent($l);
+        if (!$this->collCategories->contains($l)) {
+            $this->doAddCategory($l);
 
-            if ($this->bookingEventsScheduledForDeletion and $this->bookingEventsScheduledForDeletion->contains($l)) {
-                $this->bookingEventsScheduledForDeletion->remove($this->bookingEventsScheduledForDeletion->search($l));
+            if ($this->categoriesScheduledForDeletion and $this->categoriesScheduledForDeletion->contains($l)) {
+                $this->categoriesScheduledForDeletion->remove($this->categoriesScheduledForDeletion->search($l));
             }
         }
 
@@ -1549,29 +1379,29 @@ abstract class EventStatus implements ActiveRecordInterface
     }
 
     /**
-     * @param ChildBookingEvent $bookingEvent The ChildBookingEvent object to add.
+     * @param ChildCategory $category The ChildCategory object to add.
      */
-    protected function doAddBookingEvent(ChildBookingEvent $bookingEvent)
+    protected function doAddCategory(ChildCategory $category)
     {
-        $this->collBookingEvents[]= $bookingEvent;
-        $bookingEvent->setEventStatus($this);
+        $this->collCategories[]= $category;
+        $category->setLocation($this);
     }
 
     /**
-     * @param  ChildBookingEvent $bookingEvent The ChildBookingEvent object to remove.
-     * @return $this|ChildEventStatus The current object (for fluent API support)
+     * @param  ChildCategory $category The ChildCategory object to remove.
+     * @return $this|ChildLocation The current object (for fluent API support)
      */
-    public function removeBookingEvent(ChildBookingEvent $bookingEvent)
+    public function removeCategory(ChildCategory $category)
     {
-        if ($this->getBookingEvents()->contains($bookingEvent)) {
-            $pos = $this->collBookingEvents->search($bookingEvent);
-            $this->collBookingEvents->remove($pos);
-            if (null === $this->bookingEventsScheduledForDeletion) {
-                $this->bookingEventsScheduledForDeletion = clone $this->collBookingEvents;
-                $this->bookingEventsScheduledForDeletion->clear();
+        if ($this->getCategories()->contains($category)) {
+            $pos = $this->collCategories->search($category);
+            $this->collCategories->remove($pos);
+            if (null === $this->categoriesScheduledForDeletion) {
+                $this->categoriesScheduledForDeletion = clone $this->collCategories;
+                $this->categoriesScheduledForDeletion->clear();
             }
-            $this->bookingEventsScheduledForDeletion[]= $bookingEvent;
-            $bookingEvent->setEventStatus(null);
+            $this->categoriesScheduledForDeletion[]= clone $category;
+            $category->setLocation(null);
         }
 
         return $this;
@@ -1581,203 +1411,78 @@ abstract class EventStatus implements ActiveRecordInterface
     /**
      * If this collection has already been initialized with
      * an identical criteria, it returns the collection.
-     * Otherwise if this EventStatus is new, it will return
-     * an empty collection; or if this EventStatus has previously
-     * been saved, it will retrieve related BookingEvents from storage.
+     * Otherwise if this Location is new, it will return
+     * an empty collection; or if this Location has previously
+     * been saved, it will retrieve related Categories from storage.
      *
      * This method is protected by default in order to keep the public
      * api reasonable.  You can provide public methods for those you
-     * actually need in EventStatus.
+     * actually need in Location.
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildBookingEvent[] List of ChildBookingEvent objects
+     * @return ObjectCollection|ChildCategory[] List of ChildCategory objects
      */
-    public function getBookingEventsJoinContactRelatedByAuthorId(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getCategoriesJoinFiles(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
-        $query = ChildBookingEventQuery::create(null, $criteria);
-        $query->joinWith('ContactRelatedByAuthorId', $joinBehavior);
+        $query = ChildCategoryQuery::create(null, $criteria);
+        $query->joinWith('Files', $joinBehavior);
 
-        return $this->getBookingEvents($query, $con);
+        return $this->getCategories($query, $con);
     }
 
 
     /**
      * If this collection has already been initialized with
      * an identical criteria, it returns the collection.
-     * Otherwise if this EventStatus is new, it will return
-     * an empty collection; or if this EventStatus has previously
-     * been saved, it will retrieve related BookingEvents from storage.
+     * Otherwise if this Location is new, it will return
+     * an empty collection; or if this Location has previously
+     * been saved, it will retrieve related Categories from storage.
      *
      * This method is protected by default in order to keep the public
      * api reasonable.  You can provide public methods for those you
-     * actually need in EventStatus.
+     * actually need in Location.
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildBookingEvent[] List of ChildBookingEvent objects
+     * @return ObjectCollection|ChildCategory[] List of ChildCategory objects
      */
-    public function getBookingEventsJoinBookingItem(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getCategoriesJoinCategoryRelatedByParentId(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
-        $query = ChildBookingEventQuery::create(null, $criteria);
-        $query->joinWith('BookingItem', $joinBehavior);
+        $query = ChildCategoryQuery::create(null, $criteria);
+        $query->joinWith('CategoryRelatedByParentId', $joinBehavior);
 
-        return $this->getBookingEvents($query, $con);
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this EventStatus is new, it will return
-     * an empty collection; or if this EventStatus has previously
-     * been saved, it will retrieve related BookingEvents from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in EventStatus.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildBookingEvent[] List of ChildBookingEvent objects
-     */
-    public function getBookingEventsJoinContactRelatedByCalledBy(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
-    {
-        $query = ChildBookingEventQuery::create(null, $criteria);
-        $query->joinWith('ContactRelatedByCalledBy', $joinBehavior);
-
-        return $this->getBookingEvents($query, $con);
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this EventStatus is new, it will return
-     * an empty collection; or if this EventStatus has previously
-     * been saved, it will retrieve related BookingEvents from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in EventStatus.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildBookingEvent[] List of ChildBookingEvent objects
-     */
-    public function getBookingEventsJoinContactRelatedByCancelledBy(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
-    {
-        $query = ChildBookingEventQuery::create(null, $criteria);
-        $query->joinWith('ContactRelatedByCancelledBy', $joinBehavior);
-
-        return $this->getBookingEvents($query, $con);
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this EventStatus is new, it will return
-     * an empty collection; or if this EventStatus has previously
-     * been saved, it will retrieve related BookingEvents from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in EventStatus.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildBookingEvent[] List of ChildBookingEvent objects
-     */
-    public function getBookingEventsJoinContactRelatedByDeletedBy(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
-    {
-        $query = ChildBookingEventQuery::create(null, $criteria);
-        $query->joinWith('ContactRelatedByDeletedBy', $joinBehavior);
-
-        return $this->getBookingEvents($query, $con);
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this EventStatus is new, it will return
-     * an empty collection; or if this EventStatus has previously
-     * been saved, it will retrieve related BookingEvents from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in EventStatus.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildBookingEvent[] List of ChildBookingEvent objects
-     */
-    public function getBookingEventsJoinFacility(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
-    {
-        $query = ChildBookingEventQuery::create(null, $criteria);
-        $query->joinWith('Facility', $joinBehavior);
-
-        return $this->getBookingEvents($query, $con);
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this EventStatus is new, it will return
-     * an empty collection; or if this EventStatus has previously
-     * been saved, it will retrieve related BookingEvents from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in EventStatus.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildBookingEvent[] List of ChildBookingEvent objects
-     */
-    public function getBookingEventsJoinItem(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
-    {
-        $query = ChildBookingEventQuery::create(null, $criteria);
-        $query->joinWith('Item', $joinBehavior);
-
-        return $this->getBookingEvents($query, $con);
+        return $this->getCategories($query, $con);
     }
 
     /**
-     * Clears out the collBookings collection
+     * Clears out the collFacilities collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
      * @return void
-     * @see        addBookings()
+     * @see        addFacilities()
      */
-    public function clearBookings()
+    public function clearFacilities()
     {
-        $this->collBookings = null; // important to set this to NULL since that means it is uninitialized
+        $this->collFacilities = null; // important to set this to NULL since that means it is uninitialized
     }
 
     /**
-     * Reset is the collBookings collection loaded partially.
+     * Reset is the collFacilities collection loaded partially.
      */
-    public function resetPartialBookings($v = true)
+    public function resetPartialFacilities($v = true)
     {
-        $this->collBookingsPartial = $v;
+        $this->collFacilitiesPartial = $v;
     }
 
     /**
-     * Initializes the collBookings collection.
+     * Initializes the collFacilities collection.
      *
-     * By default this just sets the collBookings collection to an empty array (like clearcollBookings());
+     * By default this just sets the collFacilities collection to an empty array (like clearcollFacilities());
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
@@ -1786,162 +1491,162 @@ abstract class EventStatus implements ActiveRecordInterface
      *
      * @return void
      */
-    public function initBookings($overrideExisting = true)
+    public function initFacilities($overrideExisting = true)
     {
-        if (null !== $this->collBookings && !$overrideExisting) {
+        if (null !== $this->collFacilities && !$overrideExisting) {
             return;
         }
 
-        $collectionClassName = BookingTableMap::getTableMap()->getCollectionClassName();
+        $collectionClassName = FacilityTableMap::getTableMap()->getCollectionClassName();
 
-        $this->collBookings = new $collectionClassName;
-        $this->collBookings->setModel('\TheFarm\Models\Booking');
+        $this->collFacilities = new $collectionClassName;
+        $this->collFacilities->setModel('\TheFarm\Models\Facility');
     }
 
     /**
-     * Gets an array of ChildBooking objects which contain a foreign key that references this object.
+     * Gets an array of ChildFacility objects which contain a foreign key that references this object.
      *
      * If the $criteria is not null, it is used to always fetch the results from the database.
      * Otherwise the results are fetched from the database the first time, then cached.
      * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildEventStatus is new, it will return
+     * If this ChildLocation is new, it will return
      * an empty collection or the current collection; the criteria is ignored on a new object.
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildBooking[] List of ChildBooking objects
+     * @return ObjectCollection|ChildFacility[] List of ChildFacility objects
      * @throws PropelException
      */
-    public function getBookings(Criteria $criteria = null, ConnectionInterface $con = null)
+    public function getFacilities(Criteria $criteria = null, ConnectionInterface $con = null)
     {
-        $partial = $this->collBookingsPartial && !$this->isNew();
-        if (null === $this->collBookings || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collBookings) {
+        $partial = $this->collFacilitiesPartial && !$this->isNew();
+        if (null === $this->collFacilities || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collFacilities) {
                 // return empty collection
-                $this->initBookings();
+                $this->initFacilities();
             } else {
-                $collBookings = ChildBookingQuery::create(null, $criteria)
-                    ->filterByEventStatus($this)
+                $collFacilities = ChildFacilityQuery::create(null, $criteria)
+                    ->filterByLocation($this)
                     ->find($con);
 
                 if (null !== $criteria) {
-                    if (false !== $this->collBookingsPartial && count($collBookings)) {
-                        $this->initBookings(false);
+                    if (false !== $this->collFacilitiesPartial && count($collFacilities)) {
+                        $this->initFacilities(false);
 
-                        foreach ($collBookings as $obj) {
-                            if (false == $this->collBookings->contains($obj)) {
-                                $this->collBookings->append($obj);
+                        foreach ($collFacilities as $obj) {
+                            if (false == $this->collFacilities->contains($obj)) {
+                                $this->collFacilities->append($obj);
                             }
                         }
 
-                        $this->collBookingsPartial = true;
+                        $this->collFacilitiesPartial = true;
                     }
 
-                    return $collBookings;
+                    return $collFacilities;
                 }
 
-                if ($partial && $this->collBookings) {
-                    foreach ($this->collBookings as $obj) {
+                if ($partial && $this->collFacilities) {
+                    foreach ($this->collFacilities as $obj) {
                         if ($obj->isNew()) {
-                            $collBookings[] = $obj;
+                            $collFacilities[] = $obj;
                         }
                     }
                 }
 
-                $this->collBookings = $collBookings;
-                $this->collBookingsPartial = false;
+                $this->collFacilities = $collFacilities;
+                $this->collFacilitiesPartial = false;
             }
         }
 
-        return $this->collBookings;
+        return $this->collFacilities;
     }
 
     /**
-     * Sets a collection of ChildBooking objects related by a one-to-many relationship
+     * Sets a collection of ChildFacility objects related by a one-to-many relationship
      * to the current object.
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param      Collection $bookings A Propel collection.
+     * @param      Collection $facilities A Propel collection.
      * @param      ConnectionInterface $con Optional connection object
-     * @return $this|ChildEventStatus The current object (for fluent API support)
+     * @return $this|ChildLocation The current object (for fluent API support)
      */
-    public function setBookings(Collection $bookings, ConnectionInterface $con = null)
+    public function setFacilities(Collection $facilities, ConnectionInterface $con = null)
     {
-        /** @var ChildBooking[] $bookingsToDelete */
-        $bookingsToDelete = $this->getBookings(new Criteria(), $con)->diff($bookings);
+        /** @var ChildFacility[] $facilitiesToDelete */
+        $facilitiesToDelete = $this->getFacilities(new Criteria(), $con)->diff($facilities);
 
 
-        $this->bookingsScheduledForDeletion = $bookingsToDelete;
+        $this->facilitiesScheduledForDeletion = $facilitiesToDelete;
 
-        foreach ($bookingsToDelete as $bookingRemoved) {
-            $bookingRemoved->setEventStatus(null);
+        foreach ($facilitiesToDelete as $facilityRemoved) {
+            $facilityRemoved->setLocation(null);
         }
 
-        $this->collBookings = null;
-        foreach ($bookings as $booking) {
-            $this->addBooking($booking);
+        $this->collFacilities = null;
+        foreach ($facilities as $facility) {
+            $this->addFacility($facility);
         }
 
-        $this->collBookings = $bookings;
-        $this->collBookingsPartial = false;
+        $this->collFacilities = $facilities;
+        $this->collFacilitiesPartial = false;
 
         return $this;
     }
 
     /**
-     * Returns the number of related Booking objects.
+     * Returns the number of related Facility objects.
      *
      * @param      Criteria $criteria
      * @param      boolean $distinct
      * @param      ConnectionInterface $con
-     * @return int             Count of related Booking objects.
+     * @return int             Count of related Facility objects.
      * @throws PropelException
      */
-    public function countBookings(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function countFacilities(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
     {
-        $partial = $this->collBookingsPartial && !$this->isNew();
-        if (null === $this->collBookings || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collBookings) {
+        $partial = $this->collFacilitiesPartial && !$this->isNew();
+        if (null === $this->collFacilities || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collFacilities) {
                 return 0;
             }
 
             if ($partial && !$criteria) {
-                return count($this->getBookings());
+                return count($this->getFacilities());
             }
 
-            $query = ChildBookingQuery::create(null, $criteria);
+            $query = ChildFacilityQuery::create(null, $criteria);
             if ($distinct) {
                 $query->distinct();
             }
 
             return $query
-                ->filterByEventStatus($this)
+                ->filterByLocation($this)
                 ->count($con);
         }
 
-        return count($this->collBookings);
+        return count($this->collFacilities);
     }
 
     /**
-     * Method called to associate a ChildBooking object to this object
-     * through the ChildBooking foreign key attribute.
+     * Method called to associate a ChildFacility object to this object
+     * through the ChildFacility foreign key attribute.
      *
-     * @param  ChildBooking $l ChildBooking
-     * @return $this|\TheFarm\Models\EventStatus The current object (for fluent API support)
+     * @param  ChildFacility $l ChildFacility
+     * @return $this|\TheFarm\Models\Location The current object (for fluent API support)
      */
-    public function addBooking(ChildBooking $l)
+    public function addFacility(ChildFacility $l)
     {
-        if ($this->collBookings === null) {
-            $this->initBookings();
-            $this->collBookingsPartial = true;
+        if ($this->collFacilities === null) {
+            $this->initFacilities();
+            $this->collFacilitiesPartial = true;
         }
 
-        if (!$this->collBookings->contains($l)) {
-            $this->doAddBooking($l);
+        if (!$this->collFacilities->contains($l)) {
+            $this->doAddFacility($l);
 
-            if ($this->bookingsScheduledForDeletion and $this->bookingsScheduledForDeletion->contains($l)) {
-                $this->bookingsScheduledForDeletion->remove($this->bookingsScheduledForDeletion->search($l));
+            if ($this->facilitiesScheduledForDeletion and $this->facilitiesScheduledForDeletion->contains($l)) {
+                $this->facilitiesScheduledForDeletion->remove($this->facilitiesScheduledForDeletion->search($l));
             }
         }
 
@@ -1949,29 +1654,254 @@ abstract class EventStatus implements ActiveRecordInterface
     }
 
     /**
-     * @param ChildBooking $booking The ChildBooking object to add.
+     * @param ChildFacility $facility The ChildFacility object to add.
      */
-    protected function doAddBooking(ChildBooking $booking)
+    protected function doAddFacility(ChildFacility $facility)
     {
-        $this->collBookings[]= $booking;
-        $booking->setEventStatus($this);
+        $this->collFacilities[]= $facility;
+        $facility->setLocation($this);
     }
 
     /**
-     * @param  ChildBooking $booking The ChildBooking object to remove.
-     * @return $this|ChildEventStatus The current object (for fluent API support)
+     * @param  ChildFacility $facility The ChildFacility object to remove.
+     * @return $this|ChildLocation The current object (for fluent API support)
      */
-    public function removeBooking(ChildBooking $booking)
+    public function removeFacility(ChildFacility $facility)
     {
-        if ($this->getBookings()->contains($booking)) {
-            $pos = $this->collBookings->search($booking);
-            $this->collBookings->remove($pos);
-            if (null === $this->bookingsScheduledForDeletion) {
-                $this->bookingsScheduledForDeletion = clone $this->collBookings;
-                $this->bookingsScheduledForDeletion->clear();
+        if ($this->getFacilities()->contains($facility)) {
+            $pos = $this->collFacilities->search($facility);
+            $this->collFacilities->remove($pos);
+            if (null === $this->facilitiesScheduledForDeletion) {
+                $this->facilitiesScheduledForDeletion = clone $this->collFacilities;
+                $this->facilitiesScheduledForDeletion->clear();
             }
-            $this->bookingsScheduledForDeletion[]= $booking;
-            $booking->setEventStatus(null);
+            $this->facilitiesScheduledForDeletion[]= $facility;
+            $facility->setLocation(null);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Clears out the collUsers collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addUsers()
+     */
+    public function clearUsers()
+    {
+        $this->collUsers = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collUsers collection loaded partially.
+     */
+    public function resetPartialUsers($v = true)
+    {
+        $this->collUsersPartial = $v;
+    }
+
+    /**
+     * Initializes the collUsers collection.
+     *
+     * By default this just sets the collUsers collection to an empty array (like clearcollUsers());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initUsers($overrideExisting = true)
+    {
+        if (null !== $this->collUsers && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = UserTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collUsers = new $collectionClassName;
+        $this->collUsers->setModel('\TheFarm\Models\User');
+    }
+
+    /**
+     * Gets an array of ChildUser objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildLocation is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildUser[] List of ChildUser objects
+     * @throws PropelException
+     */
+    public function getUsers(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collUsersPartial && !$this->isNew();
+        if (null === $this->collUsers || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collUsers) {
+                // return empty collection
+                $this->initUsers();
+            } else {
+                $collUsers = ChildUserQuery::create(null, $criteria)
+                    ->filterByLocation($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collUsersPartial && count($collUsers)) {
+                        $this->initUsers(false);
+
+                        foreach ($collUsers as $obj) {
+                            if (false == $this->collUsers->contains($obj)) {
+                                $this->collUsers->append($obj);
+                            }
+                        }
+
+                        $this->collUsersPartial = true;
+                    }
+
+                    return $collUsers;
+                }
+
+                if ($partial && $this->collUsers) {
+                    foreach ($this->collUsers as $obj) {
+                        if ($obj->isNew()) {
+                            $collUsers[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collUsers = $collUsers;
+                $this->collUsersPartial = false;
+            }
+        }
+
+        return $this->collUsers;
+    }
+
+    /**
+     * Sets a collection of ChildUser objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $users A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildLocation The current object (for fluent API support)
+     */
+    public function setUsers(Collection $users, ConnectionInterface $con = null)
+    {
+        /** @var ChildUser[] $usersToDelete */
+        $usersToDelete = $this->getUsers(new Criteria(), $con)->diff($users);
+
+
+        $this->usersScheduledForDeletion = $usersToDelete;
+
+        foreach ($usersToDelete as $userRemoved) {
+            $userRemoved->setLocation(null);
+        }
+
+        $this->collUsers = null;
+        foreach ($users as $user) {
+            $this->addUser($user);
+        }
+
+        $this->collUsers = $users;
+        $this->collUsersPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related User objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related User objects.
+     * @throws PropelException
+     */
+    public function countUsers(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collUsersPartial && !$this->isNew();
+        if (null === $this->collUsers || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collUsers) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getUsers());
+            }
+
+            $query = ChildUserQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByLocation($this)
+                ->count($con);
+        }
+
+        return count($this->collUsers);
+    }
+
+    /**
+     * Method called to associate a ChildUser object to this object
+     * through the ChildUser foreign key attribute.
+     *
+     * @param  ChildUser $l ChildUser
+     * @return $this|\TheFarm\Models\Location The current object (for fluent API support)
+     */
+    public function addUser(ChildUser $l)
+    {
+        if ($this->collUsers === null) {
+            $this->initUsers();
+            $this->collUsersPartial = true;
+        }
+
+        if (!$this->collUsers->contains($l)) {
+            $this->doAddUser($l);
+
+            if ($this->usersScheduledForDeletion and $this->usersScheduledForDeletion->contains($l)) {
+                $this->usersScheduledForDeletion->remove($this->usersScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildUser $user The ChildUser object to add.
+     */
+    protected function doAddUser(ChildUser $user)
+    {
+        $this->collUsers[]= $user;
+        $user->setLocation($this);
+    }
+
+    /**
+     * @param  ChildUser $user The ChildUser object to remove.
+     * @return $this|ChildLocation The current object (for fluent API support)
+     */
+    public function removeUser(ChildUser $user)
+    {
+        if ($this->getUsers()->contains($user)) {
+            $pos = $this->collUsers->search($user);
+            $this->collUsers->remove($pos);
+            if (null === $this->usersScheduledForDeletion) {
+                $this->usersScheduledForDeletion = clone $this->collUsers;
+                $this->usersScheduledForDeletion->clear();
+            }
+            $this->usersScheduledForDeletion[]= $user;
+            $user->setLocation(null);
         }
 
         return $this;
@@ -1981,100 +1911,50 @@ abstract class EventStatus implements ActiveRecordInterface
     /**
      * If this collection has already been initialized with
      * an identical criteria, it returns the collection.
-     * Otherwise if this EventStatus is new, it will return
-     * an empty collection; or if this EventStatus has previously
-     * been saved, it will retrieve related Bookings from storage.
+     * Otherwise if this Location is new, it will return
+     * an empty collection; or if this Location has previously
+     * been saved, it will retrieve related Users from storage.
      *
      * This method is protected by default in order to keep the public
      * api reasonable.  You can provide public methods for those you
-     * actually need in EventStatus.
+     * actually need in Location.
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildBooking[] List of ChildBooking objects
+     * @return ObjectCollection|ChildUser[] List of ChildUser objects
      */
-    public function getBookingsJoinContactRelatedByAuthorId(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getUsersJoinContact(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
-        $query = ChildBookingQuery::create(null, $criteria);
-        $query->joinWith('ContactRelatedByAuthorId', $joinBehavior);
+        $query = ChildUserQuery::create(null, $criteria);
+        $query->joinWith('Contact', $joinBehavior);
 
-        return $this->getBookings($query, $con);
+        return $this->getUsers($query, $con);
     }
 
 
     /**
      * If this collection has already been initialized with
      * an identical criteria, it returns the collection.
-     * Otherwise if this EventStatus is new, it will return
-     * an empty collection; or if this EventStatus has previously
-     * been saved, it will retrieve related Bookings from storage.
+     * Otherwise if this Location is new, it will return
+     * an empty collection; or if this Location has previously
+     * been saved, it will retrieve related Users from storage.
      *
      * This method is protected by default in order to keep the public
      * api reasonable.  You can provide public methods for those you
-     * actually need in EventStatus.
+     * actually need in Location.
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildBooking[] List of ChildBooking objects
+     * @return ObjectCollection|ChildUser[] List of ChildUser objects
      */
-    public function getBookingsJoinContactRelatedByGuestId(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getUsersJoinGroup(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
-        $query = ChildBookingQuery::create(null, $criteria);
-        $query->joinWith('ContactRelatedByGuestId', $joinBehavior);
+        $query = ChildUserQuery::create(null, $criteria);
+        $query->joinWith('Group', $joinBehavior);
 
-        return $this->getBookings($query, $con);
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this EventStatus is new, it will return
-     * an empty collection; or if this EventStatus has previously
-     * been saved, it will retrieve related Bookings from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in EventStatus.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildBooking[] List of ChildBooking objects
-     */
-    public function getBookingsJoinPackage(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
-    {
-        $query = ChildBookingQuery::create(null, $criteria);
-        $query->joinWith('Package', $joinBehavior);
-
-        return $this->getBookings($query, $con);
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this EventStatus is new, it will return
-     * an empty collection; or if this EventStatus has previously
-     * been saved, it will retrieve related Bookings from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in EventStatus.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildBooking[] List of ChildBooking objects
-     */
-    public function getBookingsJoinItem(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
-    {
-        $query = ChildBookingQuery::create(null, $criteria);
-        $query->joinWith('Item', $joinBehavior);
-
-        return $this->getBookings($query, $con);
+        return $this->getUsers($query, $con);
     }
 
     /**
@@ -2084,12 +1964,8 @@ abstract class EventStatus implements ActiveRecordInterface
      */
     public function clear()
     {
-        $this->status_cd = null;
-        $this->status_value = null;
-        $this->status_order = null;
-        $this->status_style = null;
-        $this->include_in_sales = null;
-        $this->include_in_duplicate_checking = null;
+        $this->location_id = null;
+        $this->location = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->resetModified();
@@ -2108,20 +1984,26 @@ abstract class EventStatus implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
-            if ($this->collBookingEvents) {
-                foreach ($this->collBookingEvents as $o) {
+            if ($this->collCategories) {
+                foreach ($this->collCategories as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
-            if ($this->collBookings) {
-                foreach ($this->collBookings as $o) {
+            if ($this->collFacilities) {
+                foreach ($this->collFacilities as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collUsers) {
+                foreach ($this->collUsers as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
         } // if ($deep)
 
-        $this->collBookingEvents = null;
-        $this->collBookings = null;
+        $this->collCategories = null;
+        $this->collFacilities = null;
+        $this->collUsers = null;
     }
 
     /**
@@ -2131,7 +2013,7 @@ abstract class EventStatus implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string) $this->exportTo(EventStatusTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(LocationTableMap::DEFAULT_STRING_FORMAT);
     }
 
     /**

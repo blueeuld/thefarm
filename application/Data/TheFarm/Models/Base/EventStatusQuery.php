@@ -42,27 +42,27 @@ use TheFarm\Models\Map\EventStatusTableMap;
  * @method     ChildEventStatusQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildEventStatusQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
  *
- * @method     ChildEventStatusQuery leftJoinBookingEvents($relationAlias = null) Adds a LEFT JOIN clause to the query using the BookingEvents relation
- * @method     ChildEventStatusQuery rightJoinBookingEvents($relationAlias = null) Adds a RIGHT JOIN clause to the query using the BookingEvents relation
- * @method     ChildEventStatusQuery innerJoinBookingEvents($relationAlias = null) Adds a INNER JOIN clause to the query using the BookingEvents relation
+ * @method     ChildEventStatusQuery leftJoinBookingEvent($relationAlias = null) Adds a LEFT JOIN clause to the query using the BookingEvent relation
+ * @method     ChildEventStatusQuery rightJoinBookingEvent($relationAlias = null) Adds a RIGHT JOIN clause to the query using the BookingEvent relation
+ * @method     ChildEventStatusQuery innerJoinBookingEvent($relationAlias = null) Adds a INNER JOIN clause to the query using the BookingEvent relation
  *
- * @method     ChildEventStatusQuery joinWithBookingEvents($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the BookingEvents relation
+ * @method     ChildEventStatusQuery joinWithBookingEvent($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the BookingEvent relation
  *
- * @method     ChildEventStatusQuery leftJoinWithBookingEvents() Adds a LEFT JOIN clause and with to the query using the BookingEvents relation
- * @method     ChildEventStatusQuery rightJoinWithBookingEvents() Adds a RIGHT JOIN clause and with to the query using the BookingEvents relation
- * @method     ChildEventStatusQuery innerJoinWithBookingEvents() Adds a INNER JOIN clause and with to the query using the BookingEvents relation
+ * @method     ChildEventStatusQuery leftJoinWithBookingEvent() Adds a LEFT JOIN clause and with to the query using the BookingEvent relation
+ * @method     ChildEventStatusQuery rightJoinWithBookingEvent() Adds a RIGHT JOIN clause and with to the query using the BookingEvent relation
+ * @method     ChildEventStatusQuery innerJoinWithBookingEvent() Adds a INNER JOIN clause and with to the query using the BookingEvent relation
  *
- * @method     ChildEventStatusQuery leftJoinBookings($relationAlias = null) Adds a LEFT JOIN clause to the query using the Bookings relation
- * @method     ChildEventStatusQuery rightJoinBookings($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Bookings relation
- * @method     ChildEventStatusQuery innerJoinBookings($relationAlias = null) Adds a INNER JOIN clause to the query using the Bookings relation
+ * @method     ChildEventStatusQuery leftJoinBooking($relationAlias = null) Adds a LEFT JOIN clause to the query using the Booking relation
+ * @method     ChildEventStatusQuery rightJoinBooking($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Booking relation
+ * @method     ChildEventStatusQuery innerJoinBooking($relationAlias = null) Adds a INNER JOIN clause to the query using the Booking relation
  *
- * @method     ChildEventStatusQuery joinWithBookings($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Bookings relation
+ * @method     ChildEventStatusQuery joinWithBooking($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Booking relation
  *
- * @method     ChildEventStatusQuery leftJoinWithBookings() Adds a LEFT JOIN clause and with to the query using the Bookings relation
- * @method     ChildEventStatusQuery rightJoinWithBookings() Adds a RIGHT JOIN clause and with to the query using the Bookings relation
- * @method     ChildEventStatusQuery innerJoinWithBookings() Adds a INNER JOIN clause and with to the query using the Bookings relation
+ * @method     ChildEventStatusQuery leftJoinWithBooking() Adds a LEFT JOIN clause and with to the query using the Booking relation
+ * @method     ChildEventStatusQuery rightJoinWithBooking() Adds a RIGHT JOIN clause and with to the query using the Booking relation
+ * @method     ChildEventStatusQuery innerJoinWithBooking() Adds a INNER JOIN clause and with to the query using the Booking relation
  *
- * @method     \TheFarm\Models\BookingEventsQuery|\TheFarm\Models\BookingsQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \TheFarm\Models\BookingEventQuery|\TheFarm\Models\BookingQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildEventStatus findOne(ConnectionInterface $con = null) Return the first ChildEventStatus matching the query
  * @method     ChildEventStatus findOneOrCreate(ConnectionInterface $con = null) Return the first ChildEventStatus matching the query, or a new ChildEventStatus object populated from the query conditions when no match is found
@@ -446,40 +446,40 @@ abstract class EventStatusQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \TheFarm\Models\BookingEvents object
+     * Filter the query by a related \TheFarm\Models\BookingEvent object
      *
-     * @param \TheFarm\Models\BookingEvents|ObjectCollection $bookingEvents the related object to use as filter
+     * @param \TheFarm\Models\BookingEvent|ObjectCollection $bookingEvent the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildEventStatusQuery The current query, for fluid interface
      */
-    public function filterByBookingEvents($bookingEvents, $comparison = null)
+    public function filterByBookingEvent($bookingEvent, $comparison = null)
     {
-        if ($bookingEvents instanceof \TheFarm\Models\BookingEvents) {
+        if ($bookingEvent instanceof \TheFarm\Models\BookingEvent) {
             return $this
-                ->addUsingAlias(EventStatusTableMap::COL_STATUS_CD, $bookingEvents->getStatus(), $comparison);
-        } elseif ($bookingEvents instanceof ObjectCollection) {
+                ->addUsingAlias(EventStatusTableMap::COL_STATUS_CD, $bookingEvent->getStatus(), $comparison);
+        } elseif ($bookingEvent instanceof ObjectCollection) {
             return $this
-                ->useBookingEventsQuery()
-                ->filterByPrimaryKeys($bookingEvents->getPrimaryKeys())
+                ->useBookingEventQuery()
+                ->filterByPrimaryKeys($bookingEvent->getPrimaryKeys())
                 ->endUse();
         } else {
-            throw new PropelException('filterByBookingEvents() only accepts arguments of type \TheFarm\Models\BookingEvents or Collection');
+            throw new PropelException('filterByBookingEvent() only accepts arguments of type \TheFarm\Models\BookingEvent or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the BookingEvents relation
+     * Adds a JOIN clause to the query using the BookingEvent relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildEventStatusQuery The current query, for fluid interface
      */
-    public function joinBookingEvents($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function joinBookingEvent($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('BookingEvents');
+        $relationMap = $tableMap->getRelation('BookingEvent');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -494,14 +494,14 @@ abstract class EventStatusQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'BookingEvents');
+            $this->addJoinObject($join, 'BookingEvent');
         }
 
         return $this;
     }
 
     /**
-     * Use the BookingEvents relation BookingEvents object
+     * Use the BookingEvent relation BookingEvent object
      *
      * @see useQuery()
      *
@@ -509,50 +509,50 @@ abstract class EventStatusQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \TheFarm\Models\BookingEventsQuery A secondary query class using the current class as primary query
+     * @return \TheFarm\Models\BookingEventQuery A secondary query class using the current class as primary query
      */
-    public function useBookingEventsQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function useBookingEventQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         return $this
-            ->joinBookingEvents($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'BookingEvents', '\TheFarm\Models\BookingEventsQuery');
+            ->joinBookingEvent($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'BookingEvent', '\TheFarm\Models\BookingEventQuery');
     }
 
     /**
-     * Filter the query by a related \TheFarm\Models\Bookings object
+     * Filter the query by a related \TheFarm\Models\Booking object
      *
-     * @param \TheFarm\Models\Bookings|ObjectCollection $bookings the related object to use as filter
+     * @param \TheFarm\Models\Booking|ObjectCollection $booking the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildEventStatusQuery The current query, for fluid interface
      */
-    public function filterByBookings($bookings, $comparison = null)
+    public function filterByBooking($booking, $comparison = null)
     {
-        if ($bookings instanceof \TheFarm\Models\Bookings) {
+        if ($booking instanceof \TheFarm\Models\Booking) {
             return $this
-                ->addUsingAlias(EventStatusTableMap::COL_STATUS_CD, $bookings->getStatus(), $comparison);
-        } elseif ($bookings instanceof ObjectCollection) {
+                ->addUsingAlias(EventStatusTableMap::COL_STATUS_CD, $booking->getStatus(), $comparison);
+        } elseif ($booking instanceof ObjectCollection) {
             return $this
-                ->useBookingsQuery()
-                ->filterByPrimaryKeys($bookings->getPrimaryKeys())
+                ->useBookingQuery()
+                ->filterByPrimaryKeys($booking->getPrimaryKeys())
                 ->endUse();
         } else {
-            throw new PropelException('filterByBookings() only accepts arguments of type \TheFarm\Models\Bookings or Collection');
+            throw new PropelException('filterByBooking() only accepts arguments of type \TheFarm\Models\Booking or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the Bookings relation
+     * Adds a JOIN clause to the query using the Booking relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildEventStatusQuery The current query, for fluid interface
      */
-    public function joinBookings($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function joinBooking($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Bookings');
+        $relationMap = $tableMap->getRelation('Booking');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -567,14 +567,14 @@ abstract class EventStatusQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'Bookings');
+            $this->addJoinObject($join, 'Booking');
         }
 
         return $this;
     }
 
     /**
-     * Use the Bookings relation Bookings object
+     * Use the Booking relation Booking object
      *
      * @see useQuery()
      *
@@ -582,13 +582,13 @@ abstract class EventStatusQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \TheFarm\Models\BookingsQuery A secondary query class using the current class as primary query
+     * @return \TheFarm\Models\BookingQuery A secondary query class using the current class as primary query
      */
-    public function useBookingsQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function useBookingQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         return $this
-            ->joinBookings($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Bookings', '\TheFarm\Models\BookingsQuery');
+            ->joinBooking($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Booking', '\TheFarm\Models\BookingQuery');
     }
 
     /**

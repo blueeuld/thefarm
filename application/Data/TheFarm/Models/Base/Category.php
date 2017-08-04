@@ -16,32 +16,30 @@ use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
-use TheFarm\Models\BookingAttachment as ChildBookingAttachment;
-use TheFarm\Models\BookingAttachmentQuery as ChildBookingAttachmentQuery;
 use TheFarm\Models\Category as ChildCategory;
 use TheFarm\Models\CategoryQuery as ChildCategoryQuery;
 use TheFarm\Models\Files as ChildFiles;
 use TheFarm\Models\FilesQuery as ChildFilesQuery;
-use TheFarm\Models\Item as ChildItem;
-use TheFarm\Models\ItemQuery as ChildItemQuery;
-use TheFarm\Models\Map\BookingAttachmentTableMap;
+use TheFarm\Models\ItemCategory as ChildItemCategory;
+use TheFarm\Models\ItemCategoryQuery as ChildItemCategoryQuery;
+use TheFarm\Models\Location as ChildLocation;
+use TheFarm\Models\LocationQuery as ChildLocationQuery;
 use TheFarm\Models\Map\CategoryTableMap;
-use TheFarm\Models\Map\FilesTableMap;
-use TheFarm\Models\Map\ItemTableMap;
+use TheFarm\Models\Map\ItemCategoryTableMap;
 
 /**
- * Base class that represents a row from the 'tf_files' table.
+ * Base class that represents a row from the 'tf_categories' table.
  *
  *
  *
  * @package    propel.generator.TheFarm.Models.Base
  */
-abstract class Files implements ActiveRecordInterface
+abstract class Category implements ActiveRecordInterface
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\TheFarm\\Models\\Map\\FilesTableMap';
+    const TABLE_MAP = '\\TheFarm\\Models\\Map\\CategoryTableMap';
 
 
     /**
@@ -71,46 +69,39 @@ abstract class Files implements ActiveRecordInterface
     protected $virtualColumns = array();
 
     /**
-     * The value for the file_id field.
+     * The value for the cat_id field.
      *
      * @var        int
      */
-    protected $file_id;
+    protected $cat_id;
 
     /**
-     * The value for the title field.
+     * The value for the cat_name field.
      *
      * @var        string
      */
-    protected $title;
+    protected $cat_name;
 
     /**
-     * The value for the file_name field.
+     * The value for the cat_image field.
+     *
+     * @var        int
+     */
+    protected $cat_image;
+
+    /**
+     * The value for the cat_body field.
      *
      * @var        string
      */
-    protected $file_name;
+    protected $cat_body;
 
     /**
-     * The value for the file_size field.
+     * The value for the parent_id field.
      *
      * @var        int
      */
-    protected $file_size;
-
-    /**
-     * The value for the upload_id field.
-     *
-     * @var        int
-     */
-    protected $upload_id;
-
-    /**
-     * The value for the upload_date field.
-     *
-     * @var        int
-     */
-    protected $upload_date;
+    protected $parent_id;
 
     /**
      * The value for the location_id field.
@@ -120,36 +111,39 @@ abstract class Files implements ActiveRecordInterface
     protected $location_id;
 
     /**
-     * The value for the last_viewed field.
+     * The value for the cat_bg_color field.
      *
-     * @var        int
+     * Note: this column has a database default value of: ''
+     * @var        string
      */
-    protected $last_viewed;
+    protected $cat_bg_color;
 
     /**
-     * The value for the viewed_by field.
-     *
-     * @var        int
+     * @var        ChildFiles
      */
-    protected $viewed_by;
+    protected $aFiles;
 
     /**
-     * @var        ObjectCollection|ChildBookingAttachment[] Collection to store aggregation of ChildBookingAttachment objects.
+     * @var        ChildLocation
      */
-    protected $collBookingAttachments;
-    protected $collBookingAttachmentsPartial;
+    protected $aLocation;
+
+    /**
+     * @var        ChildCategory
+     */
+    protected $aCategoryRelatedByParentId;
 
     /**
      * @var        ObjectCollection|ChildCategory[] Collection to store aggregation of ChildCategory objects.
      */
-    protected $collCategories;
-    protected $collCategoriesPartial;
+    protected $collCategoriesRelatedByCatId;
+    protected $collCategoriesRelatedByCatIdPartial;
 
     /**
-     * @var        ObjectCollection|ChildItem[] Collection to store aggregation of ChildItem objects.
+     * @var        ObjectCollection|ChildItemCategory[] Collection to store aggregation of ChildItemCategory objects.
      */
-    protected $collItems;
-    protected $collItemsPartial;
+    protected $collItemCategories;
+    protected $collItemCategoriesPartial;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -161,27 +155,34 @@ abstract class Files implements ActiveRecordInterface
 
     /**
      * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildBookingAttachment[]
-     */
-    protected $bookingAttachmentsScheduledForDeletion = null;
-
-    /**
-     * An array of objects scheduled for deletion.
      * @var ObjectCollection|ChildCategory[]
      */
-    protected $categoriesScheduledForDeletion = null;
+    protected $categoriesRelatedByCatIdScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildItem[]
+     * @var ObjectCollection|ChildItemCategory[]
      */
-    protected $itemsScheduledForDeletion = null;
+    protected $itemCategoriesScheduledForDeletion = null;
 
     /**
-     * Initializes internal state of TheFarm\Models\Base\Files object.
+     * Applies default values to this object.
+     * This method should be called from the object's constructor (or
+     * equivalent initialization method).
+     * @see __construct()
+     */
+    public function applyDefaultValues()
+    {
+        $this->cat_bg_color = '';
+    }
+
+    /**
+     * Initializes internal state of TheFarm\Models\Base\Category object.
+     * @see applyDefaults()
      */
     public function __construct()
     {
+        $this->applyDefaultValues();
     }
 
     /**
@@ -273,9 +274,9 @@ abstract class Files implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>Files</code> instance.  If
-     * <code>obj</code> is an instance of <code>Files</code>, delegates to
-     * <code>equals(Files)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>Category</code> instance.  If
+     * <code>obj</code> is an instance of <code>Category</code>, delegates to
+     * <code>equals(Category)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
@@ -341,7 +342,7 @@ abstract class Files implements ActiveRecordInterface
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
      *
-     * @return $this|Files The current object, for fluid interface
+     * @return $this|Category The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -403,63 +404,53 @@ abstract class Files implements ActiveRecordInterface
     }
 
     /**
-     * Get the [file_id] column value.
+     * Get the [cat_id] column value.
      *
      * @return int
      */
-    public function getFileId()
+    public function getCatId()
     {
-        return $this->file_id;
+        return $this->cat_id;
     }
 
     /**
-     * Get the [title] column value.
+     * Get the [cat_name] column value.
      *
      * @return string
      */
-    public function getTitle()
+    public function getCatName()
     {
-        return $this->title;
+        return $this->cat_name;
     }
 
     /**
-     * Get the [file_name] column value.
+     * Get the [cat_image] column value.
+     *
+     * @return int
+     */
+    public function getCatImage()
+    {
+        return $this->cat_image;
+    }
+
+    /**
+     * Get the [cat_body] column value.
      *
      * @return string
      */
-    public function getFileName()
+    public function getCatBody()
     {
-        return $this->file_name;
+        return $this->cat_body;
     }
 
     /**
-     * Get the [file_size] column value.
+     * Get the [parent_id] column value.
      *
      * @return int
      */
-    public function getFileSize()
+    public function getParentId()
     {
-        return $this->file_size;
-    }
-
-    /**
-     * Get the [upload_id] column value.
-     *
-     * @return int
-     */
-    public function getUploadId()
-    {
-        return $this->upload_id;
-    }
-
-    /**
-     * Get the [upload_date] column value.
-     *
-     * @return int
-     */
-    public function getUploadDate()
-    {
-        return $this->upload_date;
+        return $this->parent_id;
     }
 
     /**
@@ -473,150 +464,128 @@ abstract class Files implements ActiveRecordInterface
     }
 
     /**
-     * Get the [last_viewed] column value.
+     * Get the [cat_bg_color] column value.
      *
-     * @return int
+     * @return string
      */
-    public function getLastViewed()
+    public function getCatBgColor()
     {
-        return $this->last_viewed;
+        return $this->cat_bg_color;
     }
 
     /**
-     * Get the [viewed_by] column value.
-     *
-     * @return int
-     */
-    public function getViewedBy()
-    {
-        return $this->viewed_by;
-    }
-
-    /**
-     * Set the value of [file_id] column.
+     * Set the value of [cat_id] column.
      *
      * @param int $v new value
-     * @return $this|\TheFarm\Models\Files The current object (for fluent API support)
+     * @return $this|\TheFarm\Models\Category The current object (for fluent API support)
      */
-    public function setFileId($v)
+    public function setCatId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
         }
 
-        if ($this->file_id !== $v) {
-            $this->file_id = $v;
-            $this->modifiedColumns[FilesTableMap::COL_FILE_ID] = true;
+        if ($this->cat_id !== $v) {
+            $this->cat_id = $v;
+            $this->modifiedColumns[CategoryTableMap::COL_CAT_ID] = true;
         }
 
         return $this;
-    } // setFileId()
+    } // setCatId()
 
     /**
-     * Set the value of [title] column.
+     * Set the value of [cat_name] column.
      *
      * @param string $v new value
-     * @return $this|\TheFarm\Models\Files The current object (for fluent API support)
+     * @return $this|\TheFarm\Models\Category The current object (for fluent API support)
      */
-    public function setTitle($v)
+    public function setCatName($v)
     {
         if ($v !== null) {
             $v = (string) $v;
         }
 
-        if ($this->title !== $v) {
-            $this->title = $v;
-            $this->modifiedColumns[FilesTableMap::COL_TITLE] = true;
+        if ($this->cat_name !== $v) {
+            $this->cat_name = $v;
+            $this->modifiedColumns[CategoryTableMap::COL_CAT_NAME] = true;
         }
 
         return $this;
-    } // setTitle()
+    } // setCatName()
 
     /**
-     * Set the value of [file_name] column.
+     * Set the value of [cat_image] column.
+     *
+     * @param int $v new value
+     * @return $this|\TheFarm\Models\Category The current object (for fluent API support)
+     */
+    public function setCatImage($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->cat_image !== $v) {
+            $this->cat_image = $v;
+            $this->modifiedColumns[CategoryTableMap::COL_CAT_IMAGE] = true;
+        }
+
+        if ($this->aFiles !== null && $this->aFiles->getFileId() !== $v) {
+            $this->aFiles = null;
+        }
+
+        return $this;
+    } // setCatImage()
+
+    /**
+     * Set the value of [cat_body] column.
      *
      * @param string $v new value
-     * @return $this|\TheFarm\Models\Files The current object (for fluent API support)
+     * @return $this|\TheFarm\Models\Category The current object (for fluent API support)
      */
-    public function setFileName($v)
+    public function setCatBody($v)
     {
         if ($v !== null) {
             $v = (string) $v;
         }
 
-        if ($this->file_name !== $v) {
-            $this->file_name = $v;
-            $this->modifiedColumns[FilesTableMap::COL_FILE_NAME] = true;
+        if ($this->cat_body !== $v) {
+            $this->cat_body = $v;
+            $this->modifiedColumns[CategoryTableMap::COL_CAT_BODY] = true;
         }
 
         return $this;
-    } // setFileName()
+    } // setCatBody()
 
     /**
-     * Set the value of [file_size] column.
+     * Set the value of [parent_id] column.
      *
      * @param int $v new value
-     * @return $this|\TheFarm\Models\Files The current object (for fluent API support)
+     * @return $this|\TheFarm\Models\Category The current object (for fluent API support)
      */
-    public function setFileSize($v)
+    public function setParentId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
         }
 
-        if ($this->file_size !== $v) {
-            $this->file_size = $v;
-            $this->modifiedColumns[FilesTableMap::COL_FILE_SIZE] = true;
+        if ($this->parent_id !== $v) {
+            $this->parent_id = $v;
+            $this->modifiedColumns[CategoryTableMap::COL_PARENT_ID] = true;
+        }
+
+        if ($this->aCategoryRelatedByParentId !== null && $this->aCategoryRelatedByParentId->getCatId() !== $v) {
+            $this->aCategoryRelatedByParentId = null;
         }
 
         return $this;
-    } // setFileSize()
-
-    /**
-     * Set the value of [upload_id] column.
-     *
-     * @param int $v new value
-     * @return $this|\TheFarm\Models\Files The current object (for fluent API support)
-     */
-    public function setUploadId($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->upload_id !== $v) {
-            $this->upload_id = $v;
-            $this->modifiedColumns[FilesTableMap::COL_UPLOAD_ID] = true;
-        }
-
-        return $this;
-    } // setUploadId()
-
-    /**
-     * Set the value of [upload_date] column.
-     *
-     * @param int $v new value
-     * @return $this|\TheFarm\Models\Files The current object (for fluent API support)
-     */
-    public function setUploadDate($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->upload_date !== $v) {
-            $this->upload_date = $v;
-            $this->modifiedColumns[FilesTableMap::COL_UPLOAD_DATE] = true;
-        }
-
-        return $this;
-    } // setUploadDate()
+    } // setParentId()
 
     /**
      * Set the value of [location_id] column.
      *
      * @param int $v new value
-     * @return $this|\TheFarm\Models\Files The current object (for fluent API support)
+     * @return $this|\TheFarm\Models\Category The current object (for fluent API support)
      */
     public function setLocationId($v)
     {
@@ -626,51 +595,35 @@ abstract class Files implements ActiveRecordInterface
 
         if ($this->location_id !== $v) {
             $this->location_id = $v;
-            $this->modifiedColumns[FilesTableMap::COL_LOCATION_ID] = true;
+            $this->modifiedColumns[CategoryTableMap::COL_LOCATION_ID] = true;
+        }
+
+        if ($this->aLocation !== null && $this->aLocation->getLocationId() !== $v) {
+            $this->aLocation = null;
         }
 
         return $this;
     } // setLocationId()
 
     /**
-     * Set the value of [last_viewed] column.
+     * Set the value of [cat_bg_color] column.
      *
-     * @param int $v new value
-     * @return $this|\TheFarm\Models\Files The current object (for fluent API support)
+     * @param string $v new value
+     * @return $this|\TheFarm\Models\Category The current object (for fluent API support)
      */
-    public function setLastViewed($v)
+    public function setCatBgColor($v)
     {
         if ($v !== null) {
-            $v = (int) $v;
+            $v = (string) $v;
         }
 
-        if ($this->last_viewed !== $v) {
-            $this->last_viewed = $v;
-            $this->modifiedColumns[FilesTableMap::COL_LAST_VIEWED] = true;
+        if ($this->cat_bg_color !== $v) {
+            $this->cat_bg_color = $v;
+            $this->modifiedColumns[CategoryTableMap::COL_CAT_BG_COLOR] = true;
         }
 
         return $this;
-    } // setLastViewed()
-
-    /**
-     * Set the value of [viewed_by] column.
-     *
-     * @param int $v new value
-     * @return $this|\TheFarm\Models\Files The current object (for fluent API support)
-     */
-    public function setViewedBy($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->viewed_by !== $v) {
-            $this->viewed_by = $v;
-            $this->modifiedColumns[FilesTableMap::COL_VIEWED_BY] = true;
-        }
-
-        return $this;
-    } // setViewedBy()
+    } // setCatBgColor()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -682,6 +635,10 @@ abstract class Files implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
+            if ($this->cat_bg_color !== '') {
+                return false;
+            }
+
         // otherwise, everything was equal, so return TRUE
         return true;
     } // hasOnlyDefaultValues()
@@ -708,32 +665,26 @@ abstract class Files implements ActiveRecordInterface
     {
         try {
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : FilesTableMap::translateFieldName('FileId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->file_id = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : CategoryTableMap::translateFieldName('CatId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->cat_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : FilesTableMap::translateFieldName('Title', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->title = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : CategoryTableMap::translateFieldName('CatName', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->cat_name = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : FilesTableMap::translateFieldName('FileName', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->file_name = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : CategoryTableMap::translateFieldName('CatImage', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->cat_image = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : FilesTableMap::translateFieldName('FileSize', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->file_size = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : CategoryTableMap::translateFieldName('CatBody', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->cat_body = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : FilesTableMap::translateFieldName('UploadId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->upload_id = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : CategoryTableMap::translateFieldName('ParentId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->parent_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : FilesTableMap::translateFieldName('UploadDate', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->upload_date = (null !== $col) ? (int) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : FilesTableMap::translateFieldName('LocationId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : CategoryTableMap::translateFieldName('LocationId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->location_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : FilesTableMap::translateFieldName('LastViewed', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->last_viewed = (null !== $col) ? (int) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : FilesTableMap::translateFieldName('ViewedBy', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->viewed_by = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : CategoryTableMap::translateFieldName('CatBgColor', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->cat_bg_color = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -742,10 +693,10 @@ abstract class Files implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 9; // 9 = FilesTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 7; // 7 = CategoryTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(sprintf('Error populating %s object', '\\TheFarm\\Models\\Files'), 0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\TheFarm\\Models\\Category'), 0, $e);
         }
     }
 
@@ -764,6 +715,15 @@ abstract class Files implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
+        if ($this->aFiles !== null && $this->cat_image !== $this->aFiles->getFileId()) {
+            $this->aFiles = null;
+        }
+        if ($this->aCategoryRelatedByParentId !== null && $this->parent_id !== $this->aCategoryRelatedByParentId->getCatId()) {
+            $this->aCategoryRelatedByParentId = null;
+        }
+        if ($this->aLocation !== null && $this->location_id !== $this->aLocation->getLocationId()) {
+            $this->aLocation = null;
+        }
     } // ensureConsistency
 
     /**
@@ -787,13 +747,13 @@ abstract class Files implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(FilesTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(CategoryTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildFilesQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildCategoryQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -803,11 +763,12 @@ abstract class Files implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->collBookingAttachments = null;
+            $this->aFiles = null;
+            $this->aLocation = null;
+            $this->aCategoryRelatedByParentId = null;
+            $this->collCategoriesRelatedByCatId = null;
 
-            $this->collCategories = null;
-
-            $this->collItems = null;
+            $this->collItemCategories = null;
 
         } // if (deep)
     }
@@ -818,8 +779,8 @@ abstract class Files implements ActiveRecordInterface
      * @param      ConnectionInterface $con
      * @return void
      * @throws PropelException
-     * @see Files::setDeleted()
-     * @see Files::isDeleted()
+     * @see Category::setDeleted()
+     * @see Category::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -828,11 +789,11 @@ abstract class Files implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(FilesTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(CategoryTableMap::DATABASE_NAME);
         }
 
         $con->transaction(function () use ($con) {
-            $deleteQuery = ChildFilesQuery::create()
+            $deleteQuery = ChildCategoryQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -867,7 +828,7 @@ abstract class Files implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(FilesTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(CategoryTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
@@ -886,7 +847,7 @@ abstract class Files implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                FilesTableMap::addInstanceToPool($this);
+                CategoryTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -912,6 +873,32 @@ abstract class Files implements ActiveRecordInterface
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
 
+            // We call the save method on the following object(s) if they
+            // were passed to this object by their corresponding set
+            // method.  This object relates to these object(s) by a
+            // foreign key reference.
+
+            if ($this->aFiles !== null) {
+                if ($this->aFiles->isModified() || $this->aFiles->isNew()) {
+                    $affectedRows += $this->aFiles->save($con);
+                }
+                $this->setFiles($this->aFiles);
+            }
+
+            if ($this->aLocation !== null) {
+                if ($this->aLocation->isModified() || $this->aLocation->isNew()) {
+                    $affectedRows += $this->aLocation->save($con);
+                }
+                $this->setLocation($this->aLocation);
+            }
+
+            if ($this->aCategoryRelatedByParentId !== null) {
+                if ($this->aCategoryRelatedByParentId->isModified() || $this->aCategoryRelatedByParentId->isNew()) {
+                    $affectedRows += $this->aCategoryRelatedByParentId->save($con);
+                }
+                $this->setCategoryRelatedByParentId($this->aCategoryRelatedByParentId);
+            }
+
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -923,53 +910,34 @@ abstract class Files implements ActiveRecordInterface
                 $this->resetModified();
             }
 
-            if ($this->bookingAttachmentsScheduledForDeletion !== null) {
-                if (!$this->bookingAttachmentsScheduledForDeletion->isEmpty()) {
-                    \TheFarm\Models\BookingAttachmentQuery::create()
-                        ->filterByPrimaryKeys($this->bookingAttachmentsScheduledForDeletion->getPrimaryKeys(false))
+            if ($this->categoriesRelatedByCatIdScheduledForDeletion !== null) {
+                if (!$this->categoriesRelatedByCatIdScheduledForDeletion->isEmpty()) {
+                    \TheFarm\Models\CategoryQuery::create()
+                        ->filterByPrimaryKeys($this->categoriesRelatedByCatIdScheduledForDeletion->getPrimaryKeys(false))
                         ->delete($con);
-                    $this->bookingAttachmentsScheduledForDeletion = null;
+                    $this->categoriesRelatedByCatIdScheduledForDeletion = null;
                 }
             }
 
-            if ($this->collBookingAttachments !== null) {
-                foreach ($this->collBookingAttachments as $referrerFK) {
+            if ($this->collCategoriesRelatedByCatId !== null) {
+                foreach ($this->collCategoriesRelatedByCatId as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
             }
 
-            if ($this->categoriesScheduledForDeletion !== null) {
-                if (!$this->categoriesScheduledForDeletion->isEmpty()) {
-                    foreach ($this->categoriesScheduledForDeletion as $category) {
-                        // need to save related object because we set the relation to null
-                        $category->save($con);
-                    }
-                    $this->categoriesScheduledForDeletion = null;
+            if ($this->itemCategoriesScheduledForDeletion !== null) {
+                if (!$this->itemCategoriesScheduledForDeletion->isEmpty()) {
+                    \TheFarm\Models\ItemCategoryQuery::create()
+                        ->filterByPrimaryKeys($this->itemCategoriesScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->itemCategoriesScheduledForDeletion = null;
                 }
             }
 
-            if ($this->collCategories !== null) {
-                foreach ($this->collCategories as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
-            }
-
-            if ($this->itemsScheduledForDeletion !== null) {
-                if (!$this->itemsScheduledForDeletion->isEmpty()) {
-                    foreach ($this->itemsScheduledForDeletion as $item) {
-                        // need to save related object because we set the relation to null
-                        $item->save($con);
-                    }
-                    $this->itemsScheduledForDeletion = null;
-                }
-            }
-
-            if ($this->collItems !== null) {
-                foreach ($this->collItems as $referrerFK) {
+            if ($this->collItemCategories !== null) {
+                foreach ($this->collItemCategories as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -996,42 +964,36 @@ abstract class Files implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
-        $this->modifiedColumns[FilesTableMap::COL_FILE_ID] = true;
-        if (null !== $this->file_id) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . FilesTableMap::COL_FILE_ID . ')');
+        $this->modifiedColumns[CategoryTableMap::COL_CAT_ID] = true;
+        if (null !== $this->cat_id) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . CategoryTableMap::COL_CAT_ID . ')');
         }
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(FilesTableMap::COL_FILE_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'file_id';
+        if ($this->isColumnModified(CategoryTableMap::COL_CAT_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'cat_id';
         }
-        if ($this->isColumnModified(FilesTableMap::COL_TITLE)) {
-            $modifiedColumns[':p' . $index++]  = 'title';
+        if ($this->isColumnModified(CategoryTableMap::COL_CAT_NAME)) {
+            $modifiedColumns[':p' . $index++]  = 'cat_name';
         }
-        if ($this->isColumnModified(FilesTableMap::COL_FILE_NAME)) {
-            $modifiedColumns[':p' . $index++]  = 'file_name';
+        if ($this->isColumnModified(CategoryTableMap::COL_CAT_IMAGE)) {
+            $modifiedColumns[':p' . $index++]  = 'cat_image';
         }
-        if ($this->isColumnModified(FilesTableMap::COL_FILE_SIZE)) {
-            $modifiedColumns[':p' . $index++]  = 'file_size';
+        if ($this->isColumnModified(CategoryTableMap::COL_CAT_BODY)) {
+            $modifiedColumns[':p' . $index++]  = 'cat_body';
         }
-        if ($this->isColumnModified(FilesTableMap::COL_UPLOAD_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'upload_id';
+        if ($this->isColumnModified(CategoryTableMap::COL_PARENT_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'parent_id';
         }
-        if ($this->isColumnModified(FilesTableMap::COL_UPLOAD_DATE)) {
-            $modifiedColumns[':p' . $index++]  = 'upload_date';
-        }
-        if ($this->isColumnModified(FilesTableMap::COL_LOCATION_ID)) {
+        if ($this->isColumnModified(CategoryTableMap::COL_LOCATION_ID)) {
             $modifiedColumns[':p' . $index++]  = 'location_id';
         }
-        if ($this->isColumnModified(FilesTableMap::COL_LAST_VIEWED)) {
-            $modifiedColumns[':p' . $index++]  = 'last_viewed';
-        }
-        if ($this->isColumnModified(FilesTableMap::COL_VIEWED_BY)) {
-            $modifiedColumns[':p' . $index++]  = 'viewed_by';
+        if ($this->isColumnModified(CategoryTableMap::COL_CAT_BG_COLOR)) {
+            $modifiedColumns[':p' . $index++]  = 'cat_bg_color';
         }
 
         $sql = sprintf(
-            'INSERT INTO tf_files (%s) VALUES (%s)',
+            'INSERT INTO tf_categories (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -1040,32 +1002,26 @@ abstract class Files implements ActiveRecordInterface
             $stmt = $con->prepare($sql);
             foreach ($modifiedColumns as $identifier => $columnName) {
                 switch ($columnName) {
-                    case 'file_id':
-                        $stmt->bindValue($identifier, $this->file_id, PDO::PARAM_INT);
+                    case 'cat_id':
+                        $stmt->bindValue($identifier, $this->cat_id, PDO::PARAM_INT);
                         break;
-                    case 'title':
-                        $stmt->bindValue($identifier, $this->title, PDO::PARAM_STR);
+                    case 'cat_name':
+                        $stmt->bindValue($identifier, $this->cat_name, PDO::PARAM_STR);
                         break;
-                    case 'file_name':
-                        $stmt->bindValue($identifier, $this->file_name, PDO::PARAM_STR);
+                    case 'cat_image':
+                        $stmt->bindValue($identifier, $this->cat_image, PDO::PARAM_INT);
                         break;
-                    case 'file_size':
-                        $stmt->bindValue($identifier, $this->file_size, PDO::PARAM_INT);
+                    case 'cat_body':
+                        $stmt->bindValue($identifier, $this->cat_body, PDO::PARAM_STR);
                         break;
-                    case 'upload_id':
-                        $stmt->bindValue($identifier, $this->upload_id, PDO::PARAM_INT);
-                        break;
-                    case 'upload_date':
-                        $stmt->bindValue($identifier, $this->upload_date, PDO::PARAM_INT);
+                    case 'parent_id':
+                        $stmt->bindValue($identifier, $this->parent_id, PDO::PARAM_INT);
                         break;
                     case 'location_id':
                         $stmt->bindValue($identifier, $this->location_id, PDO::PARAM_INT);
                         break;
-                    case 'last_viewed':
-                        $stmt->bindValue($identifier, $this->last_viewed, PDO::PARAM_INT);
-                        break;
-                    case 'viewed_by':
-                        $stmt->bindValue($identifier, $this->viewed_by, PDO::PARAM_INT);
+                    case 'cat_bg_color':
+                        $stmt->bindValue($identifier, $this->cat_bg_color, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -1080,7 +1036,7 @@ abstract class Files implements ActiveRecordInterface
         } catch (Exception $e) {
             throw new PropelException('Unable to get autoincrement id.', 0, $e);
         }
-        $this->setFileId($pk);
+        $this->setCatId($pk);
 
         $this->setNew(false);
     }
@@ -1113,7 +1069,7 @@ abstract class Files implements ActiveRecordInterface
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = FilesTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = CategoryTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -1130,31 +1086,25 @@ abstract class Files implements ActiveRecordInterface
     {
         switch ($pos) {
             case 0:
-                return $this->getFileId();
+                return $this->getCatId();
                 break;
             case 1:
-                return $this->getTitle();
+                return $this->getCatName();
                 break;
             case 2:
-                return $this->getFileName();
+                return $this->getCatImage();
                 break;
             case 3:
-                return $this->getFileSize();
+                return $this->getCatBody();
                 break;
             case 4:
-                return $this->getUploadId();
+                return $this->getParentId();
                 break;
             case 5:
-                return $this->getUploadDate();
-                break;
-            case 6:
                 return $this->getLocationId();
                 break;
-            case 7:
-                return $this->getLastViewed();
-                break;
-            case 8:
-                return $this->getViewedBy();
+            case 6:
+                return $this->getCatBgColor();
                 break;
             default:
                 return null;
@@ -1180,21 +1130,19 @@ abstract class Files implements ActiveRecordInterface
     public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
 
-        if (isset($alreadyDumpedObjects['Files'][$this->hashCode()])) {
+        if (isset($alreadyDumpedObjects['Category'][$this->hashCode()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['Files'][$this->hashCode()] = true;
-        $keys = FilesTableMap::getFieldNames($keyType);
+        $alreadyDumpedObjects['Category'][$this->hashCode()] = true;
+        $keys = CategoryTableMap::getFieldNames($keyType);
         $result = array(
-            $keys[0] => $this->getFileId(),
-            $keys[1] => $this->getTitle(),
-            $keys[2] => $this->getFileName(),
-            $keys[3] => $this->getFileSize(),
-            $keys[4] => $this->getUploadId(),
-            $keys[5] => $this->getUploadDate(),
-            $keys[6] => $this->getLocationId(),
-            $keys[7] => $this->getLastViewed(),
-            $keys[8] => $this->getViewedBy(),
+            $keys[0] => $this->getCatId(),
+            $keys[1] => $this->getCatName(),
+            $keys[2] => $this->getCatImage(),
+            $keys[3] => $this->getCatBody(),
+            $keys[4] => $this->getParentId(),
+            $keys[5] => $this->getLocationId(),
+            $keys[6] => $this->getCatBgColor(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1202,22 +1150,52 @@ abstract class Files implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->collBookingAttachments) {
+            if (null !== $this->aFiles) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'bookingAttachments';
+                        $key = 'files';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = 'tf_booking_attachmentss';
+                        $key = 'tf_files';
                         break;
                     default:
-                        $key = 'BookingAttachments';
+                        $key = 'Files';
                 }
 
-                $result[$key] = $this->collBookingAttachments->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+                $result[$key] = $this->aFiles->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
-            if (null !== $this->collCategories) {
+            if (null !== $this->aLocation) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'location';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'tf_locations';
+                        break;
+                    default:
+                        $key = 'Location';
+                }
+
+                $result[$key] = $this->aLocation->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->aCategoryRelatedByParentId) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'category';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'tf_categories';
+                        break;
+                    default:
+                        $key = 'Category';
+                }
+
+                $result[$key] = $this->aCategoryRelatedByParentId->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->collCategoriesRelatedByCatId) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
@@ -1230,22 +1208,22 @@ abstract class Files implements ActiveRecordInterface
                         $key = 'Categories';
                 }
 
-                $result[$key] = $this->collCategories->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+                $result[$key] = $this->collCategoriesRelatedByCatId->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
-            if (null !== $this->collItems) {
+            if (null !== $this->collItemCategories) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'items';
+                        $key = 'itemCategories';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = 'tf_itemss';
+                        $key = 'tf_item_categoriess';
                         break;
                     default:
-                        $key = 'Items';
+                        $key = 'ItemCategories';
                 }
 
-                $result[$key] = $this->collItems->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+                $result[$key] = $this->collItemCategories->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1261,11 +1239,11 @@ abstract class Files implements ActiveRecordInterface
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
-     * @return $this|\TheFarm\Models\Files
+     * @return $this|\TheFarm\Models\Category
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = FilesTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = CategoryTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -1276,37 +1254,31 @@ abstract class Files implements ActiveRecordInterface
      *
      * @param  int $pos position in xml schema
      * @param  mixed $value field value
-     * @return $this|\TheFarm\Models\Files
+     * @return $this|\TheFarm\Models\Category
      */
     public function setByPosition($pos, $value)
     {
         switch ($pos) {
             case 0:
-                $this->setFileId($value);
+                $this->setCatId($value);
                 break;
             case 1:
-                $this->setTitle($value);
+                $this->setCatName($value);
                 break;
             case 2:
-                $this->setFileName($value);
+                $this->setCatImage($value);
                 break;
             case 3:
-                $this->setFileSize($value);
+                $this->setCatBody($value);
                 break;
             case 4:
-                $this->setUploadId($value);
+                $this->setParentId($value);
                 break;
             case 5:
-                $this->setUploadDate($value);
-                break;
-            case 6:
                 $this->setLocationId($value);
                 break;
-            case 7:
-                $this->setLastViewed($value);
-                break;
-            case 8:
-                $this->setViewedBy($value);
+            case 6:
+                $this->setCatBgColor($value);
                 break;
         } // switch()
 
@@ -1332,34 +1304,28 @@ abstract class Files implements ActiveRecordInterface
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = FilesTableMap::getFieldNames($keyType);
+        $keys = CategoryTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) {
-            $this->setFileId($arr[$keys[0]]);
+            $this->setCatId($arr[$keys[0]]);
         }
         if (array_key_exists($keys[1], $arr)) {
-            $this->setTitle($arr[$keys[1]]);
+            $this->setCatName($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setFileName($arr[$keys[2]]);
+            $this->setCatImage($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setFileSize($arr[$keys[3]]);
+            $this->setCatBody($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
-            $this->setUploadId($arr[$keys[4]]);
+            $this->setParentId($arr[$keys[4]]);
         }
         if (array_key_exists($keys[5], $arr)) {
-            $this->setUploadDate($arr[$keys[5]]);
+            $this->setLocationId($arr[$keys[5]]);
         }
         if (array_key_exists($keys[6], $arr)) {
-            $this->setLocationId($arr[$keys[6]]);
-        }
-        if (array_key_exists($keys[7], $arr)) {
-            $this->setLastViewed($arr[$keys[7]]);
-        }
-        if (array_key_exists($keys[8], $arr)) {
-            $this->setViewedBy($arr[$keys[8]]);
+            $this->setCatBgColor($arr[$keys[6]]);
         }
     }
 
@@ -1380,7 +1346,7 @@ abstract class Files implements ActiveRecordInterface
      * @param string $data The source data to import from
      * @param string $keyType The type of keys the array uses.
      *
-     * @return $this|\TheFarm\Models\Files The current object, for fluid interface
+     * @return $this|\TheFarm\Models\Category The current object, for fluid interface
      */
     public function importFrom($parser, $data, $keyType = TableMap::TYPE_PHPNAME)
     {
@@ -1400,34 +1366,28 @@ abstract class Files implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(FilesTableMap::DATABASE_NAME);
+        $criteria = new Criteria(CategoryTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(FilesTableMap::COL_FILE_ID)) {
-            $criteria->add(FilesTableMap::COL_FILE_ID, $this->file_id);
+        if ($this->isColumnModified(CategoryTableMap::COL_CAT_ID)) {
+            $criteria->add(CategoryTableMap::COL_CAT_ID, $this->cat_id);
         }
-        if ($this->isColumnModified(FilesTableMap::COL_TITLE)) {
-            $criteria->add(FilesTableMap::COL_TITLE, $this->title);
+        if ($this->isColumnModified(CategoryTableMap::COL_CAT_NAME)) {
+            $criteria->add(CategoryTableMap::COL_CAT_NAME, $this->cat_name);
         }
-        if ($this->isColumnModified(FilesTableMap::COL_FILE_NAME)) {
-            $criteria->add(FilesTableMap::COL_FILE_NAME, $this->file_name);
+        if ($this->isColumnModified(CategoryTableMap::COL_CAT_IMAGE)) {
+            $criteria->add(CategoryTableMap::COL_CAT_IMAGE, $this->cat_image);
         }
-        if ($this->isColumnModified(FilesTableMap::COL_FILE_SIZE)) {
-            $criteria->add(FilesTableMap::COL_FILE_SIZE, $this->file_size);
+        if ($this->isColumnModified(CategoryTableMap::COL_CAT_BODY)) {
+            $criteria->add(CategoryTableMap::COL_CAT_BODY, $this->cat_body);
         }
-        if ($this->isColumnModified(FilesTableMap::COL_UPLOAD_ID)) {
-            $criteria->add(FilesTableMap::COL_UPLOAD_ID, $this->upload_id);
+        if ($this->isColumnModified(CategoryTableMap::COL_PARENT_ID)) {
+            $criteria->add(CategoryTableMap::COL_PARENT_ID, $this->parent_id);
         }
-        if ($this->isColumnModified(FilesTableMap::COL_UPLOAD_DATE)) {
-            $criteria->add(FilesTableMap::COL_UPLOAD_DATE, $this->upload_date);
+        if ($this->isColumnModified(CategoryTableMap::COL_LOCATION_ID)) {
+            $criteria->add(CategoryTableMap::COL_LOCATION_ID, $this->location_id);
         }
-        if ($this->isColumnModified(FilesTableMap::COL_LOCATION_ID)) {
-            $criteria->add(FilesTableMap::COL_LOCATION_ID, $this->location_id);
-        }
-        if ($this->isColumnModified(FilesTableMap::COL_LAST_VIEWED)) {
-            $criteria->add(FilesTableMap::COL_LAST_VIEWED, $this->last_viewed);
-        }
-        if ($this->isColumnModified(FilesTableMap::COL_VIEWED_BY)) {
-            $criteria->add(FilesTableMap::COL_VIEWED_BY, $this->viewed_by);
+        if ($this->isColumnModified(CategoryTableMap::COL_CAT_BG_COLOR)) {
+            $criteria->add(CategoryTableMap::COL_CAT_BG_COLOR, $this->cat_bg_color);
         }
 
         return $criteria;
@@ -1445,8 +1405,8 @@ abstract class Files implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = ChildFilesQuery::create();
-        $criteria->add(FilesTableMap::COL_FILE_ID, $this->file_id);
+        $criteria = ChildCategoryQuery::create();
+        $criteria->add(CategoryTableMap::COL_CAT_ID, $this->cat_id);
 
         return $criteria;
     }
@@ -1459,7 +1419,7 @@ abstract class Files implements ActiveRecordInterface
      */
     public function hashCode()
     {
-        $validPk = null !== $this->getFileId();
+        $validPk = null !== $this->getCatId();
 
         $validPrimaryKeyFKs = 0;
         $primaryKeyFKs = [];
@@ -1479,18 +1439,18 @@ abstract class Files implements ActiveRecordInterface
      */
     public function getPrimaryKey()
     {
-        return $this->getFileId();
+        return $this->getCatId();
     }
 
     /**
-     * Generic method to set the primary key (file_id column).
+     * Generic method to set the primary key (cat_id column).
      *
      * @param       int $key Primary key.
      * @return void
      */
     public function setPrimaryKey($key)
     {
-        $this->setFileId($key);
+        $this->setCatId($key);
     }
 
     /**
@@ -1499,7 +1459,7 @@ abstract class Files implements ActiveRecordInterface
      */
     public function isPrimaryKeyNull()
     {
-        return null === $this->getFileId();
+        return null === $this->getCatId();
     }
 
     /**
@@ -1508,42 +1468,34 @@ abstract class Files implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \TheFarm\Models\Files (or compatible) type.
+     * @param      object $copyObj An object of \TheFarm\Models\Category (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setTitle($this->getTitle());
-        $copyObj->setFileName($this->getFileName());
-        $copyObj->setFileSize($this->getFileSize());
-        $copyObj->setUploadId($this->getUploadId());
-        $copyObj->setUploadDate($this->getUploadDate());
+        $copyObj->setCatName($this->getCatName());
+        $copyObj->setCatImage($this->getCatImage());
+        $copyObj->setCatBody($this->getCatBody());
+        $copyObj->setParentId($this->getParentId());
         $copyObj->setLocationId($this->getLocationId());
-        $copyObj->setLastViewed($this->getLastViewed());
-        $copyObj->setViewedBy($this->getViewedBy());
+        $copyObj->setCatBgColor($this->getCatBgColor());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
             // the getter/setter methods for fkey referrer objects.
             $copyObj->setNew(false);
 
-            foreach ($this->getBookingAttachments() as $relObj) {
+            foreach ($this->getCategoriesRelatedByCatId() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addBookingAttachment($relObj->copy($deepCopy));
+                    $copyObj->addCategoryRelatedByCatId($relObj->copy($deepCopy));
                 }
             }
 
-            foreach ($this->getCategories() as $relObj) {
+            foreach ($this->getItemCategories() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addCategory($relObj->copy($deepCopy));
-                }
-            }
-
-            foreach ($this->getItems() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addItem($relObj->copy($deepCopy));
+                    $copyObj->addItemCategory($relObj->copy($deepCopy));
                 }
             }
 
@@ -1551,7 +1503,7 @@ abstract class Files implements ActiveRecordInterface
 
         if ($makeNew) {
             $copyObj->setNew(true);
-            $copyObj->setFileId(NULL); // this is a auto-increment column, so set to default value
+            $copyObj->setCatId(NULL); // this is a auto-increment column, so set to default value
         }
     }
 
@@ -1564,7 +1516,7 @@ abstract class Files implements ActiveRecordInterface
      * objects.
      *
      * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return \TheFarm\Models\Files Clone of current object.
+     * @return \TheFarm\Models\Category Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1575,6 +1527,159 @@ abstract class Files implements ActiveRecordInterface
         $this->copyInto($copyObj, $deepCopy);
 
         return $copyObj;
+    }
+
+    /**
+     * Declares an association between this object and a ChildFiles object.
+     *
+     * @param  ChildFiles $v
+     * @return $this|\TheFarm\Models\Category The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setFiles(ChildFiles $v = null)
+    {
+        if ($v === null) {
+            $this->setCatImage(NULL);
+        } else {
+            $this->setCatImage($v->getFileId());
+        }
+
+        $this->aFiles = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildFiles object, it will not be re-added.
+        if ($v !== null) {
+            $v->addCategory($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildFiles object
+     *
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildFiles The associated ChildFiles object.
+     * @throws PropelException
+     */
+    public function getFiles(ConnectionInterface $con = null)
+    {
+        if ($this->aFiles === null && ($this->cat_image !== null)) {
+            $this->aFiles = ChildFilesQuery::create()->findPk($this->cat_image, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aFiles->addCategories($this);
+             */
+        }
+
+        return $this->aFiles;
+    }
+
+    /**
+     * Declares an association between this object and a ChildLocation object.
+     *
+     * @param  ChildLocation $v
+     * @return $this|\TheFarm\Models\Category The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setLocation(ChildLocation $v = null)
+    {
+        if ($v === null) {
+            $this->setLocationId(NULL);
+        } else {
+            $this->setLocationId($v->getLocationId());
+        }
+
+        $this->aLocation = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildLocation object, it will not be re-added.
+        if ($v !== null) {
+            $v->addCategory($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildLocation object
+     *
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildLocation The associated ChildLocation object.
+     * @throws PropelException
+     */
+    public function getLocation(ConnectionInterface $con = null)
+    {
+        if ($this->aLocation === null && ($this->location_id !== null)) {
+            $this->aLocation = ChildLocationQuery::create()->findPk($this->location_id, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aLocation->addCategories($this);
+             */
+        }
+
+        return $this->aLocation;
+    }
+
+    /**
+     * Declares an association between this object and a ChildCategory object.
+     *
+     * @param  ChildCategory $v
+     * @return $this|\TheFarm\Models\Category The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setCategoryRelatedByParentId(ChildCategory $v = null)
+    {
+        if ($v === null) {
+            $this->setParentId(NULL);
+        } else {
+            $this->setParentId($v->getCatId());
+        }
+
+        $this->aCategoryRelatedByParentId = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildCategory object, it will not be re-added.
+        if ($v !== null) {
+            $v->addCategoryRelatedByCatId($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildCategory object
+     *
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildCategory The associated ChildCategory object.
+     * @throws PropelException
+     */
+    public function getCategoryRelatedByParentId(ConnectionInterface $con = null)
+    {
+        if ($this->aCategoryRelatedByParentId === null && ($this->parent_id !== null)) {
+            $this->aCategoryRelatedByParentId = ChildCategoryQuery::create()->findPk($this->parent_id, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aCategoryRelatedByParentId->addCategoriesRelatedByCatId($this);
+             */
+        }
+
+        return $this->aCategoryRelatedByParentId;
     }
 
 
@@ -1588,46 +1693,42 @@ abstract class Files implements ActiveRecordInterface
      */
     public function initRelation($relationName)
     {
-        if ('BookingAttachment' == $relationName) {
-            $this->initBookingAttachments();
+        if ('CategoryRelatedByCatId' == $relationName) {
+            $this->initCategoriesRelatedByCatId();
             return;
         }
-        if ('Category' == $relationName) {
-            $this->initCategories();
-            return;
-        }
-        if ('Item' == $relationName) {
-            $this->initItems();
+        if ('ItemCategory' == $relationName) {
+            $this->initItemCategories();
             return;
         }
     }
 
     /**
-     * Clears out the collBookingAttachments collection
+     * Clears out the collCategoriesRelatedByCatId collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
      * @return void
-     * @see        addBookingAttachments()
+     * @see        addCategoriesRelatedByCatId()
      */
-    public function clearBookingAttachments()
+    public function clearCategoriesRelatedByCatId()
     {
-        $this->collBookingAttachments = null; // important to set this to NULL since that means it is uninitialized
+        $this->collCategoriesRelatedByCatId = null; // important to set this to NULL since that means it is uninitialized
     }
 
     /**
-     * Reset is the collBookingAttachments collection loaded partially.
+     * Reset is the collCategoriesRelatedByCatId collection loaded partially.
      */
-    public function resetPartialBookingAttachments($v = true)
+    public function resetPartialCategoriesRelatedByCatId($v = true)
     {
-        $this->collBookingAttachmentsPartial = $v;
+        $this->collCategoriesRelatedByCatIdPartial = $v;
     }
 
     /**
-     * Initializes the collBookingAttachments collection.
+     * Initializes the collCategoriesRelatedByCatId collection.
      *
-     * By default this just sets the collBookingAttachments collection to an empty array (like clearcollBookingAttachments());
+     * By default this just sets the collCategoriesRelatedByCatId collection to an empty array (like clearcollCategoriesRelatedByCatId());
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
@@ -1636,269 +1737,16 @@ abstract class Files implements ActiveRecordInterface
      *
      * @return void
      */
-    public function initBookingAttachments($overrideExisting = true)
+    public function initCategoriesRelatedByCatId($overrideExisting = true)
     {
-        if (null !== $this->collBookingAttachments && !$overrideExisting) {
-            return;
-        }
-
-        $collectionClassName = BookingAttachmentTableMap::getTableMap()->getCollectionClassName();
-
-        $this->collBookingAttachments = new $collectionClassName;
-        $this->collBookingAttachments->setModel('\TheFarm\Models\BookingAttachment');
-    }
-
-    /**
-     * Gets an array of ChildBookingAttachment objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildFiles is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildBookingAttachment[] List of ChildBookingAttachment objects
-     * @throws PropelException
-     */
-    public function getBookingAttachments(Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        $partial = $this->collBookingAttachmentsPartial && !$this->isNew();
-        if (null === $this->collBookingAttachments || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collBookingAttachments) {
-                // return empty collection
-                $this->initBookingAttachments();
-            } else {
-                $collBookingAttachments = ChildBookingAttachmentQuery::create(null, $criteria)
-                    ->filterByFiles($this)
-                    ->find($con);
-
-                if (null !== $criteria) {
-                    if (false !== $this->collBookingAttachmentsPartial && count($collBookingAttachments)) {
-                        $this->initBookingAttachments(false);
-
-                        foreach ($collBookingAttachments as $obj) {
-                            if (false == $this->collBookingAttachments->contains($obj)) {
-                                $this->collBookingAttachments->append($obj);
-                            }
-                        }
-
-                        $this->collBookingAttachmentsPartial = true;
-                    }
-
-                    return $collBookingAttachments;
-                }
-
-                if ($partial && $this->collBookingAttachments) {
-                    foreach ($this->collBookingAttachments as $obj) {
-                        if ($obj->isNew()) {
-                            $collBookingAttachments[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collBookingAttachments = $collBookingAttachments;
-                $this->collBookingAttachmentsPartial = false;
-            }
-        }
-
-        return $this->collBookingAttachments;
-    }
-
-    /**
-     * Sets a collection of ChildBookingAttachment objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param      Collection $bookingAttachments A Propel collection.
-     * @param      ConnectionInterface $con Optional connection object
-     * @return $this|ChildFiles The current object (for fluent API support)
-     */
-    public function setBookingAttachments(Collection $bookingAttachments, ConnectionInterface $con = null)
-    {
-        /** @var ChildBookingAttachment[] $bookingAttachmentsToDelete */
-        $bookingAttachmentsToDelete = $this->getBookingAttachments(new Criteria(), $con)->diff($bookingAttachments);
-
-
-        //since at least one column in the foreign key is at the same time a PK
-        //we can not just set a PK to NULL in the lines below. We have to store
-        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
-        $this->bookingAttachmentsScheduledForDeletion = clone $bookingAttachmentsToDelete;
-
-        foreach ($bookingAttachmentsToDelete as $bookingAttachmentRemoved) {
-            $bookingAttachmentRemoved->setFiles(null);
-        }
-
-        $this->collBookingAttachments = null;
-        foreach ($bookingAttachments as $bookingAttachment) {
-            $this->addBookingAttachment($bookingAttachment);
-        }
-
-        $this->collBookingAttachments = $bookingAttachments;
-        $this->collBookingAttachmentsPartial = false;
-
-        return $this;
-    }
-
-    /**
-     * Returns the number of related BookingAttachment objects.
-     *
-     * @param      Criteria $criteria
-     * @param      boolean $distinct
-     * @param      ConnectionInterface $con
-     * @return int             Count of related BookingAttachment objects.
-     * @throws PropelException
-     */
-    public function countBookingAttachments(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
-    {
-        $partial = $this->collBookingAttachmentsPartial && !$this->isNew();
-        if (null === $this->collBookingAttachments || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collBookingAttachments) {
-                return 0;
-            }
-
-            if ($partial && !$criteria) {
-                return count($this->getBookingAttachments());
-            }
-
-            $query = ChildBookingAttachmentQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByFiles($this)
-                ->count($con);
-        }
-
-        return count($this->collBookingAttachments);
-    }
-
-    /**
-     * Method called to associate a ChildBookingAttachment object to this object
-     * through the ChildBookingAttachment foreign key attribute.
-     *
-     * @param  ChildBookingAttachment $l ChildBookingAttachment
-     * @return $this|\TheFarm\Models\Files The current object (for fluent API support)
-     */
-    public function addBookingAttachment(ChildBookingAttachment $l)
-    {
-        if ($this->collBookingAttachments === null) {
-            $this->initBookingAttachments();
-            $this->collBookingAttachmentsPartial = true;
-        }
-
-        if (!$this->collBookingAttachments->contains($l)) {
-            $this->doAddBookingAttachment($l);
-
-            if ($this->bookingAttachmentsScheduledForDeletion and $this->bookingAttachmentsScheduledForDeletion->contains($l)) {
-                $this->bookingAttachmentsScheduledForDeletion->remove($this->bookingAttachmentsScheduledForDeletion->search($l));
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param ChildBookingAttachment $bookingAttachment The ChildBookingAttachment object to add.
-     */
-    protected function doAddBookingAttachment(ChildBookingAttachment $bookingAttachment)
-    {
-        $this->collBookingAttachments[]= $bookingAttachment;
-        $bookingAttachment->setFiles($this);
-    }
-
-    /**
-     * @param  ChildBookingAttachment $bookingAttachment The ChildBookingAttachment object to remove.
-     * @return $this|ChildFiles The current object (for fluent API support)
-     */
-    public function removeBookingAttachment(ChildBookingAttachment $bookingAttachment)
-    {
-        if ($this->getBookingAttachments()->contains($bookingAttachment)) {
-            $pos = $this->collBookingAttachments->search($bookingAttachment);
-            $this->collBookingAttachments->remove($pos);
-            if (null === $this->bookingAttachmentsScheduledForDeletion) {
-                $this->bookingAttachmentsScheduledForDeletion = clone $this->collBookingAttachments;
-                $this->bookingAttachmentsScheduledForDeletion->clear();
-            }
-            $this->bookingAttachmentsScheduledForDeletion[]= clone $bookingAttachment;
-            $bookingAttachment->setFiles(null);
-        }
-
-        return $this;
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Files is new, it will return
-     * an empty collection; or if this Files has previously
-     * been saved, it will retrieve related BookingAttachments from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Files.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildBookingAttachment[] List of ChildBookingAttachment objects
-     */
-    public function getBookingAttachmentsJoinBooking(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
-    {
-        $query = ChildBookingAttachmentQuery::create(null, $criteria);
-        $query->joinWith('Booking', $joinBehavior);
-
-        return $this->getBookingAttachments($query, $con);
-    }
-
-    /**
-     * Clears out the collCategories collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addCategories()
-     */
-    public function clearCategories()
-    {
-        $this->collCategories = null; // important to set this to NULL since that means it is uninitialized
-    }
-
-    /**
-     * Reset is the collCategories collection loaded partially.
-     */
-    public function resetPartialCategories($v = true)
-    {
-        $this->collCategoriesPartial = $v;
-    }
-
-    /**
-     * Initializes the collCategories collection.
-     *
-     * By default this just sets the collCategories collection to an empty array (like clearcollCategories());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param      boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initCategories($overrideExisting = true)
-    {
-        if (null !== $this->collCategories && !$overrideExisting) {
+        if (null !== $this->collCategoriesRelatedByCatId && !$overrideExisting) {
             return;
         }
 
         $collectionClassName = CategoryTableMap::getTableMap()->getCollectionClassName();
 
-        $this->collCategories = new $collectionClassName;
-        $this->collCategories->setModel('\TheFarm\Models\Category');
+        $this->collCategoriesRelatedByCatId = new $collectionClassName;
+        $this->collCategoriesRelatedByCatId->setModel('\TheFarm\Models\Category');
     }
 
     /**
@@ -1907,7 +1755,7 @@ abstract class Files implements ActiveRecordInterface
      * If the $criteria is not null, it is used to always fetch the results from the database.
      * Otherwise the results are fetched from the database the first time, then cached.
      * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildFiles is new, it will return
+     * If this ChildCategory is new, it will return
      * an empty collection or the current collection; the criteria is ignored on a new object.
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
@@ -1915,48 +1763,48 @@ abstract class Files implements ActiveRecordInterface
      * @return ObjectCollection|ChildCategory[] List of ChildCategory objects
      * @throws PropelException
      */
-    public function getCategories(Criteria $criteria = null, ConnectionInterface $con = null)
+    public function getCategoriesRelatedByCatId(Criteria $criteria = null, ConnectionInterface $con = null)
     {
-        $partial = $this->collCategoriesPartial && !$this->isNew();
-        if (null === $this->collCategories || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collCategories) {
+        $partial = $this->collCategoriesRelatedByCatIdPartial && !$this->isNew();
+        if (null === $this->collCategoriesRelatedByCatId || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collCategoriesRelatedByCatId) {
                 // return empty collection
-                $this->initCategories();
+                $this->initCategoriesRelatedByCatId();
             } else {
-                $collCategories = ChildCategoryQuery::create(null, $criteria)
-                    ->filterByFiles($this)
+                $collCategoriesRelatedByCatId = ChildCategoryQuery::create(null, $criteria)
+                    ->filterByCategoryRelatedByParentId($this)
                     ->find($con);
 
                 if (null !== $criteria) {
-                    if (false !== $this->collCategoriesPartial && count($collCategories)) {
-                        $this->initCategories(false);
+                    if (false !== $this->collCategoriesRelatedByCatIdPartial && count($collCategoriesRelatedByCatId)) {
+                        $this->initCategoriesRelatedByCatId(false);
 
-                        foreach ($collCategories as $obj) {
-                            if (false == $this->collCategories->contains($obj)) {
-                                $this->collCategories->append($obj);
+                        foreach ($collCategoriesRelatedByCatId as $obj) {
+                            if (false == $this->collCategoriesRelatedByCatId->contains($obj)) {
+                                $this->collCategoriesRelatedByCatId->append($obj);
                             }
                         }
 
-                        $this->collCategoriesPartial = true;
+                        $this->collCategoriesRelatedByCatIdPartial = true;
                     }
 
-                    return $collCategories;
+                    return $collCategoriesRelatedByCatId;
                 }
 
-                if ($partial && $this->collCategories) {
-                    foreach ($this->collCategories as $obj) {
+                if ($partial && $this->collCategoriesRelatedByCatId) {
+                    foreach ($this->collCategoriesRelatedByCatId as $obj) {
                         if ($obj->isNew()) {
-                            $collCategories[] = $obj;
+                            $collCategoriesRelatedByCatId[] = $obj;
                         }
                     }
                 }
 
-                $this->collCategories = $collCategories;
-                $this->collCategoriesPartial = false;
+                $this->collCategoriesRelatedByCatId = $collCategoriesRelatedByCatId;
+                $this->collCategoriesRelatedByCatIdPartial = false;
             }
         }
 
-        return $this->collCategories;
+        return $this->collCategoriesRelatedByCatId;
     }
 
     /**
@@ -1965,29 +1813,29 @@ abstract class Files implements ActiveRecordInterface
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param      Collection $categories A Propel collection.
+     * @param      Collection $categoriesRelatedByCatId A Propel collection.
      * @param      ConnectionInterface $con Optional connection object
-     * @return $this|ChildFiles The current object (for fluent API support)
+     * @return $this|ChildCategory The current object (for fluent API support)
      */
-    public function setCategories(Collection $categories, ConnectionInterface $con = null)
+    public function setCategoriesRelatedByCatId(Collection $categoriesRelatedByCatId, ConnectionInterface $con = null)
     {
-        /** @var ChildCategory[] $categoriesToDelete */
-        $categoriesToDelete = $this->getCategories(new Criteria(), $con)->diff($categories);
+        /** @var ChildCategory[] $categoriesRelatedByCatIdToDelete */
+        $categoriesRelatedByCatIdToDelete = $this->getCategoriesRelatedByCatId(new Criteria(), $con)->diff($categoriesRelatedByCatId);
 
 
-        $this->categoriesScheduledForDeletion = $categoriesToDelete;
+        $this->categoriesRelatedByCatIdScheduledForDeletion = $categoriesRelatedByCatIdToDelete;
 
-        foreach ($categoriesToDelete as $categoryRemoved) {
-            $categoryRemoved->setFiles(null);
+        foreach ($categoriesRelatedByCatIdToDelete as $categoryRelatedByCatIdRemoved) {
+            $categoryRelatedByCatIdRemoved->setCategoryRelatedByParentId(null);
         }
 
-        $this->collCategories = null;
-        foreach ($categories as $category) {
-            $this->addCategory($category);
+        $this->collCategoriesRelatedByCatId = null;
+        foreach ($categoriesRelatedByCatId as $categoryRelatedByCatId) {
+            $this->addCategoryRelatedByCatId($categoryRelatedByCatId);
         }
 
-        $this->collCategories = $categories;
-        $this->collCategoriesPartial = false;
+        $this->collCategoriesRelatedByCatId = $categoriesRelatedByCatId;
+        $this->collCategoriesRelatedByCatIdPartial = false;
 
         return $this;
     }
@@ -2001,16 +1849,16 @@ abstract class Files implements ActiveRecordInterface
      * @return int             Count of related Category objects.
      * @throws PropelException
      */
-    public function countCategories(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function countCategoriesRelatedByCatId(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
     {
-        $partial = $this->collCategoriesPartial && !$this->isNew();
-        if (null === $this->collCategories || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collCategories) {
+        $partial = $this->collCategoriesRelatedByCatIdPartial && !$this->isNew();
+        if (null === $this->collCategoriesRelatedByCatId || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collCategoriesRelatedByCatId) {
                 return 0;
             }
 
             if ($partial && !$criteria) {
-                return count($this->getCategories());
+                return count($this->getCategoriesRelatedByCatId());
             }
 
             $query = ChildCategoryQuery::create(null, $criteria);
@@ -2019,11 +1867,11 @@ abstract class Files implements ActiveRecordInterface
             }
 
             return $query
-                ->filterByFiles($this)
+                ->filterByCategoryRelatedByParentId($this)
                 ->count($con);
         }
 
-        return count($this->collCategories);
+        return count($this->collCategoriesRelatedByCatId);
     }
 
     /**
@@ -2031,20 +1879,20 @@ abstract class Files implements ActiveRecordInterface
      * through the ChildCategory foreign key attribute.
      *
      * @param  ChildCategory $l ChildCategory
-     * @return $this|\TheFarm\Models\Files The current object (for fluent API support)
+     * @return $this|\TheFarm\Models\Category The current object (for fluent API support)
      */
-    public function addCategory(ChildCategory $l)
+    public function addCategoryRelatedByCatId(ChildCategory $l)
     {
-        if ($this->collCategories === null) {
-            $this->initCategories();
-            $this->collCategoriesPartial = true;
+        if ($this->collCategoriesRelatedByCatId === null) {
+            $this->initCategoriesRelatedByCatId();
+            $this->collCategoriesRelatedByCatIdPartial = true;
         }
 
-        if (!$this->collCategories->contains($l)) {
-            $this->doAddCategory($l);
+        if (!$this->collCategoriesRelatedByCatId->contains($l)) {
+            $this->doAddCategoryRelatedByCatId($l);
 
-            if ($this->categoriesScheduledForDeletion and $this->categoriesScheduledForDeletion->contains($l)) {
-                $this->categoriesScheduledForDeletion->remove($this->categoriesScheduledForDeletion->search($l));
+            if ($this->categoriesRelatedByCatIdScheduledForDeletion and $this->categoriesRelatedByCatIdScheduledForDeletion->contains($l)) {
+                $this->categoriesRelatedByCatIdScheduledForDeletion->remove($this->categoriesRelatedByCatIdScheduledForDeletion->search($l));
             }
         }
 
@@ -2052,29 +1900,29 @@ abstract class Files implements ActiveRecordInterface
     }
 
     /**
-     * @param ChildCategory $category The ChildCategory object to add.
+     * @param ChildCategory $categoryRelatedByCatId The ChildCategory object to add.
      */
-    protected function doAddCategory(ChildCategory $category)
+    protected function doAddCategoryRelatedByCatId(ChildCategory $categoryRelatedByCatId)
     {
-        $this->collCategories[]= $category;
-        $category->setFiles($this);
+        $this->collCategoriesRelatedByCatId[]= $categoryRelatedByCatId;
+        $categoryRelatedByCatId->setCategoryRelatedByParentId($this);
     }
 
     /**
-     * @param  ChildCategory $category The ChildCategory object to remove.
-     * @return $this|ChildFiles The current object (for fluent API support)
+     * @param  ChildCategory $categoryRelatedByCatId The ChildCategory object to remove.
+     * @return $this|ChildCategory The current object (for fluent API support)
      */
-    public function removeCategory(ChildCategory $category)
+    public function removeCategoryRelatedByCatId(ChildCategory $categoryRelatedByCatId)
     {
-        if ($this->getCategories()->contains($category)) {
-            $pos = $this->collCategories->search($category);
-            $this->collCategories->remove($pos);
-            if (null === $this->categoriesScheduledForDeletion) {
-                $this->categoriesScheduledForDeletion = clone $this->collCategories;
-                $this->categoriesScheduledForDeletion->clear();
+        if ($this->getCategoriesRelatedByCatId()->contains($categoryRelatedByCatId)) {
+            $pos = $this->collCategoriesRelatedByCatId->search($categoryRelatedByCatId);
+            $this->collCategoriesRelatedByCatId->remove($pos);
+            if (null === $this->categoriesRelatedByCatIdScheduledForDeletion) {
+                $this->categoriesRelatedByCatIdScheduledForDeletion = clone $this->collCategoriesRelatedByCatId;
+                $this->categoriesRelatedByCatIdScheduledForDeletion->clear();
             }
-            $this->categoriesScheduledForDeletion[]= $category;
-            $category->setFiles(null);
+            $this->categoriesRelatedByCatIdScheduledForDeletion[]= clone $categoryRelatedByCatId;
+            $categoryRelatedByCatId->setCategoryRelatedByParentId(null);
         }
 
         return $this;
@@ -2084,78 +1932,78 @@ abstract class Files implements ActiveRecordInterface
     /**
      * If this collection has already been initialized with
      * an identical criteria, it returns the collection.
-     * Otherwise if this Files is new, it will return
-     * an empty collection; or if this Files has previously
-     * been saved, it will retrieve related Categories from storage.
+     * Otherwise if this Category is new, it will return
+     * an empty collection; or if this Category has previously
+     * been saved, it will retrieve related CategoriesRelatedByCatId from storage.
      *
      * This method is protected by default in order to keep the public
      * api reasonable.  You can provide public methods for those you
-     * actually need in Files.
+     * actually need in Category.
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return ObjectCollection|ChildCategory[] List of ChildCategory objects
      */
-    public function getCategoriesJoinLocation(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getCategoriesRelatedByCatIdJoinFiles(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildCategoryQuery::create(null, $criteria);
+        $query->joinWith('Files', $joinBehavior);
+
+        return $this->getCategoriesRelatedByCatId($query, $con);
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Category is new, it will return
+     * an empty collection; or if this Category has previously
+     * been saved, it will retrieve related CategoriesRelatedByCatId from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Category.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildCategory[] List of ChildCategory objects
+     */
+    public function getCategoriesRelatedByCatIdJoinLocation(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ChildCategoryQuery::create(null, $criteria);
         $query->joinWith('Location', $joinBehavior);
 
-        return $this->getCategories($query, $con);
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Files is new, it will return
-     * an empty collection; or if this Files has previously
-     * been saved, it will retrieve related Categories from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Files.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildCategory[] List of ChildCategory objects
-     */
-    public function getCategoriesJoinCategoryRelatedByParentId(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
-    {
-        $query = ChildCategoryQuery::create(null, $criteria);
-        $query->joinWith('CategoryRelatedByParentId', $joinBehavior);
-
-        return $this->getCategories($query, $con);
+        return $this->getCategoriesRelatedByCatId($query, $con);
     }
 
     /**
-     * Clears out the collItems collection
+     * Clears out the collItemCategories collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
      * @return void
-     * @see        addItems()
+     * @see        addItemCategories()
      */
-    public function clearItems()
+    public function clearItemCategories()
     {
-        $this->collItems = null; // important to set this to NULL since that means it is uninitialized
+        $this->collItemCategories = null; // important to set this to NULL since that means it is uninitialized
     }
 
     /**
-     * Reset is the collItems collection loaded partially.
+     * Reset is the collItemCategories collection loaded partially.
      */
-    public function resetPartialItems($v = true)
+    public function resetPartialItemCategories($v = true)
     {
-        $this->collItemsPartial = $v;
+        $this->collItemCategoriesPartial = $v;
     }
 
     /**
-     * Initializes the collItems collection.
+     * Initializes the collItemCategories collection.
      *
-     * By default this just sets the collItems collection to an empty array (like clearcollItems());
+     * By default this just sets the collItemCategories collection to an empty array (like clearcollItemCategories());
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
@@ -2164,162 +2012,165 @@ abstract class Files implements ActiveRecordInterface
      *
      * @return void
      */
-    public function initItems($overrideExisting = true)
+    public function initItemCategories($overrideExisting = true)
     {
-        if (null !== $this->collItems && !$overrideExisting) {
+        if (null !== $this->collItemCategories && !$overrideExisting) {
             return;
         }
 
-        $collectionClassName = ItemTableMap::getTableMap()->getCollectionClassName();
+        $collectionClassName = ItemCategoryTableMap::getTableMap()->getCollectionClassName();
 
-        $this->collItems = new $collectionClassName;
-        $this->collItems->setModel('\TheFarm\Models\Item');
+        $this->collItemCategories = new $collectionClassName;
+        $this->collItemCategories->setModel('\TheFarm\Models\ItemCategory');
     }
 
     /**
-     * Gets an array of ChildItem objects which contain a foreign key that references this object.
+     * Gets an array of ChildItemCategory objects which contain a foreign key that references this object.
      *
      * If the $criteria is not null, it is used to always fetch the results from the database.
      * Otherwise the results are fetched from the database the first time, then cached.
      * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildFiles is new, it will return
+     * If this ChildCategory is new, it will return
      * an empty collection or the current collection; the criteria is ignored on a new object.
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildItem[] List of ChildItem objects
+     * @return ObjectCollection|ChildItemCategory[] List of ChildItemCategory objects
      * @throws PropelException
      */
-    public function getItems(Criteria $criteria = null, ConnectionInterface $con = null)
+    public function getItemCategories(Criteria $criteria = null, ConnectionInterface $con = null)
     {
-        $partial = $this->collItemsPartial && !$this->isNew();
-        if (null === $this->collItems || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collItems) {
+        $partial = $this->collItemCategoriesPartial && !$this->isNew();
+        if (null === $this->collItemCategories || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collItemCategories) {
                 // return empty collection
-                $this->initItems();
+                $this->initItemCategories();
             } else {
-                $collItems = ChildItemQuery::create(null, $criteria)
-                    ->filterByFiles($this)
+                $collItemCategories = ChildItemCategoryQuery::create(null, $criteria)
+                    ->filterByCategory($this)
                     ->find($con);
 
                 if (null !== $criteria) {
-                    if (false !== $this->collItemsPartial && count($collItems)) {
-                        $this->initItems(false);
+                    if (false !== $this->collItemCategoriesPartial && count($collItemCategories)) {
+                        $this->initItemCategories(false);
 
-                        foreach ($collItems as $obj) {
-                            if (false == $this->collItems->contains($obj)) {
-                                $this->collItems->append($obj);
+                        foreach ($collItemCategories as $obj) {
+                            if (false == $this->collItemCategories->contains($obj)) {
+                                $this->collItemCategories->append($obj);
                             }
                         }
 
-                        $this->collItemsPartial = true;
+                        $this->collItemCategoriesPartial = true;
                     }
 
-                    return $collItems;
+                    return $collItemCategories;
                 }
 
-                if ($partial && $this->collItems) {
-                    foreach ($this->collItems as $obj) {
+                if ($partial && $this->collItemCategories) {
+                    foreach ($this->collItemCategories as $obj) {
                         if ($obj->isNew()) {
-                            $collItems[] = $obj;
+                            $collItemCategories[] = $obj;
                         }
                     }
                 }
 
-                $this->collItems = $collItems;
-                $this->collItemsPartial = false;
+                $this->collItemCategories = $collItemCategories;
+                $this->collItemCategoriesPartial = false;
             }
         }
 
-        return $this->collItems;
+        return $this->collItemCategories;
     }
 
     /**
-     * Sets a collection of ChildItem objects related by a one-to-many relationship
+     * Sets a collection of ChildItemCategory objects related by a one-to-many relationship
      * to the current object.
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param      Collection $items A Propel collection.
+     * @param      Collection $itemCategories A Propel collection.
      * @param      ConnectionInterface $con Optional connection object
-     * @return $this|ChildFiles The current object (for fluent API support)
+     * @return $this|ChildCategory The current object (for fluent API support)
      */
-    public function setItems(Collection $items, ConnectionInterface $con = null)
+    public function setItemCategories(Collection $itemCategories, ConnectionInterface $con = null)
     {
-        /** @var ChildItem[] $itemsToDelete */
-        $itemsToDelete = $this->getItems(new Criteria(), $con)->diff($items);
+        /** @var ChildItemCategory[] $itemCategoriesToDelete */
+        $itemCategoriesToDelete = $this->getItemCategories(new Criteria(), $con)->diff($itemCategories);
 
 
-        $this->itemsScheduledForDeletion = $itemsToDelete;
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->itemCategoriesScheduledForDeletion = clone $itemCategoriesToDelete;
 
-        foreach ($itemsToDelete as $itemRemoved) {
-            $itemRemoved->setFiles(null);
+        foreach ($itemCategoriesToDelete as $itemCategoryRemoved) {
+            $itemCategoryRemoved->setCategory(null);
         }
 
-        $this->collItems = null;
-        foreach ($items as $item) {
-            $this->addItem($item);
+        $this->collItemCategories = null;
+        foreach ($itemCategories as $itemCategory) {
+            $this->addItemCategory($itemCategory);
         }
 
-        $this->collItems = $items;
-        $this->collItemsPartial = false;
+        $this->collItemCategories = $itemCategories;
+        $this->collItemCategoriesPartial = false;
 
         return $this;
     }
 
     /**
-     * Returns the number of related Item objects.
+     * Returns the number of related ItemCategory objects.
      *
      * @param      Criteria $criteria
      * @param      boolean $distinct
      * @param      ConnectionInterface $con
-     * @return int             Count of related Item objects.
+     * @return int             Count of related ItemCategory objects.
      * @throws PropelException
      */
-    public function countItems(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function countItemCategories(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
     {
-        $partial = $this->collItemsPartial && !$this->isNew();
-        if (null === $this->collItems || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collItems) {
+        $partial = $this->collItemCategoriesPartial && !$this->isNew();
+        if (null === $this->collItemCategories || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collItemCategories) {
                 return 0;
             }
 
             if ($partial && !$criteria) {
-                return count($this->getItems());
+                return count($this->getItemCategories());
             }
 
-            $query = ChildItemQuery::create(null, $criteria);
+            $query = ChildItemCategoryQuery::create(null, $criteria);
             if ($distinct) {
                 $query->distinct();
             }
 
             return $query
-                ->filterByFiles($this)
+                ->filterByCategory($this)
                 ->count($con);
         }
 
-        return count($this->collItems);
+        return count($this->collItemCategories);
     }
 
     /**
-     * Method called to associate a ChildItem object to this object
-     * through the ChildItem foreign key attribute.
+     * Method called to associate a ChildItemCategory object to this object
+     * through the ChildItemCategory foreign key attribute.
      *
-     * @param  ChildItem $l ChildItem
-     * @return $this|\TheFarm\Models\Files The current object (for fluent API support)
+     * @param  ChildItemCategory $l ChildItemCategory
+     * @return $this|\TheFarm\Models\Category The current object (for fluent API support)
      */
-    public function addItem(ChildItem $l)
+    public function addItemCategory(ChildItemCategory $l)
     {
-        if ($this->collItems === null) {
-            $this->initItems();
-            $this->collItemsPartial = true;
+        if ($this->collItemCategories === null) {
+            $this->initItemCategories();
+            $this->collItemCategoriesPartial = true;
         }
 
-        if (!$this->collItems->contains($l)) {
-            $this->doAddItem($l);
+        if (!$this->collItemCategories->contains($l)) {
+            $this->doAddItemCategory($l);
 
-            if ($this->itemsScheduledForDeletion and $this->itemsScheduledForDeletion->contains($l)) {
-                $this->itemsScheduledForDeletion->remove($this->itemsScheduledForDeletion->search($l));
+            if ($this->itemCategoriesScheduledForDeletion and $this->itemCategoriesScheduledForDeletion->contains($l)) {
+                $this->itemCategoriesScheduledForDeletion->remove($this->itemCategoriesScheduledForDeletion->search($l));
             }
         }
 
@@ -2327,32 +2178,57 @@ abstract class Files implements ActiveRecordInterface
     }
 
     /**
-     * @param ChildItem $item The ChildItem object to add.
+     * @param ChildItemCategory $itemCategory The ChildItemCategory object to add.
      */
-    protected function doAddItem(ChildItem $item)
+    protected function doAddItemCategory(ChildItemCategory $itemCategory)
     {
-        $this->collItems[]= $item;
-        $item->setFiles($this);
+        $this->collItemCategories[]= $itemCategory;
+        $itemCategory->setCategory($this);
     }
 
     /**
-     * @param  ChildItem $item The ChildItem object to remove.
-     * @return $this|ChildFiles The current object (for fluent API support)
+     * @param  ChildItemCategory $itemCategory The ChildItemCategory object to remove.
+     * @return $this|ChildCategory The current object (for fluent API support)
      */
-    public function removeItem(ChildItem $item)
+    public function removeItemCategory(ChildItemCategory $itemCategory)
     {
-        if ($this->getItems()->contains($item)) {
-            $pos = $this->collItems->search($item);
-            $this->collItems->remove($pos);
-            if (null === $this->itemsScheduledForDeletion) {
-                $this->itemsScheduledForDeletion = clone $this->collItems;
-                $this->itemsScheduledForDeletion->clear();
+        if ($this->getItemCategories()->contains($itemCategory)) {
+            $pos = $this->collItemCategories->search($itemCategory);
+            $this->collItemCategories->remove($pos);
+            if (null === $this->itemCategoriesScheduledForDeletion) {
+                $this->itemCategoriesScheduledForDeletion = clone $this->collItemCategories;
+                $this->itemCategoriesScheduledForDeletion->clear();
             }
-            $this->itemsScheduledForDeletion[]= $item;
-            $item->setFiles(null);
+            $this->itemCategoriesScheduledForDeletion[]= clone $itemCategory;
+            $itemCategory->setCategory(null);
         }
 
         return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Category is new, it will return
+     * an empty collection; or if this Category has previously
+     * been saved, it will retrieve related ItemCategories from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Category.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildItemCategory[] List of ChildItemCategory objects
+     */
+    public function getItemCategoriesJoinItem(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildItemCategoryQuery::create(null, $criteria);
+        $query->joinWith('Item', $joinBehavior);
+
+        return $this->getItemCategories($query, $con);
     }
 
     /**
@@ -2362,17 +2238,25 @@ abstract class Files implements ActiveRecordInterface
      */
     public function clear()
     {
-        $this->file_id = null;
-        $this->title = null;
-        $this->file_name = null;
-        $this->file_size = null;
-        $this->upload_id = null;
-        $this->upload_date = null;
+        if (null !== $this->aFiles) {
+            $this->aFiles->removeCategory($this);
+        }
+        if (null !== $this->aLocation) {
+            $this->aLocation->removeCategory($this);
+        }
+        if (null !== $this->aCategoryRelatedByParentId) {
+            $this->aCategoryRelatedByParentId->removeCategoryRelatedByCatId($this);
+        }
+        $this->cat_id = null;
+        $this->cat_name = null;
+        $this->cat_image = null;
+        $this->cat_body = null;
+        $this->parent_id = null;
         $this->location_id = null;
-        $this->last_viewed = null;
-        $this->viewed_by = null;
+        $this->cat_bg_color = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
+        $this->applyDefaultValues();
         $this->resetModified();
         $this->setNew(true);
         $this->setDeleted(false);
@@ -2389,26 +2273,23 @@ abstract class Files implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
-            if ($this->collBookingAttachments) {
-                foreach ($this->collBookingAttachments as $o) {
+            if ($this->collCategoriesRelatedByCatId) {
+                foreach ($this->collCategoriesRelatedByCatId as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
-            if ($this->collCategories) {
-                foreach ($this->collCategories as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
-            if ($this->collItems) {
-                foreach ($this->collItems as $o) {
+            if ($this->collItemCategories) {
+                foreach ($this->collItemCategories as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
         } // if ($deep)
 
-        $this->collBookingAttachments = null;
-        $this->collCategories = null;
-        $this->collItems = null;
+        $this->collCategoriesRelatedByCatId = null;
+        $this->collItemCategories = null;
+        $this->aFiles = null;
+        $this->aLocation = null;
+        $this->aCategoryRelatedByParentId = null;
     }
 
     /**
@@ -2418,7 +2299,7 @@ abstract class Files implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string) $this->exportTo(FilesTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(CategoryTableMap::DEFAULT_STRING_FORMAT);
     }
 
     /**

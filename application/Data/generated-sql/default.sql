@@ -68,7 +68,7 @@ CREATE TABLE `tf_booking_events`
     `date_cancelled` INTEGER(10) DEFAULT 0,
     `personalized` VARCHAR(100) DEFAULT '',
     `booking_item_id` INTEGER,
-    `deleted` VARCHAR(1) DEFAULT 'n',
+    `is_active` VARCHAR(1) DEFAULT 'n',
     `deleted_date` INTEGER(10) DEFAULT 0,
     `deleted_by` INTEGER,
     `item_id` INTEGER,
@@ -203,7 +203,7 @@ CREATE TABLE `tf_bookings`
     `room_id` INTEGER,
     `restrictions` TEXT NOT NULL,
     `package_type_id` INTEGER,
-    `is_active` INTEGER(1) DEFAULT 1 NOT NULL,
+    `is_active` TINYINT(1) DEFAULT 1 NOT NULL,
     PRIMARY KEY (`booking_id`),
     INDEX `booking_package_fk` (`package_id`),
     INDEX `booking_guest_fk` (`guest_id`),
@@ -297,8 +297,8 @@ CREATE TABLE `tf_contacts`
     `height` VARCHAR(10) DEFAULT '' NOT NULL,
     `weight` VARCHAR(10) DEFAULT '' NOT NULL,
     `phone` VARCHAR(50) DEFAULT '',
-    `position` VARCHAR(50),
-    `deleted` SMALLINT(1) DEFAULT 0 NOT NULL,
+    `position_cd` VARCHAR(50),
+    `is_active` TINYINT(1) NOT NULL,
     `verification_key` VARCHAR(255) DEFAULT '',
     `verified` VARCHAR(1) DEFAULT 'n' NOT NULL,
     `nickname` VARCHAR(50) DEFAULT '',
@@ -307,9 +307,9 @@ CREATE TABLE `tf_contacts`
     `activation_code` INTEGER,
     `active` VARCHAR(1) DEFAULT 'n' NOT NULL,
     PRIMARY KEY (`contact_id`),
-    INDEX `position_fk` (`position`),
+    INDEX `position_fk` (`position_cd`),
     CONSTRAINT `position_fk`
-        FOREIGN KEY (`position`)
+        FOREIGN KEY (`position_cd`)
         REFERENCES `tf_position` (`position_cd`)
 ) ENGINE=InnoDB;
 
@@ -328,6 +328,23 @@ CREATE TABLE `tf_event_status`
     `include_in_sales` VARCHAR(1),
     `include_in_duplicate_checking` VARCHAR(1),
     PRIMARY KEY (`status_cd`)
+) ENGINE=InnoDB;
+
+-- ---------------------------------------------------------------------
+-- tf_email_instance
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `tf_email_instance`;
+
+CREATE TABLE `tf_email_instance`
+(
+    `email_instance_id` INTEGER NOT NULL AUTO_INCREMENT,
+    `email_subject` VARCHAR(100) NOT NULL,
+    `email_body` TEXT,
+    `from_email_address` VARCHAR(100) NOT NULL,
+    `to_email_address` VARCHAR(100) NOT NULL,
+    `email_status_cd` VARCHAR(20) NOT NULL,
+    PRIMARY KEY (`email_instance_id`)
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
@@ -822,17 +839,6 @@ CREATE TABLE `tf_messages`
 ) ENGINE=MyISAM;
 
 -- ---------------------------------------------------------------------
--- tf_migrations
--- ---------------------------------------------------------------------
-
-DROP TABLE IF EXISTS `tf_migrations`;
-
-CREATE TABLE `tf_migrations`
-(
-    `version` BIGINT NOT NULL
-) ENGINE=MyISAM;
-
--- ---------------------------------------------------------------------
 -- tf_package_items
 -- ---------------------------------------------------------------------
 
@@ -898,21 +904,6 @@ CREATE TABLE `tf_position`
     `position_order` INTEGER(3),
     PRIMARY KEY (`position_cd`)
 ) ENGINE=InnoDB;
-
--- ---------------------------------------------------------------------
--- tf_sessions
--- ---------------------------------------------------------------------
-
-DROP TABLE IF EXISTS `tf_sessions`;
-
-CREATE TABLE `tf_sessions`
-(
-    `id` VARCHAR(40) NOT NULL,
-    `ip_address` VARCHAR(45) NOT NULL,
-    `timestamp` int(10) unsigned DEFAULT 0 NOT NULL,
-    `data` BLOB NOT NULL,
-    INDEX `ci_sessions_timestamp` (`timestamp`)
-) ENGINE=MyISAM;
 
 -- ---------------------------------------------------------------------
 -- tf_sites
@@ -1051,7 +1042,7 @@ CREATE TABLE `tf_users`
     `work_plan_code` TEXT,
     `location_id` INTEGER,
     `facebook_id` VARCHAR(50) NOT NULL,
-    `order` INTEGER(5) DEFAULT 0 NOT NULL,
+    `user_order` INTEGER(5) DEFAULT 0 NOT NULL,
     `calendar_view_positions` VARCHAR(100) DEFAULT '',
     `calendar_view_status` VARCHAR(255),
     `calendar_show_my_schedule_only` VARCHAR(1) DEFAULT 'y',

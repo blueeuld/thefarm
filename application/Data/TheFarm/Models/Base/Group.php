@@ -4402,10 +4402,10 @@ abstract class Group implements ActiveRecordInterface
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return ObjectCollection|ChildUser[] List of ChildUser objects
      */
-    public function getUsersJoinLocations(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getUsersJoinLocation(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ChildUserQuery::create(null, $criteria);
-        $query->joinWith('Locations', $joinBehavior);
+        $query->joinWith('Location', $joinBehavior);
 
         return $this->getUsers($query, $con);
     }

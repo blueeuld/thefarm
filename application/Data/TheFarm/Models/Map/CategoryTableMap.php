@@ -11,12 +11,12 @@ use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\RelationMap;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Map\TableMapTrait;
-use TheFarm\Models\Files;
-use TheFarm\Models\FilesQuery;
+use TheFarm\Models\Category;
+use TheFarm\Models\CategoryQuery;
 
 
 /**
- * This class defines the structure of the 'tf_files' table.
+ * This class defines the structure of the 'tf_categories' table.
  *
  *
  *
@@ -26,7 +26,7 @@ use TheFarm\Models\FilesQuery;
  * (i.e. if it's a text column type).
  *
  */
-class FilesTableMap extends TableMap
+class CategoryTableMap extends TableMap
 {
     use InstancePoolTrait;
     use TableMapTrait;
@@ -34,7 +34,7 @@ class FilesTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = 'TheFarm.Models.Map.FilesTableMap';
+    const CLASS_NAME = 'TheFarm.Models.Map.CategoryTableMap';
 
     /**
      * The default database name for this class
@@ -44,22 +44,22 @@ class FilesTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = 'tf_files';
+    const TABLE_NAME = 'tf_categories';
 
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\TheFarm\\Models\\Files';
+    const OM_CLASS = '\\TheFarm\\Models\\Category';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'TheFarm.Models.Files';
+    const CLASS_DEFAULT = 'TheFarm.Models.Category';
 
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 9;
+    const NUM_COLUMNS = 7;
 
     /**
      * The number of lazy-loaded columns
@@ -69,52 +69,42 @@ class FilesTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 9;
+    const NUM_HYDRATE_COLUMNS = 7;
 
     /**
-     * the column name for the file_id field
+     * the column name for the cat_id field
      */
-    const COL_FILE_ID = 'tf_files.file_id';
+    const COL_CAT_ID = 'tf_categories.cat_id';
 
     /**
-     * the column name for the title field
+     * the column name for the cat_name field
      */
-    const COL_TITLE = 'tf_files.title';
+    const COL_CAT_NAME = 'tf_categories.cat_name';
 
     /**
-     * the column name for the file_name field
+     * the column name for the cat_image field
      */
-    const COL_FILE_NAME = 'tf_files.file_name';
+    const COL_CAT_IMAGE = 'tf_categories.cat_image';
 
     /**
-     * the column name for the file_size field
+     * the column name for the cat_body field
      */
-    const COL_FILE_SIZE = 'tf_files.file_size';
+    const COL_CAT_BODY = 'tf_categories.cat_body';
 
     /**
-     * the column name for the upload_id field
+     * the column name for the parent_id field
      */
-    const COL_UPLOAD_ID = 'tf_files.upload_id';
-
-    /**
-     * the column name for the upload_date field
-     */
-    const COL_UPLOAD_DATE = 'tf_files.upload_date';
+    const COL_PARENT_ID = 'tf_categories.parent_id';
 
     /**
      * the column name for the location_id field
      */
-    const COL_LOCATION_ID = 'tf_files.location_id';
+    const COL_LOCATION_ID = 'tf_categories.location_id';
 
     /**
-     * the column name for the last_viewed field
+     * the column name for the cat_bg_color field
      */
-    const COL_LAST_VIEWED = 'tf_files.last_viewed';
-
-    /**
-     * the column name for the viewed_by field
-     */
-    const COL_VIEWED_BY = 'tf_files.viewed_by';
+    const COL_CAT_BG_COLOR = 'tf_categories.cat_bg_color';
 
     /**
      * The default string format for model objects of the related table
@@ -128,11 +118,11 @@ class FilesTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('FileId', 'Title', 'FileName', 'FileSize', 'UploadId', 'UploadDate', 'LocationId', 'LastViewed', 'ViewedBy', ),
-        self::TYPE_CAMELNAME     => array('fileId', 'title', 'fileName', 'fileSize', 'uploadId', 'uploadDate', 'locationId', 'lastViewed', 'viewedBy', ),
-        self::TYPE_COLNAME       => array(FilesTableMap::COL_FILE_ID, FilesTableMap::COL_TITLE, FilesTableMap::COL_FILE_NAME, FilesTableMap::COL_FILE_SIZE, FilesTableMap::COL_UPLOAD_ID, FilesTableMap::COL_UPLOAD_DATE, FilesTableMap::COL_LOCATION_ID, FilesTableMap::COL_LAST_VIEWED, FilesTableMap::COL_VIEWED_BY, ),
-        self::TYPE_FIELDNAME     => array('file_id', 'title', 'file_name', 'file_size', 'upload_id', 'upload_date', 'location_id', 'last_viewed', 'viewed_by', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
+        self::TYPE_PHPNAME       => array('CatId', 'CatName', 'CatImage', 'CatBody', 'ParentId', 'LocationId', 'CatBgColor', ),
+        self::TYPE_CAMELNAME     => array('catId', 'catName', 'catImage', 'catBody', 'parentId', 'locationId', 'catBgColor', ),
+        self::TYPE_COLNAME       => array(CategoryTableMap::COL_CAT_ID, CategoryTableMap::COL_CAT_NAME, CategoryTableMap::COL_CAT_IMAGE, CategoryTableMap::COL_CAT_BODY, CategoryTableMap::COL_PARENT_ID, CategoryTableMap::COL_LOCATION_ID, CategoryTableMap::COL_CAT_BG_COLOR, ),
+        self::TYPE_FIELDNAME     => array('cat_id', 'cat_name', 'cat_image', 'cat_body', 'parent_id', 'location_id', 'cat_bg_color', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
     );
 
     /**
@@ -142,11 +132,11 @@ class FilesTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('FileId' => 0, 'Title' => 1, 'FileName' => 2, 'FileSize' => 3, 'UploadId' => 4, 'UploadDate' => 5, 'LocationId' => 6, 'LastViewed' => 7, 'ViewedBy' => 8, ),
-        self::TYPE_CAMELNAME     => array('fileId' => 0, 'title' => 1, 'fileName' => 2, 'fileSize' => 3, 'uploadId' => 4, 'uploadDate' => 5, 'locationId' => 6, 'lastViewed' => 7, 'viewedBy' => 8, ),
-        self::TYPE_COLNAME       => array(FilesTableMap::COL_FILE_ID => 0, FilesTableMap::COL_TITLE => 1, FilesTableMap::COL_FILE_NAME => 2, FilesTableMap::COL_FILE_SIZE => 3, FilesTableMap::COL_UPLOAD_ID => 4, FilesTableMap::COL_UPLOAD_DATE => 5, FilesTableMap::COL_LOCATION_ID => 6, FilesTableMap::COL_LAST_VIEWED => 7, FilesTableMap::COL_VIEWED_BY => 8, ),
-        self::TYPE_FIELDNAME     => array('file_id' => 0, 'title' => 1, 'file_name' => 2, 'file_size' => 3, 'upload_id' => 4, 'upload_date' => 5, 'location_id' => 6, 'last_viewed' => 7, 'viewed_by' => 8, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
+        self::TYPE_PHPNAME       => array('CatId' => 0, 'CatName' => 1, 'CatImage' => 2, 'CatBody' => 3, 'ParentId' => 4, 'LocationId' => 5, 'CatBgColor' => 6, ),
+        self::TYPE_CAMELNAME     => array('catId' => 0, 'catName' => 1, 'catImage' => 2, 'catBody' => 3, 'parentId' => 4, 'locationId' => 5, 'catBgColor' => 6, ),
+        self::TYPE_COLNAME       => array(CategoryTableMap::COL_CAT_ID => 0, CategoryTableMap::COL_CAT_NAME => 1, CategoryTableMap::COL_CAT_IMAGE => 2, CategoryTableMap::COL_CAT_BODY => 3, CategoryTableMap::COL_PARENT_ID => 4, CategoryTableMap::COL_LOCATION_ID => 5, CategoryTableMap::COL_CAT_BG_COLOR => 6, ),
+        self::TYPE_FIELDNAME     => array('cat_id' => 0, 'cat_name' => 1, 'cat_image' => 2, 'cat_body' => 3, 'parent_id' => 4, 'location_id' => 5, 'cat_bg_color' => 6, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
     );
 
     /**
@@ -159,22 +149,20 @@ class FilesTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('tf_files');
-        $this->setPhpName('Files');
+        $this->setName('tf_categories');
+        $this->setPhpName('Category');
         $this->setIdentifierQuoting(false);
-        $this->setClassName('\\TheFarm\\Models\\Files');
+        $this->setClassName('\\TheFarm\\Models\\Category');
         $this->setPackage('TheFarm.Models');
         $this->setUseIdGenerator(true);
         // columns
-        $this->addPrimaryKey('file_id', 'FileId', 'INTEGER', true, null, null);
-        $this->addColumn('title', 'Title', 'VARCHAR', true, 255, null);
-        $this->addColumn('file_name', 'FileName', 'VARCHAR', true, 255, null);
-        $this->addColumn('file_size', 'FileSize', 'INTEGER', true, null, null);
-        $this->addColumn('upload_id', 'UploadId', 'INTEGER', true, 5, null);
-        $this->addColumn('upload_date', 'UploadDate', 'INTEGER', true, 10, null);
-        $this->addColumn('location_id', 'LocationId', 'INTEGER', true, 5, null);
-        $this->addColumn('last_viewed', 'LastViewed', 'INTEGER', false, 10, null);
-        $this->addColumn('viewed_by', 'ViewedBy', 'INTEGER', false, 5, null);
+        $this->addPrimaryKey('cat_id', 'CatId', 'INTEGER', true, null, null);
+        $this->addColumn('cat_name', 'CatName', 'VARCHAR', true, 255, null);
+        $this->addForeignKey('cat_image', 'CatImage', 'INTEGER', 'tf_files', 'file_id', false, null, null);
+        $this->addColumn('cat_body', 'CatBody', 'LONGVARCHAR', true, null, null);
+        $this->addForeignKey('parent_id', 'ParentId', 'INTEGER', 'tf_categories', 'cat_id', true, null, null);
+        $this->addForeignKey('location_id', 'LocationId', 'INTEGER', 'tf_locations', 'location_id', true, null, null);
+        $this->addColumn('cat_bg_color', 'CatBgColor', 'VARCHAR', false, 1, '');
     } // initialize()
 
     /**
@@ -182,27 +170,41 @@ class FilesTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('BookingAttachment', '\\TheFarm\\Models\\BookingAttachment', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':file_id',
-    1 => ':file_id',
-  ),
-), null, null, 'BookingAttachments', false);
-        $this->addRelation('Category', '\\TheFarm\\Models\\Category', RelationMap::ONE_TO_MANY, array (
+        $this->addRelation('Files', '\\TheFarm\\Models\\Files', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
     0 => ':cat_image',
     1 => ':file_id',
   ),
-), null, null, 'Categories', false);
-        $this->addRelation('Item', '\\TheFarm\\Models\\Item', RelationMap::ONE_TO_MANY, array (
+), null, null, null, false);
+        $this->addRelation('Location', '\\TheFarm\\Models\\Location', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
-    0 => ':item_image',
-    1 => ':file_id',
+    0 => ':location_id',
+    1 => ':location_id',
   ),
-), null, null, 'Items', false);
+), null, null, null, false);
+        $this->addRelation('CategoryRelatedByParentId', '\\TheFarm\\Models\\Category', RelationMap::MANY_TO_ONE, array (
+  0 =>
+  array (
+    0 => ':parent_id',
+    1 => ':cat_id',
+  ),
+), null, null, null, false);
+        $this->addRelation('CategoryRelatedByCatId', '\\TheFarm\\Models\\Category', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':parent_id',
+    1 => ':cat_id',
+  ),
+), null, null, 'CategoriesRelatedByCatId', false);
+        $this->addRelation('ItemCategory', '\\TheFarm\\Models\\ItemCategory', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':category_id',
+    1 => ':cat_id',
+  ),
+), null, null, 'ItemCategories', false);
     } // buildRelations()
 
     /**
@@ -221,11 +223,11 @@ class FilesTableMap extends TableMap
     public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
         // If the PK cannot be derived from the row, return NULL.
-        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('FileId', TableMap::TYPE_PHPNAME, $indexType)] === null) {
+        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('CatId', TableMap::TYPE_PHPNAME, $indexType)] === null) {
             return null;
         }
 
-        return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('FileId', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('FileId', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('FileId', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('FileId', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('FileId', TableMap::TYPE_PHPNAME, $indexType)];
+        return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('CatId', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('CatId', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('CatId', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('CatId', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('CatId', TableMap::TYPE_PHPNAME, $indexType)];
     }
 
     /**
@@ -245,7 +247,7 @@ class FilesTableMap extends TableMap
         return (int) $row[
             $indexType == TableMap::TYPE_NUM
                 ? 0 + $offset
-                : self::translateFieldName('FileId', TableMap::TYPE_PHPNAME, $indexType)
+                : self::translateFieldName('CatId', TableMap::TYPE_PHPNAME, $indexType)
         ];
     }
 
@@ -262,7 +264,7 @@ class FilesTableMap extends TableMap
      */
     public static function getOMClass($withPrefix = true)
     {
-        return $withPrefix ? FilesTableMap::CLASS_DEFAULT : FilesTableMap::OM_CLASS;
+        return $withPrefix ? CategoryTableMap::CLASS_DEFAULT : CategoryTableMap::OM_CLASS;
     }
 
     /**
@@ -276,22 +278,22 @@ class FilesTableMap extends TableMap
      *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
-     * @return array           (Files object, last column rank)
+     * @return array           (Category object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        $key = FilesTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
-        if (null !== ($obj = FilesTableMap::getInstanceFromPool($key))) {
+        $key = CategoryTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
+        if (null !== ($obj = CategoryTableMap::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $offset, true); // rehydrate
-            $col = $offset + FilesTableMap::NUM_HYDRATE_COLUMNS;
+            $col = $offset + CategoryTableMap::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = FilesTableMap::OM_CLASS;
-            /** @var Files $obj */
+            $cls = CategoryTableMap::OM_CLASS;
+            /** @var Category $obj */
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
-            FilesTableMap::addInstanceToPool($obj, $key);
+            CategoryTableMap::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
@@ -314,18 +316,18 @@ class FilesTableMap extends TableMap
         $cls = static::getOMClass(false);
         // populate the object(s)
         while ($row = $dataFetcher->fetch()) {
-            $key = FilesTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
-            if (null !== ($obj = FilesTableMap::getInstanceFromPool($key))) {
+            $key = CategoryTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
+            if (null !== ($obj = CategoryTableMap::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
                 $results[] = $obj;
             } else {
-                /** @var Files $obj */
+                /** @var Category $obj */
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                FilesTableMap::addInstanceToPool($obj, $key);
+                CategoryTableMap::addInstanceToPool($obj, $key);
             } // if key exists
         }
 
@@ -346,25 +348,21 @@ class FilesTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(FilesTableMap::COL_FILE_ID);
-            $criteria->addSelectColumn(FilesTableMap::COL_TITLE);
-            $criteria->addSelectColumn(FilesTableMap::COL_FILE_NAME);
-            $criteria->addSelectColumn(FilesTableMap::COL_FILE_SIZE);
-            $criteria->addSelectColumn(FilesTableMap::COL_UPLOAD_ID);
-            $criteria->addSelectColumn(FilesTableMap::COL_UPLOAD_DATE);
-            $criteria->addSelectColumn(FilesTableMap::COL_LOCATION_ID);
-            $criteria->addSelectColumn(FilesTableMap::COL_LAST_VIEWED);
-            $criteria->addSelectColumn(FilesTableMap::COL_VIEWED_BY);
+            $criteria->addSelectColumn(CategoryTableMap::COL_CAT_ID);
+            $criteria->addSelectColumn(CategoryTableMap::COL_CAT_NAME);
+            $criteria->addSelectColumn(CategoryTableMap::COL_CAT_IMAGE);
+            $criteria->addSelectColumn(CategoryTableMap::COL_CAT_BODY);
+            $criteria->addSelectColumn(CategoryTableMap::COL_PARENT_ID);
+            $criteria->addSelectColumn(CategoryTableMap::COL_LOCATION_ID);
+            $criteria->addSelectColumn(CategoryTableMap::COL_CAT_BG_COLOR);
         } else {
-            $criteria->addSelectColumn($alias . '.file_id');
-            $criteria->addSelectColumn($alias . '.title');
-            $criteria->addSelectColumn($alias . '.file_name');
-            $criteria->addSelectColumn($alias . '.file_size');
-            $criteria->addSelectColumn($alias . '.upload_id');
-            $criteria->addSelectColumn($alias . '.upload_date');
+            $criteria->addSelectColumn($alias . '.cat_id');
+            $criteria->addSelectColumn($alias . '.cat_name');
+            $criteria->addSelectColumn($alias . '.cat_image');
+            $criteria->addSelectColumn($alias . '.cat_body');
+            $criteria->addSelectColumn($alias . '.parent_id');
             $criteria->addSelectColumn($alias . '.location_id');
-            $criteria->addSelectColumn($alias . '.last_viewed');
-            $criteria->addSelectColumn($alias . '.viewed_by');
+            $criteria->addSelectColumn($alias . '.cat_bg_color');
         }
     }
 
@@ -377,7 +375,7 @@ class FilesTableMap extends TableMap
      */
     public static function getTableMap()
     {
-        return Propel::getServiceContainer()->getDatabaseMap(FilesTableMap::DATABASE_NAME)->getTable(FilesTableMap::TABLE_NAME);
+        return Propel::getServiceContainer()->getDatabaseMap(CategoryTableMap::DATABASE_NAME)->getTable(CategoryTableMap::TABLE_NAME);
     }
 
     /**
@@ -385,16 +383,16 @@ class FilesTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-        $dbMap = Propel::getServiceContainer()->getDatabaseMap(FilesTableMap::DATABASE_NAME);
-        if (!$dbMap->hasTable(FilesTableMap::TABLE_NAME)) {
-            $dbMap->addTableObject(new FilesTableMap());
+        $dbMap = Propel::getServiceContainer()->getDatabaseMap(CategoryTableMap::DATABASE_NAME);
+        if (!$dbMap->hasTable(CategoryTableMap::TABLE_NAME)) {
+            $dbMap->addTableObject(new CategoryTableMap());
         }
     }
 
     /**
-     * Performs a DELETE on the database, given a Files or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a Category or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or Files object or primary key or array of primary keys
+     * @param mixed               $values Criteria or Category object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param  ConnectionInterface $con the connection to use
      * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -405,27 +403,27 @@ class FilesTableMap extends TableMap
      public static function doDelete($values, ConnectionInterface $con = null)
      {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(FilesTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(CategoryTableMap::DATABASE_NAME);
         }
 
         if ($values instanceof Criteria) {
             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \TheFarm\Models\Files) { // it's a model object
+        } elseif ($values instanceof \TheFarm\Models\Category) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(FilesTableMap::DATABASE_NAME);
-            $criteria->add(FilesTableMap::COL_FILE_ID, (array) $values, Criteria::IN);
+            $criteria = new Criteria(CategoryTableMap::DATABASE_NAME);
+            $criteria->add(CategoryTableMap::COL_CAT_ID, (array) $values, Criteria::IN);
         }
 
-        $query = FilesQuery::create()->mergeWith($criteria);
+        $query = CategoryQuery::create()->mergeWith($criteria);
 
         if ($values instanceof Criteria) {
-            FilesTableMap::clearInstancePool();
+            CategoryTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
             foreach ((array) $values as $singleval) {
-                FilesTableMap::removeInstanceFromPool($singleval);
+                CategoryTableMap::removeInstanceFromPool($singleval);
             }
         }
 
@@ -433,20 +431,20 @@ class FilesTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the tf_files table.
+     * Deletes all rows from the tf_categories table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public static function doDeleteAll(ConnectionInterface $con = null)
     {
-        return FilesQuery::create()->doDeleteAll($con);
+        return CategoryQuery::create()->doDeleteAll($con);
     }
 
     /**
-     * Performs an INSERT on the database, given a Files or Criteria object.
+     * Performs an INSERT on the database, given a Category or Criteria object.
      *
-     * @param mixed               $criteria Criteria or Files object containing data that is used to create the INSERT statement.
+     * @param mixed               $criteria Criteria or Category object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
@@ -455,22 +453,22 @@ class FilesTableMap extends TableMap
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(FilesTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(CategoryTableMap::DATABASE_NAME);
         }
 
         if ($criteria instanceof Criteria) {
             $criteria = clone $criteria; // rename for clarity
         } else {
-            $criteria = $criteria->buildCriteria(); // build Criteria from Files object
+            $criteria = $criteria->buildCriteria(); // build Criteria from Category object
         }
 
-        if ($criteria->containsKey(FilesTableMap::COL_FILE_ID) && $criteria->keyContainsValue(FilesTableMap::COL_FILE_ID) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.FilesTableMap::COL_FILE_ID.')');
+        if ($criteria->containsKey(CategoryTableMap::COL_CAT_ID) && $criteria->keyContainsValue(CategoryTableMap::COL_CAT_ID) ) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.CategoryTableMap::COL_CAT_ID.')');
         }
 
 
         // Set the correct dbName
-        $query = FilesQuery::create()->mergeWith($criteria);
+        $query = CategoryQuery::create()->mergeWith($criteria);
 
         // use transaction because $criteria could contain info
         // for more than one table (I guess, conceivably)
@@ -479,7 +477,7 @@ class FilesTableMap extends TableMap
         });
     }
 
-} // FilesTableMap
+} // CategoryTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-FilesTableMap::buildTableMap();
+CategoryTableMap::buildTableMap();

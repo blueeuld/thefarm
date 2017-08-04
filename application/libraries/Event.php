@@ -19,22 +19,22 @@ class Event {
 
     public function get_events() {
 
-         $search = \TheFarm\Models\BookingEventsQuery::create();
+         $search = \TheFarm\Models\BookingEventQuery::create();
 
          if ($this->eventId) {
              $search = $search->filterByEventId($this->eventId);
          }
 
          if ($this->guestId) {
-             $search = $search->useBookingItemsQuery()->useBookingsQuery()->filterByGuestId($this->guestId)->endUse()->endUse();
+             $search = $search->useBookingItemQuery()->useBookingQuery()->filterByGuestId($this->guestId)->endUse()->endUse();
          }
 
          if ($this->categories) {
-             $search = $search->useBookingItemsQuery()->useItemsQuery()->useItemCategoriesQuery()->filterByCategoryId($this->categories)->endUse()->endUse()->endUse();
+             $search = $search->useBookingItemQuery()->useItemQuery()->useItemCategoryQuery()->filterByCategoryId($this->categories)->endUse()->endUse()->endUse();
          }
 
          if ($this->unAssignedEventOnly) {
-             $search = $search->useBookingEventUsersQuery(null, 'LEFT JOIN')->filterByEventId(null)->endUse();
+             $search = $search->useBookingEventUserQuery(null, 'LEFT JOIN')->filterByEventId(null)->endUse();
          }
 
         if ($this->upcoming) {
@@ -51,7 +51,7 @@ class Event {
         }
 
 
-         $search = $search->useBookingItemsQuery()->useBookingsQuery()->filterByIsActive(true)->endUse()->endUse();
+         $search = $search->useBookingItemQuery()->useBookingQuery()->filterByIsActive(true)->endUse()->endUse();
 
          $search->orderByStartDt();
 
@@ -60,20 +60,20 @@ class Event {
 
          foreach ($events as $key => $event) {
              $eventsArray[$key] = $event->toArray();
-             if ($event->getBookingItems()) {
-                 $eventsArray[$key]['BookingItem'] = $event->getBookingItems()->toArray();
-                 $eventsArray[$key]['BookingItem']['Item'] = $event->getBookingItems()->getItems()->toArray();
-                 $eventsArray[$key]['BookingItem']['Item']['Categories'] = $event->getBookingItems()->getItems()->getItemCategoriessJoinCategories()->toArray();
-                 $eventsArray[$key]['BookingItem']['Booking'] = $event->getBookingItems()->getBookings()->toArray();
-                 $eventsArray[$key]['BookingItem']['Booking']['Guest'] = $event->getBookingItems()->getBookings()->getContactRelatedByGuestId()->toArray();
+             if ($event->getBookingItem()) {
+                 $eventsArray[$key]['BookingItem'] = $event->getBookingItem()->toArray();
+                 $eventsArray[$key]['BookingItem']['Item'] = $event->getBookingItem()->getItem()->toArray();
+                 $eventsArray[$key]['BookingItem']['Item']['Categories'] = $event->getBookingItem()->getItem()->getItemCategoriesJoinCategory()->toArray();
+                 $eventsArray[$key]['BookingItem']['Booking'] = $event->getBookingItem()->getBooking()->toArray();
+                 $eventsArray[$key]['BookingItem']['Booking']['Guest'] = $event->getBookingItem()->getBooking()->getContactRelatedByGuestId()->toArray();
              }
 
-             if ($event->getFacilities()) {
-                 $eventsArray[$key]['Facility'] = $event->getFacilities()->toArray();
+             if ($event->getFacility()) {
+                 $eventsArray[$key]['Facility'] = $event->getFacility()->toArray();
              }
 
-             if ($event->getBookingEventUserss()->count() > 0) {
-                $eventsArray[$key]['Staff'] = $event->getBookingEventUserssJoinContact()->toArray();
+             if ($event->getBookingEventUsers()->count() > 0) {
+                $eventsArray[$key]['Staff'] = $event->getBookingEventUsersJoinContact()->toArray();
              }
 
          }

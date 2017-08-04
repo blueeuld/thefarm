@@ -11,12 +11,12 @@ use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\RelationMap;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Map\TableMapTrait;
-use TheFarm\Models\EventStatus;
-use TheFarm\Models\EventStatusQuery;
+use TheFarm\Models\FormField;
+use TheFarm\Models\FormFieldQuery;
 
 
 /**
- * This class defines the structure of the 'tf_event_status' table.
+ * This class defines the structure of the 'tf_form_fields' table.
  *
  *
  *
@@ -26,7 +26,7 @@ use TheFarm\Models\EventStatusQuery;
  * (i.e. if it's a text column type).
  *
  */
-class EventStatusTableMap extends TableMap
+class FormFieldTableMap extends TableMap
 {
     use InstancePoolTrait;
     use TableMapTrait;
@@ -34,7 +34,7 @@ class EventStatusTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = 'TheFarm.Models.Map.EventStatusTableMap';
+    const CLASS_NAME = 'TheFarm.Models.Map.FormFieldTableMap';
 
     /**
      * The default database name for this class
@@ -44,22 +44,22 @@ class EventStatusTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = 'tf_event_status';
+    const TABLE_NAME = 'tf_form_fields';
 
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\TheFarm\\Models\\EventStatus';
+    const OM_CLASS = '\\TheFarm\\Models\\FormField';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'TheFarm.Models.EventStatus';
+    const CLASS_DEFAULT = 'TheFarm.Models.FormField';
 
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 6;
+    const NUM_COLUMNS = 3;
 
     /**
      * The number of lazy-loaded columns
@@ -69,37 +69,22 @@ class EventStatusTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 6;
+    const NUM_HYDRATE_COLUMNS = 3;
 
     /**
-     * the column name for the status_cd field
+     * the column name for the field_id field
      */
-    const COL_STATUS_CD = 'tf_event_status.status_cd';
+    const COL_FIELD_ID = 'tf_form_fields.field_id';
 
     /**
-     * the column name for the status_value field
+     * the column name for the form_id field
      */
-    const COL_STATUS_VALUE = 'tf_event_status.status_value';
+    const COL_FORM_ID = 'tf_form_fields.form_id';
 
     /**
-     * the column name for the status_order field
+     * the column name for the guest_only field
      */
-    const COL_STATUS_ORDER = 'tf_event_status.status_order';
-
-    /**
-     * the column name for the status_style field
-     */
-    const COL_STATUS_STYLE = 'tf_event_status.status_style';
-
-    /**
-     * the column name for the include_in_sales field
-     */
-    const COL_INCLUDE_IN_SALES = 'tf_event_status.include_in_sales';
-
-    /**
-     * the column name for the include_in_duplicate_checking field
-     */
-    const COL_INCLUDE_IN_DUPLICATE_CHECKING = 'tf_event_status.include_in_duplicate_checking';
+    const COL_GUEST_ONLY = 'tf_form_fields.guest_only';
 
     /**
      * The default string format for model objects of the related table
@@ -113,11 +98,11 @@ class EventStatusTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('StatusCd', 'StatusValue', 'StatusOrder', 'StatusStyle', 'IncludeInSales', 'IncludeInDuplicateChecking', ),
-        self::TYPE_CAMELNAME     => array('statusCd', 'statusValue', 'statusOrder', 'statusStyle', 'includeInSales', 'includeInDuplicateChecking', ),
-        self::TYPE_COLNAME       => array(EventStatusTableMap::COL_STATUS_CD, EventStatusTableMap::COL_STATUS_VALUE, EventStatusTableMap::COL_STATUS_ORDER, EventStatusTableMap::COL_STATUS_STYLE, EventStatusTableMap::COL_INCLUDE_IN_SALES, EventStatusTableMap::COL_INCLUDE_IN_DUPLICATE_CHECKING, ),
-        self::TYPE_FIELDNAME     => array('status_cd', 'status_value', 'status_order', 'status_style', 'include_in_sales', 'include_in_duplicate_checking', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
+        self::TYPE_PHPNAME       => array('FieldId', 'FormId', 'GuestOnly', ),
+        self::TYPE_CAMELNAME     => array('fieldId', 'formId', 'guestOnly', ),
+        self::TYPE_COLNAME       => array(FormFieldTableMap::COL_FIELD_ID, FormFieldTableMap::COL_FORM_ID, FormFieldTableMap::COL_GUEST_ONLY, ),
+        self::TYPE_FIELDNAME     => array('field_id', 'form_id', 'guest_only', ),
+        self::TYPE_NUM           => array(0, 1, 2, )
     );
 
     /**
@@ -127,11 +112,11 @@ class EventStatusTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('StatusCd' => 0, 'StatusValue' => 1, 'StatusOrder' => 2, 'StatusStyle' => 3, 'IncludeInSales' => 4, 'IncludeInDuplicateChecking' => 5, ),
-        self::TYPE_CAMELNAME     => array('statusCd' => 0, 'statusValue' => 1, 'statusOrder' => 2, 'statusStyle' => 3, 'includeInSales' => 4, 'includeInDuplicateChecking' => 5, ),
-        self::TYPE_COLNAME       => array(EventStatusTableMap::COL_STATUS_CD => 0, EventStatusTableMap::COL_STATUS_VALUE => 1, EventStatusTableMap::COL_STATUS_ORDER => 2, EventStatusTableMap::COL_STATUS_STYLE => 3, EventStatusTableMap::COL_INCLUDE_IN_SALES => 4, EventStatusTableMap::COL_INCLUDE_IN_DUPLICATE_CHECKING => 5, ),
-        self::TYPE_FIELDNAME     => array('status_cd' => 0, 'status_value' => 1, 'status_order' => 2, 'status_style' => 3, 'include_in_sales' => 4, 'include_in_duplicate_checking' => 5, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
+        self::TYPE_PHPNAME       => array('FieldId' => 0, 'FormId' => 1, 'GuestOnly' => 2, ),
+        self::TYPE_CAMELNAME     => array('fieldId' => 0, 'formId' => 1, 'guestOnly' => 2, ),
+        self::TYPE_COLNAME       => array(FormFieldTableMap::COL_FIELD_ID => 0, FormFieldTableMap::COL_FORM_ID => 1, FormFieldTableMap::COL_GUEST_ONLY => 2, ),
+        self::TYPE_FIELDNAME     => array('field_id' => 0, 'form_id' => 1, 'guest_only' => 2, ),
+        self::TYPE_NUM           => array(0, 1, 2, )
     );
 
     /**
@@ -144,19 +129,16 @@ class EventStatusTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('tf_event_status');
-        $this->setPhpName('EventStatus');
+        $this->setName('tf_form_fields');
+        $this->setPhpName('FormField');
         $this->setIdentifierQuoting(false);
-        $this->setClassName('\\TheFarm\\Models\\EventStatus');
+        $this->setClassName('\\TheFarm\\Models\\FormField');
         $this->setPackage('TheFarm.Models');
         $this->setUseIdGenerator(false);
         // columns
-        $this->addPrimaryKey('status_cd', 'StatusCd', 'VARCHAR', true, 20, null);
-        $this->addColumn('status_value', 'StatusValue', 'VARCHAR', true, 50, null);
-        $this->addColumn('status_order', 'StatusOrder', 'SMALLINT', false, 3, null);
-        $this->addColumn('status_style', 'StatusStyle', 'VARCHAR', false, 200, null);
-        $this->addColumn('include_in_sales', 'IncludeInSales', 'VARCHAR', false, 1, null);
-        $this->addColumn('include_in_duplicate_checking', 'IncludeInDuplicateChecking', 'VARCHAR', false, 1, null);
+        $this->addPrimaryKey('field_id', 'FieldId', 'INTEGER', true, null, 0);
+        $this->addPrimaryKey('form_id', 'FormId', 'INTEGER', true, null, 0);
+        $this->addColumn('guest_only', 'GuestOnly', 'CHAR', true, null, null);
     } // initialize()
 
     /**
@@ -164,21 +146,60 @@ class EventStatusTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('BookingEvent', '\\TheFarm\\Models\\BookingEvent', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':status',
-    1 => ':status_cd',
-  ),
-), null, null, 'BookingEvents', false);
-        $this->addRelation('Booking', '\\TheFarm\\Models\\Booking', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':status',
-    1 => ':status_cd',
-  ),
-), null, null, 'Bookings', false);
     } // buildRelations()
+
+    /**
+     * Adds an object to the instance pool.
+     *
+     * Propel keeps cached copies of objects in an instance pool when they are retrieved
+     * from the database. In some cases you may need to explicitly add objects
+     * to the cache in order to ensure that the same objects are always returned by find*()
+     * and findPk*() calls.
+     *
+     * @param \TheFarm\Models\FormField $obj A \TheFarm\Models\FormField object.
+     * @param string $key             (optional) key to use for instance map (for performance boost if key was already calculated externally).
+     */
+    public static function addInstanceToPool($obj, $key = null)
+    {
+        if (Propel::isInstancePoolingEnabled()) {
+            if (null === $key) {
+                $key = serialize([(null === $obj->getFieldId() || is_scalar($obj->getFieldId()) || is_callable([$obj->getFieldId(), '__toString']) ? (string) $obj->getFieldId() : $obj->getFieldId()), (null === $obj->getFormId() || is_scalar($obj->getFormId()) || is_callable([$obj->getFormId(), '__toString']) ? (string) $obj->getFormId() : $obj->getFormId())]);
+            } // if key === null
+            self::$instances[$key] = $obj;
+        }
+    }
+
+    /**
+     * Removes an object from the instance pool.
+     *
+     * Propel keeps cached copies of objects in an instance pool when they are retrieved
+     * from the database.  In some cases -- especially when you override doDelete
+     * methods in your stub classes -- you may need to explicitly remove objects
+     * from the cache in order to prevent returning objects that no longer exist.
+     *
+     * @param mixed $value A \TheFarm\Models\FormField object or a primary key value.
+     */
+    public static function removeInstanceFromPool($value)
+    {
+        if (Propel::isInstancePoolingEnabled() && null !== $value) {
+            if (is_object($value) && $value instanceof \TheFarm\Models\FormField) {
+                $key = serialize([(null === $value->getFieldId() || is_scalar($value->getFieldId()) || is_callable([$value->getFieldId(), '__toString']) ? (string) $value->getFieldId() : $value->getFieldId()), (null === $value->getFormId() || is_scalar($value->getFormId()) || is_callable([$value->getFormId(), '__toString']) ? (string) $value->getFormId() : $value->getFormId())]);
+
+            } elseif (is_array($value) && count($value) === 2) {
+                // assume we've been passed a primary key";
+                $key = serialize([(null === $value[0] || is_scalar($value[0]) || is_callable([$value[0], '__toString']) ? (string) $value[0] : $value[0]), (null === $value[1] || is_scalar($value[1]) || is_callable([$value[1], '__toString']) ? (string) $value[1] : $value[1])]);
+            } elseif ($value instanceof Criteria) {
+                self::$instances = [];
+
+                return;
+            } else {
+                $e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or \TheFarm\Models\FormField object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value, true)));
+                throw $e;
+            }
+
+            unset(self::$instances[$key]);
+        }
+    }
 
     /**
      * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
@@ -196,11 +217,11 @@ class EventStatusTableMap extends TableMap
     public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
         // If the PK cannot be derived from the row, return NULL.
-        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('StatusCd', TableMap::TYPE_PHPNAME, $indexType)] === null) {
+        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('FieldId', TableMap::TYPE_PHPNAME, $indexType)] === null && $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('FormId', TableMap::TYPE_PHPNAME, $indexType)] === null) {
             return null;
         }
 
-        return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('StatusCd', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('StatusCd', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('StatusCd', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('StatusCd', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('StatusCd', TableMap::TYPE_PHPNAME, $indexType)];
+        return serialize([(null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('FieldId', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('FieldId', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('FieldId', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('FieldId', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('FieldId', TableMap::TYPE_PHPNAME, $indexType)]), (null === $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('FormId', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('FormId', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('FormId', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('FormId', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('FormId', TableMap::TYPE_PHPNAME, $indexType)])]);
     }
 
     /**
@@ -217,11 +238,20 @@ class EventStatusTableMap extends TableMap
      */
     public static function getPrimaryKeyFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        return (string) $row[
+            $pks = [];
+
+        $pks[] = (int) $row[
             $indexType == TableMap::TYPE_NUM
                 ? 0 + $offset
-                : self::translateFieldName('StatusCd', TableMap::TYPE_PHPNAME, $indexType)
+                : self::translateFieldName('FieldId', TableMap::TYPE_PHPNAME, $indexType)
         ];
+        $pks[] = (int) $row[
+            $indexType == TableMap::TYPE_NUM
+                ? 1 + $offset
+                : self::translateFieldName('FormId', TableMap::TYPE_PHPNAME, $indexType)
+        ];
+
+        return $pks;
     }
 
     /**
@@ -237,7 +267,7 @@ class EventStatusTableMap extends TableMap
      */
     public static function getOMClass($withPrefix = true)
     {
-        return $withPrefix ? EventStatusTableMap::CLASS_DEFAULT : EventStatusTableMap::OM_CLASS;
+        return $withPrefix ? FormFieldTableMap::CLASS_DEFAULT : FormFieldTableMap::OM_CLASS;
     }
 
     /**
@@ -251,22 +281,22 @@ class EventStatusTableMap extends TableMap
      *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
-     * @return array           (EventStatus object, last column rank)
+     * @return array           (FormField object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        $key = EventStatusTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
-        if (null !== ($obj = EventStatusTableMap::getInstanceFromPool($key))) {
+        $key = FormFieldTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
+        if (null !== ($obj = FormFieldTableMap::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $offset, true); // rehydrate
-            $col = $offset + EventStatusTableMap::NUM_HYDRATE_COLUMNS;
+            $col = $offset + FormFieldTableMap::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = EventStatusTableMap::OM_CLASS;
-            /** @var EventStatus $obj */
+            $cls = FormFieldTableMap::OM_CLASS;
+            /** @var FormField $obj */
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
-            EventStatusTableMap::addInstanceToPool($obj, $key);
+            FormFieldTableMap::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
@@ -289,18 +319,18 @@ class EventStatusTableMap extends TableMap
         $cls = static::getOMClass(false);
         // populate the object(s)
         while ($row = $dataFetcher->fetch()) {
-            $key = EventStatusTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
-            if (null !== ($obj = EventStatusTableMap::getInstanceFromPool($key))) {
+            $key = FormFieldTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
+            if (null !== ($obj = FormFieldTableMap::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
                 $results[] = $obj;
             } else {
-                /** @var EventStatus $obj */
+                /** @var FormField $obj */
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                EventStatusTableMap::addInstanceToPool($obj, $key);
+                FormFieldTableMap::addInstanceToPool($obj, $key);
             } // if key exists
         }
 
@@ -321,19 +351,13 @@ class EventStatusTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(EventStatusTableMap::COL_STATUS_CD);
-            $criteria->addSelectColumn(EventStatusTableMap::COL_STATUS_VALUE);
-            $criteria->addSelectColumn(EventStatusTableMap::COL_STATUS_ORDER);
-            $criteria->addSelectColumn(EventStatusTableMap::COL_STATUS_STYLE);
-            $criteria->addSelectColumn(EventStatusTableMap::COL_INCLUDE_IN_SALES);
-            $criteria->addSelectColumn(EventStatusTableMap::COL_INCLUDE_IN_DUPLICATE_CHECKING);
+            $criteria->addSelectColumn(FormFieldTableMap::COL_FIELD_ID);
+            $criteria->addSelectColumn(FormFieldTableMap::COL_FORM_ID);
+            $criteria->addSelectColumn(FormFieldTableMap::COL_GUEST_ONLY);
         } else {
-            $criteria->addSelectColumn($alias . '.status_cd');
-            $criteria->addSelectColumn($alias . '.status_value');
-            $criteria->addSelectColumn($alias . '.status_order');
-            $criteria->addSelectColumn($alias . '.status_style');
-            $criteria->addSelectColumn($alias . '.include_in_sales');
-            $criteria->addSelectColumn($alias . '.include_in_duplicate_checking');
+            $criteria->addSelectColumn($alias . '.field_id');
+            $criteria->addSelectColumn($alias . '.form_id');
+            $criteria->addSelectColumn($alias . '.guest_only');
         }
     }
 
@@ -346,7 +370,7 @@ class EventStatusTableMap extends TableMap
      */
     public static function getTableMap()
     {
-        return Propel::getServiceContainer()->getDatabaseMap(EventStatusTableMap::DATABASE_NAME)->getTable(EventStatusTableMap::TABLE_NAME);
+        return Propel::getServiceContainer()->getDatabaseMap(FormFieldTableMap::DATABASE_NAME)->getTable(FormFieldTableMap::TABLE_NAME);
     }
 
     /**
@@ -354,16 +378,16 @@ class EventStatusTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-        $dbMap = Propel::getServiceContainer()->getDatabaseMap(EventStatusTableMap::DATABASE_NAME);
-        if (!$dbMap->hasTable(EventStatusTableMap::TABLE_NAME)) {
-            $dbMap->addTableObject(new EventStatusTableMap());
+        $dbMap = Propel::getServiceContainer()->getDatabaseMap(FormFieldTableMap::DATABASE_NAME);
+        if (!$dbMap->hasTable(FormFieldTableMap::TABLE_NAME)) {
+            $dbMap->addTableObject(new FormFieldTableMap());
         }
     }
 
     /**
-     * Performs a DELETE on the database, given a EventStatus or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a FormField or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or EventStatus object or primary key or array of primary keys
+     * @param mixed               $values Criteria or FormField object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param  ConnectionInterface $con the connection to use
      * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -374,27 +398,37 @@ class EventStatusTableMap extends TableMap
      public static function doDelete($values, ConnectionInterface $con = null)
      {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(EventStatusTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(FormFieldTableMap::DATABASE_NAME);
         }
 
         if ($values instanceof Criteria) {
             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \TheFarm\Models\EventStatus) { // it's a model object
+        } elseif ($values instanceof \TheFarm\Models\FormField) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(EventStatusTableMap::DATABASE_NAME);
-            $criteria->add(EventStatusTableMap::COL_STATUS_CD, (array) $values, Criteria::IN);
+            $criteria = new Criteria(FormFieldTableMap::DATABASE_NAME);
+            // primary key is composite; we therefore, expect
+            // the primary key passed to be an array of pkey values
+            if (count($values) == count($values, COUNT_RECURSIVE)) {
+                // array is not multi-dimensional
+                $values = array($values);
+            }
+            foreach ($values as $value) {
+                $criterion = $criteria->getNewCriterion(FormFieldTableMap::COL_FIELD_ID, $value[0]);
+                $criterion->addAnd($criteria->getNewCriterion(FormFieldTableMap::COL_FORM_ID, $value[1]));
+                $criteria->addOr($criterion);
+            }
         }
 
-        $query = EventStatusQuery::create()->mergeWith($criteria);
+        $query = FormFieldQuery::create()->mergeWith($criteria);
 
         if ($values instanceof Criteria) {
-            EventStatusTableMap::clearInstancePool();
+            FormFieldTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
             foreach ((array) $values as $singleval) {
-                EventStatusTableMap::removeInstanceFromPool($singleval);
+                FormFieldTableMap::removeInstanceFromPool($singleval);
             }
         }
 
@@ -402,20 +436,20 @@ class EventStatusTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the tf_event_status table.
+     * Deletes all rows from the tf_form_fields table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public static function doDeleteAll(ConnectionInterface $con = null)
     {
-        return EventStatusQuery::create()->doDeleteAll($con);
+        return FormFieldQuery::create()->doDeleteAll($con);
     }
 
     /**
-     * Performs an INSERT on the database, given a EventStatus or Criteria object.
+     * Performs an INSERT on the database, given a FormField or Criteria object.
      *
-     * @param mixed               $criteria Criteria or EventStatus object containing data that is used to create the INSERT statement.
+     * @param mixed               $criteria Criteria or FormField object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
@@ -424,18 +458,18 @@ class EventStatusTableMap extends TableMap
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(EventStatusTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(FormFieldTableMap::DATABASE_NAME);
         }
 
         if ($criteria instanceof Criteria) {
             $criteria = clone $criteria; // rename for clarity
         } else {
-            $criteria = $criteria->buildCriteria(); // build Criteria from EventStatus object
+            $criteria = $criteria->buildCriteria(); // build Criteria from FormField object
         }
 
 
         // Set the correct dbName
-        $query = EventStatusQuery::create()->mergeWith($criteria);
+        $query = FormFieldQuery::create()->mergeWith($criteria);
 
         // use transaction because $criteria could contain info
         // for more than one table (I guess, conceivably)
@@ -444,7 +478,7 @@ class EventStatusTableMap extends TableMap
         });
     }
 
-} // EventStatusTableMap
+} // FormFieldTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-EventStatusTableMap::buildTableMap();
+FormFieldTableMap::buildTableMap();
