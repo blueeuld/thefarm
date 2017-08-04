@@ -80,6 +80,14 @@ abstract class BookingEventUser implements ActiveRecordInterface
     protected $staff_id;
 
     /**
+     * The value for the is_guest field.
+     *
+     * Note: this column has a database default value of: false
+     * @var        boolean
+     */
+    protected $is_guest;
+
+    /**
      * @var        ChildBookingEvent
      */
     protected $aBookingEvent;
@@ -107,6 +115,7 @@ abstract class BookingEventUser implements ActiveRecordInterface
     {
         $this->event_id = 0;
         $this->staff_id = 0;
+        $this->is_guest = false;
     }
 
     /**
@@ -351,9 +360,29 @@ abstract class BookingEventUser implements ActiveRecordInterface
      *
      * @return int
      */
-    public function getStaffId()
+    public function getUserId()
     {
         return $this->staff_id;
+    }
+
+    /**
+     * Get the [is_guest] column value.
+     *
+     * @return boolean
+     */
+    public function getIsGuest()
+    {
+        return $this->is_guest;
+    }
+
+    /**
+     * Get the [is_guest] column value.
+     *
+     * @return boolean
+     */
+    public function isGuest()
+    {
+        return $this->getIsGuest();
     }
 
     /**
@@ -386,7 +415,7 @@ abstract class BookingEventUser implements ActiveRecordInterface
      * @param int $v new value
      * @return $this|\TheFarm\Models\BookingEventUser The current object (for fluent API support)
      */
-    public function setStaffId($v)
+    public function setUserId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
@@ -402,7 +431,35 @@ abstract class BookingEventUser implements ActiveRecordInterface
         }
 
         return $this;
-    } // setStaffId()
+    } // setUserId()
+
+    /**
+     * Sets the value of the [is_guest] column.
+     * Non-boolean arguments are converted using the following rules:
+     *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     *
+     * @param  boolean|integer|string $v The new value
+     * @return $this|\TheFarm\Models\BookingEventUser The current object (for fluent API support)
+     */
+    public function setIsGuest($v)
+    {
+        if ($v !== null) {
+            if (is_string($v)) {
+                $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            } else {
+                $v = (boolean) $v;
+            }
+        }
+
+        if ($this->is_guest !== $v) {
+            $this->is_guest = $v;
+            $this->modifiedColumns[BookingEventUserTableMap::COL_IS_GUEST] = true;
+        }
+
+        return $this;
+    } // setIsGuest()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -419,6 +476,10 @@ abstract class BookingEventUser implements ActiveRecordInterface
             }
 
             if ($this->staff_id !== 0) {
+                return false;
+            }
+
+            if ($this->is_guest !== false) {
                 return false;
             }
 
@@ -451,8 +512,11 @@ abstract class BookingEventUser implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : BookingEventUserTableMap::translateFieldName('EventId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->event_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : BookingEventUserTableMap::translateFieldName('StaffId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : BookingEventUserTableMap::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->staff_id = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : BookingEventUserTableMap::translateFieldName('IsGuest', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->is_guest = (null !== $col) ? (boolean) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -461,7 +525,7 @@ abstract class BookingEventUser implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 2; // 2 = BookingEventUserTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 3; // 3 = BookingEventUserTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\TheFarm\\Models\\BookingEventUser'), 0, $e);
@@ -691,6 +755,9 @@ abstract class BookingEventUser implements ActiveRecordInterface
         if ($this->isColumnModified(BookingEventUserTableMap::COL_STAFF_ID)) {
             $modifiedColumns[':p' . $index++]  = 'staff_id';
         }
+        if ($this->isColumnModified(BookingEventUserTableMap::COL_IS_GUEST)) {
+            $modifiedColumns[':p' . $index++]  = 'is_guest';
+        }
 
         $sql = sprintf(
             'INSERT INTO tf_booking_event_users (%s) VALUES (%s)',
@@ -707,6 +774,9 @@ abstract class BookingEventUser implements ActiveRecordInterface
                         break;
                     case 'staff_id':
                         $stmt->bindValue($identifier, $this->staff_id, PDO::PARAM_INT);
+                        break;
+                    case 'is_guest':
+                        $stmt->bindValue($identifier, (int) $this->is_guest, PDO::PARAM_INT);
                         break;
                 }
             }
@@ -767,7 +837,10 @@ abstract class BookingEventUser implements ActiveRecordInterface
                 return $this->getEventId();
                 break;
             case 1:
-                return $this->getStaffId();
+                return $this->getUserId();
+                break;
+            case 2:
+                return $this->getIsGuest();
                 break;
             default:
                 return null;
@@ -800,7 +873,8 @@ abstract class BookingEventUser implements ActiveRecordInterface
         $keys = BookingEventUserTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getEventId(),
-            $keys[1] => $this->getStaffId(),
+            $keys[1] => $this->getUserId(),
+            $keys[2] => $this->getIsGuest(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -876,7 +950,10 @@ abstract class BookingEventUser implements ActiveRecordInterface
                 $this->setEventId($value);
                 break;
             case 1:
-                $this->setStaffId($value);
+                $this->setUserId($value);
+                break;
+            case 2:
+                $this->setIsGuest($value);
                 break;
         } // switch()
 
@@ -908,7 +985,10 @@ abstract class BookingEventUser implements ActiveRecordInterface
             $this->setEventId($arr[$keys[0]]);
         }
         if (array_key_exists($keys[1], $arr)) {
-            $this->setStaffId($arr[$keys[1]]);
+            $this->setUserId($arr[$keys[1]]);
+        }
+        if (array_key_exists($keys[2], $arr)) {
+            $this->setIsGuest($arr[$keys[2]]);
         }
     }
 
@@ -957,6 +1037,9 @@ abstract class BookingEventUser implements ActiveRecordInterface
         if ($this->isColumnModified(BookingEventUserTableMap::COL_STAFF_ID)) {
             $criteria->add(BookingEventUserTableMap::COL_STAFF_ID, $this->staff_id);
         }
+        if ($this->isColumnModified(BookingEventUserTableMap::COL_IS_GUEST)) {
+            $criteria->add(BookingEventUserTableMap::COL_IS_GUEST, $this->is_guest);
+        }
 
         return $criteria;
     }
@@ -989,7 +1072,7 @@ abstract class BookingEventUser implements ActiveRecordInterface
     public function hashCode()
     {
         $validPk = null !== $this->getEventId() &&
-            null !== $this->getStaffId();
+            null !== $this->getUserId();
 
         $validPrimaryKeyFKs = 2;
         $primaryKeyFKs = [];
@@ -1026,7 +1109,7 @@ abstract class BookingEventUser implements ActiveRecordInterface
     {
         $pks = array();
         $pks[0] = $this->getEventId();
-        $pks[1] = $this->getStaffId();
+        $pks[1] = $this->getUserId();
 
         return $pks;
     }
@@ -1040,7 +1123,7 @@ abstract class BookingEventUser implements ActiveRecordInterface
     public function setPrimaryKey($keys)
     {
         $this->setEventId($keys[0]);
-        $this->setStaffId($keys[1]);
+        $this->setUserId($keys[1]);
     }
 
     /**
@@ -1049,7 +1132,7 @@ abstract class BookingEventUser implements ActiveRecordInterface
      */
     public function isPrimaryKeyNull()
     {
-        return (null === $this->getEventId()) && (null === $this->getStaffId());
+        return (null === $this->getEventId()) && (null === $this->getUserId());
     }
 
     /**
@@ -1066,7 +1149,8 @@ abstract class BookingEventUser implements ActiveRecordInterface
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
         $copyObj->setEventId($this->getEventId());
-        $copyObj->setStaffId($this->getStaffId());
+        $copyObj->setUserId($this->getUserId());
+        $copyObj->setIsGuest($this->getIsGuest());
         if ($makeNew) {
             $copyObj->setNew(true);
         }
@@ -1155,9 +1239,9 @@ abstract class BookingEventUser implements ActiveRecordInterface
     public function setContact(ChildContact $v = null)
     {
         if ($v === null) {
-            $this->setStaffId(0);
+            $this->setUserId(0);
         } else {
-            $this->setStaffId($v->getContactId());
+            $this->setUserId($v->getContactId());
         }
 
         $this->aContact = $v;
@@ -1211,6 +1295,7 @@ abstract class BookingEventUser implements ActiveRecordInterface
         }
         $this->event_id = null;
         $this->staff_id = null;
+        $this->is_guest = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();

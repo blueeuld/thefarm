@@ -18,12 +18,14 @@ use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
 use Propel\Runtime\Util\PropelDateTime;
+use TheFarm\Models\Booking as ChildBooking;
 use TheFarm\Models\BookingEvent as ChildBookingEvent;
 use TheFarm\Models\BookingEventQuery as ChildBookingEventQuery;
 use TheFarm\Models\BookingEventUser as ChildBookingEventUser;
 use TheFarm\Models\BookingEventUserQuery as ChildBookingEventUserQuery;
 use TheFarm\Models\BookingItem as ChildBookingItem;
 use TheFarm\Models\BookingItemQuery as ChildBookingItemQuery;
+use TheFarm\Models\BookingQuery as ChildBookingQuery;
 use TheFarm\Models\Contact as ChildContact;
 use TheFarm\Models\ContactQuery as ChildContactQuery;
 use TheFarm\Models\EventStatus as ChildEventStatus;
@@ -82,6 +84,13 @@ abstract class BookingEvent implements ActiveRecordInterface
      * @var        int
      */
     protected $event_id;
+
+    /**
+     * The value for the booking_id field.
+     *
+     * @var        int
+     */
+    protected $booking_id;
 
     /**
      * The value for the event_title field.
@@ -309,6 +318,11 @@ abstract class BookingEvent implements ActiveRecordInterface
      * @var        ChildContact
      */
     protected $aContactRelatedByAuthorId;
+
+    /**
+     * @var        ChildBooking
+     */
+    protected $aBooking;
 
     /**
      * @var        ChildBookingItem
@@ -625,6 +639,16 @@ abstract class BookingEvent implements ActiveRecordInterface
     }
 
     /**
+     * Get the [booking_id] column value.
+     *
+     * @return int
+     */
+    public function getBookingId()
+    {
+        return $this->booking_id;
+    }
+
+    /**
      * Get the [event_title] column value.
      *
      * @return string
@@ -645,7 +669,7 @@ abstract class BookingEvent implements ActiveRecordInterface
      *
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
-    public function getStartDt($format = NULL)
+    public function getStartDate($format = NULL)
     {
         if ($format === null) {
             return $this->start_dt;
@@ -665,7 +689,7 @@ abstract class BookingEvent implements ActiveRecordInterface
      *
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
-    public function getEndDt($format = NULL)
+    public function getEndDate($format = NULL)
     {
         if ($format === null) {
             return $this->end_dt;
@@ -965,6 +989,30 @@ abstract class BookingEvent implements ActiveRecordInterface
     } // setEventId()
 
     /**
+     * Set the value of [booking_id] column.
+     *
+     * @param int $v new value
+     * @return $this|\TheFarm\Models\BookingEvent The current object (for fluent API support)
+     */
+    public function setBookingId($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->booking_id !== $v) {
+            $this->booking_id = $v;
+            $this->modifiedColumns[BookingEventTableMap::COL_BOOKING_ID] = true;
+        }
+
+        if ($this->aBooking !== null && $this->aBooking->getBookingId() !== $v) {
+            $this->aBooking = null;
+        }
+
+        return $this;
+    } // setBookingId()
+
+    /**
      * Set the value of [event_title] column.
      *
      * @param string $v new value
@@ -991,7 +1039,7 @@ abstract class BookingEvent implements ActiveRecordInterface
      *               Empty strings are treated as NULL.
      * @return $this|\TheFarm\Models\BookingEvent The current object (for fluent API support)
      */
-    public function setStartDt($v)
+    public function setStartDate($v)
     {
         $dt = PropelDateTime::newInstance($v, null, 'DateTime');
         if ($this->start_dt !== null || $dt !== null) {
@@ -1002,7 +1050,7 @@ abstract class BookingEvent implements ActiveRecordInterface
         } // if either are not null
 
         return $this;
-    } // setStartDt()
+    } // setStartDate()
 
     /**
      * Sets the value of [end_dt] column to a normalized version of the date/time value specified.
@@ -1011,7 +1059,7 @@ abstract class BookingEvent implements ActiveRecordInterface
      *               Empty strings are treated as NULL.
      * @return $this|\TheFarm\Models\BookingEvent The current object (for fluent API support)
      */
-    public function setEndDt($v)
+    public function setEndDate($v)
     {
         $dt = PropelDateTime::newInstance($v, null, 'DateTime');
         if ($this->end_dt !== null || $dt !== null) {
@@ -1022,7 +1070,7 @@ abstract class BookingEvent implements ActiveRecordInterface
         } // if either are not null
 
         return $this;
-    } // setEndDt()
+    } // setEndDate()
 
     /**
      * Set the value of [facility_id] column.
@@ -1683,100 +1731,103 @@ abstract class BookingEvent implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : BookingEventTableMap::translateFieldName('EventId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->event_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : BookingEventTableMap::translateFieldName('EventTitle', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : BookingEventTableMap::translateFieldName('BookingId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->booking_id = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : BookingEventTableMap::translateFieldName('EventTitle', TableMap::TYPE_PHPNAME, $indexType)];
             $this->event_title = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : BookingEventTableMap::translateFieldName('StartDt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : BookingEventTableMap::translateFieldName('StartDate', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->start_dt = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : BookingEventTableMap::translateFieldName('EndDt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : BookingEventTableMap::translateFieldName('EndDate', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->end_dt = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : BookingEventTableMap::translateFieldName('FacilityId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : BookingEventTableMap::translateFieldName('FacilityId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->facility_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : BookingEventTableMap::translateFieldName('AllDay', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : BookingEventTableMap::translateFieldName('AllDay', TableMap::TYPE_PHPNAME, $indexType)];
             $this->all_day = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : BookingEventTableMap::translateFieldName('Status', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : BookingEventTableMap::translateFieldName('Status', TableMap::TYPE_PHPNAME, $indexType)];
             $this->status = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : BookingEventTableMap::translateFieldName('AuthorId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : BookingEventTableMap::translateFieldName('AuthorId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->author_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : BookingEventTableMap::translateFieldName('EntryDate', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : BookingEventTableMap::translateFieldName('EntryDate', TableMap::TYPE_PHPNAME, $indexType)];
             $this->entry_date = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : BookingEventTableMap::translateFieldName('EditDate', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : BookingEventTableMap::translateFieldName('EditDate', TableMap::TYPE_PHPNAME, $indexType)];
             $this->edit_date = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : BookingEventTableMap::translateFieldName('Notes', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : BookingEventTableMap::translateFieldName('Notes', TableMap::TYPE_PHPNAME, $indexType)];
             $this->notes = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : BookingEventTableMap::translateFieldName('CalledBy', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : BookingEventTableMap::translateFieldName('CalledBy', TableMap::TYPE_PHPNAME, $indexType)];
             $this->called_by = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : BookingEventTableMap::translateFieldName('CancelledBy', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 13 + $startcol : BookingEventTableMap::translateFieldName('CancelledBy', TableMap::TYPE_PHPNAME, $indexType)];
             $this->cancelled_by = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 13 + $startcol : BookingEventTableMap::translateFieldName('CancelledReason', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 14 + $startcol : BookingEventTableMap::translateFieldName('CancelledReason', TableMap::TYPE_PHPNAME, $indexType)];
             $this->cancelled_reason = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 14 + $startcol : BookingEventTableMap::translateFieldName('DateCancelled', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 15 + $startcol : BookingEventTableMap::translateFieldName('DateCancelled', TableMap::TYPE_PHPNAME, $indexType)];
             $this->date_cancelled = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 15 + $startcol : BookingEventTableMap::translateFieldName('Personalized', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 16 + $startcol : BookingEventTableMap::translateFieldName('Personalized', TableMap::TYPE_PHPNAME, $indexType)];
             $this->personalized = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 16 + $startcol : BookingEventTableMap::translateFieldName('BookingItemId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 17 + $startcol : BookingEventTableMap::translateFieldName('BookingItemId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->booking_item_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 17 + $startcol : BookingEventTableMap::translateFieldName('IsActive', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 18 + $startcol : BookingEventTableMap::translateFieldName('IsActive', TableMap::TYPE_PHPNAME, $indexType)];
             $this->is_active = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 18 + $startcol : BookingEventTableMap::translateFieldName('DeletedDate', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 19 + $startcol : BookingEventTableMap::translateFieldName('DeletedDate', TableMap::TYPE_PHPNAME, $indexType)];
             $this->deleted_date = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 19 + $startcol : BookingEventTableMap::translateFieldName('DeletedBy', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 20 + $startcol : BookingEventTableMap::translateFieldName('DeletedBy', TableMap::TYPE_PHPNAME, $indexType)];
             $this->deleted_by = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 20 + $startcol : BookingEventTableMap::translateFieldName('ItemId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 21 + $startcol : BookingEventTableMap::translateFieldName('ItemId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->item_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 21 + $startcol : BookingEventTableMap::translateFieldName('IsKids', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 22 + $startcol : BookingEventTableMap::translateFieldName('IsKids', TableMap::TYPE_PHPNAME, $indexType)];
             $this->is_kids = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 22 + $startcol : BookingEventTableMap::translateFieldName('InclOsDoneNumber', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 23 + $startcol : BookingEventTableMap::translateFieldName('InclOsDoneNumber', TableMap::TYPE_PHPNAME, $indexType)];
             $this->incl_os_done_number = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 23 + $startcol : BookingEventTableMap::translateFieldName('InclOsDoneAmount', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 24 + $startcol : BookingEventTableMap::translateFieldName('InclOsDoneAmount', TableMap::TYPE_PHPNAME, $indexType)];
             $this->incl_os_done_amount = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 24 + $startcol : BookingEventTableMap::translateFieldName('FocOsDoneNumber', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 25 + $startcol : BookingEventTableMap::translateFieldName('FocOsDoneNumber', TableMap::TYPE_PHPNAME, $indexType)];
             $this->foc_os_done_number = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 25 + $startcol : BookingEventTableMap::translateFieldName('FocOsDoneAmount', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 26 + $startcol : BookingEventTableMap::translateFieldName('FocOsDoneAmount', TableMap::TYPE_PHPNAME, $indexType)];
             $this->foc_os_done_amount = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 26 + $startcol : BookingEventTableMap::translateFieldName('NotInclOsDoneNumber', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 27 + $startcol : BookingEventTableMap::translateFieldName('NotInclOsDoneNumber', TableMap::TYPE_PHPNAME, $indexType)];
             $this->not_incl_os_done_number = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 27 + $startcol : BookingEventTableMap::translateFieldName('NotInclOsDoneAmount', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 28 + $startcol : BookingEventTableMap::translateFieldName('NotInclOsDoneAmount', TableMap::TYPE_PHPNAME, $indexType)];
             $this->not_incl_os_done_amount = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 28 + $startcol : BookingEventTableMap::translateFieldName('Incl', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 29 + $startcol : BookingEventTableMap::translateFieldName('Incl', TableMap::TYPE_PHPNAME, $indexType)];
             $this->incl = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 29 + $startcol : BookingEventTableMap::translateFieldName('NotIncl', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 30 + $startcol : BookingEventTableMap::translateFieldName('NotIncl', TableMap::TYPE_PHPNAME, $indexType)];
             $this->not_incl = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 30 + $startcol : BookingEventTableMap::translateFieldName('Foc', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 31 + $startcol : BookingEventTableMap::translateFieldName('Foc', TableMap::TYPE_PHPNAME, $indexType)];
             $this->foc = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
@@ -1786,7 +1837,7 @@ abstract class BookingEvent implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 31; // 31 = BookingEventTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 32; // 32 = BookingEventTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\TheFarm\\Models\\BookingEvent'), 0, $e);
@@ -1808,6 +1859,9 @@ abstract class BookingEvent implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
+        if ($this->aBooking !== null && $this->booking_id !== $this->aBooking->getBookingId()) {
+            $this->aBooking = null;
+        }
         if ($this->aFacility !== null && $this->facility_id !== $this->aFacility->getFacilityId()) {
             $this->aFacility = null;
         }
@@ -1872,6 +1926,7 @@ abstract class BookingEvent implements ActiveRecordInterface
         if ($deep) {  // also de-associate any related objects?
 
             $this->aContactRelatedByAuthorId = null;
+            $this->aBooking = null;
             $this->aBookingItem = null;
             $this->aContactRelatedByCalledBy = null;
             $this->aContactRelatedByCancelledBy = null;
@@ -1996,6 +2051,13 @@ abstract class BookingEvent implements ActiveRecordInterface
                 $this->setContactRelatedByAuthorId($this->aContactRelatedByAuthorId);
             }
 
+            if ($this->aBooking !== null) {
+                if ($this->aBooking->isModified() || $this->aBooking->isNew()) {
+                    $affectedRows += $this->aBooking->save($con);
+                }
+                $this->setBooking($this->aBooking);
+            }
+
             if ($this->aBookingItem !== null) {
                 if ($this->aBookingItem->isModified() || $this->aBookingItem->isNew()) {
                     $affectedRows += $this->aBookingItem->save($con);
@@ -2102,6 +2164,9 @@ abstract class BookingEvent implements ActiveRecordInterface
         if ($this->isColumnModified(BookingEventTableMap::COL_EVENT_ID)) {
             $modifiedColumns[':p' . $index++]  = 'event_id';
         }
+        if ($this->isColumnModified(BookingEventTableMap::COL_BOOKING_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'booking_id';
+        }
         if ($this->isColumnModified(BookingEventTableMap::COL_EVENT_TITLE)) {
             $modifiedColumns[':p' . $index++]  = 'event_title';
         }
@@ -2205,6 +2270,9 @@ abstract class BookingEvent implements ActiveRecordInterface
                 switch ($columnName) {
                     case 'event_id':
                         $stmt->bindValue($identifier, $this->event_id, PDO::PARAM_INT);
+                        break;
+                    case 'booking_id':
+                        $stmt->bindValue($identifier, $this->booking_id, PDO::PARAM_INT);
                         break;
                     case 'event_title':
                         $stmt->bindValue($identifier, $this->event_title, PDO::PARAM_STR);
@@ -2362,93 +2430,96 @@ abstract class BookingEvent implements ActiveRecordInterface
                 return $this->getEventId();
                 break;
             case 1:
-                return $this->getEventTitle();
+                return $this->getBookingId();
                 break;
             case 2:
-                return $this->getStartDt();
+                return $this->getEventTitle();
                 break;
             case 3:
-                return $this->getEndDt();
+                return $this->getStartDate();
                 break;
             case 4:
-                return $this->getFacilityId();
+                return $this->getEndDate();
                 break;
             case 5:
-                return $this->getAllDay();
+                return $this->getFacilityId();
                 break;
             case 6:
-                return $this->getStatus();
+                return $this->getAllDay();
                 break;
             case 7:
-                return $this->getAuthorId();
+                return $this->getStatus();
                 break;
             case 8:
-                return $this->getEntryDate();
+                return $this->getAuthorId();
                 break;
             case 9:
-                return $this->getEditDate();
+                return $this->getEntryDate();
                 break;
             case 10:
-                return $this->getNotes();
+                return $this->getEditDate();
                 break;
             case 11:
-                return $this->getCalledBy();
+                return $this->getNotes();
                 break;
             case 12:
-                return $this->getCancelledBy();
+                return $this->getCalledBy();
                 break;
             case 13:
-                return $this->getCancelledReason();
+                return $this->getCancelledBy();
                 break;
             case 14:
-                return $this->getDateCancelled();
+                return $this->getCancelledReason();
                 break;
             case 15:
-                return $this->getPersonalized();
+                return $this->getDateCancelled();
                 break;
             case 16:
-                return $this->getBookingItemId();
+                return $this->getPersonalized();
                 break;
             case 17:
-                return $this->getIsActive();
+                return $this->getBookingItemId();
                 break;
             case 18:
-                return $this->getDeletedDate();
+                return $this->getIsActive();
                 break;
             case 19:
-                return $this->getDeletedBy();
+                return $this->getDeletedDate();
                 break;
             case 20:
-                return $this->getItemId();
+                return $this->getDeletedBy();
                 break;
             case 21:
-                return $this->getIsKids();
+                return $this->getItemId();
                 break;
             case 22:
-                return $this->getInclOsDoneNumber();
+                return $this->getIsKids();
                 break;
             case 23:
-                return $this->getInclOsDoneAmount();
+                return $this->getInclOsDoneNumber();
                 break;
             case 24:
-                return $this->getFocOsDoneNumber();
+                return $this->getInclOsDoneAmount();
                 break;
             case 25:
-                return $this->getFocOsDoneAmount();
+                return $this->getFocOsDoneNumber();
                 break;
             case 26:
-                return $this->getNotInclOsDoneNumber();
+                return $this->getFocOsDoneAmount();
                 break;
             case 27:
-                return $this->getNotInclOsDoneAmount();
+                return $this->getNotInclOsDoneNumber();
                 break;
             case 28:
-                return $this->getIncl();
+                return $this->getNotInclOsDoneAmount();
                 break;
             case 29:
-                return $this->getNotIncl();
+                return $this->getIncl();
                 break;
             case 30:
+                return $this->getNotIncl();
+                break;
+            case 31:
                 return $this->getFoc();
                 break;
             default:
@@ -2482,43 +2553,44 @@ abstract class BookingEvent implements ActiveRecordInterface
         $keys = BookingEventTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getEventId(),
-            $keys[1] => $this->getEventTitle(),
-            $keys[2] => $this->getStartDt(),
-            $keys[3] => $this->getEndDt(),
-            $keys[4] => $this->getFacilityId(),
-            $keys[5] => $this->getAllDay(),
-            $keys[6] => $this->getStatus(),
-            $keys[7] => $this->getAuthorId(),
-            $keys[8] => $this->getEntryDate(),
-            $keys[9] => $this->getEditDate(),
-            $keys[10] => $this->getNotes(),
-            $keys[11] => $this->getCalledBy(),
-            $keys[12] => $this->getCancelledBy(),
-            $keys[13] => $this->getCancelledReason(),
-            $keys[14] => $this->getDateCancelled(),
-            $keys[15] => $this->getPersonalized(),
-            $keys[16] => $this->getBookingItemId(),
-            $keys[17] => $this->getIsActive(),
-            $keys[18] => $this->getDeletedDate(),
-            $keys[19] => $this->getDeletedBy(),
-            $keys[20] => $this->getItemId(),
-            $keys[21] => $this->getIsKids(),
-            $keys[22] => $this->getInclOsDoneNumber(),
-            $keys[23] => $this->getInclOsDoneAmount(),
-            $keys[24] => $this->getFocOsDoneNumber(),
-            $keys[25] => $this->getFocOsDoneAmount(),
-            $keys[26] => $this->getNotInclOsDoneNumber(),
-            $keys[27] => $this->getNotInclOsDoneAmount(),
-            $keys[28] => $this->getIncl(),
-            $keys[29] => $this->getNotIncl(),
-            $keys[30] => $this->getFoc(),
+            $keys[1] => $this->getBookingId(),
+            $keys[2] => $this->getEventTitle(),
+            $keys[3] => $this->getStartDate(),
+            $keys[4] => $this->getEndDate(),
+            $keys[5] => $this->getFacilityId(),
+            $keys[6] => $this->getAllDay(),
+            $keys[7] => $this->getStatus(),
+            $keys[8] => $this->getAuthorId(),
+            $keys[9] => $this->getEntryDate(),
+            $keys[10] => $this->getEditDate(),
+            $keys[11] => $this->getNotes(),
+            $keys[12] => $this->getCalledBy(),
+            $keys[13] => $this->getCancelledBy(),
+            $keys[14] => $this->getCancelledReason(),
+            $keys[15] => $this->getDateCancelled(),
+            $keys[16] => $this->getPersonalized(),
+            $keys[17] => $this->getBookingItemId(),
+            $keys[18] => $this->getIsActive(),
+            $keys[19] => $this->getDeletedDate(),
+            $keys[20] => $this->getDeletedBy(),
+            $keys[21] => $this->getItemId(),
+            $keys[22] => $this->getIsKids(),
+            $keys[23] => $this->getInclOsDoneNumber(),
+            $keys[24] => $this->getInclOsDoneAmount(),
+            $keys[25] => $this->getFocOsDoneNumber(),
+            $keys[26] => $this->getFocOsDoneAmount(),
+            $keys[27] => $this->getNotInclOsDoneNumber(),
+            $keys[28] => $this->getNotInclOsDoneAmount(),
+            $keys[29] => $this->getIncl(),
+            $keys[30] => $this->getNotIncl(),
+            $keys[31] => $this->getFoc(),
         );
-        if ($result[$keys[2]] instanceof \DateTimeInterface) {
-            $result[$keys[2]] = $result[$keys[2]]->format('c');
-        }
-
         if ($result[$keys[3]] instanceof \DateTimeInterface) {
             $result[$keys[3]] = $result[$keys[3]]->format('c');
+        }
+
+        if ($result[$keys[4]] instanceof \DateTimeInterface) {
+            $result[$keys[4]] = $result[$keys[4]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -2541,6 +2613,21 @@ abstract class BookingEvent implements ActiveRecordInterface
                 }
 
                 $result[$key] = $this->aContactRelatedByAuthorId->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->aBooking) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'booking';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'tf_bookings';
+                        break;
+                    default:
+                        $key = 'Booking';
+                }
+
+                $result[$key] = $this->aBooking->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
             if (null !== $this->aBookingItem) {
 
@@ -2700,93 +2787,96 @@ abstract class BookingEvent implements ActiveRecordInterface
                 $this->setEventId($value);
                 break;
             case 1:
-                $this->setEventTitle($value);
+                $this->setBookingId($value);
                 break;
             case 2:
-                $this->setStartDt($value);
+                $this->setEventTitle($value);
                 break;
             case 3:
-                $this->setEndDt($value);
+                $this->setStartDate($value);
                 break;
             case 4:
-                $this->setFacilityId($value);
+                $this->setEndDate($value);
                 break;
             case 5:
-                $this->setAllDay($value);
+                $this->setFacilityId($value);
                 break;
             case 6:
-                $this->setStatus($value);
+                $this->setAllDay($value);
                 break;
             case 7:
-                $this->setAuthorId($value);
+                $this->setStatus($value);
                 break;
             case 8:
-                $this->setEntryDate($value);
+                $this->setAuthorId($value);
                 break;
             case 9:
-                $this->setEditDate($value);
+                $this->setEntryDate($value);
                 break;
             case 10:
-                $this->setNotes($value);
+                $this->setEditDate($value);
                 break;
             case 11:
-                $this->setCalledBy($value);
+                $this->setNotes($value);
                 break;
             case 12:
-                $this->setCancelledBy($value);
+                $this->setCalledBy($value);
                 break;
             case 13:
-                $this->setCancelledReason($value);
+                $this->setCancelledBy($value);
                 break;
             case 14:
-                $this->setDateCancelled($value);
+                $this->setCancelledReason($value);
                 break;
             case 15:
-                $this->setPersonalized($value);
+                $this->setDateCancelled($value);
                 break;
             case 16:
-                $this->setBookingItemId($value);
+                $this->setPersonalized($value);
                 break;
             case 17:
-                $this->setIsActive($value);
+                $this->setBookingItemId($value);
                 break;
             case 18:
-                $this->setDeletedDate($value);
+                $this->setIsActive($value);
                 break;
             case 19:
-                $this->setDeletedBy($value);
+                $this->setDeletedDate($value);
                 break;
             case 20:
-                $this->setItemId($value);
+                $this->setDeletedBy($value);
                 break;
             case 21:
-                $this->setIsKids($value);
+                $this->setItemId($value);
                 break;
             case 22:
-                $this->setInclOsDoneNumber($value);
+                $this->setIsKids($value);
                 break;
             case 23:
-                $this->setInclOsDoneAmount($value);
+                $this->setInclOsDoneNumber($value);
                 break;
             case 24:
-                $this->setFocOsDoneNumber($value);
+                $this->setInclOsDoneAmount($value);
                 break;
             case 25:
-                $this->setFocOsDoneAmount($value);
+                $this->setFocOsDoneNumber($value);
                 break;
             case 26:
-                $this->setNotInclOsDoneNumber($value);
+                $this->setFocOsDoneAmount($value);
                 break;
             case 27:
-                $this->setNotInclOsDoneAmount($value);
+                $this->setNotInclOsDoneNumber($value);
                 break;
             case 28:
-                $this->setIncl($value);
+                $this->setNotInclOsDoneAmount($value);
                 break;
             case 29:
-                $this->setNotIncl($value);
+                $this->setIncl($value);
                 break;
             case 30:
+                $this->setNotIncl($value);
+                break;
+            case 31:
                 $this->setFoc($value);
                 break;
         } // switch()
@@ -2819,94 +2909,97 @@ abstract class BookingEvent implements ActiveRecordInterface
             $this->setEventId($arr[$keys[0]]);
         }
         if (array_key_exists($keys[1], $arr)) {
-            $this->setEventTitle($arr[$keys[1]]);
+            $this->setBookingId($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setStartDt($arr[$keys[2]]);
+            $this->setEventTitle($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setEndDt($arr[$keys[3]]);
+            $this->setStartDate($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
-            $this->setFacilityId($arr[$keys[4]]);
+            $this->setEndDate($arr[$keys[4]]);
         }
         if (array_key_exists($keys[5], $arr)) {
-            $this->setAllDay($arr[$keys[5]]);
+            $this->setFacilityId($arr[$keys[5]]);
         }
         if (array_key_exists($keys[6], $arr)) {
-            $this->setStatus($arr[$keys[6]]);
+            $this->setAllDay($arr[$keys[6]]);
         }
         if (array_key_exists($keys[7], $arr)) {
-            $this->setAuthorId($arr[$keys[7]]);
+            $this->setStatus($arr[$keys[7]]);
         }
         if (array_key_exists($keys[8], $arr)) {
-            $this->setEntryDate($arr[$keys[8]]);
+            $this->setAuthorId($arr[$keys[8]]);
         }
         if (array_key_exists($keys[9], $arr)) {
-            $this->setEditDate($arr[$keys[9]]);
+            $this->setEntryDate($arr[$keys[9]]);
         }
         if (array_key_exists($keys[10], $arr)) {
-            $this->setNotes($arr[$keys[10]]);
+            $this->setEditDate($arr[$keys[10]]);
         }
         if (array_key_exists($keys[11], $arr)) {
-            $this->setCalledBy($arr[$keys[11]]);
+            $this->setNotes($arr[$keys[11]]);
         }
         if (array_key_exists($keys[12], $arr)) {
-            $this->setCancelledBy($arr[$keys[12]]);
+            $this->setCalledBy($arr[$keys[12]]);
         }
         if (array_key_exists($keys[13], $arr)) {
-            $this->setCancelledReason($arr[$keys[13]]);
+            $this->setCancelledBy($arr[$keys[13]]);
         }
         if (array_key_exists($keys[14], $arr)) {
-            $this->setDateCancelled($arr[$keys[14]]);
+            $this->setCancelledReason($arr[$keys[14]]);
         }
         if (array_key_exists($keys[15], $arr)) {
-            $this->setPersonalized($arr[$keys[15]]);
+            $this->setDateCancelled($arr[$keys[15]]);
         }
         if (array_key_exists($keys[16], $arr)) {
-            $this->setBookingItemId($arr[$keys[16]]);
+            $this->setPersonalized($arr[$keys[16]]);
         }
         if (array_key_exists($keys[17], $arr)) {
-            $this->setIsActive($arr[$keys[17]]);
+            $this->setBookingItemId($arr[$keys[17]]);
         }
         if (array_key_exists($keys[18], $arr)) {
-            $this->setDeletedDate($arr[$keys[18]]);
+            $this->setIsActive($arr[$keys[18]]);
         }
         if (array_key_exists($keys[19], $arr)) {
-            $this->setDeletedBy($arr[$keys[19]]);
+            $this->setDeletedDate($arr[$keys[19]]);
         }
         if (array_key_exists($keys[20], $arr)) {
-            $this->setItemId($arr[$keys[20]]);
+            $this->setDeletedBy($arr[$keys[20]]);
         }
         if (array_key_exists($keys[21], $arr)) {
-            $this->setIsKids($arr[$keys[21]]);
+            $this->setItemId($arr[$keys[21]]);
         }
         if (array_key_exists($keys[22], $arr)) {
-            $this->setInclOsDoneNumber($arr[$keys[22]]);
+            $this->setIsKids($arr[$keys[22]]);
         }
         if (array_key_exists($keys[23], $arr)) {
-            $this->setInclOsDoneAmount($arr[$keys[23]]);
+            $this->setInclOsDoneNumber($arr[$keys[23]]);
         }
         if (array_key_exists($keys[24], $arr)) {
-            $this->setFocOsDoneNumber($arr[$keys[24]]);
+            $this->setInclOsDoneAmount($arr[$keys[24]]);
         }
         if (array_key_exists($keys[25], $arr)) {
-            $this->setFocOsDoneAmount($arr[$keys[25]]);
+            $this->setFocOsDoneNumber($arr[$keys[25]]);
         }
         if (array_key_exists($keys[26], $arr)) {
-            $this->setNotInclOsDoneNumber($arr[$keys[26]]);
+            $this->setFocOsDoneAmount($arr[$keys[26]]);
         }
         if (array_key_exists($keys[27], $arr)) {
-            $this->setNotInclOsDoneAmount($arr[$keys[27]]);
+            $this->setNotInclOsDoneNumber($arr[$keys[27]]);
         }
         if (array_key_exists($keys[28], $arr)) {
-            $this->setIncl($arr[$keys[28]]);
+            $this->setNotInclOsDoneAmount($arr[$keys[28]]);
         }
         if (array_key_exists($keys[29], $arr)) {
-            $this->setNotIncl($arr[$keys[29]]);
+            $this->setIncl($arr[$keys[29]]);
         }
         if (array_key_exists($keys[30], $arr)) {
-            $this->setFoc($arr[$keys[30]]);
+            $this->setNotIncl($arr[$keys[30]]);
+        }
+        if (array_key_exists($keys[31], $arr)) {
+            $this->setFoc($arr[$keys[31]]);
         }
     }
 
@@ -2951,6 +3044,9 @@ abstract class BookingEvent implements ActiveRecordInterface
 
         if ($this->isColumnModified(BookingEventTableMap::COL_EVENT_ID)) {
             $criteria->add(BookingEventTableMap::COL_EVENT_ID, $this->event_id);
+        }
+        if ($this->isColumnModified(BookingEventTableMap::COL_BOOKING_ID)) {
+            $criteria->add(BookingEventTableMap::COL_BOOKING_ID, $this->booking_id);
         }
         if ($this->isColumnModified(BookingEventTableMap::COL_EVENT_TITLE)) {
             $criteria->add(BookingEventTableMap::COL_EVENT_TITLE, $this->event_title);
@@ -3128,9 +3224,10 @@ abstract class BookingEvent implements ActiveRecordInterface
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
+        $copyObj->setBookingId($this->getBookingId());
         $copyObj->setEventTitle($this->getEventTitle());
-        $copyObj->setStartDt($this->getStartDt());
-        $copyObj->setEndDt($this->getEndDt());
+        $copyObj->setStartDate($this->getStartDate());
+        $copyObj->setEndDate($this->getEndDate());
         $copyObj->setFacilityId($this->getFacilityId());
         $copyObj->setAllDay($this->getAllDay());
         $copyObj->setStatus($this->getStatus());
@@ -3249,6 +3346,57 @@ abstract class BookingEvent implements ActiveRecordInterface
         }
 
         return $this->aContactRelatedByAuthorId;
+    }
+
+    /**
+     * Declares an association between this object and a ChildBooking object.
+     *
+     * @param  ChildBooking $v
+     * @return $this|\TheFarm\Models\BookingEvent The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setBooking(ChildBooking $v = null)
+    {
+        if ($v === null) {
+            $this->setBookingId(NULL);
+        } else {
+            $this->setBookingId($v->getBookingId());
+        }
+
+        $this->aBooking = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildBooking object, it will not be re-added.
+        if ($v !== null) {
+            $v->addBookingEvent($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildBooking object
+     *
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildBooking The associated ChildBooking object.
+     * @throws PropelException
+     */
+    public function getBooking(ConnectionInterface $con = null)
+    {
+        if ($this->aBooking === null && ($this->booking_id !== null)) {
+            $this->aBooking = ChildBookingQuery::create()->findPk($this->booking_id, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aBooking->addBookingEvents($this);
+             */
+        }
+
+        return $this->aBooking;
     }
 
     /**
@@ -3888,6 +4036,9 @@ abstract class BookingEvent implements ActiveRecordInterface
         if (null !== $this->aContactRelatedByAuthorId) {
             $this->aContactRelatedByAuthorId->removeBookingEventRelatedByAuthorId($this);
         }
+        if (null !== $this->aBooking) {
+            $this->aBooking->removeBookingEvent($this);
+        }
         if (null !== $this->aBookingItem) {
             $this->aBookingItem->removeBookingEvent($this);
         }
@@ -3910,6 +4061,7 @@ abstract class BookingEvent implements ActiveRecordInterface
             $this->aEventStatus->removeBookingEvent($this);
         }
         $this->event_id = null;
+        $this->booking_id = null;
         $this->event_title = null;
         $this->start_dt = null;
         $this->end_dt = null;
@@ -3968,6 +4120,7 @@ abstract class BookingEvent implements ActiveRecordInterface
 
         $this->collBookingEventUsers = null;
         $this->aContactRelatedByAuthorId = null;
+        $this->aBooking = null;
         $this->aBookingItem = null;
         $this->aContactRelatedByCalledBy = null;
         $this->aContactRelatedByCancelledBy = null;

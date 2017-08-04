@@ -13,15 +13,6 @@
                     }
                 }
             }
-        },
-        "runtime": {
-            "log": {
-                "defaultLogger": {
-                    "type":"stream",
-                    "path":"/../propel.log",
-                    "level":300
-                }
-            }
         }
     }
 }

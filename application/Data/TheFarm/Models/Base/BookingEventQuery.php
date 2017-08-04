@@ -21,9 +21,10 @@ use TheFarm\Models\Map\BookingEventTableMap;
  *
  *
  * @method     ChildBookingEventQuery orderByEventId($order = Criteria::ASC) Order by the event_id column
+ * @method     ChildBookingEventQuery orderByBookingId($order = Criteria::ASC) Order by the booking_id column
  * @method     ChildBookingEventQuery orderByEventTitle($order = Criteria::ASC) Order by the event_title column
- * @method     ChildBookingEventQuery orderByStartDt($order = Criteria::ASC) Order by the start_dt column
- * @method     ChildBookingEventQuery orderByEndDt($order = Criteria::ASC) Order by the end_dt column
+ * @method     ChildBookingEventQuery orderByStartDate($order = Criteria::ASC) Order by the start_dt column
+ * @method     ChildBookingEventQuery orderByEndDate($order = Criteria::ASC) Order by the end_dt column
  * @method     ChildBookingEventQuery orderByFacilityId($order = Criteria::ASC) Order by the facility_id column
  * @method     ChildBookingEventQuery orderByAllDay($order = Criteria::ASC) Order by the all_day column
  * @method     ChildBookingEventQuery orderByStatus($order = Criteria::ASC) Order by the status column
@@ -53,9 +54,10 @@ use TheFarm\Models\Map\BookingEventTableMap;
  * @method     ChildBookingEventQuery orderByFoc($order = Criteria::ASC) Order by the foc column
  *
  * @method     ChildBookingEventQuery groupByEventId() Group by the event_id column
+ * @method     ChildBookingEventQuery groupByBookingId() Group by the booking_id column
  * @method     ChildBookingEventQuery groupByEventTitle() Group by the event_title column
- * @method     ChildBookingEventQuery groupByStartDt() Group by the start_dt column
- * @method     ChildBookingEventQuery groupByEndDt() Group by the end_dt column
+ * @method     ChildBookingEventQuery groupByStartDate() Group by the start_dt column
+ * @method     ChildBookingEventQuery groupByEndDate() Group by the end_dt column
  * @method     ChildBookingEventQuery groupByFacilityId() Group by the facility_id column
  * @method     ChildBookingEventQuery groupByAllDay() Group by the all_day column
  * @method     ChildBookingEventQuery groupByStatus() Group by the status column
@@ -101,6 +103,16 @@ use TheFarm\Models\Map\BookingEventTableMap;
  * @method     ChildBookingEventQuery leftJoinWithContactRelatedByAuthorId() Adds a LEFT JOIN clause and with to the query using the ContactRelatedByAuthorId relation
  * @method     ChildBookingEventQuery rightJoinWithContactRelatedByAuthorId() Adds a RIGHT JOIN clause and with to the query using the ContactRelatedByAuthorId relation
  * @method     ChildBookingEventQuery innerJoinWithContactRelatedByAuthorId() Adds a INNER JOIN clause and with to the query using the ContactRelatedByAuthorId relation
+ *
+ * @method     ChildBookingEventQuery leftJoinBooking($relationAlias = null) Adds a LEFT JOIN clause to the query using the Booking relation
+ * @method     ChildBookingEventQuery rightJoinBooking($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Booking relation
+ * @method     ChildBookingEventQuery innerJoinBooking($relationAlias = null) Adds a INNER JOIN clause to the query using the Booking relation
+ *
+ * @method     ChildBookingEventQuery joinWithBooking($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Booking relation
+ *
+ * @method     ChildBookingEventQuery leftJoinWithBooking() Adds a LEFT JOIN clause and with to the query using the Booking relation
+ * @method     ChildBookingEventQuery rightJoinWithBooking() Adds a RIGHT JOIN clause and with to the query using the Booking relation
+ * @method     ChildBookingEventQuery innerJoinWithBooking() Adds a INNER JOIN clause and with to the query using the Booking relation
  *
  * @method     ChildBookingEventQuery leftJoinBookingItem($relationAlias = null) Adds a LEFT JOIN clause to the query using the BookingItem relation
  * @method     ChildBookingEventQuery rightJoinBookingItem($relationAlias = null) Adds a RIGHT JOIN clause to the query using the BookingItem relation
@@ -182,15 +194,16 @@ use TheFarm\Models\Map\BookingEventTableMap;
  * @method     ChildBookingEventQuery rightJoinWithBookingEventUser() Adds a RIGHT JOIN clause and with to the query using the BookingEventUser relation
  * @method     ChildBookingEventQuery innerJoinWithBookingEventUser() Adds a INNER JOIN clause and with to the query using the BookingEventUser relation
  *
- * @method     \TheFarm\Models\ContactQuery|\TheFarm\Models\BookingItemQuery|\TheFarm\Models\FacilityQuery|\TheFarm\Models\ItemQuery|\TheFarm\Models\EventStatusQuery|\TheFarm\Models\BookingEventUserQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \TheFarm\Models\ContactQuery|\TheFarm\Models\BookingQuery|\TheFarm\Models\BookingItemQuery|\TheFarm\Models\FacilityQuery|\TheFarm\Models\ItemQuery|\TheFarm\Models\EventStatusQuery|\TheFarm\Models\BookingEventUserQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildBookingEvent findOne(ConnectionInterface $con = null) Return the first ChildBookingEvent matching the query
  * @method     ChildBookingEvent findOneOrCreate(ConnectionInterface $con = null) Return the first ChildBookingEvent matching the query, or a new ChildBookingEvent object populated from the query conditions when no match is found
  *
  * @method     ChildBookingEvent findOneByEventId(int $event_id) Return the first ChildBookingEvent filtered by the event_id column
+ * @method     ChildBookingEvent findOneByBookingId(int $booking_id) Return the first ChildBookingEvent filtered by the booking_id column
  * @method     ChildBookingEvent findOneByEventTitle(string $event_title) Return the first ChildBookingEvent filtered by the event_title column
- * @method     ChildBookingEvent findOneByStartDt(string $start_dt) Return the first ChildBookingEvent filtered by the start_dt column
- * @method     ChildBookingEvent findOneByEndDt(string $end_dt) Return the first ChildBookingEvent filtered by the end_dt column
+ * @method     ChildBookingEvent findOneByStartDate(string $start_dt) Return the first ChildBookingEvent filtered by the start_dt column
+ * @method     ChildBookingEvent findOneByEndDate(string $end_dt) Return the first ChildBookingEvent filtered by the end_dt column
  * @method     ChildBookingEvent findOneByFacilityId(int $facility_id) Return the first ChildBookingEvent filtered by the facility_id column
  * @method     ChildBookingEvent findOneByAllDay(int $all_day) Return the first ChildBookingEvent filtered by the all_day column
  * @method     ChildBookingEvent findOneByStatus(string $status) Return the first ChildBookingEvent filtered by the status column
@@ -223,9 +236,10 @@ use TheFarm\Models\Map\BookingEventTableMap;
  * @method     ChildBookingEvent requireOne(ConnectionInterface $con = null) Return the first ChildBookingEvent matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildBookingEvent requireOneByEventId(int $event_id) Return the first ChildBookingEvent filtered by the event_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildBookingEvent requireOneByBookingId(int $booking_id) Return the first ChildBookingEvent filtered by the booking_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildBookingEvent requireOneByEventTitle(string $event_title) Return the first ChildBookingEvent filtered by the event_title column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildBookingEvent requireOneByStartDt(string $start_dt) Return the first ChildBookingEvent filtered by the start_dt column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildBookingEvent requireOneByEndDt(string $end_dt) Return the first ChildBookingEvent filtered by the end_dt column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildBookingEvent requireOneByStartDate(string $start_dt) Return the first ChildBookingEvent filtered by the start_dt column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildBookingEvent requireOneByEndDate(string $end_dt) Return the first ChildBookingEvent filtered by the end_dt column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildBookingEvent requireOneByFacilityId(int $facility_id) Return the first ChildBookingEvent filtered by the facility_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildBookingEvent requireOneByAllDay(int $all_day) Return the first ChildBookingEvent filtered by the all_day column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildBookingEvent requireOneByStatus(string $status) Return the first ChildBookingEvent filtered by the status column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -256,9 +270,10 @@ use TheFarm\Models\Map\BookingEventTableMap;
  *
  * @method     ChildBookingEvent[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildBookingEvent objects based on current ModelCriteria
  * @method     ChildBookingEvent[]|ObjectCollection findByEventId(int $event_id) Return ChildBookingEvent objects filtered by the event_id column
+ * @method     ChildBookingEvent[]|ObjectCollection findByBookingId(int $booking_id) Return ChildBookingEvent objects filtered by the booking_id column
  * @method     ChildBookingEvent[]|ObjectCollection findByEventTitle(string $event_title) Return ChildBookingEvent objects filtered by the event_title column
- * @method     ChildBookingEvent[]|ObjectCollection findByStartDt(string $start_dt) Return ChildBookingEvent objects filtered by the start_dt column
- * @method     ChildBookingEvent[]|ObjectCollection findByEndDt(string $end_dt) Return ChildBookingEvent objects filtered by the end_dt column
+ * @method     ChildBookingEvent[]|ObjectCollection findByStartDate(string $start_dt) Return ChildBookingEvent objects filtered by the start_dt column
+ * @method     ChildBookingEvent[]|ObjectCollection findByEndDate(string $end_dt) Return ChildBookingEvent objects filtered by the end_dt column
  * @method     ChildBookingEvent[]|ObjectCollection findByFacilityId(int $facility_id) Return ChildBookingEvent objects filtered by the facility_id column
  * @method     ChildBookingEvent[]|ObjectCollection findByAllDay(int $all_day) Return ChildBookingEvent objects filtered by the all_day column
  * @method     ChildBookingEvent[]|ObjectCollection findByStatus(string $status) Return ChildBookingEvent objects filtered by the status column
@@ -384,7 +399,7 @@ abstract class BookingEventQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT event_id, event_title, start_dt, end_dt, facility_id, all_day, status, author_id, entry_date, edit_date, notes, called_by, cancelled_by, cancelled_reason, date_cancelled, personalized, booking_item_id, is_active, deleted_date, deleted_by, item_id, is_kids, incl_os_done_number, incl_os_done_amount, foc_os_done_number, foc_os_done_amount, not_incl_os_done_number, not_incl_os_done_amount, incl, not_incl, foc FROM tf_booking_events WHERE event_id = :p0';
+        $sql = 'SELECT event_id, booking_id, event_title, start_dt, end_dt, facility_id, all_day, status, author_id, entry_date, edit_date, notes, called_by, cancelled_by, cancelled_reason, date_cancelled, personalized, booking_item_id, is_active, deleted_date, deleted_by, item_id, is_kids, incl_os_done_number, incl_os_done_amount, foc_os_done_number, foc_os_done_amount, not_incl_os_done_number, not_incl_os_done_amount, incl, not_incl, foc FROM tf_booking_events WHERE event_id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -516,6 +531,49 @@ abstract class BookingEventQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query on the booking_id column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByBookingId(1234); // WHERE booking_id = 1234
+     * $query->filterByBookingId(array(12, 34)); // WHERE booking_id IN (12, 34)
+     * $query->filterByBookingId(array('min' => 12)); // WHERE booking_id > 12
+     * </code>
+     *
+     * @see       filterByBooking()
+     *
+     * @param     mixed $bookingId The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildBookingEventQuery The current query, for fluid interface
+     */
+    public function filterByBookingId($bookingId = null, $comparison = null)
+    {
+        if (is_array($bookingId)) {
+            $useMinMax = false;
+            if (isset($bookingId['min'])) {
+                $this->addUsingAlias(BookingEventTableMap::COL_BOOKING_ID, $bookingId['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($bookingId['max'])) {
+                $this->addUsingAlias(BookingEventTableMap::COL_BOOKING_ID, $bookingId['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(BookingEventTableMap::COL_BOOKING_ID, $bookingId, $comparison);
+    }
+
+    /**
      * Filter the query on the event_title column
      *
      * Example usage:
@@ -545,12 +603,12 @@ abstract class BookingEventQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByStartDt('2011-03-14'); // WHERE start_dt = '2011-03-14'
-     * $query->filterByStartDt('now'); // WHERE start_dt = '2011-03-14'
-     * $query->filterByStartDt(array('max' => 'yesterday')); // WHERE start_dt > '2011-03-13'
+     * $query->filterByStartDate('2011-03-14'); // WHERE start_dt = '2011-03-14'
+     * $query->filterByStartDate('now'); // WHERE start_dt = '2011-03-14'
+     * $query->filterByStartDate(array('max' => 'yesterday')); // WHERE start_dt > '2011-03-13'
      * </code>
      *
-     * @param     mixed $startDt The value to use as filter.
+     * @param     mixed $startDate The value to use as filter.
      *              Values can be integers (unix timestamps), DateTime objects, or strings.
      *              Empty strings are treated as NULL.
      *              Use scalar values for equality.
@@ -560,16 +618,16 @@ abstract class BookingEventQuery extends ModelCriteria
      *
      * @return $this|ChildBookingEventQuery The current query, for fluid interface
      */
-    public function filterByStartDt($startDt = null, $comparison = null)
+    public function filterByStartDate($startDate = null, $comparison = null)
     {
-        if (is_array($startDt)) {
+        if (is_array($startDate)) {
             $useMinMax = false;
-            if (isset($startDt['min'])) {
-                $this->addUsingAlias(BookingEventTableMap::COL_START_DT, $startDt['min'], Criteria::GREATER_EQUAL);
+            if (isset($startDate['min'])) {
+                $this->addUsingAlias(BookingEventTableMap::COL_START_DT, $startDate['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($startDt['max'])) {
-                $this->addUsingAlias(BookingEventTableMap::COL_START_DT, $startDt['max'], Criteria::LESS_EQUAL);
+            if (isset($startDate['max'])) {
+                $this->addUsingAlias(BookingEventTableMap::COL_START_DT, $startDate['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -580,7 +638,7 @@ abstract class BookingEventQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(BookingEventTableMap::COL_START_DT, $startDt, $comparison);
+        return $this->addUsingAlias(BookingEventTableMap::COL_START_DT, $startDate, $comparison);
     }
 
     /**
@@ -588,12 +646,12 @@ abstract class BookingEventQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByEndDt('2011-03-14'); // WHERE end_dt = '2011-03-14'
-     * $query->filterByEndDt('now'); // WHERE end_dt = '2011-03-14'
-     * $query->filterByEndDt(array('max' => 'yesterday')); // WHERE end_dt > '2011-03-13'
+     * $query->filterByEndDate('2011-03-14'); // WHERE end_dt = '2011-03-14'
+     * $query->filterByEndDate('now'); // WHERE end_dt = '2011-03-14'
+     * $query->filterByEndDate(array('max' => 'yesterday')); // WHERE end_dt > '2011-03-13'
      * </code>
      *
-     * @param     mixed $endDt The value to use as filter.
+     * @param     mixed $endDate The value to use as filter.
      *              Values can be integers (unix timestamps), DateTime objects, or strings.
      *              Empty strings are treated as NULL.
      *              Use scalar values for equality.
@@ -603,16 +661,16 @@ abstract class BookingEventQuery extends ModelCriteria
      *
      * @return $this|ChildBookingEventQuery The current query, for fluid interface
      */
-    public function filterByEndDt($endDt = null, $comparison = null)
+    public function filterByEndDate($endDate = null, $comparison = null)
     {
-        if (is_array($endDt)) {
+        if (is_array($endDate)) {
             $useMinMax = false;
-            if (isset($endDt['min'])) {
-                $this->addUsingAlias(BookingEventTableMap::COL_END_DT, $endDt['min'], Criteria::GREATER_EQUAL);
+            if (isset($endDate['min'])) {
+                $this->addUsingAlias(BookingEventTableMap::COL_END_DT, $endDate['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($endDt['max'])) {
-                $this->addUsingAlias(BookingEventTableMap::COL_END_DT, $endDt['max'], Criteria::LESS_EQUAL);
+            if (isset($endDate['max'])) {
+                $this->addUsingAlias(BookingEventTableMap::COL_END_DT, $endDate['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -623,7 +681,7 @@ abstract class BookingEventQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(BookingEventTableMap::COL_END_DT, $endDt, $comparison);
+        return $this->addUsingAlias(BookingEventTableMap::COL_END_DT, $endDate, $comparison);
     }
 
     /**
@@ -1678,6 +1736,83 @@ abstract class BookingEventQuery extends ModelCriteria
         return $this
             ->joinContactRelatedByAuthorId($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'ContactRelatedByAuthorId', '\TheFarm\Models\ContactQuery');
+    }
+
+    /**
+     * Filter the query by a related \TheFarm\Models\Booking object
+     *
+     * @param \TheFarm\Models\Booking|ObjectCollection $booking The related object(s) to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @throws \Propel\Runtime\Exception\PropelException
+     *
+     * @return ChildBookingEventQuery The current query, for fluid interface
+     */
+    public function filterByBooking($booking, $comparison = null)
+    {
+        if ($booking instanceof \TheFarm\Models\Booking) {
+            return $this
+                ->addUsingAlias(BookingEventTableMap::COL_BOOKING_ID, $booking->getBookingId(), $comparison);
+        } elseif ($booking instanceof ObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
+            return $this
+                ->addUsingAlias(BookingEventTableMap::COL_BOOKING_ID, $booking->toKeyValue('PrimaryKey', 'BookingId'), $comparison);
+        } else {
+            throw new PropelException('filterByBooking() only accepts arguments of type \TheFarm\Models\Booking or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Booking relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildBookingEventQuery The current query, for fluid interface
+     */
+    public function joinBooking($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Booking');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Booking');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Booking relation Booking object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \TheFarm\Models\BookingQuery A secondary query class using the current class as primary query
+     */
+    public function useBookingQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinBooking($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Booking', '\TheFarm\Models\BookingQuery');
     }
 
     /**

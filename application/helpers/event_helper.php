@@ -232,6 +232,7 @@ function get_event_users($event_id)
     $TF->db->join('contacts', 'contacts.contact_id = booking_event_users.staff_id');
     $TF->db->join('users', 'contacts.contact_id = users.contact_id');
     $TF->db->where('booking_event_users.event_id', (int)$event_id);
+    $TF->db->where('booking_event_users.is_guest', 0);
 
     $query = $TF->db->get();
 
@@ -247,39 +248,64 @@ function to_full_calendar_events ($events) {
 
     $eventsArray = [];
     foreach($events as $eventData) {
+        $event = to_full_calendar_event($eventData);
+        $eventsArray[] = $event;
+    }
 
-        $bookingItemData = $eventData['BookingItem'];
-        $itemData = $bookingItemData['Item'];
-        $guestData = $eventData['BookingItem']['Booking']['Guest'];
+    return $eventsArray;
 
-        $classNames = array();
-        $event = [];
-        $event['id'] = $eventData['EventId'];
-        $event['event_id'] = $eventData['EventId'];
-        $event['title'] = $eventData['EventTitle'];
-        $event['editable'] = false;
-        $event['overlap'] = false;
-        $event['start'] = $eventData['StartDt'];
-        $event['end'] = $eventData['EndDt'];
-        $event['guest_name'] = $guestData['FirstName'] . ' ' . $guestData['LastName'];
-        $event['item_name'] = $itemData['Title'];
-        $event['status'] = $eventData['Status'];
+}
+
+/**
+ * @param $eventData
+ * @return array
+ */
+function to_full_calendar_event($eventData)
+{
+    $bookingItemData = $eventData['BookingItem'];
+    $itemData = $bookingItemData['Item'];
+    $guestData = $eventData['BookingItem']['Booking']['Guest'];
+
+    $classNames = array();
+    $event = [];
+    $event['id'] = $eventData['EventId'];
+    $event['event_id'] = $eventData['EventId'];
+    $event['title'] = $eventData['EventTitle'];
+    $event['editable'] = false;
+    $event['overlap'] = false;
+    $event['start'] = $eventData['StartDate'];
+    $event['end'] = $eventData['EndDate'];
+    $event['guest_name'] = $guestData['FirstName'] . ' ' . $guestData['LastName'];
+    $event['item_name'] = $itemData['Title'];
+    $event['status'] = $eventData['Status'];
 
 //        if ($event['location_id'] !== null && current_user_can('can_edit_schedules_' . $event['location_id'])) {
 //            $event['editable'] = true;
 //        }
 
-        if ($eventData['Incl'] === 1) {
-            $classNames[] = 'fc-event-included';
-        }
+    if ($eventData['Incl'] === 1) {
+        $classNames[] = 'fc-event-included';
+    }
 
-        if ($bookingItemData['Upsell'] === '1') {
-            $classNames[] = 'fc-event-upsell';
-        }
+    if ($bookingItemData['Upsell'] === '1') {
+        $classNames[] = 'fc-event-upsell';
+    }
 
-        if ($eventData['Foc'] === '1') {
-            $classNames[] = 'fc-event-foc';
+    if ($eventData['Foc'] === '1') {
+        $classNames[] = 'fc-event-foc';
+    }
+
+    $resourceIds = [];
+
+    if ($eventData['BookingEventUsers']) {
+        foreach ($eventData['BookingEventUsers'] as $eventUser) {
+            if ($eventUser['IsGuest'] === false) {
+                $resourceIds[] = $eventUser['UserId'];
+            }
         }
+    }
+
+    $event['resourceIds'] = $resourceIds;
 
 //        $resource_names = array();
 //        $event_users = get_event_users($event['event_id']);
@@ -301,54 +327,49 @@ function to_full_calendar_events ($events) {
 //                $event['resourceId'] = $event[$this->resource_fld_name];
 //        }
 
-        $status = url_title($eventData['Status'], 'underscore');
+    $status = url_title($eventData['Status'], 'underscore');
 
-        if ($status === 'receptionist') {
-            $event['Title'] = 'Receptionist';
-        }
-
-        $classNames[] = 'fc-event-status-' . $status;
-
-        $titles = array();
-
-        if ($itemData['Abbr']) {
-            $titles[] = $itemData['Abbr'];
-        } elseif ($itemData['Title']) {
-            $titles[] = $itemData['Title'];
-        }
-
-        if (isset($eventData['Facility'])) {
-            $facilityData = $eventData['Facility'];
-            if ($facilityData['Abbr']) {
-                $titles[] = $facilityData['Abbr'];
-            } elseif ($facilityData['FacilityName']) {
-                $titles[] = $facilityData['FacilityName'];
-            }
-        }
-
-        $event['titles'] = $titles;
-
-        if (true) {
-            $title = $guestData['FirstName'] . ' ' . $guestData['LastName'] . (count($titles) > 0 ? "\n" . implode('/', $titles) : '');
-        } else {
-            $event['backgroundColor'] = $eventData['bg_color'];
-            $title = (count($titles) > 0 ? implode('/', $titles) : '');
-        }
-
-        $event['show_tooltip'] = true;
-
-        if ($title === '') {
-            $title = $eventData['notes'];
-            $event['show_tooltip'] = false;
-        }
-
-        $event['title'] = $title;
-
-        $event['className'] = implode(' ', $classNames);
-
-        $eventsArray[] = $event;
+    if ($status === 'receptionist') {
+        $event['Title'] = 'Receptionist';
     }
 
-    return $eventsArray;
+    $classNames[] = 'fc-event-status-' . $status;
 
+    $titles = array();
+
+    if ($itemData['Abbr']) {
+        $titles[] = $itemData['Abbr'];
+    } elseif ($itemData['Title']) {
+        $titles[] = $itemData['Title'];
+    }
+
+    if (isset($eventData['Facility'])) {
+        $facilityData = $eventData['Facility'];
+        if ($facilityData['Abbr']) {
+            $titles[] = $facilityData['Abbr'];
+        } elseif ($facilityData['FacilityName']) {
+            $titles[] = $facilityData['FacilityName'];
+        }
+    }
+
+    $event['titles'] = $titles;
+
+    if (true) {
+        $title = $guestData['FirstName'] . ' ' . $guestData['LastName'] . (count($titles) > 0 ? "\n" . implode('/', $titles) : '');
+    } else {
+        $event['backgroundColor'] = $eventData['bg_color'];
+        $title = (count($titles) > 0 ? implode('/', $titles) : '');
+    }
+
+    $event['show_tooltip'] = true;
+
+    if ($title === '') {
+        $title = $eventData['notes'];
+        $event['show_tooltip'] = false;
+    }
+
+    $event['title'] = $title;
+
+    $event['className'] = implode(' ', $classNames);
+    return $event;
 }

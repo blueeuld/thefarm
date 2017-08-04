@@ -1344,7 +1344,7 @@ abstract class ContactQuery extends ModelCriteria
     {
         if ($bookingEventUser instanceof \TheFarm\Models\BookingEventUser) {
             return $this
-                ->addUsingAlias(ContactTableMap::COL_CONTACT_ID, $bookingEventUser->getStaffId(), $comparison);
+                ->addUsingAlias(ContactTableMap::COL_CONTACT_ID, $bookingEventUser->getUserId(), $comparison);
         } elseif ($bookingEventUser instanceof ObjectCollection) {
             return $this
                 ->useBookingEventUserQuery()

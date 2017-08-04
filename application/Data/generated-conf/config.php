@@ -4,7 +4,7 @@ use Monolog\Logger;
 use Monolog\Handler\RotatingFileHandler;
 
 $logger = new Logger('defaultLogger');
-$logger->pushHandler(new RotatingFileHandler(__DIR__.'/../../logs/'.'propel.log', 5, 300, true, 777));
+$logger->pushHandler(new RotatingFileHandler(__DIR__.'/../logs/'.'propel.log', 5));
 
 $serviceContainer = \Propel\Runtime\Propel::getServiceContainer();
 $serviceContainer->checkVersion('2.0.0-dev');

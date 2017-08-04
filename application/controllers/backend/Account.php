@@ -652,9 +652,33 @@ class Account extends TF_Controller {
     }
 
     public function check_name() {
-        $query = $this->db->get_where('contacts', array('first_name' => $this->input->get_post('first_name'), 'last_name' => $this->input->get_post('last_name')));
 
-        echo json_encode(array('result' => $query->row_array()));
+        $resultArr = [
+            'IsExisting' => false,
+            'Guest' => null,
+        ];
+
+        $search = \TheFarm\Models\ContactQuery::create()
+            ->filterByFirstName($this->input->get_post('first_name'))
+            ->filterByLastName($this->input->get_post('last_name'))->findOne();
+
+        if ($search) {
+
+            $resultArr['IsExisting'] = true;
+            $resultArr['Guest'] = $search->toArray();
+            $resultArr['Guest']['ConfirmedBooking'] = [];
+
+            $bookingSearch = \TheFarm\Models\BookingQuery::create()->
+                filterByGuestId($search->getContactId())->filterByStatus('confirmed')->
+                filterByIsActive(true)
+                ->findOne();
+
+            if ($bookingSearch) {
+                $resultArr['Guest']['ActiveBooking'] = $bookingSearch->toArray();
+            }
+
+        }
+        $this->output->set_content_type('application/json')->set_output(json_encode($resultArr));
     }
 
     public function error(){
