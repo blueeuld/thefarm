@@ -3814,6 +3814,31 @@ abstract class Contact implements ActiveRecordInterface
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return ObjectCollection|ChildBookingEvent[] List of ChildBookingEvent objects
      */
+    public function getBookingEventsRelatedByAuthorIdJoinBooking(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildBookingEventQuery::create(null, $criteria);
+        $query->joinWith('Booking', $joinBehavior);
+
+        return $this->getBookingEventsRelatedByAuthorId($query, $con);
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Contact is new, it will return
+     * an empty collection; or if this Contact has previously
+     * been saved, it will retrieve related BookingEventsRelatedByAuthorId from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Contact.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildBookingEvent[] List of ChildBookingEvent objects
+     */
     public function getBookingEventsRelatedByAuthorIdJoinBookingItem(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ChildBookingEventQuery::create(null, $criteria);
@@ -4120,6 +4145,31 @@ abstract class Contact implements ActiveRecordInterface
         }
 
         return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Contact is new, it will return
+     * an empty collection; or if this Contact has previously
+     * been saved, it will retrieve related BookingEventsRelatedByCalledBy from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Contact.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildBookingEvent[] List of ChildBookingEvent objects
+     */
+    public function getBookingEventsRelatedByCalledByJoinBooking(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildBookingEventQuery::create(null, $criteria);
+        $query->joinWith('Booking', $joinBehavior);
+
+        return $this->getBookingEventsRelatedByCalledBy($query, $con);
     }
 
 
@@ -4464,6 +4514,31 @@ abstract class Contact implements ActiveRecordInterface
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return ObjectCollection|ChildBookingEvent[] List of ChildBookingEvent objects
      */
+    public function getBookingEventsRelatedByCancelledByJoinBooking(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildBookingEventQuery::create(null, $criteria);
+        $query->joinWith('Booking', $joinBehavior);
+
+        return $this->getBookingEventsRelatedByCancelledBy($query, $con);
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Contact is new, it will return
+     * an empty collection; or if this Contact has previously
+     * been saved, it will retrieve related BookingEventsRelatedByCancelledBy from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Contact.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildBookingEvent[] List of ChildBookingEvent objects
+     */
     public function getBookingEventsRelatedByCancelledByJoinBookingItem(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ChildBookingEventQuery::create(null, $criteria);
@@ -4770,6 +4845,31 @@ abstract class Contact implements ActiveRecordInterface
         }
 
         return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Contact is new, it will return
+     * an empty collection; or if this Contact has previously
+     * been saved, it will retrieve related BookingEventsRelatedByDeletedBy from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Contact.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildBookingEvent[] List of ChildBookingEvent objects
+     */
+    public function getBookingEventsRelatedByDeletedByJoinBooking(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildBookingEventQuery::create(null, $criteria);
+        $query->joinWith('Booking', $joinBehavior);
+
+        return $this->getBookingEventsRelatedByDeletedBy($query, $con);
     }
 
 

@@ -131,12 +131,21 @@
                 first_name : firstName,
                 last_name : lastName
             },
-            success: function(data) {
-                if (data.result !== null) {
+            success: function(jsonData) {
+
+                var isExisting = jsonData.IsExisting;
+                var hasBooking = jsonData.Guest.ActiveBooking;
+
+                if (isExisting && !hasBooking) {
                     if ( confirm("Existing guest first and last name exists. Do you want to use it?") ) {
-                        $('input[name="first_name"]').val(data.result.first_name);
-                        $('input[name="last_name"]').val(data.result.last_name);
-                        $('input[name="guest_id"]').val(data.result.contact_id);
+                        $('input[name="first_name"]').val(jsonData.Guest.FirstName);
+                        $('input[name="last_name"]').val(jsonData.Guest.LastName);
+                        $('input[name="guest_id"]').val(jsonData.Guest.ContactId);
+                    }
+                }
+                else if(isExisting && hasBooking) {
+                    if (confirm('The guest name is already exists and has an existing CONFIRMED booking. Do you want to create a new guest?')) {
+
                     }
                 }
             }

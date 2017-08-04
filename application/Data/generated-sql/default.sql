@@ -33,6 +33,7 @@ CREATE TABLE `tf_booking_event_users`
 (
     `event_id` INTEGER DEFAULT 0 NOT NULL,
     `staff_id` INTEGER DEFAULT 0 NOT NULL,
+    `is_guest` TINYINT(1) DEFAULT 0,
     PRIMARY KEY (`event_id`,`staff_id`),
     INDEX `booking_event_user_user_fk` (`staff_id`),
     CONSTRAINT `booking_event_user_event_fk`
@@ -52,6 +53,7 @@ DROP TABLE IF EXISTS `tf_booking_events`;
 CREATE TABLE `tf_booking_events`
 (
     `event_id` INTEGER NOT NULL AUTO_INCREMENT,
+    `booking_id` INTEGER,
     `event_title` VARCHAR(100) NOT NULL,
     `start_dt` DATETIME,
     `end_dt` DATETIME,
@@ -91,9 +93,13 @@ CREATE TABLE `tf_booking_events`
     INDEX `booking_event_item_by_fk` (`item_id`),
     INDEX `booking_event_booking_item_by_fk` (`booking_item_id`),
     INDEX `booking_event_status_fk` (`status`),
+    INDEX `fi_king_fk` (`booking_id`),
     CONSTRAINT `booking_event_author_fk`
         FOREIGN KEY (`author_id`)
         REFERENCES `tf_contacts` (`contact_id`),
+    CONSTRAINT `booking_fk`
+        FOREIGN KEY (`booking_id`)
+        REFERENCES `tf_bookings` (`booking_id`),
     CONSTRAINT `booking_event_booking_item_by_fk`
         FOREIGN KEY (`booking_item_id`)
         REFERENCES `tf_booking_items` (`booking_item_id`),

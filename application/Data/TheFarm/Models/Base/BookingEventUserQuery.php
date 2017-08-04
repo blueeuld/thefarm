@@ -21,10 +21,12 @@ use TheFarm\Models\Map\BookingEventUserTableMap;
  *
  *
  * @method     ChildBookingEventUserQuery orderByEventId($order = Criteria::ASC) Order by the event_id column
- * @method     ChildBookingEventUserQuery orderByStaffId($order = Criteria::ASC) Order by the staff_id column
+ * @method     ChildBookingEventUserQuery orderByUserId($order = Criteria::ASC) Order by the staff_id column
+ * @method     ChildBookingEventUserQuery orderByIsGuest($order = Criteria::ASC) Order by the is_guest column
  *
  * @method     ChildBookingEventUserQuery groupByEventId() Group by the event_id column
- * @method     ChildBookingEventUserQuery groupByStaffId() Group by the staff_id column
+ * @method     ChildBookingEventUserQuery groupByUserId() Group by the staff_id column
+ * @method     ChildBookingEventUserQuery groupByIsGuest() Group by the is_guest column
  *
  * @method     ChildBookingEventUserQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildBookingEventUserQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -60,17 +62,20 @@ use TheFarm\Models\Map\BookingEventUserTableMap;
  * @method     ChildBookingEventUser findOneOrCreate(ConnectionInterface $con = null) Return the first ChildBookingEventUser matching the query, or a new ChildBookingEventUser object populated from the query conditions when no match is found
  *
  * @method     ChildBookingEventUser findOneByEventId(int $event_id) Return the first ChildBookingEventUser filtered by the event_id column
- * @method     ChildBookingEventUser findOneByStaffId(int $staff_id) Return the first ChildBookingEventUser filtered by the staff_id column *
+ * @method     ChildBookingEventUser findOneByUserId(int $staff_id) Return the first ChildBookingEventUser filtered by the staff_id column
+ * @method     ChildBookingEventUser findOneByIsGuest(boolean $is_guest) Return the first ChildBookingEventUser filtered by the is_guest column *
 
  * @method     ChildBookingEventUser requirePk($key, ConnectionInterface $con = null) Return the ChildBookingEventUser by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildBookingEventUser requireOne(ConnectionInterface $con = null) Return the first ChildBookingEventUser matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildBookingEventUser requireOneByEventId(int $event_id) Return the first ChildBookingEventUser filtered by the event_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildBookingEventUser requireOneByStaffId(int $staff_id) Return the first ChildBookingEventUser filtered by the staff_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildBookingEventUser requireOneByUserId(int $staff_id) Return the first ChildBookingEventUser filtered by the staff_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildBookingEventUser requireOneByIsGuest(boolean $is_guest) Return the first ChildBookingEventUser filtered by the is_guest column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildBookingEventUser[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildBookingEventUser objects based on current ModelCriteria
  * @method     ChildBookingEventUser[]|ObjectCollection findByEventId(int $event_id) Return ChildBookingEventUser objects filtered by the event_id column
- * @method     ChildBookingEventUser[]|ObjectCollection findByStaffId(int $staff_id) Return ChildBookingEventUser objects filtered by the staff_id column
+ * @method     ChildBookingEventUser[]|ObjectCollection findByUserId(int $staff_id) Return ChildBookingEventUser objects filtered by the staff_id column
+ * @method     ChildBookingEventUser[]|ObjectCollection findByIsGuest(boolean $is_guest) Return ChildBookingEventUser objects filtered by the is_guest column
  * @method     ChildBookingEventUser[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -169,7 +174,7 @@ abstract class BookingEventUserQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT event_id, staff_id FROM tf_booking_event_users WHERE event_id = :p0 AND staff_id = :p1';
+        $sql = 'SELECT event_id, staff_id, is_guest FROM tf_booking_event_users WHERE event_id = :p0 AND staff_id = :p1';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key[0], PDO::PARAM_INT);
@@ -319,14 +324,14 @@ abstract class BookingEventUserQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByStaffId(1234); // WHERE staff_id = 1234
-     * $query->filterByStaffId(array(12, 34)); // WHERE staff_id IN (12, 34)
-     * $query->filterByStaffId(array('min' => 12)); // WHERE staff_id > 12
+     * $query->filterByUserId(1234); // WHERE staff_id = 1234
+     * $query->filterByUserId(array(12, 34)); // WHERE staff_id IN (12, 34)
+     * $query->filterByUserId(array('min' => 12)); // WHERE staff_id > 12
      * </code>
      *
      * @see       filterByContact()
      *
-     * @param     mixed $staffId The value to use as filter.
+     * @param     mixed $userId The value to use as filter.
      *              Use scalar values for equality.
      *              Use array values for in_array() equivalent.
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
@@ -334,16 +339,16 @@ abstract class BookingEventUserQuery extends ModelCriteria
      *
      * @return $this|ChildBookingEventUserQuery The current query, for fluid interface
      */
-    public function filterByStaffId($staffId = null, $comparison = null)
+    public function filterByUserId($userId = null, $comparison = null)
     {
-        if (is_array($staffId)) {
+        if (is_array($userId)) {
             $useMinMax = false;
-            if (isset($staffId['min'])) {
-                $this->addUsingAlias(BookingEventUserTableMap::COL_STAFF_ID, $staffId['min'], Criteria::GREATER_EQUAL);
+            if (isset($userId['min'])) {
+                $this->addUsingAlias(BookingEventUserTableMap::COL_STAFF_ID, $userId['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($staffId['max'])) {
-                $this->addUsingAlias(BookingEventUserTableMap::COL_STAFF_ID, $staffId['max'], Criteria::LESS_EQUAL);
+            if (isset($userId['max'])) {
+                $this->addUsingAlias(BookingEventUserTableMap::COL_STAFF_ID, $userId['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -354,7 +359,34 @@ abstract class BookingEventUserQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(BookingEventUserTableMap::COL_STAFF_ID, $staffId, $comparison);
+        return $this->addUsingAlias(BookingEventUserTableMap::COL_STAFF_ID, $userId, $comparison);
+    }
+
+    /**
+     * Filter the query on the is_guest column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByIsGuest(true); // WHERE is_guest = true
+     * $query->filterByIsGuest('yes'); // WHERE is_guest = true
+     * </code>
+     *
+     * @param     boolean|string $isGuest The value to use as filter.
+     *              Non-boolean arguments are converted using the following rules:
+     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildBookingEventUserQuery The current query, for fluid interface
+     */
+    public function filterByIsGuest($isGuest = null, $comparison = null)
+    {
+        if (is_string($isGuest)) {
+            $isGuest = in_array(strtolower($isGuest), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+        }
+
+        return $this->addUsingAlias(BookingEventUserTableMap::COL_IS_GUEST, $isGuest, $comparison);
     }
 
     /**
@@ -522,7 +554,7 @@ abstract class BookingEventUserQuery extends ModelCriteria
     {
         if ($bookingEventUser) {
             $this->addCond('pruneCond0', $this->getAliasedColName(BookingEventUserTableMap::COL_EVENT_ID), $bookingEventUser->getEventId(), Criteria::NOT_EQUAL);
-            $this->addCond('pruneCond1', $this->getAliasedColName(BookingEventUserTableMap::COL_STAFF_ID), $bookingEventUser->getStaffId(), Criteria::NOT_EQUAL);
+            $this->addCond('pruneCond1', $this->getAliasedColName(BookingEventUserTableMap::COL_STAFF_ID), $bookingEventUser->getUserId(), Criteria::NOT_EQUAL);
             $this->combine(array('pruneCond0', 'pruneCond1'), Criteria::LOGICAL_OR);
         }
 

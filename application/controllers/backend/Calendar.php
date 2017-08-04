@@ -30,35 +30,81 @@ class Calendar extends TF_Controller
 
             $update_calendar_views = $this->input->get_post('update_calendar_views');
 
+            $eventData = [
+                'EventId' => $event_id,
+                'AllDay' => false,
+                'Status' => $status,
+                'EventTitle' => $event_title,
+                'Notes' => $notes,
+                'Incl' => $included,
+                'NotIncl' => $not_included,
+                'Foc' => $foc,
+                'InclOsDoneNumber' => $this->input->get_post('incl_os_done_number'),
+                'InclOsDoneAmount' => $this->input->get_post('incl_os_done_amount'),
+                'FocOsDoneNumber' => $this->input->get_post('foc_os_done_number'),
+                'FocOsDoneAmount' => $this->input->get_post('foc_os_done_amount'),
+                'NotInclOsDoneNumber' => $this->input->get_post('not_incl_os_done_number'),
+                'NotInclOsDoneAmount' => $this->input->get_post('not_incl_os_done_amount'),
+            ];
+
+            $bookingEventUsers = [];
+
             if (!$booking_id) {
                 // create the guest.
                 $first_name = $this->input->get_post('first_name');
                 $last_name = $this->input->get_post('last_name');
                 $package_type = $this->input->get_post('package_type');
                 $contact_id = $this->input->get_post('guest_id');
+                $guestData = [];
+
                 if (!$contact_id) {
-                    $this->db->insert('contacts', array(
-                        'first_name' => $first_name,
-                        'last_name' => $last_name,
-                        'date_joined' => date('Y-m-d')
-                    ));
-                    $contact_id = $this->db->insert_id();
+//                    $this->db->insert('contacts', array(
+//                        'first_name' => $first_name,
+//                        'last_name' => $last_name,
+//                        'date_joined' => date('Y-m-d')
+//                    ));
+//                    $contact_id = $this->db->insert_id();
+
+                    $guestData = [
+                        'FirstName' => $first_name,
+                        'LastName' => $last_name,
+                        'DateJoined' => data('Y-m-d')
+                    ];
+
+                    $bookingEventUsers[] = ['User' => $guestData, 'IsGuest' => true, 'EventId' => $event_id];
                 }
+
                 $arrival = strtotime($this->input->get_post('arrival_date'));
                 $departure = strtotime($this->input->get_post('departure_date'));
-                $this->db->insert('bookings', array(
-                    'guest_id' => $contact_id,
-                    'title' => $first_name . ' ' . $last_name . ' Personalized Program',
-                    'start_date' => $arrival,
-                    'end_date' => $departure,
-                    'author_id' => get_current_user_id(),
-                    'entry_date' => now(),
-                    'personalized' => 1,
-                    'package_type_id' => $package_type,
-                    'status' => 'confirmed',
-                ));
+//                $this->db->insert('bookings', array(
+//                    'guest_id' => $contact_id,
+//                    'title' => $first_name . ' ' . $last_name . ' Personalized Program',
+//                    'start_date' => $arrival,
+//                    'end_date' => $departure,
+//                    'author_id' => get_current_user_id(),
+//                    'entry_date' => now(),
+//                    'personalized' => 1,
+//                    'package_type_id' => $package_type,
+//                    'status' => 'confirmed',
+//                ));
+//
+//                $booking_id = $this->db->insert_id();
 
-                $booking_id = $this->db->insert_id();
+                $eventData['Booking'] = [
+                    'Guest' => $guestData,
+                    'Title' => $first_name . ' ' . $last_name . ' Personalized Program',
+                    'StartDate' => $arrival,
+                    'EndDate' => $departure,
+                    'AuthorId' => get_current_user_id(),
+                    'Personalized' => 1,
+                    'PackageTypeId' => $package_type,
+                    'Status' => 'confirmed'
+                ];
+            }
+            else
+            {
+                $bookingGuest = \TheFarm\Models\BookingQuery::create()->findOneByBookingId($booking_id);
+                $bookingEventUsers[] = ['UserId' => $bookingGuest->getGuestId(), 'IsGuest' => true, 'EventId' => $event_id];
             }
 
             $data = array(
@@ -91,15 +137,35 @@ class Calendar extends TF_Controller
             $data['start_dt'] = date('Y-m-d H:i:s', strtotime($start_date . ' ' . $start_time));
             $data['end_dt'] = date('Y-m-d H:i:s', strtotime($end_date . ' ' . $end_time));
 
+            /* Event Data */
+
+            if ($status === 'cancelled') {
+                $eventData['CalledBy'] = $this->input->get_post('called_by') ? $this->input->get_post('called_by') : NULL;
+                $eventData['CancelledBy'] = $this->input->get_post('cancelled_by') ? $this->input->get_post('cancelled_by') : NULL;
+                $eventData['CancelledReason'] = $this->input->get_post('cancelled_reason');
+                $eventData['DateCancelled'] = strtotime($this->input->get_post('date_cancelled'));
+            }
+
+            $eventData['StartDate'] = date('Y-m-d H:i:s', strtotime($start_date . ' ' . $start_time));
+            $eventData['EndDate'] = date('Y-m-d H:i:s', strtotime($end_date . ' ' . $end_time));
+            /* Event Data End */
+
             if ($facility = $this->input->get_post('facility_id')) {
                 $data['facility_id'] = $facility;
+
+                $event['FacilityId'] = $facility;
             }
 
             $assignedTo = array();
             if ($assignedTo = $this->input->get_post('assigned_to')) {
                 if (!is_array($assignedTo)) $assignedTo = array((int)$assignedTo);
+
+                foreach ($assignedTo as $item) {
+                    if ($item) $bookingEventUsers[] = ['UserId' => $item, 'IsGuest' => false, 'EventId' => $event_id];
+                }
             }
 
+            $eventData['BookingEventUsers'] = $bookingEventUsers;
 
 //			Check if provider is available.
 //			2) Get all confirmed events of the provider for that time.
@@ -119,6 +185,19 @@ class Calendar extends TF_Controller
             if (!$this->availability->validate()) {
                 $this->availability->display_errors();
             }
+
+            $eventData['ItemId'] = $item_id;
+            $eventData['BookingId'] = $booking_id;
+            $eventData['BookingItemId'] = $booking_item_id;
+
+            $this->load->library('event');
+            $event = $this->event->save_event($eventData);
+
+            echo json_encode(to_full_calendar_event($event));
+            exit ( 0 );
+
+            $this->output->set_content_type('application/json')->set_output(json_encode(to_full_calendar_event($event)));
+
 
             if ($booking_item_id) {
                 $data['booking_item_id'] = $booking_item_id;
@@ -972,15 +1051,9 @@ class Calendar extends TF_Controller
     }
     
     public function unassigned_events() {
-	    $params = array();
-	    $params['locations'] = $this->session->userdata('location_id');
-	    $params['unassignedOnly'] = true;
-	    $params['categories'] = array(1, 2, 9);
-	    $params['upcoming'] = true;
-	    $params['upcomingThreshold'] = 'P7D';
-	    $this->load->library('Event', $params);
 
-	    $fcEvents = to_full_calendar_events($this->event->get_events());
+	    $this->load->library('Event');
+	    $fcEvents = to_full_calendar_events($this->event->get_events(null, null, [1, 2, 9], $this->session->userdata('location_id'), true, 'P7D', true));
 
         $this->output->set_content_type('application/json')->set_output(json_encode($fcEvents));
     }

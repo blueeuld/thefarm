@@ -185,6 +185,7 @@ class Availability
                     $this->TF->db->select('*');
                     $this->TF->db->join('booking_event_users', 'booking_events.event_id = booking_event_users.event_id');
                     $this->TF->db->where_in('booking_event_users.staff_id', $this->people);
+                    $this->TF->db->where('booking_event_users.is_guest', 0);
                     //$this->TF->db->where_not_in('status', array('cancelled', 'no-show'));
                     if ($this->event) $this->TF->db->where('booking_events.event_id !=', $this->event);
                     $this->TF->db->where("((start_dt BETWEEN '$check_in' AND '$check_out') OR (end_dt BETWEEN '$check_in' AND '$check_out') OR ('$check_in' BETWEEN start_dt AND end_dt))");

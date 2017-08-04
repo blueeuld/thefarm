@@ -59,7 +59,7 @@ class BookingEventUserTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 2;
+    const NUM_COLUMNS = 3;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class BookingEventUserTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 2;
+    const NUM_HYDRATE_COLUMNS = 3;
 
     /**
      * the column name for the event_id field
@@ -80,6 +80,11 @@ class BookingEventUserTableMap extends TableMap
      * the column name for the staff_id field
      */
     const COL_STAFF_ID = 'tf_booking_event_users.staff_id';
+
+    /**
+     * the column name for the is_guest field
+     */
+    const COL_IS_GUEST = 'tf_booking_event_users.is_guest';
 
     /**
      * The default string format for model objects of the related table
@@ -93,11 +98,11 @@ class BookingEventUserTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('EventId', 'StaffId', ),
-        self::TYPE_CAMELNAME     => array('eventId', 'staffId', ),
-        self::TYPE_COLNAME       => array(BookingEventUserTableMap::COL_EVENT_ID, BookingEventUserTableMap::COL_STAFF_ID, ),
-        self::TYPE_FIELDNAME     => array('event_id', 'staff_id', ),
-        self::TYPE_NUM           => array(0, 1, )
+        self::TYPE_PHPNAME       => array('EventId', 'UserId', 'IsGuest', ),
+        self::TYPE_CAMELNAME     => array('eventId', 'userId', 'isGuest', ),
+        self::TYPE_COLNAME       => array(BookingEventUserTableMap::COL_EVENT_ID, BookingEventUserTableMap::COL_STAFF_ID, BookingEventUserTableMap::COL_IS_GUEST, ),
+        self::TYPE_FIELDNAME     => array('event_id', 'staff_id', 'is_guest', ),
+        self::TYPE_NUM           => array(0, 1, 2, )
     );
 
     /**
@@ -107,11 +112,11 @@ class BookingEventUserTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('EventId' => 0, 'StaffId' => 1, ),
-        self::TYPE_CAMELNAME     => array('eventId' => 0, 'staffId' => 1, ),
-        self::TYPE_COLNAME       => array(BookingEventUserTableMap::COL_EVENT_ID => 0, BookingEventUserTableMap::COL_STAFF_ID => 1, ),
-        self::TYPE_FIELDNAME     => array('event_id' => 0, 'staff_id' => 1, ),
-        self::TYPE_NUM           => array(0, 1, )
+        self::TYPE_PHPNAME       => array('EventId' => 0, 'UserId' => 1, 'IsGuest' => 2, ),
+        self::TYPE_CAMELNAME     => array('eventId' => 0, 'userId' => 1, 'isGuest' => 2, ),
+        self::TYPE_COLNAME       => array(BookingEventUserTableMap::COL_EVENT_ID => 0, BookingEventUserTableMap::COL_STAFF_ID => 1, BookingEventUserTableMap::COL_IS_GUEST => 2, ),
+        self::TYPE_FIELDNAME     => array('event_id' => 0, 'staff_id' => 1, 'is_guest' => 2, ),
+        self::TYPE_NUM           => array(0, 1, 2, )
     );
 
     /**
@@ -132,7 +137,8 @@ class BookingEventUserTableMap extends TableMap
         $this->setUseIdGenerator(false);
         // columns
         $this->addForeignPrimaryKey('event_id', 'EventId', 'INTEGER' , 'tf_booking_events', 'event_id', true, null, 0);
-        $this->addForeignPrimaryKey('staff_id', 'StaffId', 'INTEGER' , 'tf_contacts', 'contact_id', true, null, 0);
+        $this->addForeignPrimaryKey('staff_id', 'UserId', 'INTEGER' , 'tf_contacts', 'contact_id', true, null, 0);
+        $this->addColumn('is_guest', 'IsGuest', 'BOOLEAN', false, 1, false);
     } // initialize()
 
     /**
@@ -171,7 +177,7 @@ class BookingEventUserTableMap extends TableMap
     {
         if (Propel::isInstancePoolingEnabled()) {
             if (null === $key) {
-                $key = serialize([(null === $obj->getEventId() || is_scalar($obj->getEventId()) || is_callable([$obj->getEventId(), '__toString']) ? (string) $obj->getEventId() : $obj->getEventId()), (null === $obj->getStaffId() || is_scalar($obj->getStaffId()) || is_callable([$obj->getStaffId(), '__toString']) ? (string) $obj->getStaffId() : $obj->getStaffId())]);
+                $key = serialize([(null === $obj->getEventId() || is_scalar($obj->getEventId()) || is_callable([$obj->getEventId(), '__toString']) ? (string) $obj->getEventId() : $obj->getEventId()), (null === $obj->getUserId() || is_scalar($obj->getUserId()) || is_callable([$obj->getUserId(), '__toString']) ? (string) $obj->getUserId() : $obj->getUserId())]);
             } // if key === null
             self::$instances[$key] = $obj;
         }
@@ -191,7 +197,7 @@ class BookingEventUserTableMap extends TableMap
     {
         if (Propel::isInstancePoolingEnabled() && null !== $value) {
             if (is_object($value) && $value instanceof \TheFarm\Models\BookingEventUser) {
-                $key = serialize([(null === $value->getEventId() || is_scalar($value->getEventId()) || is_callable([$value->getEventId(), '__toString']) ? (string) $value->getEventId() : $value->getEventId()), (null === $value->getStaffId() || is_scalar($value->getStaffId()) || is_callable([$value->getStaffId(), '__toString']) ? (string) $value->getStaffId() : $value->getStaffId())]);
+                $key = serialize([(null === $value->getEventId() || is_scalar($value->getEventId()) || is_callable([$value->getEventId(), '__toString']) ? (string) $value->getEventId() : $value->getEventId()), (null === $value->getUserId() || is_scalar($value->getUserId()) || is_callable([$value->getUserId(), '__toString']) ? (string) $value->getUserId() : $value->getUserId())]);
 
             } elseif (is_array($value) && count($value) === 2) {
                 // assume we've been passed a primary key";
@@ -225,11 +231,11 @@ class BookingEventUserTableMap extends TableMap
     public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
         // If the PK cannot be derived from the row, return NULL.
-        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('EventId', TableMap::TYPE_PHPNAME, $indexType)] === null && $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('StaffId', TableMap::TYPE_PHPNAME, $indexType)] === null) {
+        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('EventId', TableMap::TYPE_PHPNAME, $indexType)] === null && $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)] === null) {
             return null;
         }
 
-        return serialize([(null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('EventId', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('EventId', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('EventId', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('EventId', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('EventId', TableMap::TYPE_PHPNAME, $indexType)]), (null === $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('StaffId', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('StaffId', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('StaffId', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('StaffId', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('StaffId', TableMap::TYPE_PHPNAME, $indexType)])]);
+        return serialize([(null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('EventId', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('EventId', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('EventId', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('EventId', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('EventId', TableMap::TYPE_PHPNAME, $indexType)]), (null === $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)])]);
     }
 
     /**
@@ -256,7 +262,7 @@ class BookingEventUserTableMap extends TableMap
         $pks[] = (int) $row[
             $indexType == TableMap::TYPE_NUM
                 ? 1 + $offset
-                : self::translateFieldName('StaffId', TableMap::TYPE_PHPNAME, $indexType)
+                : self::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)
         ];
 
         return $pks;
@@ -361,9 +367,11 @@ class BookingEventUserTableMap extends TableMap
         if (null === $alias) {
             $criteria->addSelectColumn(BookingEventUserTableMap::COL_EVENT_ID);
             $criteria->addSelectColumn(BookingEventUserTableMap::COL_STAFF_ID);
+            $criteria->addSelectColumn(BookingEventUserTableMap::COL_IS_GUEST);
         } else {
             $criteria->addSelectColumn($alias . '.event_id');
             $criteria->addSelectColumn($alias . '.staff_id');
+            $criteria->addSelectColumn($alias . '.is_guest');
         }
     }
 

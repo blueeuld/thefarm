@@ -272,6 +272,13 @@ class BookingTableMap extends TableMap
     1 => ':booking_id',
   ),
 ), null, null, 'BookingAttachments', false);
+        $this->addRelation('BookingEvent', '\\TheFarm\\Models\\BookingEvent', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':booking_id',
+    1 => ':booking_id',
+  ),
+), null, null, 'BookingEvents', false);
         $this->addRelation('BookingItem', '\\TheFarm\\Models\\BookingItem', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (

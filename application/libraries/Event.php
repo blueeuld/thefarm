@@ -2,48 +2,90 @@
 
 class Event {
 
-    var $eventId;
-    var $unAssignedEventOnly;
-    var $guestId;
-    var $categories;
-    var $locations;
-    var $upcoming;
-    var $upcomingThreshold;
+    public function save_event($eventData) {
 
-    public function __construct($params)
-    {
-        foreach ($params as $key => $param) {
-            $this->$key = $param;
+        try {
+            $event = new \TheFarm\Models\BookingEvent();
+
+            if (isset($eventData['EventId']) && $eventData['EventId']) {
+                $event = \TheFarm\Models\BookingEventQuery::create()->findOneByEventId($eventData['EventId']);
+                $event->fromArray($eventData);
+            }
+            else {
+                $event->fromArray($eventData);
+            }
+
+            $eventUsers = $event->getBookingEventUsers();
+
+            if (isset($eventData['BookingEventUsers'])) {
+
+                $savedEventUsers = new \Propel\Runtime\Collection\ObjectCollection();
+
+                foreach ($eventData['BookingEventUsers'] as $eventUser) {
+                    $userData = new \TheFarm\Models\BookingEventUser();
+                    $userData->fromArray($eventUser);
+
+                    if ($eventUsers->contains($userData)) {
+                        $userData = $eventUsers->get($eventUsers->search($userData));
+                        $userData->fromArray($eventUser);
+                        $savedEventUsers->append($userData);
+                    } else {
+                        $event->addBookingEventUser($userData);
+                        $savedEventUsers->append($userData);
+                    }
+                }
+
+                foreach ($eventUsers as $eventUser) {
+                    if (!$savedEventUsers->contains($eventUser)) {
+                        $eventUsers->removeObject($eventUser);
+                        $eventUser->delete();
+                    }
+                }
+            }
+
+            $event->save();
+
+            $eventArr = $event->toArray();
+            $eventArr['BookingEventUsers'] = $event->getBookingEventUsers()->toArray();
+            $eventArr['BookingItem'] = $event->getBookingItem()->toArray();
+            $eventArr['BookingItem']['Booking'] = $event->getBookingItem()->getBooking()->toArray();
+            $eventArr['BookingItem']['Booking']['Guest'] = $event->getBookingItem()->getBooking()->getContactRelatedByGuestId()->toArray();
+            $eventArr['BookingItem']['Item'] = $event->getBookingItem()->getItem()->toArray();
+
+            return $eventArr;
+        }
+        catch (Exception $exception) {
+            return $exception;
         }
     }
 
-    public function get_events() {
+    public function get_events($eventId = null, $guestId = null, $categories = [], $locations = [], $upcoming = false, $upcomingThreshold = 'P7D', $unAssignedEventOnly) {
 
          $search = \TheFarm\Models\BookingEventQuery::create();
 
-         if ($this->eventId) {
-             $search = $search->filterByEventId($this->eventId);
+         if ($eventId) {
+             $search = $search->filterByEventId($eventId);
          }
 
-         if ($this->guestId) {
-             $search = $search->useBookingItemQuery()->useBookingQuery()->filterByGuestId($this->guestId)->endUse()->endUse();
+         if ($guestId) {
+             $search = $search->useBookingItemQuery()->useBookingQuery()->filterByGuestId($guestId)->endUse()->endUse();
          }
 
-         if ($this->categories) {
-             $search = $search->useBookingItemQuery()->useItemQuery()->useItemCategoryQuery()->filterByCategoryId($this->categories)->endUse()->endUse()->endUse();
+         if ($categories) {
+             $search = $search->useBookingItemQuery()->useItemQuery()->useItemCategoryQuery()->filterByCategoryId($categories)->endUse()->endUse()->endUse();
          }
 
-         if ($this->unAssignedEventOnly) {
+         if ($unAssignedEventOnly) {
              $search = $search->useBookingEventUserQuery(null, 'LEFT JOIN')->filterByEventId(null)->endUse();
          }
 
-        if ($this->upcoming) {
+        if ($upcoming) {
 
             $start = new DateTime();
             $end = new DateTime();
-            $end->add(new DateInterval($this->upcomingThreshold));
+            $end->add(new DateInterval($upcomingThreshold));
 
-            $search = $search->filterByEndDt(['min' => $start->format('Y-m-d H:i:s'), 'max' => $end->format('Y-m-d H:i:s')]);
+            $search = $search->filterByEndDate(['min' => $start->format('Y-m-d H:i:s'), 'max' => $end->format('Y-m-d H:i:s')]);
 //
 //            $this->start = $start->format('Y-m-d H:i:s');
 //            $this->end = $end->format('Y-m-d H:i:s');
@@ -53,7 +95,7 @@ class Event {
 
          $search = $search->useBookingItemQuery()->useBookingQuery()->filterByIsActive(true)->endUse()->endUse();
 
-         $search->orderByStartDt();
+         $search->orderByStartDate();
 
          $events = $search->find();
          $eventsArray = [];
@@ -73,7 +115,7 @@ class Event {
              }
 
              if ($event->getBookingEventUsers()->count() > 0) {
-                $eventsArray[$key]['Staff'] = $event->getBookingEventUsersJoinContact()->toArray();
+                $eventsArray[$key]['BookingEventUsers'] = $event->getBookingEventUsersJoinContact()->toArray();
              }
 
          }
