@@ -56,7 +56,7 @@
     <column name="deleted_date" phpName="DeletedDate" type="INTEGER" size="10" defaultValue="0"/>
     <column name="deleted_by" phpName="DeletedBy" type="INTEGER"/>
     <column name="item_id" phpName="ItemId" type="INTEGER"/>
-    <column name="is_kids" phpName="IsKids" type="VARCHAR" size="1" defaultValue="n"/>
+    <column name="is_kids" phpName="IsKids" type="BOOLEAN" defaultValue="0"/>
     <column name="incl_os_done_number" phpName="InclOsDoneNumber" type="VARCHAR" size="20"/>
     <column name="incl_os_done_amount" phpName="InclOsDoneAmount" type="DECIMAL" size="10" scale="2" required="true" defaultValue="0.00"/>
     <column name="foc_os_done_number" phpName="FocOsDoneNumber" type="VARCHAR" size="20"/>

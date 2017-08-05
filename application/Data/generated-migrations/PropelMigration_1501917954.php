@@ -4,10 +4,10 @@ use Propel\Generator\Manager\MigrationManager;
 
 /**
  * Data object containing the SQL and PHP code to migrate the database
- * up to version 1501812540.
- * Generated on 2017-08-04 02:09:00 by marvin
+ * up to version 1501917954.
+ * Generated on 2017-08-05 07:25:54 by marvin
  */
-class PropelMigration_1501812540
+class PropelMigration_1501917954
 {
     public $comment = '';
 
@@ -45,21 +45,11 @@ class PropelMigration_1501812540
 # It "suspends judgement" for fkey relationships until are tables are set.
 SET FOREIGN_KEY_CHECKS = 0;
 
-ALTER TABLE `tf_booking_event_users`
-
-  ADD `is_guest` TINYINT(1) DEFAULT 0 AFTER `staff_id`;
+UPDATE `tf_booking_events` SET `is_kids`=IF(`is_kids` = \'y\', \'1\', \'0\');
 
 ALTER TABLE `tf_booking_events`
 
-  ADD `booking_id` INTEGER AFTER `event_id`;
-  
-  UPDATE tf_booking_events e SET booking_id = (SELECT i.booking_id FROM tf_booking_items i WHERE i.booking_item_id=e.booking_item_id);
-
-CREATE INDEX `fi_king_fk` ON `tf_booking_events` (`booking_id`);
-
-ALTER TABLE `tf_booking_events` ADD CONSTRAINT `booking_fk`
-    FOREIGN KEY (`booking_id`)
-    REFERENCES `tf_bookings` (`booking_id`);
+  CHANGE `is_kids` `is_kids` TINYINT(1) DEFAULT 0;
 
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;
@@ -81,17 +71,9 @@ SET FOREIGN_KEY_CHECKS = 1;
 # It "suspends judgement" for fkey relationships until are tables are set.
 SET FOREIGN_KEY_CHECKS = 0;
 
-ALTER TABLE `tf_booking_event_users`
-
-  DROP `is_guest`;
-
-ALTER TABLE `tf_booking_events` DROP FOREIGN KEY `booking_fk`;
-
-DROP INDEX `fi_king_fk` ON `tf_booking_events`;
-
 ALTER TABLE `tf_booking_events`
 
-  DROP `booking_id`;
+  CHANGE `is_kids` `is_kids` VARCHAR(1) DEFAULT \'n\';
 
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;

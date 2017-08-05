@@ -74,7 +74,7 @@ CREATE TABLE `tf_booking_events`
     `deleted_date` INTEGER(10) DEFAULT 0,
     `deleted_by` INTEGER,
     `item_id` INTEGER,
-    `is_kids` VARCHAR(1) DEFAULT 'n',
+    `is_kids` TINYINT(1) DEFAULT 0,
     `incl_os_done_number` VARCHAR(20),
     `incl_os_done_amount` DECIMAL(10,2) DEFAULT 0.00 NOT NULL,
     `foc_os_done_number` VARCHAR(20),

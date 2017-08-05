@@ -303,7 +303,7 @@ class BookingEventTableMap extends TableMap
         $this->addColumn('deleted_date', 'DeletedDate', 'INTEGER', false, 10, 0);
         $this->addForeignKey('deleted_by', 'DeletedBy', 'INTEGER', 'tf_contacts', 'contact_id', false, null, null);
         $this->addForeignKey('item_id', 'ItemId', 'INTEGER', 'tf_items', 'item_id', false, null, null);
-        $this->addColumn('is_kids', 'IsKids', 'VARCHAR', false, 1, 'n');
+        $this->addColumn('is_kids', 'IsKids', 'BOOLEAN', false, 1, false);
         $this->addColumn('incl_os_done_number', 'InclOsDoneNumber', 'VARCHAR', false, 20, null);
         $this->addColumn('incl_os_done_amount', 'InclOsDoneAmount', 'DECIMAL', true, 10, 0);
         $this->addColumn('foc_os_done_number', 'FocOsDoneNumber', 'VARCHAR', false, 20, null);

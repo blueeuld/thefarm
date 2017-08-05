@@ -243,8 +243,8 @@ abstract class BookingEvent implements ActiveRecordInterface
     /**
      * The value for the is_kids field.
      *
-     * Note: this column has a database default value of: 'n'
-     * @var        string
+     * Note: this column has a database default value of: false
+     * @var        boolean
      */
     protected $is_kids;
 
@@ -395,7 +395,7 @@ abstract class BookingEvent implements ActiveRecordInterface
         $this->personalized = '';
         $this->is_active = 'n';
         $this->deleted_date = 0;
-        $this->is_kids = 'n';
+        $this->is_kids = false;
         $this->incl_os_done_amount = '0.00';
         $this->foc_os_done_amount = '0.00';
         $this->not_incl_os_done_amount = '0.00';
@@ -871,11 +871,21 @@ abstract class BookingEvent implements ActiveRecordInterface
     /**
      * Get the [is_kids] column value.
      *
-     * @return string
+     * @return boolean
      */
     public function getIsKids()
     {
         return $this->is_kids;
+    }
+
+    /**
+     * Get the [is_kids] column value.
+     *
+     * @return boolean
+     */
+    public function isKids()
+    {
+        return $this->getIsKids();
     }
 
     /**
@@ -1445,15 +1455,23 @@ abstract class BookingEvent implements ActiveRecordInterface
     } // setItemId()
 
     /**
-     * Set the value of [is_kids] column.
+     * Sets the value of the [is_kids] column.
+     * Non-boolean arguments are converted using the following rules:
+     *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
      *
-     * @param string $v new value
+     * @param  boolean|integer|string $v The new value
      * @return $this|\TheFarm\Models\BookingEvent The current object (for fluent API support)
      */
     public function setIsKids($v)
     {
         if ($v !== null) {
-            $v = (string) $v;
+            if (is_string($v)) {
+                $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            } else {
+                $v = (boolean) $v;
+            }
         }
 
         if ($this->is_kids !== $v) {
@@ -1686,7 +1704,7 @@ abstract class BookingEvent implements ActiveRecordInterface
                 return false;
             }
 
-            if ($this->is_kids !== 'n') {
+            if ($this->is_kids !== false) {
                 return false;
             }
 
@@ -1801,7 +1819,7 @@ abstract class BookingEvent implements ActiveRecordInterface
             $this->item_id = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 22 + $startcol : BookingEventTableMap::translateFieldName('IsKids', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->is_kids = (null !== $col) ? (string) $col : null;
+            $this->is_kids = (null !== $col) ? (boolean) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 23 + $startcol : BookingEventTableMap::translateFieldName('InclOsDoneNumber', TableMap::TYPE_PHPNAME, $indexType)];
             $this->incl_os_done_number = (null !== $col) ? (string) $col : null;
@@ -2335,7 +2353,7 @@ abstract class BookingEvent implements ActiveRecordInterface
                         $stmt->bindValue($identifier, $this->item_id, PDO::PARAM_INT);
                         break;
                     case 'is_kids':
-                        $stmt->bindValue($identifier, $this->is_kids, PDO::PARAM_STR);
+                        $stmt->bindValue($identifier, (int) $this->is_kids, PDO::PARAM_INT);
                         break;
                     case 'incl_os_done_number':
                         $stmt->bindValue($identifier, $this->incl_os_done_number, PDO::PARAM_STR);

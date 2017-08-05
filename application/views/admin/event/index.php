@@ -22,7 +22,7 @@
 								
 								<div id="main">
 									<div class="page-header">
-										<h1 class="serif"><?php echo $is_kids === 'y' ? 'Kids' : ''; ?> Activities <a
+										<h1 class="serif"><?php echo $is_kids ? 'Kids' : ''; ?> Activities <a
 												href="<?php echo site_url('backend/events/edit/' . ($is_kids === 'y' ? 'kids' : 'adult') . '?return=' . urlencode($return)); ?>"
 												class="btn btn-primary" data-toggle="modal" data-target="#modal-popup">Add
 												<i class="fa fa-plus"></i></a></h1>
