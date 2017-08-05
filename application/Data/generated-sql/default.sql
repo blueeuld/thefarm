@@ -311,7 +311,6 @@ CREATE TABLE `tf_contacts`
     `bio` TEXT NOT NULL,
     `approved` VARCHAR(1) DEFAULT 'y' NOT NULL,
     `activation_code` INTEGER,
-    `active` VARCHAR(1) DEFAULT 'n' NOT NULL,
     PRIMARY KEY (`contact_id`),
     INDEX `position_fk` (`position_cd`),
     CONSTRAINT `position_fk`

@@ -74,7 +74,7 @@ $qstr = $qstr ? $qstr.'&return='.$return : '?return=' . $return;
                                                     </td>
 
                                                     <td class="text-center">
-                                                        <?php form_toggle_button('btn-active', $row['ContactId'], array('Yes', 'No'), $row['Active']);?>
+                                                        <?php form_toggle_button('btn-active', $row['ContactId'], array('Yes', 'No'), $row['IsActive']);?>
                                                     </td>
 
                                                     <td class="text-center">

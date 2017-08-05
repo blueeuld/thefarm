@@ -139,7 +139,7 @@ class Register extends TF_Controller {
 				'verification_key' => $verification_key,
 				'verified' => 'n',
 				'approved' => 'n',
-				'active' => 'n',
+				'is_active' => 0,
 			);
 
 			// create contact

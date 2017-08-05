@@ -63,7 +63,7 @@ class Login extends TF_Controller {
                     $this->show_result('Your account has not been APPROVED yet.', true);
 				}
 				
-				if ($data['active'] === 'n') {
+				if ($data['is_active'] === '0') {
                     $this->show_result('Your account has not been ACTIVATED yet.', true);
 				}
 			}

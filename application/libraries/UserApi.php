@@ -19,4 +19,13 @@ class UserApi {
         return $search->toArray();
     }
 
+    function delete_user($contactId) {
+
+        $user = \TheFarm\Models\ContactQuery::create()->findOneByContactId($contactId);
+        $user->setIsActive(false);
+        $user->save();
+        return $user->toArray();
+
+    }
+
 }

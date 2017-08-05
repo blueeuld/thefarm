@@ -639,7 +639,7 @@ function form_radio_buttons($name, $options, $selected = '') {
 
 function form_toggle_button($name, $id, $options, $selected) {
 	
-	$selected = $selected === 'y' ? 'Yes' : 'No';
+	$selected = $selected ? 'Yes' : 'No';
 	
 	echo '<div class="btn-group btn-toggle">';
 	foreach ($options as $option) {

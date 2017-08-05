@@ -745,11 +745,8 @@ class Account extends TF_Controller {
         
         if ($id && $confirm && $confirm === 'y') {
 
-           $this->db->update('contacts', array('is_active' => 1), array('contact_id' => $id));
-			
-// 			$this->db->delete('contacts', array('contact_id' => $id));
-// 			$this->db->delete('users', array('contact_id' => $id));
-// 			$this->db->delete('bookings', array('guest_id' => $id));
+            $userApi = new UserApi();
+            $userApi->delete_user($id);
 
             if ($return = $this->input->get_post('return'))
                 redirect($return);

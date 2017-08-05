@@ -47,7 +47,6 @@ use TheFarm\Models\Map\ContactTableMap;
  * @method     ChildContactQuery orderByBio($order = Criteria::ASC) Order by the bio column
  * @method     ChildContactQuery orderByApproved($order = Criteria::ASC) Order by the approved column
  * @method     ChildContactQuery orderByActivationCode($order = Criteria::ASC) Order by the activation_code column
- * @method     ChildContactQuery orderByActive($order = Criteria::ASC) Order by the active column
  *
  * @method     ChildContactQuery groupByContactId() Group by the contact_id column
  * @method     ChildContactQuery groupByFirstName() Group by the first_name column
@@ -76,7 +75,6 @@ use TheFarm\Models\Map\ContactTableMap;
  * @method     ChildContactQuery groupByBio() Group by the bio column
  * @method     ChildContactQuery groupByApproved() Group by the approved column
  * @method     ChildContactQuery groupByActivationCode() Group by the activation_code column
- * @method     ChildContactQuery groupByActive() Group by the active column
  *
  * @method     ChildContactQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildContactQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -217,8 +215,7 @@ use TheFarm\Models\Map\ContactTableMap;
  * @method     ChildContact findOneByNickname(string $nickname) Return the first ChildContact filtered by the nickname column
  * @method     ChildContact findOneByBio(string $bio) Return the first ChildContact filtered by the bio column
  * @method     ChildContact findOneByApproved(string $approved) Return the first ChildContact filtered by the approved column
- * @method     ChildContact findOneByActivationCode(int $activation_code) Return the first ChildContact filtered by the activation_code column
- * @method     ChildContact findOneByActive(string $active) Return the first ChildContact filtered by the active column *
+ * @method     ChildContact findOneByActivationCode(int $activation_code) Return the first ChildContact filtered by the activation_code column *
 
  * @method     ChildContact requirePk($key, ConnectionInterface $con = null) Return the ChildContact by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildContact requireOne(ConnectionInterface $con = null) Return the first ChildContact matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -250,7 +247,6 @@ use TheFarm\Models\Map\ContactTableMap;
  * @method     ChildContact requireOneByBio(string $bio) Return the first ChildContact filtered by the bio column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildContact requireOneByApproved(string $approved) Return the first ChildContact filtered by the approved column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildContact requireOneByActivationCode(int $activation_code) Return the first ChildContact filtered by the activation_code column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildContact requireOneByActive(string $active) Return the first ChildContact filtered by the active column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildContact[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildContact objects based on current ModelCriteria
  * @method     ChildContact[]|ObjectCollection findByContactId(int $contact_id) Return ChildContact objects filtered by the contact_id column
@@ -280,7 +276,6 @@ use TheFarm\Models\Map\ContactTableMap;
  * @method     ChildContact[]|ObjectCollection findByBio(string $bio) Return ChildContact objects filtered by the bio column
  * @method     ChildContact[]|ObjectCollection findByApproved(string $approved) Return ChildContact objects filtered by the approved column
  * @method     ChildContact[]|ObjectCollection findByActivationCode(int $activation_code) Return ChildContact objects filtered by the activation_code column
- * @method     ChildContact[]|ObjectCollection findByActive(string $active) Return ChildContact objects filtered by the active column
  * @method     ChildContact[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -379,7 +374,7 @@ abstract class ContactQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT contact_id, first_name, last_name, middle_name, email, title, date_joined, avatar, civil_status, nationality, country_dominicile, etnic_origin, dob, place_of_birth, age, gender, height, weight, phone, position_cd, is_active, verification_key, verified, nickname, bio, approved, activation_code, active FROM tf_contacts WHERE contact_id = :p0';
+        $sql = 'SELECT contact_id, first_name, last_name, middle_name, email, title, date_joined, avatar, civil_status, nationality, country_dominicile, etnic_origin, dob, place_of_birth, age, gender, height, weight, phone, position_cd, is_active, verification_key, verified, nickname, bio, approved, activation_code FROM tf_contacts WHERE contact_id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -1228,31 +1223,6 @@ abstract class ContactQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(ContactTableMap::COL_ACTIVATION_CODE, $activationCode, $comparison);
-    }
-
-    /**
-     * Filter the query on the active column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByActive('fooValue');   // WHERE active = 'fooValue'
-     * $query->filterByActive('%fooValue%', Criteria::LIKE); // WHERE active LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $active The value to use as filter.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildContactQuery The current query, for fluid interface
-     */
-    public function filterByActive($active = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($active)) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(ContactTableMap::COL_ACTIVE, $active, $comparison);
     }
 
     /**

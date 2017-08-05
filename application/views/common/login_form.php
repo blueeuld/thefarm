@@ -26,7 +26,7 @@ treatments while with us at The Farm</h1><br>
 		<?php
 		$q = $this->db->get_where('contacts', array('contact_id' => $this->session->userdata('user_id')));
 		$result = $q->row_array();
-		if ($result['active'] === 'n') : 
+		if ($result['is_active'] === '0') :
 		?>
 		
 		<div class="modal fade" id="activation-modal" tabindex="-1" role="dialog" aria-labelledby="Activation" aria-hidden="true" style="display: none;">

@@ -59,7 +59,7 @@ class ContactTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 28;
+    const NUM_COLUMNS = 27;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class ContactTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 28;
+    const NUM_HYDRATE_COLUMNS = 27;
 
     /**
      * the column name for the contact_id field
@@ -207,11 +207,6 @@ class ContactTableMap extends TableMap
     const COL_ACTIVATION_CODE = 'tf_contacts.activation_code';
 
     /**
-     * the column name for the active field
-     */
-    const COL_ACTIVE = 'tf_contacts.active';
-
-    /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -223,11 +218,11 @@ class ContactTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('ContactId', 'FirstName', 'LastName', 'MiddleName', 'Email', 'Title', 'DateJoined', 'Avatar', 'CivilStatus', 'Nationality', 'CountryDominicile', 'EtnicOrigin', 'Dob', 'PlaceOfBirth', 'Age', 'Gender', 'Height', 'Weight', 'Phone', 'PositionCd', 'IsActive', 'VerificationKey', 'Verified', 'Nickname', 'Bio', 'Approved', 'ActivationCode', 'Active', ),
-        self::TYPE_CAMELNAME     => array('contactId', 'firstName', 'lastName', 'middleName', 'email', 'title', 'dateJoined', 'avatar', 'civilStatus', 'nationality', 'countryDominicile', 'etnicOrigin', 'dob', 'placeOfBirth', 'age', 'gender', 'height', 'weight', 'phone', 'positionCd', 'isActive', 'verificationKey', 'verified', 'nickname', 'bio', 'approved', 'activationCode', 'active', ),
-        self::TYPE_COLNAME       => array(ContactTableMap::COL_CONTACT_ID, ContactTableMap::COL_FIRST_NAME, ContactTableMap::COL_LAST_NAME, ContactTableMap::COL_MIDDLE_NAME, ContactTableMap::COL_EMAIL, ContactTableMap::COL_TITLE, ContactTableMap::COL_DATE_JOINED, ContactTableMap::COL_AVATAR, ContactTableMap::COL_CIVIL_STATUS, ContactTableMap::COL_NATIONALITY, ContactTableMap::COL_COUNTRY_DOMINICILE, ContactTableMap::COL_ETNIC_ORIGIN, ContactTableMap::COL_DOB, ContactTableMap::COL_PLACE_OF_BIRTH, ContactTableMap::COL_AGE, ContactTableMap::COL_GENDER, ContactTableMap::COL_HEIGHT, ContactTableMap::COL_WEIGHT, ContactTableMap::COL_PHONE, ContactTableMap::COL_POSITION_CD, ContactTableMap::COL_IS_ACTIVE, ContactTableMap::COL_VERIFICATION_KEY, ContactTableMap::COL_VERIFIED, ContactTableMap::COL_NICKNAME, ContactTableMap::COL_BIO, ContactTableMap::COL_APPROVED, ContactTableMap::COL_ACTIVATION_CODE, ContactTableMap::COL_ACTIVE, ),
-        self::TYPE_FIELDNAME     => array('contact_id', 'first_name', 'last_name', 'middle_name', 'email', 'title', 'date_joined', 'avatar', 'civil_status', 'nationality', 'country_dominicile', 'etnic_origin', 'dob', 'place_of_birth', 'age', 'gender', 'height', 'weight', 'phone', 'position_cd', 'is_active', 'verification_key', 'verified', 'nickname', 'bio', 'approved', 'activation_code', 'active', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, )
+        self::TYPE_PHPNAME       => array('ContactId', 'FirstName', 'LastName', 'MiddleName', 'Email', 'Title', 'DateJoined', 'Avatar', 'CivilStatus', 'Nationality', 'CountryDominicile', 'EtnicOrigin', 'Dob', 'PlaceOfBirth', 'Age', 'Gender', 'Height', 'Weight', 'Phone', 'PositionCd', 'IsActive', 'VerificationKey', 'Verified', 'Nickname', 'Bio', 'Approved', 'ActivationCode', ),
+        self::TYPE_CAMELNAME     => array('contactId', 'firstName', 'lastName', 'middleName', 'email', 'title', 'dateJoined', 'avatar', 'civilStatus', 'nationality', 'countryDominicile', 'etnicOrigin', 'dob', 'placeOfBirth', 'age', 'gender', 'height', 'weight', 'phone', 'positionCd', 'isActive', 'verificationKey', 'verified', 'nickname', 'bio', 'approved', 'activationCode', ),
+        self::TYPE_COLNAME       => array(ContactTableMap::COL_CONTACT_ID, ContactTableMap::COL_FIRST_NAME, ContactTableMap::COL_LAST_NAME, ContactTableMap::COL_MIDDLE_NAME, ContactTableMap::COL_EMAIL, ContactTableMap::COL_TITLE, ContactTableMap::COL_DATE_JOINED, ContactTableMap::COL_AVATAR, ContactTableMap::COL_CIVIL_STATUS, ContactTableMap::COL_NATIONALITY, ContactTableMap::COL_COUNTRY_DOMINICILE, ContactTableMap::COL_ETNIC_ORIGIN, ContactTableMap::COL_DOB, ContactTableMap::COL_PLACE_OF_BIRTH, ContactTableMap::COL_AGE, ContactTableMap::COL_GENDER, ContactTableMap::COL_HEIGHT, ContactTableMap::COL_WEIGHT, ContactTableMap::COL_PHONE, ContactTableMap::COL_POSITION_CD, ContactTableMap::COL_IS_ACTIVE, ContactTableMap::COL_VERIFICATION_KEY, ContactTableMap::COL_VERIFIED, ContactTableMap::COL_NICKNAME, ContactTableMap::COL_BIO, ContactTableMap::COL_APPROVED, ContactTableMap::COL_ACTIVATION_CODE, ),
+        self::TYPE_FIELDNAME     => array('contact_id', 'first_name', 'last_name', 'middle_name', 'email', 'title', 'date_joined', 'avatar', 'civil_status', 'nationality', 'country_dominicile', 'etnic_origin', 'dob', 'place_of_birth', 'age', 'gender', 'height', 'weight', 'phone', 'position_cd', 'is_active', 'verification_key', 'verified', 'nickname', 'bio', 'approved', 'activation_code', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, )
     );
 
     /**
@@ -237,11 +232,11 @@ class ContactTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('ContactId' => 0, 'FirstName' => 1, 'LastName' => 2, 'MiddleName' => 3, 'Email' => 4, 'Title' => 5, 'DateJoined' => 6, 'Avatar' => 7, 'CivilStatus' => 8, 'Nationality' => 9, 'CountryDominicile' => 10, 'EtnicOrigin' => 11, 'Dob' => 12, 'PlaceOfBirth' => 13, 'Age' => 14, 'Gender' => 15, 'Height' => 16, 'Weight' => 17, 'Phone' => 18, 'PositionCd' => 19, 'IsActive' => 20, 'VerificationKey' => 21, 'Verified' => 22, 'Nickname' => 23, 'Bio' => 24, 'Approved' => 25, 'ActivationCode' => 26, 'Active' => 27, ),
-        self::TYPE_CAMELNAME     => array('contactId' => 0, 'firstName' => 1, 'lastName' => 2, 'middleName' => 3, 'email' => 4, 'title' => 5, 'dateJoined' => 6, 'avatar' => 7, 'civilStatus' => 8, 'nationality' => 9, 'countryDominicile' => 10, 'etnicOrigin' => 11, 'dob' => 12, 'placeOfBirth' => 13, 'age' => 14, 'gender' => 15, 'height' => 16, 'weight' => 17, 'phone' => 18, 'positionCd' => 19, 'isActive' => 20, 'verificationKey' => 21, 'verified' => 22, 'nickname' => 23, 'bio' => 24, 'approved' => 25, 'activationCode' => 26, 'active' => 27, ),
-        self::TYPE_COLNAME       => array(ContactTableMap::COL_CONTACT_ID => 0, ContactTableMap::COL_FIRST_NAME => 1, ContactTableMap::COL_LAST_NAME => 2, ContactTableMap::COL_MIDDLE_NAME => 3, ContactTableMap::COL_EMAIL => 4, ContactTableMap::COL_TITLE => 5, ContactTableMap::COL_DATE_JOINED => 6, ContactTableMap::COL_AVATAR => 7, ContactTableMap::COL_CIVIL_STATUS => 8, ContactTableMap::COL_NATIONALITY => 9, ContactTableMap::COL_COUNTRY_DOMINICILE => 10, ContactTableMap::COL_ETNIC_ORIGIN => 11, ContactTableMap::COL_DOB => 12, ContactTableMap::COL_PLACE_OF_BIRTH => 13, ContactTableMap::COL_AGE => 14, ContactTableMap::COL_GENDER => 15, ContactTableMap::COL_HEIGHT => 16, ContactTableMap::COL_WEIGHT => 17, ContactTableMap::COL_PHONE => 18, ContactTableMap::COL_POSITION_CD => 19, ContactTableMap::COL_IS_ACTIVE => 20, ContactTableMap::COL_VERIFICATION_KEY => 21, ContactTableMap::COL_VERIFIED => 22, ContactTableMap::COL_NICKNAME => 23, ContactTableMap::COL_BIO => 24, ContactTableMap::COL_APPROVED => 25, ContactTableMap::COL_ACTIVATION_CODE => 26, ContactTableMap::COL_ACTIVE => 27, ),
-        self::TYPE_FIELDNAME     => array('contact_id' => 0, 'first_name' => 1, 'last_name' => 2, 'middle_name' => 3, 'email' => 4, 'title' => 5, 'date_joined' => 6, 'avatar' => 7, 'civil_status' => 8, 'nationality' => 9, 'country_dominicile' => 10, 'etnic_origin' => 11, 'dob' => 12, 'place_of_birth' => 13, 'age' => 14, 'gender' => 15, 'height' => 16, 'weight' => 17, 'phone' => 18, 'position_cd' => 19, 'is_active' => 20, 'verification_key' => 21, 'verified' => 22, 'nickname' => 23, 'bio' => 24, 'approved' => 25, 'activation_code' => 26, 'active' => 27, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, )
+        self::TYPE_PHPNAME       => array('ContactId' => 0, 'FirstName' => 1, 'LastName' => 2, 'MiddleName' => 3, 'Email' => 4, 'Title' => 5, 'DateJoined' => 6, 'Avatar' => 7, 'CivilStatus' => 8, 'Nationality' => 9, 'CountryDominicile' => 10, 'EtnicOrigin' => 11, 'Dob' => 12, 'PlaceOfBirth' => 13, 'Age' => 14, 'Gender' => 15, 'Height' => 16, 'Weight' => 17, 'Phone' => 18, 'PositionCd' => 19, 'IsActive' => 20, 'VerificationKey' => 21, 'Verified' => 22, 'Nickname' => 23, 'Bio' => 24, 'Approved' => 25, 'ActivationCode' => 26, ),
+        self::TYPE_CAMELNAME     => array('contactId' => 0, 'firstName' => 1, 'lastName' => 2, 'middleName' => 3, 'email' => 4, 'title' => 5, 'dateJoined' => 6, 'avatar' => 7, 'civilStatus' => 8, 'nationality' => 9, 'countryDominicile' => 10, 'etnicOrigin' => 11, 'dob' => 12, 'placeOfBirth' => 13, 'age' => 14, 'gender' => 15, 'height' => 16, 'weight' => 17, 'phone' => 18, 'positionCd' => 19, 'isActive' => 20, 'verificationKey' => 21, 'verified' => 22, 'nickname' => 23, 'bio' => 24, 'approved' => 25, 'activationCode' => 26, ),
+        self::TYPE_COLNAME       => array(ContactTableMap::COL_CONTACT_ID => 0, ContactTableMap::COL_FIRST_NAME => 1, ContactTableMap::COL_LAST_NAME => 2, ContactTableMap::COL_MIDDLE_NAME => 3, ContactTableMap::COL_EMAIL => 4, ContactTableMap::COL_TITLE => 5, ContactTableMap::COL_DATE_JOINED => 6, ContactTableMap::COL_AVATAR => 7, ContactTableMap::COL_CIVIL_STATUS => 8, ContactTableMap::COL_NATIONALITY => 9, ContactTableMap::COL_COUNTRY_DOMINICILE => 10, ContactTableMap::COL_ETNIC_ORIGIN => 11, ContactTableMap::COL_DOB => 12, ContactTableMap::COL_PLACE_OF_BIRTH => 13, ContactTableMap::COL_AGE => 14, ContactTableMap::COL_GENDER => 15, ContactTableMap::COL_HEIGHT => 16, ContactTableMap::COL_WEIGHT => 17, ContactTableMap::COL_PHONE => 18, ContactTableMap::COL_POSITION_CD => 19, ContactTableMap::COL_IS_ACTIVE => 20, ContactTableMap::COL_VERIFICATION_KEY => 21, ContactTableMap::COL_VERIFIED => 22, ContactTableMap::COL_NICKNAME => 23, ContactTableMap::COL_BIO => 24, ContactTableMap::COL_APPROVED => 25, ContactTableMap::COL_ACTIVATION_CODE => 26, ),
+        self::TYPE_FIELDNAME     => array('contact_id' => 0, 'first_name' => 1, 'last_name' => 2, 'middle_name' => 3, 'email' => 4, 'title' => 5, 'date_joined' => 6, 'avatar' => 7, 'civil_status' => 8, 'nationality' => 9, 'country_dominicile' => 10, 'etnic_origin' => 11, 'dob' => 12, 'place_of_birth' => 13, 'age' => 14, 'gender' => 15, 'height' => 16, 'weight' => 17, 'phone' => 18, 'position_cd' => 19, 'is_active' => 20, 'verification_key' => 21, 'verified' => 22, 'nickname' => 23, 'bio' => 24, 'approved' => 25, 'activation_code' => 26, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, )
     );
 
     /**
@@ -288,7 +283,6 @@ class ContactTableMap extends TableMap
         $this->addColumn('bio', 'Bio', 'LONGVARCHAR', true, null, null);
         $this->addColumn('approved', 'Approved', 'VARCHAR', true, 1, 'y');
         $this->addColumn('activation_code', 'ActivationCode', 'INTEGER', false, null, null);
-        $this->addColumn('active', 'Active', 'VARCHAR', true, 1, 'n');
     } // initialize()
 
     /**
@@ -536,7 +530,6 @@ class ContactTableMap extends TableMap
             $criteria->addSelectColumn(ContactTableMap::COL_BIO);
             $criteria->addSelectColumn(ContactTableMap::COL_APPROVED);
             $criteria->addSelectColumn(ContactTableMap::COL_ACTIVATION_CODE);
-            $criteria->addSelectColumn(ContactTableMap::COL_ACTIVE);
         } else {
             $criteria->addSelectColumn($alias . '.contact_id');
             $criteria->addSelectColumn($alias . '.first_name');
@@ -565,7 +558,6 @@ class ContactTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.bio');
             $criteria->addSelectColumn($alias . '.approved');
             $criteria->addSelectColumn($alias . '.activation_code');
-            $criteria->addSelectColumn($alias . '.active');
         }
     }
 

@@ -284,14 +284,6 @@ abstract class Contact implements ActiveRecordInterface
     protected $activation_code;
 
     /**
-     * The value for the active field.
-     *
-     * Note: this column has a database default value of: 'n'
-     * @var        string
-     */
-    protected $active;
-
-    /**
      * @var        ChildPosition
      */
     protected $aPosition;
@@ -428,7 +420,6 @@ abstract class Contact implements ActiveRecordInterface
         $this->verified = 'n';
         $this->nickname = '';
         $this->approved = 'y';
-        $this->active = 'n';
     }
 
     /**
@@ -956,16 +947,6 @@ abstract class Contact implements ActiveRecordInterface
     public function getActivationCode()
     {
         return $this->activation_code;
-    }
-
-    /**
-     * Get the [active] column value.
-     *
-     * @return string
-     */
-    public function getActive()
-    {
-        return $this->active;
     }
 
     /**
@@ -1521,26 +1502,6 @@ abstract class Contact implements ActiveRecordInterface
     } // setActivationCode()
 
     /**
-     * Set the value of [active] column.
-     *
-     * @param string $v new value
-     * @return $this|\TheFarm\Models\Contact The current object (for fluent API support)
-     */
-    public function setActive($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->active !== $v) {
-            $this->active = $v;
-            $this->modifiedColumns[ContactTableMap::COL_ACTIVE] = true;
-        }
-
-        return $this;
-    } // setActive()
-
-    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -1607,10 +1568,6 @@ abstract class Contact implements ActiveRecordInterface
             }
 
             if ($this->approved !== 'y') {
-                return false;
-            }
-
-            if ($this->active !== 'n') {
                 return false;
             }
 
@@ -1726,9 +1683,6 @@ abstract class Contact implements ActiveRecordInterface
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 26 + $startcol : ContactTableMap::translateFieldName('ActivationCode', TableMap::TYPE_PHPNAME, $indexType)];
             $this->activation_code = (null !== $col) ? (int) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 27 + $startcol : ContactTableMap::translateFieldName('Active', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->active = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -1737,7 +1691,7 @@ abstract class Contact implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 28; // 28 = ContactTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 27; // 27 = ContactTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\TheFarm\\Models\\Contact'), 0, $e);
@@ -2201,9 +2155,6 @@ abstract class Contact implements ActiveRecordInterface
         if ($this->isColumnModified(ContactTableMap::COL_ACTIVATION_CODE)) {
             $modifiedColumns[':p' . $index++]  = 'activation_code';
         }
-        if ($this->isColumnModified(ContactTableMap::COL_ACTIVE)) {
-            $modifiedColumns[':p' . $index++]  = 'active';
-        }
 
         $sql = sprintf(
             'INSERT INTO tf_contacts (%s) VALUES (%s)',
@@ -2295,9 +2246,6 @@ abstract class Contact implements ActiveRecordInterface
                         break;
                     case 'activation_code':
                         $stmt->bindValue($identifier, $this->activation_code, PDO::PARAM_INT);
-                        break;
-                    case 'active':
-                        $stmt->bindValue($identifier, $this->active, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -2442,9 +2390,6 @@ abstract class Contact implements ActiveRecordInterface
             case 26:
                 return $this->getActivationCode();
                 break;
-            case 27:
-                return $this->getActive();
-                break;
             default:
                 return null;
                 break;
@@ -2502,7 +2447,6 @@ abstract class Contact implements ActiveRecordInterface
             $keys[24] => $this->getBio(),
             $keys[25] => $this->getApproved(),
             $keys[26] => $this->getActivationCode(),
-            $keys[27] => $this->getActive(),
         );
         if ($result[$keys[6]] instanceof \DateTimeInterface) {
             $result[$keys[6]] = $result[$keys[6]]->format('c');
@@ -2783,9 +2727,6 @@ abstract class Contact implements ActiveRecordInterface
             case 26:
                 $this->setActivationCode($value);
                 break;
-            case 27:
-                $this->setActive($value);
-                break;
         } // switch()
 
         return $this;
@@ -2892,9 +2833,6 @@ abstract class Contact implements ActiveRecordInterface
         }
         if (array_key_exists($keys[26], $arr)) {
             $this->setActivationCode($arr[$keys[26]]);
-        }
-        if (array_key_exists($keys[27], $arr)) {
-            $this->setActive($arr[$keys[27]]);
         }
     }
 
@@ -3018,9 +2956,6 @@ abstract class Contact implements ActiveRecordInterface
         if ($this->isColumnModified(ContactTableMap::COL_ACTIVATION_CODE)) {
             $criteria->add(ContactTableMap::COL_ACTIVATION_CODE, $this->activation_code);
         }
-        if ($this->isColumnModified(ContactTableMap::COL_ACTIVE)) {
-            $criteria->add(ContactTableMap::COL_ACTIVE, $this->active);
-        }
 
         return $criteria;
     }
@@ -3133,7 +3068,6 @@ abstract class Contact implements ActiveRecordInterface
         $copyObj->setBio($this->getBio());
         $copyObj->setApproved($this->getApproved());
         $copyObj->setActivationCode($this->getActivationCode());
-        $copyObj->setActive($this->getActive());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -5870,7 +5804,6 @@ abstract class Contact implements ActiveRecordInterface
         $this->bio = null;
         $this->approved = null;
         $this->activation_code = null;
-        $this->active = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();

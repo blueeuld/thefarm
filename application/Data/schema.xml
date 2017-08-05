@@ -290,7 +290,6 @@
     <column name="bio" phpName="Bio" type="LONGVARCHAR" required="true"/>
     <column name="approved" phpName="Approved" type="VARCHAR" size="1" required="true" defaultValue="y"/>
     <column name="activation_code" phpName="ActivationCode" type="INTEGER"/>
-    <column name="active" phpName="Active" type="VARCHAR" size="1" required="true" defaultValue="n"/>
     <foreign-key foreignTable="tf_position" name="position_fk">
       <reference local="position_cd" foreign="position_cd"/>
     </foreign-key>
