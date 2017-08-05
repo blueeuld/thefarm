@@ -1,6 +1,6 @@
 <?php
 
-class Event {
+class EventApi {
 
     public function save_event($eventData) {
 

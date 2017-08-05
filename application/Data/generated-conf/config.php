@@ -33,3 +33,13 @@ $manager->setConfiguration(array (
 $manager->setName('default');
 $serviceContainer->setConnectionManager('default', $manager);
 $serviceContainer->setDefaultDatasource('default');
+
+//$migrationCommand = new \Propel\Generator\Command\MigrationMigrateCommand();
+//$arguments = [];
+//$input = new \Symfony\Component\Console\Input\ArrayInput($arguments);
+//
+//$file   = __DIR__.'/../logs/'.'migration.log';
+//$handle = fopen($file, 'w+');
+//$output = new \Symfony\Component\Console\Output\StreamOutput($handle);
+//
+//$migrationCommand->run($input, $output);
