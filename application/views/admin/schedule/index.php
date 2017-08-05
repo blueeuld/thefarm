@@ -17,64 +17,30 @@
 								
 								<div id="main">
 									<div class="page-header">
-										<h1></h1>
+										<h3>Provider Schedule</h3>
 									</div>
-									<div role="tabpanel" class="tabbable tabs-primary">
-										<ul class="nav nav-tabs" role="tablist">
-											<li role="presentation" class="active">
-												<a href="#week" aria-controls="week" role="tab" data-toggle="tab">
-													Weekly Schedule</a>
-											</li>
-											<!--
-											<li>
-												<a href="#special" aria-controls="special" role="tab" data-toggle="tab">
-												Special days schedule
-												</a>
-											</li>
-											-->
-										</ul>
-										<!-- Tab panes -->
-										<div class="tab-content tab-content-default">
-											<!--
-                <div class="tab-pane" id="special">
 
-                    <?php echo form_dropdown('providers', $providers, $contact_id, 'id="schedule-providers"'); ?>
-
-                    <hr />
-
-                    <div class="row">
-
-                    <?php
-											
-											$months = array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
-											$current_month = date('n');
-											$current_year = date('Y');
-											$current_day = date('d');
-											$month = 0;
-											
-											for ($m = 0; $m < count($months); $m++) {
-												echo '<div class="col-lg-3">';
-												echo '<div class="text-center label-success bold text-uppercase">' . $months[$m] . '</div>';
-												echo draw_calendar($m + 1, $current_year);
-												echo '</div>';
-											}
-											
-											?>
-
-                    </div>
-
-                </div>
-                -->
-											<div role="tabpanel" class="tab-pane active" id="week">
-												<?php echo form_dropdown('providers', $providers, $contact_id, 'id="schedule-providers"'); ?>
-												<?php echo form_open('backend/schedule/update', '', array('contact_id' => $contact_id, 'week' => $week)); ?>
-												<?php echo $this->weeklycalendar->showCalendar(); ?>
-												<?php echo form_submit('', 'Save Changes', 'class="btn btn-primary"'); ?>
-												<?php echo form_close(); ?>
-											</div>
-										</div>
-									</div>
-								
+                                    <div class="row">
+                                        <div class="col-lg-2">
+                                            <div class="list-group">
+                                                <?php foreach ($providers as $provider) : ?>
+                                                    <a href="<?php echo site_url('backend/schedule/view/'.$provider['ContactId']);?>" class="list-group-item<?php echo $provider['ContactId'] === $contact_id ? ' disabled' : '';?>">
+                                                        <?php echo ($provider['FirstName'] . ' ' . $provider['LastName']); ?>
+                                                    </a>
+                                                <?php endforeach; ?>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-10">
+                                            <?php if ($contact_id) : ?>
+                                            <?php echo form_open('backend/schedule/update', '', array('contact_id' => $contact_id, 'week' => $week)); ?>
+                                            <?php echo $this->weeklycalendar->showCalendar(); ?>
+                                            <?php echo form_submit('', 'Save Changes', 'class="btn btn-primary"'); ?>
+                                            <?php echo form_close(); ?>
+                                            <?php else : ?>
+                                            <p>Please select provider.</p>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
 								</div>
 							</div>
 						</div>

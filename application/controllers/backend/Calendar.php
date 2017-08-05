@@ -190,8 +190,8 @@ class Calendar extends TF_Controller
             $eventData['BookingId'] = $booking_id;
             $eventData['BookingItemId'] = $booking_item_id;
 
-            $this->load->library('event');
-            $event = $this->event->save_event($eventData);
+            $eventApi = new EventApi();
+            $event = $eventApi->save_event($eventData);
 
             echo json_encode(to_full_calendar_event($event));
             exit ( 0 );
@@ -1052,8 +1052,8 @@ class Calendar extends TF_Controller
     
     public function unassigned_events() {
 
-	    $this->load->library('Event');
-	    $fcEvents = to_full_calendar_events($this->event->get_events(null, null, [1, 2, 9], $this->session->userdata('location_id'), true, 'P7D', true));
+	    $eventApi = new EventApi();
+	    $fcEvents = to_full_calendar_events($eventApi->get_events(null, null, [1, 2, 9], $this->session->userdata('location_id'), true, 'P7D', true));
 
         $this->output->set_content_type('application/json')->set_output(json_encode($fcEvents));
     }

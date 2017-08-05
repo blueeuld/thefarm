@@ -7,7 +7,7 @@ A misconfiguration on the server caused a hiccup.
 Check the server logs, fix the problem, then try again.
 <hr>
 
-<?
+<?php
   echo "URL: http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']."<br>\n";
   $fixer = "checksuexec ".escapeshellarg($_SERVER['DOCUMENT_ROOT'].$_SERVER['REQUEST_URI']);
   echo `$fixer`;

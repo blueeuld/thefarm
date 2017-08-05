@@ -13,16 +13,10 @@ class Schedule extends TF_Controller {
         $week = $this->uri->segment(5);
         if (!$week) $week = date('Y-m-d');
 
-		$providers = get_provider_list(false, false, false, $this->session->userdata('location_id'));
-		$providers_arr = array('' => '-Select-');
-        $providers_arr = keyval($providers, 'contact_id', array('first_name', 'last_name'), 'position', $providers_arr);
+        $userApi = new UserApi();
+        $providers = $userApi->get_users(true, $this->session->userdata('location_id'));
 		
-        if ($contact_id === 0) {
-            $ids = array_keys($providers_arr);
-            $contact_id = $ids[0];
-        }
-		
-        $data['providers'] = $providers_arr;
+        $data['providers'] = $providers;
 
         $data['contact_id'] = $contact_id;
 
