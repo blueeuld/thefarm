@@ -271,7 +271,6 @@ function to_full_calendar_event($eventData)
     $event['id'] = $eventData['EventId'];
     $event['event_id'] = $eventData['EventId'];
     $event['title'] = $eventData['EventTitle'];
-    $event['editable'] = false;
     $event['overlap'] = false;
     $event['start'] = $eventData['StartDate'];
     $event['end'] = $eventData['EndDate'];
@@ -279,9 +278,12 @@ function to_full_calendar_event($eventData)
     $event['item_name'] = $itemData['Title'];
     $event['status'] = $eventData['Status'];
 
-//        if ($event['location_id'] !== null && current_user_can('can_edit_schedules_' . $event['location_id'])) {
-//            $event['editable'] = true;
-//        }
+//    if ($event['location_id'] !== null && current_user_can('can_edit_schedules_' . $event['location_id'])) {
+//        $event['editable'] = true;
+//    }
+//    else {
+//        $event['editable'] = false;
+//    }
 
     if ($eventData['Incl'] === 1) {
         $classNames[] = 'fc-event-included';

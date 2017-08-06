@@ -203,9 +203,9 @@ class Events extends TF_Controller {
         $this->db->select('facility_id, facility_name');
         $this->db->from('facilities');
         $this->db->where('facilities.status', 1);
-        if ($this->session->userdata('location'))
+        if (get_current_user_locations())
         {
-            $this->db->where_in('facilities.location_id', $this->session->userdata('location'));
+            $this->db->where_in('facilities.location_id', get_current_user_locations());
         }
 
         foreach ($this->db->get()->result_array() as $row) {

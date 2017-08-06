@@ -10,8 +10,8 @@ function get_services($id = false, $exclude_id = false)
     $TF->db->join('categories', 'categories.cat_id = item_categories.category_id');
     $TF->db->order_by('items.title');
 
-    if ($TF->session->userdata('location')) {
-	    $location = $TF->session->userdata('location');
+    if (get_current_user_locations()) {
+	    $location = get_current_user_locations();
 	    $location[] = 0;
         $TF->db->where_in('categories.location_id', $location);
     }
@@ -57,9 +57,9 @@ function get_categories($parent_id=-1, $include_parent = false) {
     $TF->db->from('categories');
     
     
-    if ($TF->session->userdata('group_id') !== 5) {
-	    if ($TF->session->userdata('location')) {
-		    $locations = $TF->session->userdata('location');
+    if (get_current_user_group_id() !== 5) {
+	    if (get_current_user_locations()) {
+		    $locations = get_current_user_locations();
 		    $locations[] = 0;
 	        $TF->db->where_in('categories.location_id', $locations); 
 	    }
@@ -134,8 +134,8 @@ function get_parent_categories() {
 	$TF->db->select('categories.*');
 	$TF->db->from('categories');
 	
-	if ($TF->session->userdata('location')) {
-		$locations = $TF->session->userdata('location');
+	if (get_current_user_locations()) {
+		$locations = get_current_user_locations();
 		$locations[] = 0;
 		$TF->db->where_in('categories.location_id', $locations);
 	}

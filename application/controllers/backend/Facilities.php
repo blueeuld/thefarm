@@ -17,8 +17,8 @@ class Facilities extends TF_Controller {
 		$this->db->from('facilities');
 		
 		if (!is_admin()) {
-			if ($this->session->userdata('location')) {
-				$locations = $this->session->userdata('location');
+			if (get_current_user_locations()) {
+				$locations = get_current_user_locations();
 				$locations[] = 0;
 				$this->db->where_in('location_id', $locations);
 			}

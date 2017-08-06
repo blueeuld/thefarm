@@ -74,7 +74,7 @@ function available_booking_items($booking_id = 0, $categories = false)
 	}
 
     $locations = array();
-    if ($TF->session->userdata('location'))
+    if (get_current_user_locations())
     {
         $all_location = get_all_locations();
         foreach ($all_location as $_row) {
@@ -134,11 +134,11 @@ function booking_items($booking_id, $booking_status = -1, $available_only = fals
     $TF->db->join('bookings', 'booking_items.booking_id = bookings.booking_id');
     $TF->db->where('items.is_active', 1);
 
-    if ($TF->session->userdata('location'))
+    if (get_current_user_locations())
     {
         $TF->db->join('item_categories', 'items.item_id = item_categories.item_id');
         $TF->db->join('categories', 'categories.cat_id = item_categories.category_id');
-        $TF->db->where_in('categories.location_id', $TF->session->userdata('location'));
+        $TF->db->where_in('categories.location_id', get_current_user_locations());
     }
 
     if ($booking_status !== -1)

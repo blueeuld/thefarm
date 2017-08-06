@@ -134,7 +134,7 @@ class Availability
             if ($user) {
                 $user = $user[0];
                 $location_id = $user['location_id'];
-                if (!$this->TF->session->userdata('can_edit_schedules_'.$location_id)) {
+                if (!current_user_can('CanEditSchedules'.$location_id)) {
                     $this->errors[] = 'You dont have permissions to assign this provider.';
                     return false;
                 }
@@ -302,8 +302,8 @@ class Availability
             $this->TF->db->where_not_in('contacts.contact_id', $this->exclude_peoples);
         }
 
-        if ($this->TF->session->userdata('location_id') !== 0) {
-            $this->TF->db->where('users.location_id IN (0, '.$this->TF->session->userdata('location_id').')');
+        if (get_current_user_location_id() !== 0) {
+            $this->TF->db->where('users.location_id IN (0, '.get_current_user_location_id().')');
         }
 
         $this->TF->db->where_in('contacts.contact_id', $peoples);
@@ -330,9 +330,9 @@ class Availability
             $this->TF->db->where('facility_id NOT IN ('.implode(', ', $this->exclude_facilities).')');
         }
 
-        if ($this->TF->session->userdata('location')) {
+        if (get_current_user_locations()) {
 
-            $locations = $this->TF->session->userdata('location');
+            $locations = get_current_user_locations();
 
             $locations[] = 0;
 

@@ -18,30 +18,36 @@ $qstr = $qstr ? $qstr.'&return='.$return : '?return=' . $return;
                 <section class="vbox">
                     <section class="scrollable bg-white">
                         <div class="content">
-	                        
-	                        <?php $this->load->view('admin/_common/search_bar', array('title' => ucfirst($view), 'qstr' => $qstr)); ?>
+
+                            <nav class="navbar navbar-default">
+                                <div class="container-fluid">
+                                    <div class="navbar-header">
+                                        <a class="navbar-brand" href="#"><?php echo ucfirst($view);?>s</a>
+                                    </div>
+                                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                                        <ul class="nav navbar-nav navbar-right">
+                                            <li><a href="#" class="btn"><i class="fa fa-plus-circle"></i> Add <?php echo ucfirst($view);?></a></li>
+                                        </ul>
+                                    </div><!-- /.navbar-collapse -->
+                                </div><!-- /.container-fluid -->
+                            </nav>
     
                             <div class="container-fluid ">
                                 <div id="main">
 
-                                    <div class="alignleft">
-                                        <a href="#" class="btn btn-lg btn-success"><i class="fa fa-plus-circle"></i> Add <?php echo ucfirst($view);?></a>
-                                    </div>
 
                                     <div class="table-responsive">
 
                                         <table class="dataTable table">
                                             <thead>
                                             <tr class="text-uppercase">
-                                                <th class="date-joined text-center">Date Joined</th>
                                                 <th>Full Name</th>
                                                 <th>Email</th>
+                                                <?php if (is_admin()) : ?>
                                                 <th>Group</th>
-                                                <?php if ($view === 'Guest') : ?>
-                                                <th class="booking text-center">Booking</th>
-                                                <?php endif; ?>
                                                 <th class="verified text-center">Verified?</th>
                                                 <th class="approved text-center">Approved?</th>
+                                                <?php endif; ?>
                                                 <th class="actions text-right">Action</th>
                                             </tr>
                                             </thead>
@@ -49,32 +55,19 @@ $qstr = $qstr ? $qstr.'&return='.$return : '?return=' . $return;
                                             <?php $i = 0; ?>
                                             <?php foreach ($contacts as $row) : ?>
                                                 <tr class="contacts" id="contact-<?php echo $row['ContactId'];?>">
-                                                    <td class="text-muted text-uppercase text-center">
-                                                        <?php if ($row['DateJoined'] !== '0000-00-00'): ?>
-                                                        <?php echo date('m/d/Y', strtotime($row['DateJoined'])) ?>
-                                                        <?php endif; ?>
-                                                    </td>
                                                     <td>
                                                         <?php echo anchor('backend/account/edit/' . $row['ContactId'].$qstr, $row['FirstName'] . ' ' . $row['LastName'], 'class="text-regular"'); ?>
                                                        </td>
                                                     <td><?php echo $row['Email']; ?></td>
+                                                    <?php if (is_admin()) : ?>
                                                     <td><?php echo $row['User']['Group']['GroupName']; ?></td>
-                                                    <?php if ($view === 'Guest') : ?>
-                                                    <td class="text-center">
-                                                        <?php if (isset($row['recent_booking']) && $row['recent_booking']) : ?>
-                                                            <a href="<?php echo site_url('backend/account/edit/'.$row['ContactId'].'/'.$row['recent_booking']).$qstr;?>" class="btn btn-xs"><i class="md md-schedule"></i></a>
-                                                        <?php endif; ?>
-                                                    </td>
-                                                    <?php endif; ?>
-
-
                                                     <td class="text-center">
                                                         <?php form_toggle_button('btn-verify', $row['ContactId'], array('Yes', 'No'), $row['IsVerified']);?>
                                                     </td>
-
                                                     <td class="text-center">
                                                         <?php form_toggle_button('btn-approve', $row['ContactId'], array('Yes', 'No'), $row['IsApproved']);?>
                                                     </td>
+                                                    <?php endif; ?>
 
                                                     <td class="text-right">
 

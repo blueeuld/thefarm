@@ -286,6 +286,14 @@ label.error {
     position: static;
 }
 
+.bs-callout {
+    border-left-width: 5px;
+}
+
+.bs-callout-info {
+    border-left-color: #1b809e;
+}
+
 <?php if (isset($inline_css)) : ?>
 <?php foreach ($inline_css as $style) : ?>
 <?php

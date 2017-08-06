@@ -13,10 +13,10 @@ class Facility_model extends CI_Model
 
     function all() {
 
-        if ($this->session->userdata('location')) {
+        if (get_current_user_locations()) {
 
             $locations = array(0);
-            $location = $this->session->userdata('location');
+            $location = get_current_user_locations();
             for($i=0; $i<count($location); $i++) {
                 $locations[] = (int)$location[$i];
             }

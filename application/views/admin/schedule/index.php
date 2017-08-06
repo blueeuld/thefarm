@@ -12,19 +12,20 @@
 				<section class="vbox">
 					<section class="scrollable bg-white">
 						<div class="content">
+
+                            <nav class="navbar navbar-default">
+                                <div class="container-fluid">
+                                    <div class="navbar-header"><a class="navbar-brand" href="#">Provider Schedule</a></div>
+                                </div>
+                            </nav>
 							
 							<div class="container-fluid ">
-								
 								<div id="main">
-									<div class="page-header">
-										<h3>Provider Schedule</h3>
-									</div>
-
                                     <div class="row">
                                         <div class="col-lg-2">
                                             <div class="list-group">
                                                 <?php foreach ($providers as $provider) : ?>
-                                                    <a href="<?php echo site_url('backend/schedule/view/'.$provider['ContactId']);?>" class="list-group-item<?php echo $provider['ContactId'] === $contact_id ? ' disabled' : '';?>">
+                                                    <a href="<?php echo site_url('backend/schedule/view/'.$provider['ContactId']);?>" class="list-group-item<?php echo $provider['ContactId'] === $contact_id ? ' disabled bs-callout bs-callout-info' : '';?>">
                                                         <?php echo ($provider['FirstName'] . ' ' . $provider['LastName']); ?>
                                                     </a>
                                                 <?php endforeach; ?>

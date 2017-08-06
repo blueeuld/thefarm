@@ -42,8 +42,8 @@ class ProviderAvailability {
 		$this->TF->db->join('users', 'users.contact_id = contacts.contact_id');
         $this->TF->db->join('groups', 'groups.group_id = users.group_id');
         $this->TF->db->join('items_related_users', 'contacts.contact_id = items_related_users.contact_id');
-        if ($this->TF->session->userdata('location_id') !== 0) {
-            $this->TF->db->where('users.location_id IN (0, '.$this->TF->session->userdata('location_id').')');
+        if (get_current_user_location_id() !== 0) {
+            $this->TF->db->where('users.location_id IN (0, '.get_current_user_location_id().')');
         }
         
         if ($this->item_id) {
@@ -73,8 +73,8 @@ class ProviderAvailability {
 		$this->TF->db->join('users', 'users.contact_id = contacts.contact_id');
         $this->TF->db->join('groups', 'groups.group_id = users.group_id');
         $this->TF->db->join('items_related_users', 'contacts.contact_id = items_related_users.contact_id');
-        if ($this->TF->session->userdata('location_id') !== 0) {
-            $this->TF->db->where('users.location_id IN (0, '.$this->TF->session->userdata('location_id').')');
+        if (get_current_user_location_id() !== 0) {
+            $this->TF->db->where('users.location_id IN (0, '.get_current_user_location_id().')');
         }
         
         if ($this->item_id) {

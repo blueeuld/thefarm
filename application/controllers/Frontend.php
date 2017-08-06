@@ -577,11 +577,11 @@ class Frontend extends TF_Controller
             'canChange' => $editable,
             'user_id' => $_SESSION['ContactId'],
             'guest_id' => $_SESSION['ContactId'],
-            'show_my_appointments' => false, //$this->session->userdata('calendar_show_my_schedule_only'),
-            'show_no_schedule' => false, //$this->session->userdata('calendar_show_no_schedule'),
-            'selected_locations' => $this->session->userdata('calendar_view_locations') ? $this->session->userdata('calendar_view_locations') : array(),
-            'selected_statuses' => $this->session->userdata('calendar_view_status') ? $this->session->userdata('calendar_view_status') : array(),
-            'selected_positions' => $this->session->userdata('calendar_view_positions') ? $this->session->userdata('calendar_view_positions') : array(),
+            'show_my_appointments' => false,
+            'show_no_schedule' => false,
+            'selected_locations' => get_current_user_data('CalendarViewLocations') ? get_current_user_data('CalendarViewLocations') : array(),
+            'selected_statuses' => get_current_user_data('CalendarViewStatus') ? get_current_user_data('CalendarViewStatus') : array(),
+            'selected_positions' => get_current_user_data('CalendarViewPositions') ? get_current_user_data('CalendarViewPositions') : array(),
         );
 
 

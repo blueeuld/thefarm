@@ -39,19 +39,8 @@
 								
 								<h3>Status</h3>
 								<div class="selectCont">
-									<?php echo form_multiselect('statuses[]', $statuses, $this->session->userdata('calendar_view_status'), 'id="calendar-status" class="selectpicker show-tick form-control"');?>
+									<?php echo form_multiselect('statuses[]', $statuses, get_current_user_data('CalendarViewStatus'), 'id="calendar-status" class="selectpicker show-tick form-control"');?>
 								</div>
-								<!--
-								<h3>Position</h3>
-								<div class="selectCont">
-									<?php echo form_multiselect('positions', $positions, $this->session->userdata('calendar_view_positions'), 'id="calendar-position" class="selectpicker show-tick form-control"');?>
-								</div>
-								-->
-<!--								-->
-<!--								<h3>Department</h3>-->
-<!--								<div class="selectCont">-->
-<!--									--><?php //echo form_multiselect('locations[]', $locations, $this->session->userdata('calendar_view_locations'), 'id="calendar-location" class="selectpicker show-tick form-control"');?>
-<!--								</div>-->
 								
 								<hr class="divider">
 								

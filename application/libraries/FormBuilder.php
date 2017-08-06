@@ -19,7 +19,7 @@ class FormBuilder
         $this->TF->db->select('fields.*');
         $this->TF->db->join('form_fields', 'form_fields.field_id=fields.field_id');
         $this->TF->db->where_in('fields.field_id', $fields);
-        if ($this->TF->session->userdata('group_id') === 5) {
+        if (get_current_user_group_id() === 5) {
             $this->TF->db->where('guest_only', 'y');
         }
         $this->TF->db->order_by('FIELD (tf_fields.field_id, '.implode(', ', $fields).')');

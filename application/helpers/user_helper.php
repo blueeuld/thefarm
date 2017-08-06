@@ -1,6 +1,7 @@
 <?php
 
 function get_user($user_id) {
+
     $TF =& get_instance();
 
     $query = $TF->db->get_where('contacts', array('contact_id' => $user_id));
@@ -8,45 +9,50 @@ function get_user($user_id) {
     return $query->row_array();
 }
 
-function get_current_user_data() {
-    return get_user(get_current_user_id());
+function get_current_user_data($key = null) {
+    if (!is_null($key) && isset($_SESSION[$key])) {
+        return $_SESSION[$key];
+    }
+    return $_SESSION;
 }
-//commit test
+
 function get_current_user_id() {
     $TF =& get_instance();
     return $TF->session->userdata('ContactId');
 }
 
-function get_current_user_group() {
-    $TF =& get_instance();
-    
-    $TF->db->select('*');
-	$TF->db->from('contacts');
-	$TF->db->join('users', 'contacts.contact_id = users.contact_id');
-	$TF->db->join('groups', 'users.group_id = groups.group_id');
-	$TF->db->where('contacts.contact_id', get_current_user_id());
-	$query = $TF->db->get();
-	
-	if ($query->num_rows() === 0) return null;
+function get_current_user_locations() {
+    if ($_SESSION['User']['Group']['Location']) {
+        return explode(',', $_SESSION['User']['Group']['Location']);
+    }
 
-	return $query->row_array();
+    return [];
+}
+
+function get_current_user_location_id() {
+    return $_SESSION['User']['LocationId'];
+}
+
+function get_current_user_group_id() {
+    return $_SESSION['User']['GroupId'];
+}
+
+function get_current_user_group() {
+    return $_SESSION['User']['Group'];
 }
 
 function get_current_user_photo() {
     $TF =& get_instance();
-    if ($TF->session->userdata('avatar')) {
-        return $TF->session->userdata('avatar');
+    if ($TF->session->userdata('Avatar')) {
+        return $TF->session->userdata('Avatar');
     }
     
     return '/images/avatars/default_avatar_male.jpg';
 }
 
 function current_user_can($permission, $user_id = 0) {
-    $TF =& get_instance();
-    
+
     if ($user_id === 0) {
-	    $user_id = $TF->session->userdata('user_id');
-	    
 	    if (is_admin()) return true;
 	}
 
@@ -61,15 +67,13 @@ function current_user_can($permission, $user_id = 0) {
 
 function is_admin() {
 
-    $TF =& get_instance();
-    if ($TF->session->userdata('group_id') === 1) return true;
+    if (get_current_user_group_id() === 1) return true;
 
     return false;
 }
 
 function is_guest() {
-    $TF =& get_instance();
-    if ($TF->session->userdata('group_id') === 5) return true;
+    if (get_current_user_group_id() === 5) return true;
 
     return false;
 }
@@ -111,13 +115,13 @@ function get_locations() {
     $TF->db->select('*');
     $TF->db->from('locations');
 
-    if ($TF->session->userdata('location')) {
-        $TF->db->where_in('location_id', $TF->session->userdata('location'));
+    if (get_current_user_locations()) {
+        $TF->db->where_in('location_id', get_current_user_locations());
     }
 
     $locations = array();
 
-    if ($TF->session->userdata('group_id') === 1) {
+    if (get_current_user_group_id() === 1) {
         $locations[0] = 'All';
     }
 
@@ -227,15 +231,15 @@ function get_users($user_ids = false, $group_ids = false) {
 	    if (count($user_ids) > 0) $TF->db->where_in('users.contact_id', $user_ids);
     }
 
-    if ($TF->session->userdata('location')) {
+    if (get_current_user_locations()) {
 
         $locations = array();
-        $location = $TF->session->userdata('location');
+        $location = get_current_user_locations();
         for($i=0; $i<count($location); $i++) {
 	        
 	        
 	        if ($location[$i]) {
-	            $can_view = $TF->session->userdata('can_view_schedules_'.$location[$i]);
+	            $can_view = current_user_can('CanViewSchedules'.$location[$i]);
 	            if ($can_view === 'y') $locations[] = $location[$i];
 	        }
         }

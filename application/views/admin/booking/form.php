@@ -1,7 +1,7 @@
 <?php
 ob_start ();
 
-$can_edit = $this->session->userdata('can_edit_completed_forms');
+$can_edit = current_user_can('CanEditCompletedForms');
 
 if ($completed_by > 0 && $can_edit === 'n' && get_current_user_id() !== $completed_by) :
     ?>

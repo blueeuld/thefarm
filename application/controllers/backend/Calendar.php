@@ -460,7 +460,7 @@ class Calendar extends TF_Controller
 
         $data = array();
         $data['statuses'] = get_event_statuses();
-		$data['locations'] = $this->session->userdata('location'); // $locations;
+		$data['locations'] = get_current_user_locations();
         $data['inline_css'] = $inline_css;
         $inline_js = array(
             'showGuestName' => true,
@@ -511,9 +511,9 @@ class Calendar extends TF_Controller
 	        $inline_js['show_my_appointments'] = false;
 	        $inline_js['locations'] = $locations;
             $inline_js['print_url'] = site_url('backend/calendar/print_schedule');
-			$inline_js['show_no_schedule'] = $this->session->userdata('calendar_show_no_schedule');
-            $inline_js['selected_locations'] = $_SESSION['User']['LocationId']; //$this->session->userdata('calendar_view_locations') ? $this->session->userdata('calendar_view_locations') : array();
-            $inline_js['selected_statuses'] = $this->session->userdata('calendar_view_status') ? $this->session->userdata('calendar_view_status') : array();
+			$inline_js['show_no_schedule'] = get_current_user_data('CalendarShowNoSchedule');
+            $inline_js['selected_locations'] = get_current_user_location_id(); //$this->session->userdata('calendar_view_locations') ? $this->session->userdata('calendar_view_locations') : array();
+            $inline_js['selected_statuses'] = get_current_user_data('CalendarViewStatus') ? get_current_user_data('CalendarViewStatus') : array();
         }
         
         $data['inline_js'] = $inline_js;
@@ -688,8 +688,8 @@ class Calendar extends TF_Controller
             'viewFullDetails' => true, //!tf_current_user_can('edit_calendar'),
             'canChange' => true,
             'statuses' => get_event_statuses(),
-            'selected_statuses' => $this->session->userdata('calendar_view_status') ? $this->session->userdata('calendar_view_status') : array(),
-            'selected_positions' => $this->session->userdata('calendar_view_positions') ? $this->session->userdata('calendar_view_positions') : array(),
+            'selected_statuses' => get_current_user_data('CalendarViewStatus') ? get_current_user_data('CalendarViewStatus') : array(),
+            'selected_positions' => get_current_user_data('CalendarViewPositions') ? get_current_user_data('CalendarViewPositions') : array(),
         );
 
         $this->load->view('admin/calendar/by_facilities', $data);
@@ -869,11 +869,11 @@ class Calendar extends TF_Controller
         $show_no_schedule = $this->input->get_post('show_no_schedule') === 'true' ? 'y' : 'n';
         $show_my_appointments = $this->input->get_post('show_my_appointments') === 'true' ? 'y' : 'n';
 
-        $this->session->set_userdata('calendar_show_no_schedule', $show_no_schedule === 'y');
-        $this->session->set_userdata('calendar_show_my_schedule_only', $show_my_appointments === 'y');
-        $this->session->set_userdata('calendar_view_status', $statuses ? $statuses : array());
-        $this->session->set_userdata('calendar_view_positions', $positions ? $positions : array());
-        $this->session->set_userdata('calendar_view_locations', $locations ? $locations : array());
+        $this->session->set_userdata('CalendarShowNoSchedule', $show_no_schedule === 'y');
+        $this->session->set_userdata('CalendarShowMySchedule_only', $show_my_appointments === 'y');
+        $this->session->set_userdata('CalendarViewStatus', $statuses ? $statuses : array());
+        $this->session->set_userdata('CalendarViewPositions', $positions ? $positions : array());
+        $this->session->set_userdata('CalendarViewLocations', $locations ? $locations : array());
 
         $_statuses = '';
         if (is_array($statuses)) {
@@ -918,7 +918,7 @@ class Calendar extends TF_Controller
 		
 		//get all locations.
 		$locations = array();
-		foreach ($this->session->userdata('location') as $row) {
+		foreach (get_current_user_locations() as $row) {
 			if (current_user_can('CanViewSchedules'.$row)) {
 				$locations[] = $row;
 			}
@@ -967,8 +967,8 @@ class Calendar extends TF_Controller
 
         $booking_id = $this->uri->segment(4);
         $start = $this->uri->segment(5);
-        $locations = $this->session->userdata('calendar_view_locations');
-        $positions = $this->session->userdata('calendar_view_positions');
+        $locations = get_current_user_data('CalendarViewLocations');
+        $positions = get_current_user_data('CalendarViewPositions');
         if ($_SESSION['User']['Group']['GroupId'] === '5') {
             //get the recent booking_id
             $this->db->select('bookings.booking_id');
