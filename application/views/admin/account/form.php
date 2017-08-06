@@ -97,68 +97,75 @@ $qstr = $qstr ? $qstr.'&return='.$return : '?return=' . $return;
 													<?php if ($contact_id) : ?>
 														<?php if (current_user_can('CanManageGuestBookings')) : ?>
 														<div role="tabpanel" class="tab-pane" id="bookings">
-															<h4 class="headline">Recent & Previous Bookings
-																<?php if ($account['recent_booking'] === null) : ?>
-																<a href="<?php echo site_url('backend/booking/edit/' . $contact_id) ?>"
-																   class="btn btn-primary btn-xs" data-toggle="modal"
-																   data-target="#modal-popup">Add <i
-																		class="fa fa-plus"></i></a>
-																<?php endif; ?>
-															</h4>
-															<div class="table-responsive">
-																<table class="table table-striped table-condensed">
-																	<thead>
-																	<tr class="text-uppercase ">
-																		<th>Program</th>
-																		<th>Status</th>
-																		<th class="text-center"></th>
-																	</tr>
-																	</thead>
-																	<tbody>
-																	<?php foreach ($bookings as $booking) : ?>
-																		<tr>
-																			<td>
-																				<a href="<?php echo site_url('backend/booking/edit/' . $contact_id . '/' . $booking['booking_id']) ?>"
-																				   class="text-regular"
-																				   data-toggle="modal"
-																				   data-target="#modal-popup">
-																					<?php echo $booking['title']; ?>
-																				</a>
-																					<div class="text-muted">
-																						<?php if (isset($booking['start_date']) && isset($booking['end_date'])) : ?>
-																							<?php echo date('m/d/Y', $booking['start_date']) . ' to ' . date('m/d/Y', $booking['end_date']); ?>
-																						<?php endif; ?>
-																					</div>
-																			</td>
-																			<td>
-																				<?php
-																				echo ucfirst($booking['status'])
-																				?>
-																			</td>
-																			<td class="text-right">
-																				<a href="<?php echo site_url('backend/booking/edit/' . $contact_id . '/' . $booking['booking_id']) ?>"
-																				   class="btn btn-icon btn-primary"
-																				   data-toggle="modal"
-																				   data-target="#modal-popup"><i
-																						class="md md-edit"></i></a>
-																				<a href="<?php echo site_url('backend/account/edit/' . $contact_id . '/' . $booking['booking_id']) ?>#appointment"
-																				   class="btn btn-icon btn-primary"><i
-																						class="md md-event-available"></i></a>
-																				<a href="<?php echo site_url('backend/account/print_schedule/' . $booking['booking_id']); ?>"
-																				   class="btn btn-icon btn-primary"
-																				   target="_blank"><i
-																						class="fa fa-print"></i> </a>
-																				<a href="<?php echo site_url('backend/booking/delete/' . $booking['booking_id']) ?>"
-																				   class="btn btn-icon btn-primary btn-confirm"
-																				   title="Are you sure you want to delete this entry?"><i
-																						class="fa fa-trash-o"></i></a>
-																			</td>
-																		</tr>
-																	<?php endforeach; ?>
-																	</tbody>
-																</table>
-															</div>
-														</div>
+
+                                                            <div class="panel panel-default">
+                                                                <div class="panel-heading">Bookings
+                                                                    <?php if ($account['recent_booking'] === null) : ?>
+                                                                        <div class="pull-right"><a href="<?php echo site_url('backend/booking/edit/' . $contact_id) ?>"
+                                                                           class="btn btn-primary" data-toggle="modal"
+                                                                           data-target="#modal-popup">Add <i
+                                                                                    class="fa fa-plus"></i></a>
+                                                                        </div>
+                                                                    <?php endif; ?>
+                                                                </div>
+                                                                <div class="panel-body">
+                                                                    <div class="table-responsive">
+                                                                        <table class="table table-striped table-condensed">
+                                                                            <thead>
+                                                                            <tr class="text-uppercase ">
+                                                                                <th>Program</th>
+                                                                                <th>Status</th>
+                                                                                <th class="text-center"></th>
+                                                                            </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                            <?php foreach ($bookings as $booking) : ?>
+                                                                                <tr>
+                                                                                    <td>
+                                                                                        <a href="<?php echo site_url('backend/booking/edit/' . $contact_id . '/' . $booking['booking_id']) ?>"
+                                                                                           class="text-regular"
+                                                                                           data-toggle="modal"
+                                                                                           data-target="#modal-popup">
+                                                                                            <?php echo $booking['title']; ?>
+                                                                                        </a>
+                                                                                        <div class="text-muted">
+                                                                                            <?php if (isset($booking['start_date']) && isset($booking['end_date'])) : ?>
+                                                                                                <?php echo date('m/d/Y', $booking['start_date']) . ' to ' . date('m/d/Y', $booking['end_date']); ?>
+                                                                                            <?php endif; ?>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <?php
+                                                                                        echo ucfirst($booking['status'])
+                                                                                        ?>
+                                                                                    </td>
+                                                                                    <td class="text-right">
+                                                                                        <a href="<?php echo site_url('backend/booking/edit/' . $contact_id . '/' . $booking['booking_id']) ?>"
+                                                                                           class="btn btn-icon btn-primary"
+                                                                                           data-toggle="modal"
+                                                                                           data-target="#modal-popup"><i
+                                                                                                    class="md md-edit"></i></a>
+                                                                                        <a href="<?php echo site_url('backend/account/edit/' . $contact_id . '/' . $booking['booking_id']) ?>#appointment"
+                                                                                           class="btn btn-icon btn-primary"><i
+                                                                                                    class="md md-event-available"></i></a>
+                                                                                        <a href="<?php echo site_url('backend/account/print_schedule/' . $booking['booking_id']); ?>"
+                                                                                           class="btn btn-icon btn-primary"
+                                                                                           target="_blank"><i
+                                                                                                    class="fa fa-print"></i> </a>
+                                                                                        <a href="<?php echo site_url('backend/booking/delete/' . $booking['booking_id']) ?>"
+                                                                                           class="btn btn-icon btn-primary btn-confirm"
+                                                                                           title="Are you sure you want to delete this entry?"><i
+                                                                                                    class="fa fa-trash-o"></i></a>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            <?php endforeach; ?>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                                </div>
+                                                            </div>
+
 														<?php endif; ?>
 														
 														<?php if (current_user_can('CanManageGuestForms')) : ?>
