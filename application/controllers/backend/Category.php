@@ -53,8 +53,8 @@ class Category extends TF_Controller
 
         $this->db->select('categories.*');
         $this->db->from('categories');
-        if ($this->session->userdata('location_id')) {
-            $location = $this->session->userdata('location_id');
+        if ($_SESSION['User']['LocationId']) {
+            $location = $_SESSION['User']['LocationId'];
             $this->db->where_in('categories.location_id', array(0, $location));
         }
 

@@ -190,7 +190,7 @@ class Service extends TF_Controller {
 
 		$data['item_categories'] = $item_categories;
 		
-		$providers = get_provider_list(false, false, false, $this->session->userdata('location_id'));
+		$providers = get_provider_list(false, false, false, $_SESSION['User']['LocationId']);
 		$providers_array = array();
 		$data['providers'] = keyval($providers, 'contact_id', array('first_name', 'last_name'), 'position', $providers_array);
 

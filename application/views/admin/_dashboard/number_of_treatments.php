@@ -1,6 +1,6 @@
 <?php
 $params =array(
-    'locations' => $this->session->userdata('location_id'),
+    'locations' => $_SESSION['User']['LocationId'],
     'categories' => array(1, 2),
     'start' => date('Y-m-d 00:00:00'),
     'end' => date('Y-m-d 23:59:59'),

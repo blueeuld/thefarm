@@ -5,10 +5,10 @@
                 <?php echo img(array('src' => get_current_user_photo(), 'class' => 'img-circle', 'width' => 60, 'height' => 60)); ?>
             </div>
             <div class="media-body media-middle">
-                <?php echo anchor('account/edit/' . $this->session->userdata('user_id'), $this->session->userdata('screen_name'), 'class="h4 margin-none"'); ?>
+                <?php echo anchor('account/edit/' . $_SESSION['ContactId'], $_SESSION['FirstName'], 'class="h4 margin-none"'); ?>
                 <ul class="list-unstyled list-inline margin-none">
                     <li>
-                        <?php echo anchor('account/edit/' . $this->session->userdata('user_id'), '<i class="md-person-outline"></i>'); ?>
+                        <?php echo anchor('account/edit/' . $_SESSION['ContactId'], '<i class="md-person-outline"></i>'); ?>
                     </li>
                     <li><?php echo anchor('login', '<i class="md-exit-to-app"></i>'); ?></li>
                 </ul>
@@ -20,7 +20,7 @@
         <div class="wrapper" style="margin-bottom:90px">
             <ul class="nav nav-sidebar" id="sidebar-menu">
 				<?php if (current_user_can('CanViewDashboard')) : ?><li><a href="<?php echo site_url('/');?>"><i class="md md-desktop-mac"></i>Dashboard</a></li><?php endif;?>
-                <li><?php echo anchor('account/edit/' . $this->session->userdata('user_id'), '<i class="md md-person-outline"></i> My Account'); ?></li>
+                <li><?php echo anchor('account/edit/' . $_SESSION['ContactId'], '<i class="md md-person-outline"></i> My Account'); ?></li>
                 <?php if (current_user_can('CanAdminCalendar')) : ?><li><a href="<?php echo site_url('calendar');?>"><i class="md md-event-available"></i>Calendar</a></li><?php endif;?>
                 <?php if (current_user_can('CanAdminGuest')) : ?><li><a href="<?php echo site_url('contacts');?>"><i class="md md-group"></i> Guest</a></li><?php endif;?>
 
@@ -62,14 +62,14 @@
                         <?php echo img(array('src' => get_current_user_photo(), 'class' => 'img-circle border-white', 'width' => 60)); ?>
                     </div>
                     <div class="media-body media-middle">
-                        <?php echo anchor('account/edit/' . $this->session->userdata('user_id'), $this->session->userdata('screen_name')); ?>
+                        <?php echo anchor('account/edit/' . $_SESSION['ContactId'], $_SESSION['FirstName']); ?>
                         <a href="<?php echo site_url('login')?>" class="logout pull-right"><i class="md md-exit-to-app"></i></a>
                     </div>
                 </div>
             </div>
             <ul class="nav nav-sidebar" id="sidebar-menu">
                 <li>
-                    <?php echo anchor('account/edit/' . $this->session->userdata('user_id'), '<i class="md md-person-outline"></i> Account'); ?>
+                    <?php echo anchor('account/edit/' . $_SESSION['ContactId'], '<i class="md md-person-outline"></i> Account'); ?>
                 </li>
                 <li>
                     <?php echo anchor('login', '<i class="md md-exit-to-app"></i> Logout'); ?>

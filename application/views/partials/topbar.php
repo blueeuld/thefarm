@@ -48,7 +48,7 @@
 						<?php
 						$locations = get_locations();
 						foreach ($locations as $id => $location): ?>
-						<li><a href="<?php echo site_url('location/change/'.$id);?>"><?php echo $location;?><?php if ($this->session->userdata('location_id') === $id) : ?> <span class="glyphicon glyphicon-ok check-mark"></span><?php endif; ?></a></li>
+						<li><a href="<?php echo site_url('location/change/'.$id);?>"><?php echo $location;?><?php if ($_SESSION['User']['LocationId'] === $id) : ?> <span class="glyphicon glyphicon-ok check-mark"></span><?php endif; ?></a></li>
 						<?php endforeach; ?>
 					</ul>
 				</li>

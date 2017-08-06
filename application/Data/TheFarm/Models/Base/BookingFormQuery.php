@@ -50,8 +50,8 @@ use TheFarm\Models\Map\BookingFormTableMap;
  *
  * @method     ChildBookingForm findOneByBookingId(int $booking_id) Return the first ChildBookingForm filtered by the booking_id column
  * @method     ChildBookingForm findOneByFormId(int $form_id) Return the first ChildBookingForm filtered by the form_id column
- * @method     ChildBookingForm findOneByRequired(string $required) Return the first ChildBookingForm filtered by the required column
- * @method     ChildBookingForm findOneBySubmitted(string $submitted) Return the first ChildBookingForm filtered by the submitted column
+ * @method     ChildBookingForm findOneByRequired(boolean $required) Return the first ChildBookingForm filtered by the required column
+ * @method     ChildBookingForm findOneBySubmitted(boolean $submitted) Return the first ChildBookingForm filtered by the submitted column
  * @method     ChildBookingForm findOneByNotifyUserOnSubmit(string $notify_user_on_submit) Return the first ChildBookingForm filtered by the notify_user_on_submit column
  * @method     ChildBookingForm findOneBySubmittedDate(int $submitted_date) Return the first ChildBookingForm filtered by the submitted_date column
  * @method     ChildBookingForm findOneByCompletedBy(int $completed_by) Return the first ChildBookingForm filtered by the completed_by column
@@ -62,8 +62,8 @@ use TheFarm\Models\Map\BookingFormTableMap;
  *
  * @method     ChildBookingForm requireOneByBookingId(int $booking_id) Return the first ChildBookingForm filtered by the booking_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildBookingForm requireOneByFormId(int $form_id) Return the first ChildBookingForm filtered by the form_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildBookingForm requireOneByRequired(string $required) Return the first ChildBookingForm filtered by the required column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildBookingForm requireOneBySubmitted(string $submitted) Return the first ChildBookingForm filtered by the submitted column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildBookingForm requireOneByRequired(boolean $required) Return the first ChildBookingForm filtered by the required column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildBookingForm requireOneBySubmitted(boolean $submitted) Return the first ChildBookingForm filtered by the submitted column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildBookingForm requireOneByNotifyUserOnSubmit(string $notify_user_on_submit) Return the first ChildBookingForm filtered by the notify_user_on_submit column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildBookingForm requireOneBySubmittedDate(int $submitted_date) Return the first ChildBookingForm filtered by the submitted_date column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildBookingForm requireOneByCompletedBy(int $completed_by) Return the first ChildBookingForm filtered by the completed_by column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -72,8 +72,8 @@ use TheFarm\Models\Map\BookingFormTableMap;
  * @method     ChildBookingForm[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildBookingForm objects based on current ModelCriteria
  * @method     ChildBookingForm[]|ObjectCollection findByBookingId(int $booking_id) Return ChildBookingForm objects filtered by the booking_id column
  * @method     ChildBookingForm[]|ObjectCollection findByFormId(int $form_id) Return ChildBookingForm objects filtered by the form_id column
- * @method     ChildBookingForm[]|ObjectCollection findByRequired(string $required) Return ChildBookingForm objects filtered by the required column
- * @method     ChildBookingForm[]|ObjectCollection findBySubmitted(string $submitted) Return ChildBookingForm objects filtered by the submitted column
+ * @method     ChildBookingForm[]|ObjectCollection findByRequired(boolean $required) Return ChildBookingForm objects filtered by the required column
+ * @method     ChildBookingForm[]|ObjectCollection findBySubmitted(boolean $submitted) Return ChildBookingForm objects filtered by the submitted column
  * @method     ChildBookingForm[]|ObjectCollection findByNotifyUserOnSubmit(string $notify_user_on_submit) Return ChildBookingForm objects filtered by the notify_user_on_submit column
  * @method     ChildBookingForm[]|ObjectCollection findBySubmittedDate(int $submitted_date) Return ChildBookingForm objects filtered by the submitted_date column
  * @method     ChildBookingForm[]|ObjectCollection findByCompletedBy(int $completed_by) Return ChildBookingForm objects filtered by the completed_by column
@@ -365,21 +365,23 @@ abstract class BookingFormQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByRequired('fooValue');   // WHERE required = 'fooValue'
-     * $query->filterByRequired('%fooValue%', Criteria::LIKE); // WHERE required LIKE '%fooValue%'
+     * $query->filterByRequired(true); // WHERE required = true
+     * $query->filterByRequired('yes'); // WHERE required = true
      * </code>
      *
-     * @param     string $required The value to use as filter.
+     * @param     boolean|string $required The value to use as filter.
+     *              Non-boolean arguments are converted using the following rules:
+     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildBookingFormQuery The current query, for fluid interface
      */
     public function filterByRequired($required = null, $comparison = null)
     {
-        if (null === $comparison) {
-            if (is_array($required)) {
-                $comparison = Criteria::IN;
-            }
+        if (is_string($required)) {
+            $required = in_array(strtolower($required), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
         }
 
         return $this->addUsingAlias(BookingFormTableMap::COL_REQUIRED, $required, $comparison);
@@ -390,21 +392,23 @@ abstract class BookingFormQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterBySubmitted('fooValue');   // WHERE submitted = 'fooValue'
-     * $query->filterBySubmitted('%fooValue%', Criteria::LIKE); // WHERE submitted LIKE '%fooValue%'
+     * $query->filterBySubmitted(true); // WHERE submitted = true
+     * $query->filterBySubmitted('yes'); // WHERE submitted = true
      * </code>
      *
-     * @param     string $submitted The value to use as filter.
+     * @param     boolean|string $submitted The value to use as filter.
+     *              Non-boolean arguments are converted using the following rules:
+     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildBookingFormQuery The current query, for fluid interface
      */
     public function filterBySubmitted($submitted = null, $comparison = null)
     {
-        if (null === $comparison) {
-            if (is_array($submitted)) {
-                $comparison = Criteria::IN;
-            }
+        if (is_string($submitted)) {
+            $submitted = in_array(strtolower($submitted), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
         }
 
         return $this->addUsingAlias(BookingFormTableMap::COL_SUBMITTED, $submitted, $comparison);

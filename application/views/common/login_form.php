@@ -24,7 +24,7 @@ treatments while with us at The Farm</h1><br>
 		</div>
 		
 		<?php
-		$q = $this->db->get_where('contacts', array('contact_id' => $this->session->userdata('user_id')));
+		$q = $this->db->get_where('contacts', array('contact_id' => $_SESSION['ContactId']));
 		$result = $q->row_array();
 		if ($result['is_active'] === '0') :
 		?>

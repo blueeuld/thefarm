@@ -66,7 +66,7 @@
 						</section>
 					</li>
 					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown"> <span class="thumb-sm avatar pull-left"> <?php echo img(array('src' => get_current_user_photo())); ?> </span> <?php echo $this->session->userdata('screen_name');?> <b class="caret"></b> </a> 
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"> <span class="thumb-sm avatar pull-left"> <?php echo img(array('src' => get_current_user_photo())); ?> </span> <?php echo $_SESSION['FirstName'];?> <b class="caret"></b> </a>
 						<ul class="dropdown-menu animated fadeInRight">
 							<li> <span class="arrow top"></span> <a href="#">Settings</a> </li>
 							<li> <a href="profile.html">Profile</a> </li>
@@ -92,8 +92,8 @@
 										</aside>
 										<aside>
 											<p class="pull-right m-l inline"> <a href="#" class="btn btn-sm btn-icon btn-info rounded m-b"><i class="fa fa-twitter"></i></a> <a href="#" class="btn btn-sm btn-icon btn-primary rounded m-b"><i class="fa fa-facebook"></i></a> <a href="#" class="btn btn-sm btn-icon btn-danger rounded m-b"><i class="fa fa-google-plus"></i></a> </p>
-											<h3 class="font-bold m-b-none m-t-none" style="color:#fff"><?php echo $this->session->userdata('screen_name');?></h3>
-											<p style="color:#fff"><?php echo $this->session->userdata('email');?></p>
+											<h3 class="font-bold m-b-none m-t-none" style="color:#fff"><?php echo $_SESSION['FirstName'];?></h3>
+											<p style="color:#fff"><?php echo $_SESSION['Email'];?></p>
 											<?php if ($this->session->userdata('position')) : ?><p><i class="fa fa-lg fa-circle-o text-primary m-r-sm"></i><strong><?php echo $this->session->userdata('position');?></strong></p><?php endif;?>
 										</aside>
 									</div>

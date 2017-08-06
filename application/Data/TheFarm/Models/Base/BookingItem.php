@@ -99,25 +99,30 @@ abstract class BookingItem implements ActiveRecordInterface
     /**
      * The value for the included field.
      *
-     * @var        int
+     * @var        boolean
      */
     protected $included;
 
     /**
      * The value for the foc field.
      *
-     * Note: this column has a database default value of: 0
-     * @var        int
+     * @var        boolean
      */
     protected $foc;
 
     /**
      * The value for the upsell field.
      *
-     * Note: this column has a database default value of: 0
-     * @var        int
+     * @var        boolean
      */
     protected $upsell;
+
+    /**
+     * The value for the upgrade field.
+     *
+     * @var        boolean
+     */
+    protected $upgrade;
 
     /**
      * The value for the inventory field.
@@ -126,14 +131,6 @@ abstract class BookingItem implements ActiveRecordInterface
      * @var        int
      */
     protected $inventory;
-
-    /**
-     * The value for the upgrade field.
-     *
-     * Note: this column has a database default value of: 0
-     * @var        int
-     */
-    protected $upgrade;
 
     /**
      * @var        ChildBooking
@@ -173,10 +170,7 @@ abstract class BookingItem implements ActiveRecordInterface
      */
     public function applyDefaultValues()
     {
-        $this->foc = 0;
-        $this->upsell = 0;
         $this->inventory = 0;
-        $this->upgrade = 0;
     }
 
     /**
@@ -449,7 +443,7 @@ abstract class BookingItem implements ActiveRecordInterface
     /**
      * Get the [included] column value.
      *
-     * @return int
+     * @return boolean
      */
     public function getIncluded()
     {
@@ -457,9 +451,19 @@ abstract class BookingItem implements ActiveRecordInterface
     }
 
     /**
+     * Get the [included] column value.
+     *
+     * @return boolean
+     */
+    public function isIncluded()
+    {
+        return $this->getIncluded();
+    }
+
+    /**
      * Get the [foc] column value.
      *
-     * @return int
+     * @return boolean
      */
     public function getFoc()
     {
@@ -467,13 +471,53 @@ abstract class BookingItem implements ActiveRecordInterface
     }
 
     /**
+     * Get the [foc] column value.
+     *
+     * @return boolean
+     */
+    public function isFoc()
+    {
+        return $this->getFoc();
+    }
+
+    /**
      * Get the [upsell] column value.
      *
-     * @return int
+     * @return boolean
      */
     public function getUpsell()
     {
         return $this->upsell;
+    }
+
+    /**
+     * Get the [upsell] column value.
+     *
+     * @return boolean
+     */
+    public function isUpsell()
+    {
+        return $this->getUpsell();
+    }
+
+    /**
+     * Get the [upgrade] column value.
+     *
+     * @return boolean
+     */
+    public function getUpgrade()
+    {
+        return $this->upgrade;
+    }
+
+    /**
+     * Get the [upgrade] column value.
+     *
+     * @return boolean
+     */
+    public function isUpgrade()
+    {
+        return $this->getUpgrade();
     }
 
     /**
@@ -484,16 +528,6 @@ abstract class BookingItem implements ActiveRecordInterface
     public function getInventory()
     {
         return $this->inventory;
-    }
-
-    /**
-     * Get the [upgrade] column value.
-     *
-     * @return int
-     */
-    public function getUpgrade()
-    {
-        return $this->upgrade;
     }
 
     /**
@@ -585,15 +619,23 @@ abstract class BookingItem implements ActiveRecordInterface
     } // setQuantity()
 
     /**
-     * Set the value of [included] column.
+     * Sets the value of the [included] column.
+     * Non-boolean arguments are converted using the following rules:
+     *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
      *
-     * @param int $v new value
+     * @param  boolean|integer|string $v The new value
      * @return $this|\TheFarm\Models\BookingItem The current object (for fluent API support)
      */
     public function setIncluded($v)
     {
         if ($v !== null) {
-            $v = (int) $v;
+            if (is_string($v)) {
+                $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            } else {
+                $v = (boolean) $v;
+            }
         }
 
         if ($this->included !== $v) {
@@ -605,15 +647,23 @@ abstract class BookingItem implements ActiveRecordInterface
     } // setIncluded()
 
     /**
-     * Set the value of [foc] column.
+     * Sets the value of the [foc] column.
+     * Non-boolean arguments are converted using the following rules:
+     *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
      *
-     * @param int $v new value
+     * @param  boolean|integer|string $v The new value
      * @return $this|\TheFarm\Models\BookingItem The current object (for fluent API support)
      */
     public function setFoc($v)
     {
         if ($v !== null) {
-            $v = (int) $v;
+            if (is_string($v)) {
+                $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            } else {
+                $v = (boolean) $v;
+            }
         }
 
         if ($this->foc !== $v) {
@@ -625,15 +675,23 @@ abstract class BookingItem implements ActiveRecordInterface
     } // setFoc()
 
     /**
-     * Set the value of [upsell] column.
+     * Sets the value of the [upsell] column.
+     * Non-boolean arguments are converted using the following rules:
+     *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
      *
-     * @param int $v new value
+     * @param  boolean|integer|string $v The new value
      * @return $this|\TheFarm\Models\BookingItem The current object (for fluent API support)
      */
     public function setUpsell($v)
     {
         if ($v !== null) {
-            $v = (int) $v;
+            if (is_string($v)) {
+                $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            } else {
+                $v = (boolean) $v;
+            }
         }
 
         if ($this->upsell !== $v) {
@@ -643,6 +701,34 @@ abstract class BookingItem implements ActiveRecordInterface
 
         return $this;
     } // setUpsell()
+
+    /**
+     * Sets the value of the [upgrade] column.
+     * Non-boolean arguments are converted using the following rules:
+     *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     *
+     * @param  boolean|integer|string $v The new value
+     * @return $this|\TheFarm\Models\BookingItem The current object (for fluent API support)
+     */
+    public function setUpgrade($v)
+    {
+        if ($v !== null) {
+            if (is_string($v)) {
+                $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            } else {
+                $v = (boolean) $v;
+            }
+        }
+
+        if ($this->upgrade !== $v) {
+            $this->upgrade = $v;
+            $this->modifiedColumns[BookingItemTableMap::COL_UPGRADE] = true;
+        }
+
+        return $this;
+    } // setUpgrade()
 
     /**
      * Set the value of [inventory] column.
@@ -665,26 +751,6 @@ abstract class BookingItem implements ActiveRecordInterface
     } // setInventory()
 
     /**
-     * Set the value of [upgrade] column.
-     *
-     * @param int $v new value
-     * @return $this|\TheFarm\Models\BookingItem The current object (for fluent API support)
-     */
-    public function setUpgrade($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->upgrade !== $v) {
-            $this->upgrade = $v;
-            $this->modifiedColumns[BookingItemTableMap::COL_UPGRADE] = true;
-        }
-
-        return $this;
-    } // setUpgrade()
-
-    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -694,19 +760,7 @@ abstract class BookingItem implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
-            if ($this->foc !== 0) {
-                return false;
-            }
-
-            if ($this->upsell !== 0) {
-                return false;
-            }
-
             if ($this->inventory !== 0) {
-                return false;
-            }
-
-            if ($this->upgrade !== 0) {
                 return false;
             }
 
@@ -749,19 +803,19 @@ abstract class BookingItem implements ActiveRecordInterface
             $this->quantity = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : BookingItemTableMap::translateFieldName('Included', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->included = (null !== $col) ? (int) $col : null;
+            $this->included = (null !== $col) ? (boolean) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : BookingItemTableMap::translateFieldName('Foc', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->foc = (null !== $col) ? (int) $col : null;
+            $this->foc = (null !== $col) ? (boolean) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : BookingItemTableMap::translateFieldName('Upsell', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->upsell = (null !== $col) ? (int) $col : null;
+            $this->upsell = (null !== $col) ? (boolean) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : BookingItemTableMap::translateFieldName('Inventory', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : BookingItemTableMap::translateFieldName('Upgrade', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->upgrade = (null !== $col) ? (boolean) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : BookingItemTableMap::translateFieldName('Inventory', TableMap::TYPE_PHPNAME, $indexType)];
             $this->inventory = (null !== $col) ? (int) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : BookingItemTableMap::translateFieldName('Upgrade', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->upgrade = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -1039,11 +1093,11 @@ abstract class BookingItem implements ActiveRecordInterface
         if ($this->isColumnModified(BookingItemTableMap::COL_UPSELL)) {
             $modifiedColumns[':p' . $index++]  = 'upsell';
         }
-        if ($this->isColumnModified(BookingItemTableMap::COL_INVENTORY)) {
-            $modifiedColumns[':p' . $index++]  = 'inventory';
-        }
         if ($this->isColumnModified(BookingItemTableMap::COL_UPGRADE)) {
             $modifiedColumns[':p' . $index++]  = 'upgrade';
+        }
+        if ($this->isColumnModified(BookingItemTableMap::COL_INVENTORY)) {
+            $modifiedColumns[':p' . $index++]  = 'inventory';
         }
 
         $sql = sprintf(
@@ -1069,19 +1123,19 @@ abstract class BookingItem implements ActiveRecordInterface
                         $stmt->bindValue($identifier, $this->quantity, PDO::PARAM_INT);
                         break;
                     case 'included':
-                        $stmt->bindValue($identifier, $this->included, PDO::PARAM_INT);
+                        $stmt->bindValue($identifier, (int) $this->included, PDO::PARAM_INT);
                         break;
                     case 'foc':
-                        $stmt->bindValue($identifier, $this->foc, PDO::PARAM_INT);
+                        $stmt->bindValue($identifier, (int) $this->foc, PDO::PARAM_INT);
                         break;
                     case 'upsell':
-                        $stmt->bindValue($identifier, $this->upsell, PDO::PARAM_INT);
+                        $stmt->bindValue($identifier, (int) $this->upsell, PDO::PARAM_INT);
+                        break;
+                    case 'upgrade':
+                        $stmt->bindValue($identifier, (int) $this->upgrade, PDO::PARAM_INT);
                         break;
                     case 'inventory':
                         $stmt->bindValue($identifier, $this->inventory, PDO::PARAM_INT);
-                        break;
-                    case 'upgrade':
-                        $stmt->bindValue($identifier, $this->upgrade, PDO::PARAM_INT);
                         break;
                 }
             }
@@ -1167,10 +1221,10 @@ abstract class BookingItem implements ActiveRecordInterface
                 return $this->getUpsell();
                 break;
             case 7:
-                return $this->getInventory();
+                return $this->getUpgrade();
                 break;
             case 8:
-                return $this->getUpgrade();
+                return $this->getInventory();
                 break;
             default:
                 return null;
@@ -1209,8 +1263,8 @@ abstract class BookingItem implements ActiveRecordInterface
             $keys[4] => $this->getIncluded(),
             $keys[5] => $this->getFoc(),
             $keys[6] => $this->getUpsell(),
-            $keys[7] => $this->getInventory(),
-            $keys[8] => $this->getUpgrade(),
+            $keys[7] => $this->getUpgrade(),
+            $keys[8] => $this->getInventory(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1319,10 +1373,10 @@ abstract class BookingItem implements ActiveRecordInterface
                 $this->setUpsell($value);
                 break;
             case 7:
-                $this->setInventory($value);
+                $this->setUpgrade($value);
                 break;
             case 8:
-                $this->setUpgrade($value);
+                $this->setInventory($value);
                 break;
         } // switch()
 
@@ -1372,10 +1426,10 @@ abstract class BookingItem implements ActiveRecordInterface
             $this->setUpsell($arr[$keys[6]]);
         }
         if (array_key_exists($keys[7], $arr)) {
-            $this->setInventory($arr[$keys[7]]);
+            $this->setUpgrade($arr[$keys[7]]);
         }
         if (array_key_exists($keys[8], $arr)) {
-            $this->setUpgrade($arr[$keys[8]]);
+            $this->setInventory($arr[$keys[8]]);
         }
     }
 
@@ -1439,11 +1493,11 @@ abstract class BookingItem implements ActiveRecordInterface
         if ($this->isColumnModified(BookingItemTableMap::COL_UPSELL)) {
             $criteria->add(BookingItemTableMap::COL_UPSELL, $this->upsell);
         }
-        if ($this->isColumnModified(BookingItemTableMap::COL_INVENTORY)) {
-            $criteria->add(BookingItemTableMap::COL_INVENTORY, $this->inventory);
-        }
         if ($this->isColumnModified(BookingItemTableMap::COL_UPGRADE)) {
             $criteria->add(BookingItemTableMap::COL_UPGRADE, $this->upgrade);
+        }
+        if ($this->isColumnModified(BookingItemTableMap::COL_INVENTORY)) {
+            $criteria->add(BookingItemTableMap::COL_INVENTORY, $this->inventory);
         }
 
         return $criteria;
@@ -1537,8 +1591,8 @@ abstract class BookingItem implements ActiveRecordInterface
         $copyObj->setIncluded($this->getIncluded());
         $copyObj->setFoc($this->getFoc());
         $copyObj->setUpsell($this->getUpsell());
-        $copyObj->setInventory($this->getInventory());
         $copyObj->setUpgrade($this->getUpgrade());
+        $copyObj->setInventory($this->getInventory());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -2145,8 +2199,8 @@ abstract class BookingItem implements ActiveRecordInterface
         $this->included = null;
         $this->foc = null;
         $this->upsell = null;
-        $this->inventory = null;
         $this->upgrade = null;
+        $this->inventory = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();

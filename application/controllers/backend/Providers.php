@@ -6,12 +6,12 @@ class Providers extends TF_Controller {
     public function index() {
         $data = array();
         $data['group_name'] = 'Service Providers';
-        $data['contacts'] = get_provider_list(false, false, false, $this->session->userdata('location_id'));
+        $data['contacts'] = get_provider_list(false, false, false, $_SESSION['User']['LocationId']);
         $this->load->view('admin/providers/index', $data);
     }
     
     public function order() {
-        $data['contacts'] = get_provider_list(false, false, false, $this->session->userdata('location_id'));
+        $data['contacts'] = get_provider_list(false, false, false, $_SESSION['User']['LocationId']);
         $this->load->view('admin/providers/order', $data);
     }
     

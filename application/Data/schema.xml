@@ -122,10 +122,10 @@
     </vendor>
   </table>
   <table name="tf_booking_forms" idMethod="native" phpName="BookingForm" namespace="Models">
-    <column name="booking_id" phpName="BookingId" type="INTEGER" size="5" primaryKey="true" required="true"/>
-    <column name="form_id" phpName="FormId" type="INTEGER" size="5" primaryKey="true" required="true"/>
-    <column name="required" phpName="Required" type="VARCHAR" size="1" required="true" defaultValue="n"/>
-    <column name="submitted" phpName="Submitted" type="VARCHAR" size="1" required="true" defaultValue="n"/>
+    <column name="booking_id" phpName="BookingId" type="INTEGER" primaryKey="true" required="true"/>
+    <column name="form_id" phpName="FormId" type="INTEGER" primaryKey="true" required="true"/>
+    <column name="required" phpName="Required" type="BOOLEAN" defaultValue="0"/>
+    <column name="submitted" phpName="Submitted" type="BOOLEAN" defaultValue="0"/>
     <column name="notify_user_on_submit" phpName="NotifyUserOnSubmit" type="VARCHAR" size="255" required="true" defaultValue=""/>
     <column name="submitted_date" phpName="SubmittedDate" type="INTEGER" size="10" defaultValue="0"/>
     <column name="completed_by" phpName="CompletedBy" type="INTEGER"/>
@@ -137,7 +137,7 @@
       <index-column name="form_id"/>
     </index>
     <vendor type="mysql">
-      <parameter name="Engine" value="MyISAM"/>
+      <parameter name="Engine" value="InnoDB"/>
     </vendor>
   </table>
   <table name="tf_booking_items" idMethod="native" phpName="BookingItem" namespace="Models">
@@ -145,11 +145,11 @@
     <column name="booking_id" phpName="BookingId" type="INTEGER" required="true"/>
     <column name="item_id" phpName="ItemId" type="INTEGER" required="true"/>
     <column name="quantity" phpName="Quantity" type="INTEGER" size="5" required="true"/>
-    <column name="included" phpName="Included" type="INTEGER" size="1" required="true"/>
-    <column name="foc" phpName="Foc" type="INTEGER" size="1" required="true" defaultValue="0"/>
-    <column name="upsell" phpName="Upsell" type="INTEGER" size="1" required="true" defaultValue="0"/>
+    <column name="included" phpName="Included" type="BOOLEAN" />
+    <column name="foc" phpName="Foc" type="BOOLEAN" />
+    <column name="upsell" phpName="Upsell" type="BOOLEAN" />
+    <column name="upgrade" phpName="Upgrade" type="BOOLEAN" />
     <column name="inventory" phpName="Inventory" type="INTEGER" size="5" defaultValue="0"/>
-    <column name="upgrade" phpName="Upgrade" type="SMALLINT" size="1" defaultValue="0"/>
     <foreign-key foreignTable="tf_bookings" name="booking_item_booking_fk">
       <reference local="booking_id" foreign="booking_id"/>
     </foreign-key>

@@ -131,10 +131,10 @@ DROP TABLE IF EXISTS `tf_booking_forms`;
 
 CREATE TABLE `tf_booking_forms`
 (
-    `booking_id` INTEGER(5) NOT NULL,
-    `form_id` INTEGER(5) NOT NULL,
-    `required` VARCHAR(1) DEFAULT 'n' NOT NULL,
-    `submitted` VARCHAR(1) DEFAULT 'n' NOT NULL,
+    `booking_id` INTEGER NOT NULL,
+    `form_id` INTEGER NOT NULL,
+    `required` TINYINT(1) DEFAULT 0,
+    `submitted` TINYINT(1) DEFAULT 0,
     `notify_user_on_submit` VARCHAR(255) DEFAULT '' NOT NULL,
     `submitted_date` INTEGER(10) DEFAULT 0,
     `completed_by` INTEGER,
@@ -142,7 +142,7 @@ CREATE TABLE `tf_booking_forms`
     PRIMARY KEY (`booking_id`,`form_id`),
     INDEX `booking_form_completed_fk` (`completed_by`),
     INDEX `booking_form_fk` (`form_id`)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
 -- tf_booking_items
@@ -156,11 +156,11 @@ CREATE TABLE `tf_booking_items`
     `booking_id` INTEGER NOT NULL,
     `item_id` INTEGER NOT NULL,
     `quantity` INTEGER(5) NOT NULL,
-    `included` INTEGER(1) NOT NULL,
-    `foc` INTEGER(1) DEFAULT 0 NOT NULL,
-    `upsell` INTEGER(1) DEFAULT 0 NOT NULL,
+    `included` TINYINT(1),
+    `foc` TINYINT(1),
+    `upsell` TINYINT(1),
+    `upgrade` TINYINT(1),
     `inventory` INTEGER(5) DEFAULT 0,
-    `upgrade` SMALLINT(1) DEFAULT 0,
     PRIMARY KEY (`booking_item_id`),
     INDEX `booking_item_item_fk` (`item_id`),
     INDEX `booking_item_booking_fk` (`booking_id`),

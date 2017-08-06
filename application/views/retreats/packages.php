@@ -69,7 +69,7 @@
 						<?php foreach ($durations as $package_id => $duration):?>	
 						<th style="font-family: inherit; font-size: 18px; border: 1px dashed rgb(187, 187, 187);">
 							<?php echo $duration;?> Nights
-							<a href="#<?php echo 'retreats/book/'.$package_id;?>" data-package_id="<?php echo $package_id;?>" data-duration="<?php echo $duration-1;?>" data-toggle="modal" data-target="#<?php if (!$this->session->userdata('user_id')) : ?>login-modal<?php else:?>select-date-modal<?php endif;?>">Book Now</a>
+							<a href="#<?php echo 'retreats/book/'.$package_id;?>" data-package_id="<?php echo $package_id;?>" data-duration="<?php echo $duration-1;?>" data-toggle="modal" data-target="#<?php if (!$_SESSION['ContactId']) : ?>login-modal<?php else:?>select-date-modal<?php endif;?>">Book Now</a>
 						</th>
 						<?php endforeach;?>
 					</tr>

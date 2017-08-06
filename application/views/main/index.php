@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" class="app">
 	<head>
-		<?php $this->load->view('admin/_common/head', array('title' => 'Home - '.$this->session->userdata('screen_name'))); ?>
+		<?php $this->load->view('admin/_common/head', array('title' => 'Home - '.$_SESSION['FirstName'])); ?>
 	</head>
 	<body class="" >
 		<section class="vbox">

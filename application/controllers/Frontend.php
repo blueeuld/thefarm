@@ -49,7 +49,7 @@ class Frontend extends TF_Controller
         //get existing booking
         $booking = $this->get_booking();
         $data['return'] = '';
-        $data['contact_id'] = $this->session->userdata('user_id');
+        $data['contact_id'] = $_SESSION['ContactId'];
 
         $activities = $this->get_activities(time());
 
@@ -157,7 +157,7 @@ class Frontend extends TF_Controller
     function profile()
     {
 
-        $q = $this->db->get_where('contacts', array('contact_id' => $this->session->userdata('user_id')));
+        $q = $this->db->get_where('contacts', array('contact_id' => $_SESSION['ContactId']));
 
         $row = $q->row_array();
 
@@ -172,7 +172,7 @@ class Frontend extends TF_Controller
 
     function activate()
     {
-        $contact_id = $this->session->userdata('user_id');
+        $contact_id = $_SESSION['ContactId'];
         $return = $this->input->get_post('return');
         $code = $_REQUEST['activation_code'];
 
@@ -570,8 +570,8 @@ class Frontend extends TF_Controller
             'categories' => array(1, 2),
             'viewFullDetails' => true, //!tf_current_user_can('edit_calendar'),
             'canChange' => $editable,
-            'user_id' => $this->session->userdata('user_id'),
-            'guest_id' => $this->session->userdata('user_id'),
+            'user_id' => $_SESSION['ContactId'],
+            'guest_id' => $_SESSION['ContactId'],
             'show_my_appointments' => false, //$this->session->userdata('calendar_show_my_schedule_only'),
             'show_no_schedule' => false, //$this->session->userdata('calendar_show_no_schedule'),
             'selected_locations' => $this->session->userdata('calendar_view_locations') ? $this->session->userdata('calendar_view_locations') : array(),

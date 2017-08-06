@@ -161,10 +161,10 @@ class BookingFormTableMap extends TableMap
         $this->setPackage('TheFarm.Models');
         $this->setUseIdGenerator(false);
         // columns
-        $this->addPrimaryKey('booking_id', 'BookingId', 'INTEGER', true, 5, null);
-        $this->addPrimaryKey('form_id', 'FormId', 'INTEGER', true, 5, null);
-        $this->addColumn('required', 'Required', 'VARCHAR', true, 1, 'n');
-        $this->addColumn('submitted', 'Submitted', 'VARCHAR', true, 1, 'n');
+        $this->addPrimaryKey('booking_id', 'BookingId', 'INTEGER', true, null, null);
+        $this->addPrimaryKey('form_id', 'FormId', 'INTEGER', true, null, null);
+        $this->addColumn('required', 'Required', 'BOOLEAN', false, 1, false);
+        $this->addColumn('submitted', 'Submitted', 'BOOLEAN', false, 1, false);
         $this->addColumn('notify_user_on_submit', 'NotifyUserOnSubmit', 'VARCHAR', true, 255, '');
         $this->addColumn('submitted_date', 'SubmittedDate', 'INTEGER', false, 10, 0);
         $this->addColumn('completed_by', 'CompletedBy', 'INTEGER', false, null, null);

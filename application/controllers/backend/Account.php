@@ -68,7 +68,7 @@ class Account extends TF_Controller {
                 if (!isset($_REQUEST['skip_confirmation']) && !empty($data['email'])) {
                     $this->load->library('email');
 
-                    $this->email->from($this->session->userdata('email'),  $this->session->userdata('screen_name'));
+                    $this->email->from($_SESSION['Email'],  $_SESSION['FirstName']);
                     $this->email->to($data['email']);
 
 
@@ -322,7 +322,7 @@ class Account extends TF_Controller {
             'categories' => array(1, 2, 3, 12),
             'viewFullDetails' => true, //!tf_current_user_can('edit_calendar'),
             'canChange' => current_user_can('CanAddSchedule'),
-            'user_id' => $this->session->userdata('user_id'),
+            'user_id' => $_SESSION['ContactId'],
             'show_providers' => false,
         );
 
@@ -348,7 +348,7 @@ class Account extends TF_Controller {
 			'viewFullDetails' => true, //!tf_current_user_can('edit_calendar'),
 			'canChange' => true,
 			'statuses' => array(),
-			'user_id' => $this->session->userdata('user_id'),
+			'user_id' => $_SESSION['ContactId'],
 			'selected_locations' => $locations,
 			'booking_id' => $booking_id,
 			'categories' => $categories,
@@ -363,7 +363,7 @@ class Account extends TF_Controller {
 			
 		$editable = false;
 		
-		if ($this->session->userdata('user_id') === $data['account']['group_id']) {
+		if ($_SESSION['ContactId'] === $data['account']['group_id']) {
 			$editable = true;
 		}
 		elseif (current_user_can('CanEditOtherProfiles')) {
@@ -435,7 +435,7 @@ class Account extends TF_Controller {
             'date_cancelled' => now(),
             'max_provider' => 1,
             'duration' => 30,
-            'author_id' => $this->session->userdata('user_id'),
+            'author_id' => $_SESSION['ContactId'],
             'booking_id' => $booking_id,
             'item_id' => $item_id,
             'start_dt' => $start_date_dt->format('Y-m-d H:i:s'),
@@ -882,7 +882,7 @@ class Account extends TF_Controller {
             if (!isset($_REQUEST['skip_confirmation'])) {
                 $this->load->library('email');
 
-                $this->email->from($this->session->userdata('email'),  $this->session->userdata('screen_name'));
+                $this->email->from($_SESSION['Email'],  $_SESSION['FirstName']);
                 $this->email->to($email);
 
                 $message = sprintf(
@@ -890,11 +890,11 @@ class Account extends TF_Controller {
                     'You have been added by %s.'."\n\n".
                     'To view your list of assignments, login to your TheFarm account:'."\n\n".
                     '%s'."\n\n",
-                    $first_name, $this->session->userdata('screen_name'), site_url());
+                    $first_name, $_SESSION['FirstName'], site_url());
 
                 $user_group = get_user_group($group_id);
 
-                $this->email->subject($this->session->userdata('screen_name').' has added you as '.$user_group['group_name']);
+                $this->email->subject($_SESSION['FirstName'].' has added you as '.$user_group['group_name']);
                 $this->email->message($message);
                 $this->email->send();
             }

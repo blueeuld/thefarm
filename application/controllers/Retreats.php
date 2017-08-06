@@ -20,7 +20,7 @@ class Retreats extends TF_Controller {
 			'title' => '',
 			'package_id' => (int)$this->input->get_post('package_id'),
 			'status' => 'tentative',
-			'guest_id' => $this->session->userdata('user_id'),
+			'guest_id' => $_SESSION['ContactId'],
 			'fax' => 1,
 		);
 		

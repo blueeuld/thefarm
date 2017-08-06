@@ -58,7 +58,7 @@ $autoload['packages'] = array();
 |
 |	$autoload['libraries'] = array('user_agent' => 'ua');
 */
-$autoload['libraries'] = array('propellib', 'emailapi', 'userapi', 'eventapi');
+$autoload['libraries'] = array('propellib', 'emailapi', 'userapi', 'eventapi', 'bookingapi', 'messageapi', 'fileapi');
 
 /*
 | -------------------------------------------------------------------

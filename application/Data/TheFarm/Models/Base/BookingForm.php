@@ -76,16 +76,16 @@ abstract class BookingForm implements ActiveRecordInterface
     /**
      * The value for the required field.
      *
-     * Note: this column has a database default value of: 'n'
-     * @var        string
+     * Note: this column has a database default value of: false
+     * @var        boolean
      */
     protected $required;
 
     /**
      * The value for the submitted field.
      *
-     * Note: this column has a database default value of: 'n'
-     * @var        string
+     * Note: this column has a database default value of: false
+     * @var        boolean
      */
     protected $submitted;
 
@@ -136,8 +136,8 @@ abstract class BookingForm implements ActiveRecordInterface
      */
     public function applyDefaultValues()
     {
-        $this->required = 'n';
-        $this->submitted = 'n';
+        $this->required = false;
+        $this->submitted = false;
         $this->notify_user_on_submit = '';
         $this->submitted_date = 0;
         $this->completed_date = 0;
@@ -393,7 +393,7 @@ abstract class BookingForm implements ActiveRecordInterface
     /**
      * Get the [required] column value.
      *
-     * @return string
+     * @return boolean
      */
     public function getRequired()
     {
@@ -401,13 +401,33 @@ abstract class BookingForm implements ActiveRecordInterface
     }
 
     /**
+     * Get the [required] column value.
+     *
+     * @return boolean
+     */
+    public function isRequired()
+    {
+        return $this->getRequired();
+    }
+
+    /**
      * Get the [submitted] column value.
      *
-     * @return string
+     * @return boolean
      */
     public function getSubmitted()
     {
         return $this->submitted;
+    }
+
+    /**
+     * Get the [submitted] column value.
+     *
+     * @return boolean
+     */
+    public function isSubmitted()
+    {
+        return $this->getSubmitted();
     }
 
     /**
@@ -491,15 +511,23 @@ abstract class BookingForm implements ActiveRecordInterface
     } // setFormId()
 
     /**
-     * Set the value of [required] column.
+     * Sets the value of the [required] column.
+     * Non-boolean arguments are converted using the following rules:
+     *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
      *
-     * @param string $v new value
+     * @param  boolean|integer|string $v The new value
      * @return $this|\TheFarm\Models\BookingForm The current object (for fluent API support)
      */
     public function setRequired($v)
     {
         if ($v !== null) {
-            $v = (string) $v;
+            if (is_string($v)) {
+                $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            } else {
+                $v = (boolean) $v;
+            }
         }
 
         if ($this->required !== $v) {
@@ -511,15 +539,23 @@ abstract class BookingForm implements ActiveRecordInterface
     } // setRequired()
 
     /**
-     * Set the value of [submitted] column.
+     * Sets the value of the [submitted] column.
+     * Non-boolean arguments are converted using the following rules:
+     *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
      *
-     * @param string $v new value
+     * @param  boolean|integer|string $v The new value
      * @return $this|\TheFarm\Models\BookingForm The current object (for fluent API support)
      */
     public function setSubmitted($v)
     {
         if ($v !== null) {
-            $v = (string) $v;
+            if (is_string($v)) {
+                $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            } else {
+                $v = (boolean) $v;
+            }
         }
 
         if ($this->submitted !== $v) {
@@ -620,11 +656,11 @@ abstract class BookingForm implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
-            if ($this->required !== 'n') {
+            if ($this->required !== false) {
                 return false;
             }
 
-            if ($this->submitted !== 'n') {
+            if ($this->submitted !== false) {
                 return false;
             }
 
@@ -673,10 +709,10 @@ abstract class BookingForm implements ActiveRecordInterface
             $this->form_id = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : BookingFormTableMap::translateFieldName('Required', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->required = (null !== $col) ? (string) $col : null;
+            $this->required = (null !== $col) ? (boolean) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : BookingFormTableMap::translateFieldName('Submitted', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->submitted = (null !== $col) ? (string) $col : null;
+            $this->submitted = (null !== $col) ? (boolean) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : BookingFormTableMap::translateFieldName('NotifyUserOnSubmit', TableMap::TYPE_PHPNAME, $indexType)];
             $this->notify_user_on_submit = (null !== $col) ? (string) $col : null;
@@ -936,10 +972,10 @@ abstract class BookingForm implements ActiveRecordInterface
                         $stmt->bindValue($identifier, $this->form_id, PDO::PARAM_INT);
                         break;
                     case 'required':
-                        $stmt->bindValue($identifier, $this->required, PDO::PARAM_STR);
+                        $stmt->bindValue($identifier, (int) $this->required, PDO::PARAM_INT);
                         break;
                     case 'submitted':
-                        $stmt->bindValue($identifier, $this->submitted, PDO::PARAM_STR);
+                        $stmt->bindValue($identifier, (int) $this->submitted, PDO::PARAM_INT);
                         break;
                     case 'notify_user_on_submit':
                         $stmt->bindValue($identifier, $this->notify_user_on_submit, PDO::PARAM_STR);

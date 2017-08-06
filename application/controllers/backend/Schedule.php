@@ -14,7 +14,7 @@ class Schedule extends TF_Controller {
         if (!$week) $week = date('Y-m-d');
 
         $userApi = new UserApi();
-        $providers = $userApi->get_users(true, $this->session->userdata('location_id'));
+        $providers = $userApi->get_users(true, $_SESSION['User']['LocationId']);
 		
         $data['providers'] = $providers;
 

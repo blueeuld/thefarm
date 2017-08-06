@@ -161,7 +161,7 @@ class Events extends TF_Controller {
             'item_id' => 0,
             'is_kids' => $is_kids,
             'assigned_to' => $assigned_to,
-            'author_id' => $this->session->userdata('user_id'),
+            'author_id' => $_SESSION['ContactId'],
             'start_dt' => $start_date_dt->format('Y-m-d H:i:s'),
             'end_dt' => $end_date_dt->format('Y-m-d H:i:s'),
         );

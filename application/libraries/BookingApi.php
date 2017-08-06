@@ -1,0 +1,141 @@
+<?php
+
+class BookingApi {
+
+    public function save_booking($bookingData, $notifyGuest = false) {
+
+        if ($bookingData['BookingId']) {
+
+            $booking = \TheFarm\Models\BookingQuery::create()->findOneByBookingId($bookingData['BookingId']);
+            $originalStatus = $booking->getStatus();
+
+            $booking->fromArray($bookingData);
+            $booking->setEditDate(now());
+        }
+        else {
+            $booking = new \TheFarm\Models\Booking();
+            $booking->fromArray($bookingData);
+            $booking->setAuthorId(get_current_user_id());
+            $booking->setEntryDate(now());
+
+            $originalStatus = false;
+        }
+
+        if (isset($bookingData['BookingItems'])) {
+            $this->save_items($booking, $bookingData['BookingItems']);
+        }
+
+        if (isset($bookingData['BookingAttachments'])) {
+            $this->save_attachments($booking, $bookingData['BookingAttachments']);
+        }
+
+        if (isset($bookingData['BookingForms'])) {
+            $this->save_forms($booking, $bookingData['BookingForms']);
+        }
+
+        $booking->save();
+
+        $notify = false;
+        $subject = '';
+        $message = '';
+
+        if ($originalStatus && $originalStatus !== 'confirmed' && $booking->getStatus() === 'confirmed') {
+            $subject = 'Booking Confirmation';
+            $message = 'Hi '.$booking->getContactRelatedByGuestId()->getFirstName().", \n\n\n".
+                'This is to confirm your booking. '."\n\n".
+                'Program : '.$booking->getTitle()."\n".
+                'Date : '.date('m/d/Y', $booking->getStartDate()).' - '.date('m/d/Y', $booking->getEndDate())."\n\n".
+                'Please login to your account to view your booking.'."\n\n".
+                site_url();
+            $notify = true;
+        }
+        else if ($originalStatus && $originalStatus !== 'completed' && $booking->getStatus()  === 'completed') {
+            $subject = 'Booking Completed';
+            $message = 'Hi '.$booking->getContactRelatedByGuestId()->getFirstName().", \n\n\n".
+                'Thank you for booking with us. '."\n\n".
+                site_url();
+            $notify = true;
+        }
+        elseif (!$originalStatus) {
+            $subject = 'Welcome to TheFarm';
+            $message = 'Hi '.$booking->getContactRelatedByGuestId()->getFirstName().", \n\n\n".
+                'Welcome to TheFarm. '."\n\n".
+                'Please login to your account to verify your booking.'."\n\n".
+                site_url('booking/verify/'.$booking->getBookingId());
+            $notify = true;
+        }
+
+        if ($notify) {
+            $emailApi = new EmailApi();
+            $emailApi->sendEmail($subject, $message, $_SESSION['Email'], $booking->getContactRelatedByGuestId()->getEmail());
+
+            $messageApi = new MessageApi();
+            $messageApi->sendMessage($subject, $booking->getGuestId());
+        }
+
+        var_dump($booking->toArray());
+        var_dump($booking->getBookingItems()->toArray());
+
+        return $booking->toArray();
+
+    }
+
+
+    public function save_items(TheFarm\Models\Booking $booking, $items) {
+
+        $bookingItems = $booking->getBookingItems();
+        $savedEventUsers = new \Propel\Runtime\Collection\ObjectCollection();
+
+        foreach ($items as $eventUser) {
+            $userData = new \TheFarm\Models\BookingItem();
+            $userData->fromArray($eventUser);
+
+            if ($bookingItems->contains($userData)) {
+                $userData = $bookingItems->get($bookingItems->search($userData));
+                $userData->fromArray($eventUser);
+                $savedEventUsers->append($userData);
+            } else {
+                $booking->addBookingItem($userData);
+                $savedEventUsers->append($userData);
+            }
+        }
+
+        foreach ($bookingItems as $eventUser) {
+            if (!$savedEventUsers->contains($eventUser)) {
+                $bookingItems->removeObject($eventUser);
+                $eventUser->delete();
+            }
+        }
+    }
+
+    public function save_attachments(TheFarm\Models\Booking $booking, $attachments) {
+        $bookingItems = $booking->getBookingAttachments();
+        $savedEventUsers = new \Propel\Runtime\Collection\ObjectCollection();
+
+        foreach ($attachments as $eventUser) {
+            $userData = new \TheFarm\Models\BookingAttachment();
+            $userData->fromArray($eventUser);
+
+            if ($bookingItems->contains($userData)) {
+                $userData = $bookingItems->get($bookingItems->search($userData));
+                $userData->fromArray($eventUser);
+                $savedEventUsers->append($userData);
+            } else {
+                $booking->addBookingAttachment($userData);
+                $savedEventUsers->append($userData);
+            }
+        }
+
+        foreach ($bookingItems as $eventUser) {
+            if (!$savedEventUsers->contains($eventUser)) {
+                $bookingItems->removeObject($eventUser);
+                $eventUser->delete();
+            }
+        }
+    }
+
+    public function save_forms(TheFarm\Models\Booking $booking, $forms) {
+
+    }
+
+}

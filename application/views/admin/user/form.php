@@ -65,7 +65,7 @@
                         <div class="form-group">
                             <label for="" class="col-sm-3 control-label">Assignment</label>
                             <div class="col-sm-9">
-                                <?php echo form_dropdown('location_id', get_locations(), $this->session->userdata('location_id'), array('class' => 'form-control')); ?>
+                                <?php echo form_dropdown('location_id', get_locations(), $_SESSION['User']['LocationId'], array('class' => 'form-control')); ?>
                             </div>
                         </div>
                     <?php endif; ?>

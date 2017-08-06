@@ -27,8 +27,8 @@ use TheFarm\Models\Map\BookingItemTableMap;
  * @method     ChildBookingItemQuery orderByIncluded($order = Criteria::ASC) Order by the included column
  * @method     ChildBookingItemQuery orderByFoc($order = Criteria::ASC) Order by the foc column
  * @method     ChildBookingItemQuery orderByUpsell($order = Criteria::ASC) Order by the upsell column
- * @method     ChildBookingItemQuery orderByInventory($order = Criteria::ASC) Order by the inventory column
  * @method     ChildBookingItemQuery orderByUpgrade($order = Criteria::ASC) Order by the upgrade column
+ * @method     ChildBookingItemQuery orderByInventory($order = Criteria::ASC) Order by the inventory column
  *
  * @method     ChildBookingItemQuery groupByBookingItemId() Group by the booking_item_id column
  * @method     ChildBookingItemQuery groupByBookingId() Group by the booking_id column
@@ -37,8 +37,8 @@ use TheFarm\Models\Map\BookingItemTableMap;
  * @method     ChildBookingItemQuery groupByIncluded() Group by the included column
  * @method     ChildBookingItemQuery groupByFoc() Group by the foc column
  * @method     ChildBookingItemQuery groupByUpsell() Group by the upsell column
- * @method     ChildBookingItemQuery groupByInventory() Group by the inventory column
  * @method     ChildBookingItemQuery groupByUpgrade() Group by the upgrade column
+ * @method     ChildBookingItemQuery groupByInventory() Group by the inventory column
  *
  * @method     ChildBookingItemQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildBookingItemQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -87,11 +87,11 @@ use TheFarm\Models\Map\BookingItemTableMap;
  * @method     ChildBookingItem findOneByBookingId(int $booking_id) Return the first ChildBookingItem filtered by the booking_id column
  * @method     ChildBookingItem findOneByItemId(int $item_id) Return the first ChildBookingItem filtered by the item_id column
  * @method     ChildBookingItem findOneByQuantity(int $quantity) Return the first ChildBookingItem filtered by the quantity column
- * @method     ChildBookingItem findOneByIncluded(int $included) Return the first ChildBookingItem filtered by the included column
- * @method     ChildBookingItem findOneByFoc(int $foc) Return the first ChildBookingItem filtered by the foc column
- * @method     ChildBookingItem findOneByUpsell(int $upsell) Return the first ChildBookingItem filtered by the upsell column
- * @method     ChildBookingItem findOneByInventory(int $inventory) Return the first ChildBookingItem filtered by the inventory column
- * @method     ChildBookingItem findOneByUpgrade(int $upgrade) Return the first ChildBookingItem filtered by the upgrade column *
+ * @method     ChildBookingItem findOneByIncluded(boolean $included) Return the first ChildBookingItem filtered by the included column
+ * @method     ChildBookingItem findOneByFoc(boolean $foc) Return the first ChildBookingItem filtered by the foc column
+ * @method     ChildBookingItem findOneByUpsell(boolean $upsell) Return the first ChildBookingItem filtered by the upsell column
+ * @method     ChildBookingItem findOneByUpgrade(boolean $upgrade) Return the first ChildBookingItem filtered by the upgrade column
+ * @method     ChildBookingItem findOneByInventory(int $inventory) Return the first ChildBookingItem filtered by the inventory column *
 
  * @method     ChildBookingItem requirePk($key, ConnectionInterface $con = null) Return the ChildBookingItem by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildBookingItem requireOne(ConnectionInterface $con = null) Return the first ChildBookingItem matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -100,22 +100,22 @@ use TheFarm\Models\Map\BookingItemTableMap;
  * @method     ChildBookingItem requireOneByBookingId(int $booking_id) Return the first ChildBookingItem filtered by the booking_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildBookingItem requireOneByItemId(int $item_id) Return the first ChildBookingItem filtered by the item_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildBookingItem requireOneByQuantity(int $quantity) Return the first ChildBookingItem filtered by the quantity column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildBookingItem requireOneByIncluded(int $included) Return the first ChildBookingItem filtered by the included column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildBookingItem requireOneByFoc(int $foc) Return the first ChildBookingItem filtered by the foc column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildBookingItem requireOneByUpsell(int $upsell) Return the first ChildBookingItem filtered by the upsell column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildBookingItem requireOneByIncluded(boolean $included) Return the first ChildBookingItem filtered by the included column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildBookingItem requireOneByFoc(boolean $foc) Return the first ChildBookingItem filtered by the foc column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildBookingItem requireOneByUpsell(boolean $upsell) Return the first ChildBookingItem filtered by the upsell column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildBookingItem requireOneByUpgrade(boolean $upgrade) Return the first ChildBookingItem filtered by the upgrade column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildBookingItem requireOneByInventory(int $inventory) Return the first ChildBookingItem filtered by the inventory column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildBookingItem requireOneByUpgrade(int $upgrade) Return the first ChildBookingItem filtered by the upgrade column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildBookingItem[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildBookingItem objects based on current ModelCriteria
  * @method     ChildBookingItem[]|ObjectCollection findByBookingItemId(int $booking_item_id) Return ChildBookingItem objects filtered by the booking_item_id column
  * @method     ChildBookingItem[]|ObjectCollection findByBookingId(int $booking_id) Return ChildBookingItem objects filtered by the booking_id column
  * @method     ChildBookingItem[]|ObjectCollection findByItemId(int $item_id) Return ChildBookingItem objects filtered by the item_id column
  * @method     ChildBookingItem[]|ObjectCollection findByQuantity(int $quantity) Return ChildBookingItem objects filtered by the quantity column
- * @method     ChildBookingItem[]|ObjectCollection findByIncluded(int $included) Return ChildBookingItem objects filtered by the included column
- * @method     ChildBookingItem[]|ObjectCollection findByFoc(int $foc) Return ChildBookingItem objects filtered by the foc column
- * @method     ChildBookingItem[]|ObjectCollection findByUpsell(int $upsell) Return ChildBookingItem objects filtered by the upsell column
+ * @method     ChildBookingItem[]|ObjectCollection findByIncluded(boolean $included) Return ChildBookingItem objects filtered by the included column
+ * @method     ChildBookingItem[]|ObjectCollection findByFoc(boolean $foc) Return ChildBookingItem objects filtered by the foc column
+ * @method     ChildBookingItem[]|ObjectCollection findByUpsell(boolean $upsell) Return ChildBookingItem objects filtered by the upsell column
+ * @method     ChildBookingItem[]|ObjectCollection findByUpgrade(boolean $upgrade) Return ChildBookingItem objects filtered by the upgrade column
  * @method     ChildBookingItem[]|ObjectCollection findByInventory(int $inventory) Return ChildBookingItem objects filtered by the inventory column
- * @method     ChildBookingItem[]|ObjectCollection findByUpgrade(int $upgrade) Return ChildBookingItem objects filtered by the upgrade column
  * @method     ChildBookingItem[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -214,7 +214,7 @@ abstract class BookingItemQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT booking_item_id, booking_id, item_id, quantity, included, foc, upsell, inventory, upgrade FROM tf_booking_items WHERE booking_item_id = :p0';
+        $sql = 'SELECT booking_item_id, booking_id, item_id, quantity, included, foc, upsell, upgrade, inventory FROM tf_booking_items WHERE booking_item_id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -477,37 +477,23 @@ abstract class BookingItemQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByIncluded(1234); // WHERE included = 1234
-     * $query->filterByIncluded(array(12, 34)); // WHERE included IN (12, 34)
-     * $query->filterByIncluded(array('min' => 12)); // WHERE included > 12
+     * $query->filterByIncluded(true); // WHERE included = true
+     * $query->filterByIncluded('yes'); // WHERE included = true
      * </code>
      *
-     * @param     mixed $included The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     boolean|string $included The value to use as filter.
+     *              Non-boolean arguments are converted using the following rules:
+     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildBookingItemQuery The current query, for fluid interface
      */
     public function filterByIncluded($included = null, $comparison = null)
     {
-        if (is_array($included)) {
-            $useMinMax = false;
-            if (isset($included['min'])) {
-                $this->addUsingAlias(BookingItemTableMap::COL_INCLUDED, $included['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($included['max'])) {
-                $this->addUsingAlias(BookingItemTableMap::COL_INCLUDED, $included['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
+        if (is_string($included)) {
+            $included = in_array(strtolower($included), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
         }
 
         return $this->addUsingAlias(BookingItemTableMap::COL_INCLUDED, $included, $comparison);
@@ -518,37 +504,23 @@ abstract class BookingItemQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByFoc(1234); // WHERE foc = 1234
-     * $query->filterByFoc(array(12, 34)); // WHERE foc IN (12, 34)
-     * $query->filterByFoc(array('min' => 12)); // WHERE foc > 12
+     * $query->filterByFoc(true); // WHERE foc = true
+     * $query->filterByFoc('yes'); // WHERE foc = true
      * </code>
      *
-     * @param     mixed $foc The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     boolean|string $foc The value to use as filter.
+     *              Non-boolean arguments are converted using the following rules:
+     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildBookingItemQuery The current query, for fluid interface
      */
     public function filterByFoc($foc = null, $comparison = null)
     {
-        if (is_array($foc)) {
-            $useMinMax = false;
-            if (isset($foc['min'])) {
-                $this->addUsingAlias(BookingItemTableMap::COL_FOC, $foc['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($foc['max'])) {
-                $this->addUsingAlias(BookingItemTableMap::COL_FOC, $foc['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
+        if (is_string($foc)) {
+            $foc = in_array(strtolower($foc), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
         }
 
         return $this->addUsingAlias(BookingItemTableMap::COL_FOC, $foc, $comparison);
@@ -559,40 +531,53 @@ abstract class BookingItemQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByUpsell(1234); // WHERE upsell = 1234
-     * $query->filterByUpsell(array(12, 34)); // WHERE upsell IN (12, 34)
-     * $query->filterByUpsell(array('min' => 12)); // WHERE upsell > 12
+     * $query->filterByUpsell(true); // WHERE upsell = true
+     * $query->filterByUpsell('yes'); // WHERE upsell = true
      * </code>
      *
-     * @param     mixed $upsell The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     boolean|string $upsell The value to use as filter.
+     *              Non-boolean arguments are converted using the following rules:
+     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildBookingItemQuery The current query, for fluid interface
      */
     public function filterByUpsell($upsell = null, $comparison = null)
     {
-        if (is_array($upsell)) {
-            $useMinMax = false;
-            if (isset($upsell['min'])) {
-                $this->addUsingAlias(BookingItemTableMap::COL_UPSELL, $upsell['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($upsell['max'])) {
-                $this->addUsingAlias(BookingItemTableMap::COL_UPSELL, $upsell['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
+        if (is_string($upsell)) {
+            $upsell = in_array(strtolower($upsell), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
         }
 
         return $this->addUsingAlias(BookingItemTableMap::COL_UPSELL, $upsell, $comparison);
+    }
+
+    /**
+     * Filter the query on the upgrade column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByUpgrade(true); // WHERE upgrade = true
+     * $query->filterByUpgrade('yes'); // WHERE upgrade = true
+     * </code>
+     *
+     * @param     boolean|string $upgrade The value to use as filter.
+     *              Non-boolean arguments are converted using the following rules:
+     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildBookingItemQuery The current query, for fluid interface
+     */
+    public function filterByUpgrade($upgrade = null, $comparison = null)
+    {
+        if (is_string($upgrade)) {
+            $upgrade = in_array(strtolower($upgrade), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+        }
+
+        return $this->addUsingAlias(BookingItemTableMap::COL_UPGRADE, $upgrade, $comparison);
     }
 
     /**
@@ -634,47 +619,6 @@ abstract class BookingItemQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(BookingItemTableMap::COL_INVENTORY, $inventory, $comparison);
-    }
-
-    /**
-     * Filter the query on the upgrade column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByUpgrade(1234); // WHERE upgrade = 1234
-     * $query->filterByUpgrade(array(12, 34)); // WHERE upgrade IN (12, 34)
-     * $query->filterByUpgrade(array('min' => 12)); // WHERE upgrade > 12
-     * </code>
-     *
-     * @param     mixed $upgrade The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildBookingItemQuery The current query, for fluid interface
-     */
-    public function filterByUpgrade($upgrade = null, $comparison = null)
-    {
-        if (is_array($upgrade)) {
-            $useMinMax = false;
-            if (isset($upgrade['min'])) {
-                $this->addUsingAlias(BookingItemTableMap::COL_UPGRADE, $upgrade['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($upgrade['max'])) {
-                $this->addUsingAlias(BookingItemTableMap::COL_UPGRADE, $upgrade['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(BookingItemTableMap::COL_UPGRADE, $upgrade, $comparison);
     }
 
     /**

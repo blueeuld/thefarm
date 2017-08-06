@@ -16,8 +16,8 @@ class Services extends TF_Controller {
 		$this->db->from('items');
 		$this->db->join('item_categories', 'items.item_id = item_categories.item_id', 'left');
 		$this->db->join('categories', 'categories.cat_id = item_categories.category_id', 'left');
-		if ($this->session->userdata('location_id')) {
-			$location = $this->session->userdata('location_id');
+		if ($_SESSION['User']['LocationId']) {
+			$location = $_SESSION['User']['LocationId'];
 			$this->db->where_in('categories.location_id', array(0, $location));
 		}
 

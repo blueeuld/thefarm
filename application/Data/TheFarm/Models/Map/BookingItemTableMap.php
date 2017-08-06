@@ -107,14 +107,14 @@ class BookingItemTableMap extends TableMap
     const COL_UPSELL = 'tf_booking_items.upsell';
 
     /**
-     * the column name for the inventory field
-     */
-    const COL_INVENTORY = 'tf_booking_items.inventory';
-
-    /**
      * the column name for the upgrade field
      */
     const COL_UPGRADE = 'tf_booking_items.upgrade';
+
+    /**
+     * the column name for the inventory field
+     */
+    const COL_INVENTORY = 'tf_booking_items.inventory';
 
     /**
      * The default string format for model objects of the related table
@@ -128,10 +128,10 @@ class BookingItemTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('BookingItemId', 'BookingId', 'ItemId', 'Quantity', 'Included', 'Foc', 'Upsell', 'Inventory', 'Upgrade', ),
-        self::TYPE_CAMELNAME     => array('bookingItemId', 'bookingId', 'itemId', 'quantity', 'included', 'foc', 'upsell', 'inventory', 'upgrade', ),
-        self::TYPE_COLNAME       => array(BookingItemTableMap::COL_BOOKING_ITEM_ID, BookingItemTableMap::COL_BOOKING_ID, BookingItemTableMap::COL_ITEM_ID, BookingItemTableMap::COL_QUANTITY, BookingItemTableMap::COL_INCLUDED, BookingItemTableMap::COL_FOC, BookingItemTableMap::COL_UPSELL, BookingItemTableMap::COL_INVENTORY, BookingItemTableMap::COL_UPGRADE, ),
-        self::TYPE_FIELDNAME     => array('booking_item_id', 'booking_id', 'item_id', 'quantity', 'included', 'foc', 'upsell', 'inventory', 'upgrade', ),
+        self::TYPE_PHPNAME       => array('BookingItemId', 'BookingId', 'ItemId', 'Quantity', 'Included', 'Foc', 'Upsell', 'Upgrade', 'Inventory', ),
+        self::TYPE_CAMELNAME     => array('bookingItemId', 'bookingId', 'itemId', 'quantity', 'included', 'foc', 'upsell', 'upgrade', 'inventory', ),
+        self::TYPE_COLNAME       => array(BookingItemTableMap::COL_BOOKING_ITEM_ID, BookingItemTableMap::COL_BOOKING_ID, BookingItemTableMap::COL_ITEM_ID, BookingItemTableMap::COL_QUANTITY, BookingItemTableMap::COL_INCLUDED, BookingItemTableMap::COL_FOC, BookingItemTableMap::COL_UPSELL, BookingItemTableMap::COL_UPGRADE, BookingItemTableMap::COL_INVENTORY, ),
+        self::TYPE_FIELDNAME     => array('booking_item_id', 'booking_id', 'item_id', 'quantity', 'included', 'foc', 'upsell', 'upgrade', 'inventory', ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
     );
 
@@ -142,10 +142,10 @@ class BookingItemTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('BookingItemId' => 0, 'BookingId' => 1, 'ItemId' => 2, 'Quantity' => 3, 'Included' => 4, 'Foc' => 5, 'Upsell' => 6, 'Inventory' => 7, 'Upgrade' => 8, ),
-        self::TYPE_CAMELNAME     => array('bookingItemId' => 0, 'bookingId' => 1, 'itemId' => 2, 'quantity' => 3, 'included' => 4, 'foc' => 5, 'upsell' => 6, 'inventory' => 7, 'upgrade' => 8, ),
-        self::TYPE_COLNAME       => array(BookingItemTableMap::COL_BOOKING_ITEM_ID => 0, BookingItemTableMap::COL_BOOKING_ID => 1, BookingItemTableMap::COL_ITEM_ID => 2, BookingItemTableMap::COL_QUANTITY => 3, BookingItemTableMap::COL_INCLUDED => 4, BookingItemTableMap::COL_FOC => 5, BookingItemTableMap::COL_UPSELL => 6, BookingItemTableMap::COL_INVENTORY => 7, BookingItemTableMap::COL_UPGRADE => 8, ),
-        self::TYPE_FIELDNAME     => array('booking_item_id' => 0, 'booking_id' => 1, 'item_id' => 2, 'quantity' => 3, 'included' => 4, 'foc' => 5, 'upsell' => 6, 'inventory' => 7, 'upgrade' => 8, ),
+        self::TYPE_PHPNAME       => array('BookingItemId' => 0, 'BookingId' => 1, 'ItemId' => 2, 'Quantity' => 3, 'Included' => 4, 'Foc' => 5, 'Upsell' => 6, 'Upgrade' => 7, 'Inventory' => 8, ),
+        self::TYPE_CAMELNAME     => array('bookingItemId' => 0, 'bookingId' => 1, 'itemId' => 2, 'quantity' => 3, 'included' => 4, 'foc' => 5, 'upsell' => 6, 'upgrade' => 7, 'inventory' => 8, ),
+        self::TYPE_COLNAME       => array(BookingItemTableMap::COL_BOOKING_ITEM_ID => 0, BookingItemTableMap::COL_BOOKING_ID => 1, BookingItemTableMap::COL_ITEM_ID => 2, BookingItemTableMap::COL_QUANTITY => 3, BookingItemTableMap::COL_INCLUDED => 4, BookingItemTableMap::COL_FOC => 5, BookingItemTableMap::COL_UPSELL => 6, BookingItemTableMap::COL_UPGRADE => 7, BookingItemTableMap::COL_INVENTORY => 8, ),
+        self::TYPE_FIELDNAME     => array('booking_item_id' => 0, 'booking_id' => 1, 'item_id' => 2, 'quantity' => 3, 'included' => 4, 'foc' => 5, 'upsell' => 6, 'upgrade' => 7, 'inventory' => 8, ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
     );
 
@@ -170,11 +170,11 @@ class BookingItemTableMap extends TableMap
         $this->addForeignKey('booking_id', 'BookingId', 'INTEGER', 'tf_bookings', 'booking_id', true, null, null);
         $this->addForeignKey('item_id', 'ItemId', 'INTEGER', 'tf_items', 'item_id', true, null, null);
         $this->addColumn('quantity', 'Quantity', 'INTEGER', true, 5, null);
-        $this->addColumn('included', 'Included', 'INTEGER', true, 1, null);
-        $this->addColumn('foc', 'Foc', 'INTEGER', true, 1, 0);
-        $this->addColumn('upsell', 'Upsell', 'INTEGER', true, 1, 0);
+        $this->addColumn('included', 'Included', 'BOOLEAN', false, 1, null);
+        $this->addColumn('foc', 'Foc', 'BOOLEAN', false, 1, null);
+        $this->addColumn('upsell', 'Upsell', 'BOOLEAN', false, 1, null);
+        $this->addColumn('upgrade', 'Upgrade', 'BOOLEAN', false, 1, null);
         $this->addColumn('inventory', 'Inventory', 'INTEGER', false, 5, 0);
-        $this->addColumn('upgrade', 'Upgrade', 'SMALLINT', false, 1, 0);
     } // initialize()
 
     /**
@@ -353,8 +353,8 @@ class BookingItemTableMap extends TableMap
             $criteria->addSelectColumn(BookingItemTableMap::COL_INCLUDED);
             $criteria->addSelectColumn(BookingItemTableMap::COL_FOC);
             $criteria->addSelectColumn(BookingItemTableMap::COL_UPSELL);
-            $criteria->addSelectColumn(BookingItemTableMap::COL_INVENTORY);
             $criteria->addSelectColumn(BookingItemTableMap::COL_UPGRADE);
+            $criteria->addSelectColumn(BookingItemTableMap::COL_INVENTORY);
         } else {
             $criteria->addSelectColumn($alias . '.booking_item_id');
             $criteria->addSelectColumn($alias . '.booking_id');
@@ -363,8 +363,8 @@ class BookingItemTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.included');
             $criteria->addSelectColumn($alias . '.foc');
             $criteria->addSelectColumn($alias . '.upsell');
-            $criteria->addSelectColumn($alias . '.inventory');
             $criteria->addSelectColumn($alias . '.upgrade');
+            $criteria->addSelectColumn($alias . '.inventory');
         }
     }
 

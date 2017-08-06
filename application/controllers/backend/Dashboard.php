@@ -17,7 +17,7 @@ class Dashboard extends TF_Controller {
 
 		$data['sales'] = $sales;
 		
-		$data['providers'] = get_available_providers(date('Y-m-d'), $_SESSION['User']['LocationId']); // get_provider_list(false, false, false, $this->session->userdata('location_id'));
+		$data['providers'] = get_available_providers(date('Y-m-d'), $_SESSION['User']['LocationId']); // get_provider_list(false, false, false, $_SESSION['User']['LocationId']);
 		
 		$this->db->select('contacts.first_name, contacts.last_name, bookings.booking_id, items.title as room_name, contacts.contact_id, package_types.package_type_name');
 		$this->db->from('contacts');

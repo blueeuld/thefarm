@@ -88,7 +88,7 @@
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown"> <span
 								class="thumb-sm avatar pull-left"> 
-								<?php echo img(array('src' => get_current_user_photo())); ?> </span> <?php echo $this->session->userdata('screen_name'); ?>
+								<?php echo img(array('src' => get_current_user_photo())); ?> </span> <?php echo $_SESSION['FirstName']; ?>
 							<b class="caret"></b> </a>
 						<ul class="dropdown-menu animated fadeInRight">
 							<li><a href="<?php echo site_url('logout?return=/'); ?>">Logout</a></li>

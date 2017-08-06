@@ -51,7 +51,7 @@ class Entry extends TF_Controller
                 array(
                     'submitted' => 'y',
                     'submitted_date' => now(),
-                    'completed_by' => $complete ? $this->session->userdata('user_id') : 0,
+                    'completed_by' => $complete ? $_SESSION['ContactId'] : 0,
                     'completed_date' => $complete ? now() : 0,
                 ),
                 sprintf('booking_id=%d AND form_id=%d', $booking_id, $form_id));
@@ -66,7 +66,7 @@ class Entry extends TF_Controller
                 array(
                     'submitted' => 'y',
                     'submitted_date' => now(),
-                    'completed_by' => $complete ? $this->session->userdata('user_id') : 0,
+                    'completed_by' => $complete ? $_SESSION['ContactId'] : 0,
                     'completed_date' => $complete ? now() : 0,
                 ),
                 sprintf('booking_id=%d AND form_id=%d', $booking_id, $form_id));
@@ -104,7 +104,7 @@ class Entry extends TF_Controller
 
 
                     $this->load->library('email');
-                    $this->email->from($this->session->userdata('email'), $this->session->userdata('screen_name'));
+                    $this->email->from($_SESSION['Email'], $_SESSION['FirstName']);
                     $this->email->to($to);
                     $this->email->subject($subject);
                     $this->email->message($message);

@@ -47,7 +47,7 @@
 							lifestyle.
 						</p>
 						<!--<span>Sarah Smith - Trip Advisor</span>//-->
-						<?php if (!$this->session->userdata('user_id')) : ?>
+						<?php if (!$_SESSION['ContactId']) : ?>
 						<div style="width:300px;" class="center"><a href="#login" data-toggle="modal" data-target="#login-modal" type="submit" value="Submit"
 																	class="button button-small button-full button-reveal button-check tright hvr-bounce-to-top"><span>FIND OUT MORE</span>
 								<i class="icon-chevron-right"></i></a>

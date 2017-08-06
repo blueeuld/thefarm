@@ -456,7 +456,7 @@ class Calendar extends TF_Controller
         $statuses = get_event_statuses();
 
         
-        $default_view = $this->session->userdata('default_calendar_view');
+        $default_view = $_SESSION['User']['Group']['DefaultCalendarView'];
 
         $data = array();
         $data['statuses'] = get_event_statuses();
@@ -478,7 +478,7 @@ class Calendar extends TF_Controller
             'header' => array(
                 'left' => 'prev, next, today, treatments, nutritionals, print',
                 'center' => 'title',
-                'right' => $this->session->userdata('calendar_header_right') ? $this->session->userdata('calendar_header_right') : 'agendaDay,agendaWeek,month',
+                'right' => $_SESSION['User']['Group']['CalendarHeaderRight'] ? $_SESSION['User']['Group']['CalendarHeaderRight'] : 'agendaDay,agendaWeek,month',
             ),
             'views' => array(
                 'byProviders' => array(
@@ -502,7 +502,7 @@ class Calendar extends TF_Controller
             'viewFullDetails' => true, //!tf_current_user_can('edit_calendar'),
             'canChange' => current_user_can('CanAddSchedule'),
             'statuses' => $statuses,
-            'user_id' => $this->session->userdata('user_id'),
+            'user_id' => $_SESSION['ContactId'],
             'show_my_appointments' => true,
             
         );
@@ -512,7 +512,7 @@ class Calendar extends TF_Controller
 	        $inline_js['locations'] = $locations;
             $inline_js['print_url'] = site_url('backend/calendar/print_schedule');
 			$inline_js['show_no_schedule'] = $this->session->userdata('calendar_show_no_schedule');
-            $inline_js['selected_locations'] = $this->session->userdata('location_id'); //$this->session->userdata('calendar_view_locations') ? $this->session->userdata('calendar_view_locations') : array();
+            $inline_js['selected_locations'] = $_SESSION['User']['LocationId']; //$this->session->userdata('calendar_view_locations') ? $this->session->userdata('calendar_view_locations') : array();
             $inline_js['selected_statuses'] = $this->session->userdata('calendar_view_status') ? $this->session->userdata('calendar_view_status') : array();
         }
         
@@ -590,7 +590,7 @@ class Calendar extends TF_Controller
     {
         $this->db->select('*');
         $this->db->from('facilities');
-        $this->db->where_in('facilities.location_id', array(0, $this->session->userdata('location_id')));
+        $this->db->where_in('facilities.location_id', array(0, $_SESSION['User']['LocationId']));
         $this->db->order_by('facility_name', 'asc');
         $query = $this->db->get();
 
@@ -813,7 +813,7 @@ class Calendar extends TF_Controller
         $include = array();
 
         if (isset($_REQUEST['show_my_appointments']) && $_REQUEST['show_my_appointments'] === 'true') {
-            $include[] = $this->session->userdata('user_id');
+            $include[] = $_SESSION['ContactId'];
             $positions = array();
         }
 
@@ -933,7 +933,7 @@ class Calendar extends TF_Controller
             //get the recent booking_id
             $this->db->select('bookings.booking_id');
             $this->db->from('bookings');
-            $this->db->where('bookings.guest_id = ', $this->session->userdata('user_id'));
+            $this->db->where('bookings.guest_id = ', $_SESSION['ContactId']);
             $this->db->where('bookings.status', 'confirmed');
             $this->db->where('bookings.is_active', 1);
             $this->db->limit(1);
@@ -954,7 +954,7 @@ class Calendar extends TF_Controller
 		$params['guest_id'] = $guest_id;
 		$params['categories'] = $categories;
 		
-		if ($show_my_appointments) $params['provider_id'] = $this->session->userdata('user_id');
+		if ($show_my_appointments) $params['provider_id'] = $_SESSION['ContactId'];
 		
         $this->load->library('Eventsbuilder', $params);
 		
@@ -973,7 +973,7 @@ class Calendar extends TF_Controller
             //get the recent booking_id
             $this->db->select('bookings.booking_id');
             $this->db->from('bookings');
-            $this->db->where('bookings.guest_id = ', $this->session->userdata('user_id'));
+            $this->db->where('bookings.guest_id = ', $_SESSION['ContactId']);
             $this->db->where('bookings.status', 'confirmed');
             $this->db->limit(1);
             $result = $this->db->get()->row_array();
@@ -1053,7 +1053,7 @@ class Calendar extends TF_Controller
     public function unassigned_events() {
 
 	    $eventApi = new EventApi();
-	    $fcEvents = to_full_calendar_events($eventApi->get_events(null, null, [1, 2, 9], $this->session->userdata('location_id'), true, 'P7D', true));
+	    $fcEvents = to_full_calendar_events($eventApi->get_events(null, null, [1, 2, 9], $_SESSION['User']['LocationId'], true, 'P7D', true));
 
         $this->output->set_content_type('application/json')->set_output(json_encode($fcEvents));
     }

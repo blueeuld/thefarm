@@ -41,7 +41,7 @@ class Facility extends TF_Controller {
 			'abbr' => '',
 			'status' => 1,
 			'bg_color' => '#fff',
-			'location_id' => $this->session->userdata('location_id'),
+			'location_id' => $_SESSION['User']['LocationId'],
 			'colors' => array("#5B0F00","#660000","#783F04","#7F6000","#274E13","#0C343D","#1C4587","#073763","#20124D","#4C1130",
 		"#5B0F00","#660000","#783F04","#7F6000","#274E13","#0C343D","#1C4587","#073763","#20124D","#4C1130",
 		"#85200C","#990000","#B45F06","#BF9000","#38761D","#134F5C","#1155CC","#0B5394","#351C75","#741B47",

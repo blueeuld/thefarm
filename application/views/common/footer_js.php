@@ -110,7 +110,7 @@
                     actionUpload: '<button type="button" class="kv-file-upload btn btn-default" title="{uploadTitle}"><i class="fa fa-upload"></i> Upload</button>\n'
 				},
 				allowedFileExtensions: ["jpg", "png", "gif", "jpeg"],
-                uploadUrl: '/frontend/upload_photo/<?php echo $this->session->userdata('user_id');?>',
+                uploadUrl: '/frontend/upload_photo/<?php echo $_SESSION['ContactId'];?>',
 				uploadAsync: false
 			});
 
