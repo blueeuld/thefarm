@@ -46,9 +46,7 @@ class Login extends TF_Controller {
 
 			$userApi = new UserApi();
 			$userData = $userApi->validate_user($username, do_hash($password));
-
-			var_dump($userData);
-
+            
 
 			if (is_null($userData)) {
                 $this->show_result('Invalid username / password.', true);
