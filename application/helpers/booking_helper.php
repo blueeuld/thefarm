@@ -78,7 +78,7 @@ function available_booking_items($booking_id = 0, $categories = false)
     {
         $all_location = get_all_locations();
         foreach ($all_location as $_row) {
-            if (current_user_can('can_edit_schedules_'.$_row['location_id'])) {
+            if (current_user_can('CanEditSchedules'.$_row['location_id'])) {
                 $locations[] = $_row['location_id'];
             }
         }

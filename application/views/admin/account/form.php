@@ -37,7 +37,7 @@ $qstr = $qstr ? $qstr.'&return='.$return : '?return=' . $return;
 											<div role="tabpanel" class="tabbable tabs-primary">
 												<!-- Nav tabs -->
 												<ul class="nav nav-tabs" role="tablist">
-													<?php if (current_user_can('can_view_other_profiles') || $contact_id === 0 || $contact_id === get_current_user_id()) : ?>
+													<?php if (current_user_can('CanViewOtherProfiles') || $contact_id === 0 || $contact_id === get_current_user_id()) : ?>
 														<li role="presentation">
 															<a href="#account" aria-controls="account" role="tab" data-toggle="tab"><i class="fa fa-fw fa-user"></i> Profile</a>
 														</li>
@@ -46,13 +46,13 @@ $qstr = $qstr ? $qstr.'&return='.$return : '?return=' . $return;
 													<?php if ($contact_id) : ?>
 													
 														<?php if ((int)$group_id === 5 || $group_id === NULL) : ?>
-															<?php if (current_user_can('can_manage_guest_bookings')) : ?>
+															<?php if (current_user_can('CanManageGuestBookings')) : ?>
 															<li role="presentation">
 																<a href="#bookings" aria-controls="bookings" role="tab" data-toggle="tab"><i class="fa fa-fw fa-book"></i> Bookings</a>
 															</li>
 															<?php endif; ?>
 															
-															<?php if (current_user_can('can_manage_guest_forms')) : ?>
+															<?php if (current_user_can('CanManageGuestForms')) : ?>
 															<li role="presentation">
 																<a href="#submissions" aria-controls="submissions" role="tab" data-toggle="tab"><i class="fa fa-fw fa-book"></i> Forms</a>
 															</li>
@@ -77,7 +77,7 @@ $qstr = $qstr ? $qstr.'&return='.$return : '?return=' . $return;
 														</li>
 													<?php endif; ?>
 
-                                                    <?php if (current_user_can('can_manage_guest_settings')) : ?>
+                                                    <?php if (current_user_can('CanManageGuestSettings')) : ?>
 													<li role="presentation">
 														<a href="#member" aria-controls="member" role="tab" data-toggle="tab"><i class="fa fa-fw fa-cog"></i> Settings</a>
 													</li>
@@ -88,14 +88,14 @@ $qstr = $qstr ? $qstr.'&return='.$return : '?return=' . $return;
 												<!-- Tab panes -->
 												<div class="tab-content tab-content-default" style="margin-top: 20px;">
 													
-													<?php if (current_user_can('can_view_other_profiles') || $contact_id === 0 || $contact_id === get_current_user_id()) : ?>
+													<?php if (current_user_can('CanViewOtherProfiles') || $contact_id === 0 || $contact_id === get_current_user_id()) : ?>
 														<div role="tabpanel" class="tab-pane" id="account">
 															<?php $this->view('admin/account/info', array('account' => $account, 'return' => $return)); ?>
 														</div>
 													<?php endif; ?>
 													
 													<?php if ($contact_id) : ?>
-														<?php if (current_user_can('can_manage_guest_bookings')) : ?>
+														<?php if (current_user_can('CanManageGuestBookings')) : ?>
 														<div role="tabpanel" class="tab-pane" id="bookings">
 															<h4 class="headline">Recent & Previous Bookings
 																<?php if ($account['recent_booking'] === null) : ?>
@@ -161,7 +161,7 @@ $qstr = $qstr ? $qstr.'&return='.$return : '?return=' . $return;
 														</div>
 														<?php endif; ?>
 														
-														<?php if (current_user_can('can_manage_guest_forms')) : ?>
+														<?php if (current_user_can('CanManageGuestForms')) : ?>
 														
 														<div role="tabpanel" class="tab-pane" id="submissions">
 
@@ -187,7 +187,7 @@ $qstr = $qstr ? $qstr.'&return='.$return : '?return=' . $return;
 																				<!--<h3><?php echo $form['form_name'];?></h3>-->
 																				<?php
 																					$completed_by = (int)$form['completed_by'];
-																					if ($completed_by > 0 && current_user_can('can_edit_completed_forms') && get_current_user_id() !== $completed_by) :
+																					if ($completed_by > 0 && current_user_can('CanEditCompletedForms') && get_current_user_id() !== $completed_by) :
 																					    ?>
 																					    You are not allowed to edit forms completed by others.
 																					    <?php
@@ -259,7 +259,7 @@ $qstr = $qstr ? $qstr.'&return='.$return : '?return=' . $return;
 													
 													<?php endif; ?>
 													
-													<?php if (current_user_can('include_in_provider_list', $account['contact_id'])) : ?>
+													<?php if (current_user_can('IncludeInProviderList', $account['contact_id'])) : ?>
 														
 														<div role="tabpanel" class="tab-pane" id="services">
 															
@@ -299,7 +299,7 @@ $qstr = $qstr ? $qstr.'&return='.$return : '?return=' . $return;
 													
 													<?php endif; ?>
 
-                                                    <?php if (current_user_can('can_manage_guest_settings')) : ?>
+                                                    <?php if (current_user_can('CanManageGuestSettings')) : ?>
 													<div role="tabpanel" class="tab-pane" id="member">
 														<?php $this->view('admin/account/login', array('account' => $account, 'return' => $return)); ?>
 													</div>

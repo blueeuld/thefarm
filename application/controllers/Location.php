@@ -7,7 +7,7 @@ class Location extends TF_Controller {
 
 	public function index()
 	{
-		if (!$this->session->has_userdata('user_id'))
+		if (!$this->session->has_userdata('ContactId'))
 		{
 			redirect('login');
 		}
@@ -16,7 +16,7 @@ class Location extends TF_Controller {
 
 	public function change() {
 
-		if ($this->session->userdata('group_id') === 1) {
+		if ($_SESSION['User']['Group']['GroupId'] === 1) {
 
 			$userdata = $this->session->userdata;
 			$userdata['location_id'] = (int)$this->uri->segment(3);

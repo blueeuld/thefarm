@@ -48,7 +48,7 @@ class Booking extends TF_Controller {
 		$query = $this->db->get_where('contacts', 'contact_id = '.$guest_id);
 		$guest = $query->row_array();
 		
-		if (current_user_can('can_manage_guest_bookings')) {
+		if (current_user_can('CanManageGuestBookings')) {
 		
 			if ($booking_id)
 			{

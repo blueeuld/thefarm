@@ -87,7 +87,7 @@ function get_events($booking_id = false, $event_id = false,
         if ($locations) {
             $location_ids = array();
             foreach ($locations as $location) {
-                if (current_user_can('can_view_schedules_' . $location)) {
+                if (current_user_can('CanViewSchedules' . $location)) {
                     $location_ids[] = (int)$location;
                 }
             }
@@ -114,7 +114,7 @@ function get_events($booking_id = false, $event_id = false,
         $results[$i]['editable'] = false;
         $results[$i]['overlap'] = false;
 
-        if ($results[$i]['location_id'] !== null && current_user_can('can_edit_schedules_' . $results[$i]['location_id'])) {
+        if ($results[$i]['location_id'] !== null && current_user_can('CanEditSchedules' . $results[$i]['location_id'])) {
             $results[$i]['editable'] = true;
         }
 

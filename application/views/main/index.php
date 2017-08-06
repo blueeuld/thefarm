@@ -15,7 +15,7 @@
 								<?php $this->load->view('frontend/photo');?>
 								<div class="content">
 									
-									<?php if ($this->session->userdata('group_id') === 5):?>
+									<?php if ($_SESSION['User']['Group']['GroupId'] === 5):?>
 										
 									<div class="row">
 										<div class="col-lg-12 col-xs-12">
@@ -31,7 +31,7 @@
 									<?php endif; ?>
 									
 									<div class="container-fluid">										
-										<?php if ($this->session->userdata('group_id') === 11 || $this->session->userdata('group_id') === 13):?>
+										<?php if ($_SESSION['User']['Group']['GroupId'] === 11 || $_SESSION['User']['Group']['GroupId'] === 13):?>
 										
 										<div class="wrapper-lg">
 
@@ -80,7 +80,7 @@
 										
 										<?php endif;?>
 										
-										<?php if ($this->session->userdata('group_id') === 5):?>
+										<?php if ($_SESSION['User']['Group']['GroupId'] === 5):?>
 									
 										<div class="row">
 											<div class="col-md-6 col-lg-3">

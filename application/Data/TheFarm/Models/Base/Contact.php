@@ -246,12 +246,12 @@ abstract class Contact implements ActiveRecordInterface
     protected $verification_key;
 
     /**
-     * The value for the verified field.
+     * The value for the is_verified field.
      *
-     * Note: this column has a database default value of: 'n'
-     * @var        string
+     * Note: this column has a database default value of: false
+     * @var        boolean
      */
-    protected $verified;
+    protected $is_verified;
 
     /**
      * The value for the nickname field.
@@ -269,12 +269,12 @@ abstract class Contact implements ActiveRecordInterface
     protected $bio;
 
     /**
-     * The value for the approved field.
+     * The value for the is_approved field.
      *
-     * Note: this column has a database default value of: 'y'
-     * @var        string
+     * Note: this column has a database default value of: false
+     * @var        boolean
      */
-    protected $approved;
+    protected $is_approved;
 
     /**
      * The value for the activation_code field.
@@ -417,9 +417,9 @@ abstract class Contact implements ActiveRecordInterface
         $this->weight = '';
         $this->phone = '';
         $this->verification_key = '';
-        $this->verified = 'n';
+        $this->is_verified = false;
         $this->nickname = '';
-        $this->approved = 'y';
+        $this->is_approved = false;
     }
 
     /**
@@ -900,13 +900,23 @@ abstract class Contact implements ActiveRecordInterface
     }
 
     /**
-     * Get the [verified] column value.
+     * Get the [is_verified] column value.
      *
-     * @return string
+     * @return boolean
      */
-    public function getVerified()
+    public function getIsVerified()
     {
-        return $this->verified;
+        return $this->is_verified;
+    }
+
+    /**
+     * Get the [is_verified] column value.
+     *
+     * @return boolean
+     */
+    public function isVerified()
+    {
+        return $this->getIsVerified();
     }
 
     /**
@@ -930,13 +940,23 @@ abstract class Contact implements ActiveRecordInterface
     }
 
     /**
-     * Get the [approved] column value.
+     * Get the [is_approved] column value.
      *
-     * @return string
+     * @return boolean
      */
-    public function getApproved()
+    public function getIsApproved()
     {
-        return $this->approved;
+        return $this->is_approved;
+    }
+
+    /**
+     * Get the [is_approved] column value.
+     *
+     * @return boolean
+     */
+    public function isApproved()
+    {
+        return $this->getIsApproved();
     }
 
     /**
@@ -1402,24 +1422,32 @@ abstract class Contact implements ActiveRecordInterface
     } // setVerificationKey()
 
     /**
-     * Set the value of [verified] column.
+     * Sets the value of the [is_verified] column.
+     * Non-boolean arguments are converted using the following rules:
+     *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
      *
-     * @param string $v new value
+     * @param  boolean|integer|string $v The new value
      * @return $this|\TheFarm\Models\Contact The current object (for fluent API support)
      */
-    public function setVerified($v)
+    public function setIsVerified($v)
     {
         if ($v !== null) {
-            $v = (string) $v;
+            if (is_string($v)) {
+                $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            } else {
+                $v = (boolean) $v;
+            }
         }
 
-        if ($this->verified !== $v) {
-            $this->verified = $v;
-            $this->modifiedColumns[ContactTableMap::COL_VERIFIED] = true;
+        if ($this->is_verified !== $v) {
+            $this->is_verified = $v;
+            $this->modifiedColumns[ContactTableMap::COL_IS_VERIFIED] = true;
         }
 
         return $this;
-    } // setVerified()
+    } // setIsVerified()
 
     /**
      * Set the value of [nickname] column.
@@ -1462,24 +1490,32 @@ abstract class Contact implements ActiveRecordInterface
     } // setBio()
 
     /**
-     * Set the value of [approved] column.
+     * Sets the value of the [is_approved] column.
+     * Non-boolean arguments are converted using the following rules:
+     *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
      *
-     * @param string $v new value
+     * @param  boolean|integer|string $v The new value
      * @return $this|\TheFarm\Models\Contact The current object (for fluent API support)
      */
-    public function setApproved($v)
+    public function setIsApproved($v)
     {
         if ($v !== null) {
-            $v = (string) $v;
+            if (is_string($v)) {
+                $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            } else {
+                $v = (boolean) $v;
+            }
         }
 
-        if ($this->approved !== $v) {
-            $this->approved = $v;
-            $this->modifiedColumns[ContactTableMap::COL_APPROVED] = true;
+        if ($this->is_approved !== $v) {
+            $this->is_approved = $v;
+            $this->modifiedColumns[ContactTableMap::COL_IS_APPROVED] = true;
         }
 
         return $this;
-    } // setApproved()
+    } // setIsApproved()
 
     /**
      * Set the value of [activation_code] column.
@@ -1559,7 +1595,7 @@ abstract class Contact implements ActiveRecordInterface
                 return false;
             }
 
-            if ($this->verified !== 'n') {
+            if ($this->is_verified !== false) {
                 return false;
             }
 
@@ -1567,7 +1603,7 @@ abstract class Contact implements ActiveRecordInterface
                 return false;
             }
 
-            if ($this->approved !== 'y') {
+            if ($this->is_approved !== false) {
                 return false;
             }
 
@@ -1669,8 +1705,8 @@ abstract class Contact implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 21 + $startcol : ContactTableMap::translateFieldName('VerificationKey', TableMap::TYPE_PHPNAME, $indexType)];
             $this->verification_key = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 22 + $startcol : ContactTableMap::translateFieldName('Verified', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->verified = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 22 + $startcol : ContactTableMap::translateFieldName('IsVerified', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->is_verified = (null !== $col) ? (boolean) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 23 + $startcol : ContactTableMap::translateFieldName('Nickname', TableMap::TYPE_PHPNAME, $indexType)];
             $this->nickname = (null !== $col) ? (string) $col : null;
@@ -1678,8 +1714,8 @@ abstract class Contact implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 24 + $startcol : ContactTableMap::translateFieldName('Bio', TableMap::TYPE_PHPNAME, $indexType)];
             $this->bio = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 25 + $startcol : ContactTableMap::translateFieldName('Approved', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->approved = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 25 + $startcol : ContactTableMap::translateFieldName('IsApproved', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->is_approved = (null !== $col) ? (boolean) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 26 + $startcol : ContactTableMap::translateFieldName('ActivationCode', TableMap::TYPE_PHPNAME, $indexType)];
             $this->activation_code = (null !== $col) ? (int) $col : null;
@@ -2140,8 +2176,8 @@ abstract class Contact implements ActiveRecordInterface
         if ($this->isColumnModified(ContactTableMap::COL_VERIFICATION_KEY)) {
             $modifiedColumns[':p' . $index++]  = 'verification_key';
         }
-        if ($this->isColumnModified(ContactTableMap::COL_VERIFIED)) {
-            $modifiedColumns[':p' . $index++]  = 'verified';
+        if ($this->isColumnModified(ContactTableMap::COL_IS_VERIFIED)) {
+            $modifiedColumns[':p' . $index++]  = 'is_verified';
         }
         if ($this->isColumnModified(ContactTableMap::COL_NICKNAME)) {
             $modifiedColumns[':p' . $index++]  = 'nickname';
@@ -2149,8 +2185,8 @@ abstract class Contact implements ActiveRecordInterface
         if ($this->isColumnModified(ContactTableMap::COL_BIO)) {
             $modifiedColumns[':p' . $index++]  = 'bio';
         }
-        if ($this->isColumnModified(ContactTableMap::COL_APPROVED)) {
-            $modifiedColumns[':p' . $index++]  = 'approved';
+        if ($this->isColumnModified(ContactTableMap::COL_IS_APPROVED)) {
+            $modifiedColumns[':p' . $index++]  = 'is_approved';
         }
         if ($this->isColumnModified(ContactTableMap::COL_ACTIVATION_CODE)) {
             $modifiedColumns[':p' . $index++]  = 'activation_code';
@@ -2232,8 +2268,8 @@ abstract class Contact implements ActiveRecordInterface
                     case 'verification_key':
                         $stmt->bindValue($identifier, $this->verification_key, PDO::PARAM_STR);
                         break;
-                    case 'verified':
-                        $stmt->bindValue($identifier, $this->verified, PDO::PARAM_STR);
+                    case 'is_verified':
+                        $stmt->bindValue($identifier, (int) $this->is_verified, PDO::PARAM_INT);
                         break;
                     case 'nickname':
                         $stmt->bindValue($identifier, $this->nickname, PDO::PARAM_STR);
@@ -2241,8 +2277,8 @@ abstract class Contact implements ActiveRecordInterface
                     case 'bio':
                         $stmt->bindValue($identifier, $this->bio, PDO::PARAM_STR);
                         break;
-                    case 'approved':
-                        $stmt->bindValue($identifier, $this->approved, PDO::PARAM_STR);
+                    case 'is_approved':
+                        $stmt->bindValue($identifier, (int) $this->is_approved, PDO::PARAM_INT);
                         break;
                     case 'activation_code':
                         $stmt->bindValue($identifier, $this->activation_code, PDO::PARAM_INT);
@@ -2376,7 +2412,7 @@ abstract class Contact implements ActiveRecordInterface
                 return $this->getVerificationKey();
                 break;
             case 22:
-                return $this->getVerified();
+                return $this->getIsVerified();
                 break;
             case 23:
                 return $this->getNickname();
@@ -2385,7 +2421,7 @@ abstract class Contact implements ActiveRecordInterface
                 return $this->getBio();
                 break;
             case 25:
-                return $this->getApproved();
+                return $this->getIsApproved();
                 break;
             case 26:
                 return $this->getActivationCode();
@@ -2442,10 +2478,10 @@ abstract class Contact implements ActiveRecordInterface
             $keys[19] => $this->getPositionCd(),
             $keys[20] => $this->getIsActive(),
             $keys[21] => $this->getVerificationKey(),
-            $keys[22] => $this->getVerified(),
+            $keys[22] => $this->getIsVerified(),
             $keys[23] => $this->getNickname(),
             $keys[24] => $this->getBio(),
-            $keys[25] => $this->getApproved(),
+            $keys[25] => $this->getIsApproved(),
             $keys[26] => $this->getActivationCode(),
         );
         if ($result[$keys[6]] instanceof \DateTimeInterface) {
@@ -2713,7 +2749,7 @@ abstract class Contact implements ActiveRecordInterface
                 $this->setVerificationKey($value);
                 break;
             case 22:
-                $this->setVerified($value);
+                $this->setIsVerified($value);
                 break;
             case 23:
                 $this->setNickname($value);
@@ -2722,7 +2758,7 @@ abstract class Contact implements ActiveRecordInterface
                 $this->setBio($value);
                 break;
             case 25:
-                $this->setApproved($value);
+                $this->setIsApproved($value);
                 break;
             case 26:
                 $this->setActivationCode($value);
@@ -2820,7 +2856,7 @@ abstract class Contact implements ActiveRecordInterface
             $this->setVerificationKey($arr[$keys[21]]);
         }
         if (array_key_exists($keys[22], $arr)) {
-            $this->setVerified($arr[$keys[22]]);
+            $this->setIsVerified($arr[$keys[22]]);
         }
         if (array_key_exists($keys[23], $arr)) {
             $this->setNickname($arr[$keys[23]]);
@@ -2829,7 +2865,7 @@ abstract class Contact implements ActiveRecordInterface
             $this->setBio($arr[$keys[24]]);
         }
         if (array_key_exists($keys[25], $arr)) {
-            $this->setApproved($arr[$keys[25]]);
+            $this->setIsApproved($arr[$keys[25]]);
         }
         if (array_key_exists($keys[26], $arr)) {
             $this->setActivationCode($arr[$keys[26]]);
@@ -2941,8 +2977,8 @@ abstract class Contact implements ActiveRecordInterface
         if ($this->isColumnModified(ContactTableMap::COL_VERIFICATION_KEY)) {
             $criteria->add(ContactTableMap::COL_VERIFICATION_KEY, $this->verification_key);
         }
-        if ($this->isColumnModified(ContactTableMap::COL_VERIFIED)) {
-            $criteria->add(ContactTableMap::COL_VERIFIED, $this->verified);
+        if ($this->isColumnModified(ContactTableMap::COL_IS_VERIFIED)) {
+            $criteria->add(ContactTableMap::COL_IS_VERIFIED, $this->is_verified);
         }
         if ($this->isColumnModified(ContactTableMap::COL_NICKNAME)) {
             $criteria->add(ContactTableMap::COL_NICKNAME, $this->nickname);
@@ -2950,8 +2986,8 @@ abstract class Contact implements ActiveRecordInterface
         if ($this->isColumnModified(ContactTableMap::COL_BIO)) {
             $criteria->add(ContactTableMap::COL_BIO, $this->bio);
         }
-        if ($this->isColumnModified(ContactTableMap::COL_APPROVED)) {
-            $criteria->add(ContactTableMap::COL_APPROVED, $this->approved);
+        if ($this->isColumnModified(ContactTableMap::COL_IS_APPROVED)) {
+            $criteria->add(ContactTableMap::COL_IS_APPROVED, $this->is_approved);
         }
         if ($this->isColumnModified(ContactTableMap::COL_ACTIVATION_CODE)) {
             $criteria->add(ContactTableMap::COL_ACTIVATION_CODE, $this->activation_code);
@@ -3063,10 +3099,10 @@ abstract class Contact implements ActiveRecordInterface
         $copyObj->setPositionCd($this->getPositionCd());
         $copyObj->setIsActive($this->getIsActive());
         $copyObj->setVerificationKey($this->getVerificationKey());
-        $copyObj->setVerified($this->getVerified());
+        $copyObj->setIsVerified($this->getIsVerified());
         $copyObj->setNickname($this->getNickname());
         $copyObj->setBio($this->getBio());
-        $copyObj->setApproved($this->getApproved());
+        $copyObj->setIsApproved($this->getIsApproved());
         $copyObj->setActivationCode($this->getActivationCode());
 
         if ($deepCopy) {
@@ -5799,10 +5835,10 @@ abstract class Contact implements ActiveRecordInterface
         $this->position_cd = null;
         $this->is_active = null;
         $this->verification_key = null;
-        $this->verified = null;
+        $this->is_verified = null;
         $this->nickname = null;
         $this->bio = null;
-        $this->approved = null;
+        $this->is_approved = null;
         $this->activation_code = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();

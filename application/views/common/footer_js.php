@@ -19,7 +19,7 @@
 	TF.now = function() {
 		return moment.unix(<?php echo now(); ?>);
 	};
-	TF.is_logged = '<?php echo $this->session->userdata('group_id') ?>';
+	TF.is_logged = '<?php echo $_SESSION['User']['Group']['GroupId'] ?>';
 	TF.baseURL = '<?php echo site_url();?>';
 	TF.dateFormat = 'MM/DD/YYYY';
 	<?php if (isset($inline_js) && $inline_js) : ?>

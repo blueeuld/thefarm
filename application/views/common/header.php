@@ -20,7 +20,7 @@ $return = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '/';
                         <ul>
                             <li <?php if ($this->uri->segment(1) === ''):;?>class="current"<?php endif;?>><a href="/"><div>Home</div></a></li>
                             
-                            <?php if ($this->session->userdata('group_id') === 5) : ?>
+                            <?php if ($_SESSION['User']['Group']['GroupId'] === 5) : ?>
                             <li <?php if ($this->uri->segment(1) === 'calendar'):;?>class="current"<?php endif;?>><a href="/calendar"><div>Schedule</div></a></li>
                             <li <?php if ($this->uri->segment(1) === 'medical'):;?>class="current"<?php endif;?>><a href="<?php echo site_url('medical');?>"><div>Holistic Sanctuary</div></a></li>
                             <li <?php if ($this->uri->segment(1) === 'spa'):;?>class="current"<?php endif;?>><a href="<?php echo site_url('spa');?>"><div>Aqua Sanctuary</div></a></li>

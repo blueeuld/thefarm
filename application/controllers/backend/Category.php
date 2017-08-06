@@ -47,7 +47,7 @@ class Category extends TF_Controller
 
     public function index()
     {
-        if (!$this->session->has_userdata('user_id')) {
+        if (!$this->session->has_userdata('ContactId')) {
             redirect('login');
         }
 
@@ -75,7 +75,7 @@ class Category extends TF_Controller
 
     function edit()
     {
-        if (!$this->session->has_userdata('user_id')) {
+        if (!$this->session->has_userdata('ContactId')) {
             redirect('login');
         }
 
@@ -104,7 +104,7 @@ class Category extends TF_Controller
 
     function delete()
     {
-        if (!$this->session->has_userdata('user_id')) {
+        if (!$this->session->has_userdata('ContactId')) {
             redirect('login');
         }
 

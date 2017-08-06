@@ -31,16 +31,14 @@ class UserApi {
     function validate_user($username, $hashedPassword) {
 
         $search = \TheFarm\Models\ContactQuery::create()
-            ->filterByIsActive(true)
-            ->filterByVerified('y')
                 ->useUserQuery()->filterByUsername($username)->filterByPassword($hashedPassword)
             ->endUse()->findOne();
 
-        if (!$search) {
+        if ($search) {
             $userArr = $search->toArray();
             $userArr['User'] = $search->getUser()->toArray();
             $userArr['User']['Group'] = $search->getUser()->getGroup()->toArray();
-            return $search->toArray();
+            return $userArr;
         }
 
         return null;

@@ -20,41 +20,41 @@
 				<ul class="nav navbar-nav serif">
 					<li><a href="<?php echo site_url('backend/dashboard'); ?>">Home</a></li>
 					<li><a href="<?php echo site_url('backend/calendar'); ?>"><i class="md md-event-available"></i> Schedules</a></li>
-					<?php if (current_user_can('can_admin_reports')) : ?>
+					<?php if (current_user_can('CanAdminReports')) : ?>
 						<li><a href="<?php echo site_url('backend/reports/daily'); ?>"><i class="md md-insert-chart"></i>
 							Reports</a></li><?php endif; ?>
 					
-					<?php if (current_user_can('can_admin_guest') || current_user_can('can_admin_providers') || current_user_can('can_admin_services') || current_user_can('can_admin_facilities') || current_user_can('can_admin_packages') || current_user_can('can_admin_activities')) : ?>
+					<?php if (current_user_can('CanAdminGuest') || current_user_can('CanAdminProviders') || current_user_can('CanAdminServices') || current_user_can('CanAdminFacilities') || current_user_can('CanAdminPackages') || current_user_can('CanAdminActivities')) : ?>
 						<li class="dropdown submenu">
 							
 							<a href="#"  aria-haspopup="true" aria-expanded="false" class="dropdown-toggle" data-toggle="dropdown"><i class="md md-apps"></i> Manage</a>
 							<ul class="dropdown-menu">
-								<?php if (current_user_can('can_admin_guest')) : ?>
+								<?php if (current_user_can('CanAdminGuest')) : ?>
 									<li><a href="<?php echo site_url('backend/contacts/guest'); ?>"><i class="fa fa-group"></i> Guest</a>
 									</li><?php endif; ?>
-								<?php if (current_user_can('can_admin_services')) : ?>
+								<?php if (current_user_can('CanAdminServices')) : ?>
 									<li><a
 										href="<?php echo site_url('backend/services'); ?>"><i class="md md-list"></i> Services</a></li>
 									<li><a
 										href="<?php echo site_url('backend/category'); ?>"><i class="md md-list"></i> Categories</a></li><?php endif; ?>
-								<?php if (current_user_can('can_admin_providers')) : ?>
+								<?php if (current_user_can('CanAdminProviders')) : ?>
 									<li>
 									<a href="<?php echo site_url('backend/contacts/provider'); ?>"><i class="md md-person"></i> Providers</a></li><?php endif; ?>
-								<?php if (current_user_can('can_admin_providers')) : ?>
+								<?php if (current_user_can('CanAdminProviders')) : ?>
 									<li><a
 										href="<?php echo site_url('backend/schedule/view'); ?>"><i class="md md-timer"></i> Provider Schedules</a>
 									</li><?php endif; ?>
-								<?php if (current_user_can('can_admin_packages')) : ?>
+								<?php if (current_user_can('CanAdminPackages')) : ?>
 									<li><a
 										href="<?php echo site_url('backend/packages'); ?>"><i class="md md-list"></i> Packages </a></li>
 									<li><a
 										href="<?php echo site_url('backend/packagetype'); ?>"><i class="md md-list"></i> Package Types</a></li>
 									<?php endif; ?>
-								<?php if (current_user_can('can_admin_facilities')) : ?>
+								<?php if (current_user_can('CanAdminFacilities')) : ?>
 									<li>
 									<a href="<?php echo site_url('backend/facilities'); ?>"><i class="md md-location-on"></i> Facilities </a></li><?php endif; ?>
 								
-								<?php if (current_user_can('can_admin_activities')) : ?>
+								<?php if (current_user_can('CanAdminActivities')) : ?>
 									<li><a href="<?php echo site_url('backend/events/view/'); ?>"><i class="md md-directions-walk"></i> Activities</a>
 									</li>
 									<li><a href="<?php echo site_url('backend/events/view/kids'); ?>"><i class="md md-directions-walk"></i> Kids

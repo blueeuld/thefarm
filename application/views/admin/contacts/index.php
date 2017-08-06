@@ -41,7 +41,6 @@ $qstr = $qstr ? $qstr.'&return='.$return : '?return=' . $return;
                                                 <th class="booking text-center">Booking</th>
                                                 <?php endif; ?>
                                                 <th class="verified text-center">Verified?</th>
-                                                <th class="active text-center">Active?</th>
                                                 <th class="approved text-center">Approved?</th>
                                                 <th class="actions text-right">Action</th>
                                             </tr>
@@ -70,15 +69,11 @@ $qstr = $qstr ? $qstr.'&return='.$return : '?return=' . $return;
 
 
                                                     <td class="text-center">
-                                                        <?php form_toggle_button('btn-verify', $row['ContactId'], array('Yes', 'No'), $row['Verified']);?>
+                                                        <?php form_toggle_button('btn-verify', $row['ContactId'], array('Yes', 'No'), $row['IsVerified']);?>
                                                     </td>
 
                                                     <td class="text-center">
-                                                        <?php form_toggle_button('btn-active', $row['ContactId'], array('Yes', 'No'), $row['IsActive']);?>
-                                                    </td>
-
-                                                    <td class="text-center">
-                                                        <?php form_toggle_button('btn-approve', $row['ContactId'], array('Yes', 'No'), $row['Approved']);?>
+                                                        <?php form_toggle_button('btn-approve', $row['ContactId'], array('Yes', 'No'), $row['IsApproved']);?>
                                                     </td>
 
                                                     <td class="text-right">

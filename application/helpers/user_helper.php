@@ -49,22 +49,12 @@ function current_user_can($permission, $user_id = 0) {
 	    
 	    if (is_admin()) return true;
 	}
-    
-    
-	$TF->db->select('*');
-	$TF->db->from('contacts');
-	$TF->db->join('users', 'contacts.contact_id = users.contact_id');
-	$TF->db->join('groups', 'users.group_id = groups.group_id');
-	$TF->db->where('contacts.contact_id', $user_id);
-	$query = $TF->db->get();
-	
-	if ($query->num_rows() === 0) return false;
 
-	$row = $query->row_array();
+	$group = $_SESSION['User']['Group'];
 	
-	if (!isset($row[$permission])) return false;
+	if (!isset($group[$permission])) return false;
 	
-	if ($row[$permission] === 'y') return true;
+	if ($group[$permission] === 'y') return true;
 
     return false;
 }

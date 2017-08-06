@@ -46,7 +46,7 @@ elseif ($category['cat_id'] === '11') {
 					<div class="row">
 						<div class="col-md-8 col-md-offset-2 col-xs-12 col-sm-12">
 							<?php $exclude_item = array(); ?>
-							<?php if ($this->session->has_userdata('user_id')) : ?>
+							<?php if ($this->session->has_userdata('ContactId')) : ?>
 
 							<?php if (isset($treatments)) : ?>
 							<div class="tab-section tab-amenities invert" data-sr="over 1s, move 15px">
@@ -92,7 +92,7 @@ elseif ($category['cat_id'] === '11') {
 														</p>
 														<?php if (!is_past_date($event['start'])) : ?>
 														<p>
-															<?php if ($this->session->has_userdata('user_id') && $booking_id) : ?>
+															<?php if ($this->session->has_userdata('ContactId') && $booking_id) : ?>
 																<a data-target="#popup-modal"
 																   data-toggle="modal"
 																   href="<?php echo site_url('frontend/rebook/'.$event['event_id']);?>"
@@ -180,7 +180,7 @@ elseif ($category['cat_id'] === '11') {
 																<p class="price">Duration : <b><?php echo $row['duration']; ?>
 																		minutes</b></p>
 																<p>
-																<?php if ($this->session->has_userdata('user_id') && $booking_id) : ?>
+																<?php if ($this->session->has_userdata('ContactId') && $booking_id) : ?>
 																<a data-target="#popup-modal"
 																   data-toggle="modal"
 																   href="<?php echo site_url('frontend/add_service/' . $booking_id . '/' . $row['item_id'] . '/' . $category_id); ?>"

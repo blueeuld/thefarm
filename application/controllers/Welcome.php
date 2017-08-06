@@ -7,7 +7,7 @@ class Welcome extends TF_Controller {
 
 	public function index()
 	{
-		if (!$this->session->has_userdata('user_id'))
+		if (!$this->session->has_userdata('ContactId'))
 		{
 			redirect('login');
 		}
@@ -157,7 +157,7 @@ class Welcome extends TF_Controller {
 		if (is_guest())
 			redirect('/account/dashboard/');
 		
-		if (!current_user_can('can_view_dashboard')) {
+		if (!current_user_can('CanViewDashboard')) {
 			redirect('calendar');
 		}	
 	}

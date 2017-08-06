@@ -11,7 +11,7 @@ $return = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '/';
                     <li><a href="#" data-toggle="modal" data-target="#login-modal" class="button button-border button-dark button-mini">Log-In</a></li>
 					<?php else : ?>
 					<li>Welcome <?php echo $this->session->userdata('screen_name');?>!
-						<?php if ($this->session->userdata('group_id') !== 5) : ?>
+						<?php if ($_SESSION['User']['Group']['GroupId'] !== 5) : ?>
 							<a href="<?php echo site_url('backend');?>" class="button button-border button-dark button-mini">Dashboard</a>
 						<?php endif; ?>
 						<a href="<?php echo site_url('profile');?>" class="button button-border button-dark button-mini">Profile</a>

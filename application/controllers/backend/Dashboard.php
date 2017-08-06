@@ -4,10 +4,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Dashboard extends TF_Controller {
 
 	function index() {
-		
-		
+
 		$params = array();
-        $params['locations'] = $this->session->userdata('location_id');
+        $params['locations'] = $_SESSION['User']['LocationId'];
 
         $this->load->library('Eventsbuilder');
 		$sales = $this->eventsbuilder->build_sales($params);
@@ -18,7 +17,7 @@ class Dashboard extends TF_Controller {
 
 		$data['sales'] = $sales;
 		
-		$data['providers'] = get_available_providers(date('Y-m-d'), $this->session->userdata('location_id')); // get_provider_list(false, false, false, $this->session->userdata('location_id'));
+		$data['providers'] = get_available_providers(date('Y-m-d'), $_SESSION['User']['LocationId']); // get_provider_list(false, false, false, $this->session->userdata('location_id'));
 		
 		$this->db->select('contacts.first_name, contacts.last_name, bookings.booking_id, items.title as room_name, contacts.contact_id, package_types.package_type_name');
 		$this->db->from('contacts');
@@ -48,7 +47,7 @@ class Dashboard extends TF_Controller {
 		$inline_js = array(
 			'defaultView' => 'agendaDay',
 			'start_date' => date('Y-m-d'),
-			'editable' => current_user_can('can_assign_schedules'),
+			'editable' => current_user_can('CanAssignSchedules'),
 			'droppable' => false,
 			'resource_name' => '',
 			'header' => array(
@@ -69,12 +68,10 @@ class Dashboard extends TF_Controller {
 		
 		$q = $this->db->get('package_types');
 		$data['package_types'] = $q->result_array();
-		
-		$group = get_current_user_group();
-		
-		if ($group['dashboard_top'] !== '') $data['dashboard_top'] = explode(',', trim($group['dashboard_top']));
-		if ($group['dashboard_middle'] !== '') $data['dashboard_middle'] = explode(',', trim($group['dashboard_middle']));
-		if ($group['dashboard_bottom'] !== '') $data['dashboard_bottom'] = explode(',', trim($group['dashboard_bottom']));
+
+		if ($_SESSION['User']['Group']['DashboardTop'] !== '') $data['dashboard_top'] = explode(',', trim($_SESSION['User']['Group']['DashboardTop']));
+		if ($_SESSION['User']['Group']['DashboardMiddle'] !== '') $data['dashboard_middle'] = explode(',', trim($_SESSION['User']['Group']['DashboardMiddle']));
+		if ($_SESSION['User']['Group']['DashboardBottom'] !== '') $data['dashboard_bottom'] = explode(',', trim($_SESSION['User']['Group']['DashboardBottom']));
 		
 		$this->load->view('admin/dashboard', $data);
 	}

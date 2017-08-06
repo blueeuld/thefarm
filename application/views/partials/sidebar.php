@@ -19,28 +19,28 @@
     <div class="nicescroll">
         <div class="wrapper" style="margin-bottom:90px">
             <ul class="nav nav-sidebar" id="sidebar-menu">
-				<?php if (current_user_can('can_view_dashboard')) : ?><li><a href="<?php echo site_url('/');?>"><i class="md md-desktop-mac"></i>Dashboard</a></li><?php endif;?>
+				<?php if (current_user_can('CanViewDashboard')) : ?><li><a href="<?php echo site_url('/');?>"><i class="md md-desktop-mac"></i>Dashboard</a></li><?php endif;?>
                 <li><?php echo anchor('account/edit/' . $this->session->userdata('user_id'), '<i class="md md-person-outline"></i> My Account'); ?></li>
-                <?php if (current_user_can('can_admin_calendar')) : ?><li><a href="<?php echo site_url('calendar');?>"><i class="md md-event-available"></i>Calendar</a></li><?php endif;?>
-                <?php if (current_user_can('can_admin_guest')) : ?><li><a href="<?php echo site_url('contacts');?>"><i class="md md-group"></i> Guest</a></li><?php endif;?>
+                <?php if (current_user_can('CanAdminCalendar')) : ?><li><a href="<?php echo site_url('calendar');?>"><i class="md md-event-available"></i>Calendar</a></li><?php endif;?>
+                <?php if (current_user_can('CanAdminGuest')) : ?><li><a href="<?php echo site_url('contacts');?>"><i class="md md-group"></i> Guest</a></li><?php endif;?>
 
-				<?php if (current_user_can('can_admin_activities')) : ?>
+				<?php if (current_user_can('CanAdminActivities')) : ?>
 					<li><a href="<?php echo site_url('events/view/');?>"><i class="md md-list"></i> Activities</a></li>
 					<li><a href="<?php echo site_url('events/view/kids');?>"><i class="md md-list"></i> Kids Activities</a></li>
 				<?php endif;?>
 				
-				<?php if (current_user_can('can_admin_reports')) : ?><li><a href="<?php echo site_url('reports/daily');?>"><i class="md md-insert-chart"></i> Reports</a></li><?php endif;?>
+				<?php if (current_user_can('CanAdminReports')) : ?><li><a href="<?php echo site_url('reports/daily');?>"><i class="md md-insert-chart"></i> Reports</a></li><?php endif;?>
 
-                <?php if (current_user_can('can_admin_providers') || current_user_can('can_admin_services') || current_user_can('can_admin_facilities') || current_user_can('can_admin_packages')) : ?>
+                <?php if (current_user_can('CanAdminProviders') || current_user_can('CanAdminServices') || current_user_can('CanAdminFacilities') || current_user_can('CanAdminPackages')) : ?>
                 <li class="submenu<?php if (in_array($this->uri->segment(1), array('services', 'providers', 'packages', 'facilities'))):?> active<?php endif;?>">
 
 					<a href="#"><i class="md md-apps"></i>Manage</a>
 					<ul<?php if (in_array($this->uri->segment(1), array('events', 'services', 'providers', 'packages', 'facilities', 'schedule'))):?> class="collapse in" style="display:block" <?php endif;?>>
-                        <?php if (current_user_can('can_admin_services')) : ?><li class="<?php if ($this->uri->segment(1) === 'services'): ?>active<?php endif;?>"><a href="<?php echo site_url('services');?>">Services</a></li><?php endif;?>
-                        <?php if (current_user_can('can_admin_providers')) : ?><li class="<?php if ($this->uri->segment(1) === 'providers'): ?>active<?php endif;?>"><a href="<?php echo site_url('providers');?>">Providers</a></li><?php endif;?>
-                        <?php if (current_user_can('can_admin_providers')) : ?><li class="<?php if ($this->uri->segment(1) === 'schedule'): ?>active<?php endif;?>"><a href="<?php echo site_url('schedule/view');?>">Provider Schedules</a></li><?php endif;?>
-                        <?php if (current_user_can('can_admin_packages')) : ?><li class="<?php if ($this->uri->segment(1) === 'packages'): ?>active<?php endif;?>"><a href="<?php echo site_url('packages');?>">Packages </a></li><?php endif;?>
-                        <?php if (current_user_can('can_admin_facilities')) : ?><li class="<?php if ($this->uri->segment(1) === 'facilities'): ?>active<?php endif;?>"><a href="<?php echo site_url('facilities');?>">Facilities </a></li><?php endif;?>
+                        <?php if (current_user_can('CanAdminServices')) : ?><li class="<?php if ($this->uri->segment(1) === 'services'): ?>active<?php endif;?>"><a href="<?php echo site_url('services');?>">Services</a></li><?php endif;?>
+                        <?php if (current_user_can('CanAdminProviders')) : ?><li class="<?php if ($this->uri->segment(1) === 'providers'): ?>active<?php endif;?>"><a href="<?php echo site_url('providers');?>">Providers</a></li><?php endif;?>
+                        <?php if (current_user_can('CanAdminProviders')) : ?><li class="<?php if ($this->uri->segment(1) === 'schedule'): ?>active<?php endif;?>"><a href="<?php echo site_url('schedule/view');?>">Provider Schedules</a></li><?php endif;?>
+                        <?php if (current_user_can('CanAdminPackages')) : ?><li class="<?php if ($this->uri->segment(1) === 'packages'): ?>active<?php endif;?>"><a href="<?php echo site_url('packages');?>">Packages </a></li><?php endif;?>
+                        <?php if (current_user_can('CanAdminFacilities')) : ?><li class="<?php if ($this->uri->segment(1) === 'facilities'): ?>active<?php endif;?>"><a href="<?php echo site_url('facilities');?>">Facilities </a></li><?php endif;?>
 					</ul>
 				</li>
                 <?php endif;?>

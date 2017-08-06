@@ -47,7 +47,7 @@ ob_start ();
 				
 				<div class="input-group">
 					
-					<select name="packages" <?php echo !current_user_can('can_manage_guest_bookings') ? 'disabled' : '';?> class="form-control required"
+					<select name="packages" <?php echo !current_user_can('CanManageGuestBookings') ? 'disabled' : '';?> class="form-control required"
 						data-live-search="true"
 						<?php if (in_array($status, array(BOOKING_STATUS_COMPLETED, BOOKING_STATUS_CONFIRMED))):?>disabled="disabled"<?php endif;?>>
 
@@ -59,7 +59,7 @@ ob_start ();
 					</select>
 					 
 					<span class="input-group-btn">
-						<button type="button" <?php echo !current_user_can('can_manage_guest_bookings') ? 'disabled' : '';?> class="btn btn-default btn-select-package"
+						<button type="button" <?php echo !current_user_can('CanManageGuestBookings') ? 'disabled' : '';?> class="btn btn-default btn-select-package"
 								<?php if (in_array($status, array(BOOKING_STATUS_COMPLETED, BOOKING_STATUS_CONFIRMED))):?>disabled="disabled"<?php endif;?>>
 							<i class="fa fa-check"></i> Select
 						</button>
@@ -74,7 +74,7 @@ ob_start ();
 				
 				<label class="bold text-muted">Program</label>
 				
-				<input name="title" type="text" <?php echo !current_user_can('can_manage_guest_bookings') ? 'disabled' : '';?> value="<?php echo $title; ?>" class="form-control" />
+				<input name="title" type="text" <?php echo !current_user_can('CanManageGuestBookings') ? 'disabled' : '';?> value="<?php echo $title; ?>" class="form-control" />
 				<input name="package_id" type="hidden" value="<?php echo $package_id; ?>" />
 			
 			</div>
@@ -100,7 +100,7 @@ ob_start ();
 						<div class="col-lg-6">
 							<div class="form-group">
 								<label class="bold text-muted"><i class="fa fa-calendar"></i>
-									Start Date</label> <input <?php echo !current_user_can('can_manage_guest_bookings') ? 'disabled' : '';?> type="text" name="start_date"
+									Start Date</label> <input <?php echo !current_user_can('CanManageGuestBookings') ? 'disabled' : '';?> type="text" name="start_date"
 									class="form-control required"
 									value="<?php echo $start_date ? date('m/d/Y', $start_date) : date('m/d/Y') ?>">
 		
@@ -111,7 +111,7 @@ ob_start ();
 							<div class="form-group">
 		
 								<label class="bold text-muted"><i class="fa fa-calendar"></i> End
-									Date</label> <input <?php echo !current_user_can('can_manage_guest_bookings') ? 'disabled' : '';?> type="text" name="end_date"
+									Date</label> <input <?php echo !current_user_can('CanManageGuestBookings') ? 'disabled' : '';?> type="text" name="end_date"
 									class="form-control required"
 									value="<?php echo $end_date ? date('m/d/Y', $end_date) : date('m/d/Y') ?>">
 		
@@ -160,7 +160,7 @@ ob_start ();
 							<div class="input-group">
 	                    <?php echo items_dropdown('items', '', 'class="form-control"'); ?>
 	                    <span class="input-group-btn">
-									<button type="button" <?php echo !current_user_can('can_manage_guest_bookings') ? 'disabled' : '';?> class="btn btn-default btn-add-alacarte">
+									<button type="button" <?php echo !current_user_can('CanManageGuestBookings') ? 'disabled' : '';?> class="btn btn-default btn-add-alacarte">
 										<i class="fa fa-plus"></i>
 									</button>
 								</span>
@@ -186,11 +186,11 @@ ob_start ();
 								<tr>
 									<td>
 										<?php echo $item['title']; ?>
-										<input <?php echo !current_user_can('can_manage_guest_bookings') ? 'disabled' : '';?>
+										<input <?php echo !current_user_can('CanManageGuestBookings') ? 'disabled' : '';?>
 											name="package_items[<?php echo $item['booking_item_id']; ?>][item_id]"
 											type="hidden" value="<?php echo $item['item_id']; ?>">
 									</td>
-									<td><input <?php echo !current_user_can('can_manage_guest_bookings') ? 'disabled' : '';?>
+									<td><input <?php echo !current_user_can('CanManageGuestBookings') ? 'disabled' : '';?>
 											name="package_items[<?php echo $item['booking_item_id']; ?>][qty]"
 											type="text" class="form-control text-center package-items-qty" 
 											data-original_qty="<?php echo $item['quantity']; ?>"
@@ -198,26 +198,26 @@ ob_start ();
 									</td>
 									<td class="text-center">
 										<div class="checkbox checkbox-success checkbox-inline">
-											<input <?php echo !current_user_can('can_manage_guest_bookings') ? 'disabled' : '';?> id="package_items_included_<?php echo $item['booking_item_id']; ?>" name="package_items[<?php echo $item['booking_item_id']; ?>][included]" type="checkbox" <?php if (isset($item['included']) && $item['included']) : ?>checked="checked"<?php endif;?> value="1">
+											<input <?php echo !current_user_can('CanManageGuestBookings') ? 'disabled' : '';?> id="package_items_included_<?php echo $item['booking_item_id']; ?>" name="package_items[<?php echo $item['booking_item_id']; ?>][included]" type="checkbox" <?php if (isset($item['included']) && $item['included']) : ?>checked="checked"<?php endif;?> value="1">
 										</div>
 									</td>
 									<td class="text-center">
 										<div class="checkbox checkbox-success checkbox-inline">
-											<input <?php echo !current_user_can('can_manage_guest_bookings') ? 'disabled' : '';?> id="package_items_foc_<?php echo $item['booking_item_id']; ?>" name="package_items[<?php echo $item['booking_item_id']; ?>][foc]" type="checkbox" <?php if (isset($item['foc']) && $item['foc']) : ?>checked="checked"<?php endif;?> value="1">
+											<input <?php echo !current_user_can('CanManageGuestBookings') ? 'disabled' : '';?> id="package_items_foc_<?php echo $item['booking_item_id']; ?>" name="package_items[<?php echo $item['booking_item_id']; ?>][foc]" type="checkbox" <?php if (isset($item['foc']) && $item['foc']) : ?>checked="checked"<?php endif;?> value="1">
 										</div>
 									</td>
 									<td class="text-center">
 										<div class="checkbox checkbox-success checkbox-inline">
-											<input <?php echo !current_user_can('can_manage_guest_bookings') ? 'disabled' : '';?> id="package_items_upsell_<?php echo $item['booking_item_id']; ?>" name="package_items[<?php echo $item['booking_item_id']; ?>][upsell]" type="checkbox" <?php if (isset($item['upsell']) && $item['upsell']) : ?>checked="checked"<?php endif;?> value="1">
+											<input <?php echo !current_user_can('CanManageGuestBookings') ? 'disabled' : '';?> id="package_items_upsell_<?php echo $item['booking_item_id']; ?>" name="package_items[<?php echo $item['booking_item_id']; ?>][upsell]" type="checkbox" <?php if (isset($item['upsell']) && $item['upsell']) : ?>checked="checked"<?php endif;?> value="1">
 										</div>
 									</td>
 									<td class="text-center">
 										<div class="checkbox checkbox-success checkbox-inline">
-											<input <?php echo !current_user_can('can_manage_guest_bookings') ? 'disabled' : '';?> id="package_items_upgrade_<?php echo $item['booking_item_id']; ?>" name="package_items[<?php echo $item['booking_item_id']; ?>][upgrade]" type="checkbox" <?php if (isset($item['upgrade']) && $item['upgrade']) : ?>checked="checked"<?php endif;?> value="1">
+											<input <?php echo !current_user_can('CanManageGuestBookings') ? 'disabled' : '';?> id="package_items_upgrade_<?php echo $item['booking_item_id']; ?>" name="package_items[<?php echo $item['booking_item_id']; ?>][upgrade]" type="checkbox" <?php if (isset($item['upgrade']) && $item['upgrade']) : ?>checked="checked"<?php endif;?> value="1">
 										</div>
 									</td>
 
-									<td><button <?php echo !current_user_can('can_manage_guest_bookings') ? 'disabled' : '';?> type="button" class="btn btn-xs btn-delete-item">
+									<td><button <?php echo !current_user_can('CanManageGuestBookings') ? 'disabled' : '';?> type="button" class="btn btn-xs btn-delete-item">
 											<i class="fa fa-trash-o"></i>
 										</button></td>
 								</tr>

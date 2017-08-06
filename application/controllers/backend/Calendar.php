@@ -7,7 +7,7 @@ class Calendar extends TF_Controller
 
     public function index()
     {
-        if (!$this->session->has_userdata('user_id')) {
+        if (!$this->session->has_userdata('ContactId')) {
             redirect('login');
         }
 
@@ -401,7 +401,7 @@ class Calendar extends TF_Controller
 
         $locations = array();
         foreach (get_locations() as $location_id => $location_name) {
-            if (current_user_can('can_view_schedules_' . $location_id)) {
+            if (current_user_can('CanViewSchedules' . $location_id)) {
                 $locations[(int)$location_id] = $location_name;
             }
         }
@@ -500,14 +500,14 @@ class Calendar extends TF_Controller
             ),
             'categories' => array(1, 2, 3, 12),
             'viewFullDetails' => true, //!tf_current_user_can('edit_calendar'),
-            'canChange' => current_user_can('can_add_schedule'),
+            'canChange' => current_user_can('CanAddSchedule'),
             'statuses' => $statuses,
             'user_id' => $this->session->userdata('user_id'),
             'show_my_appointments' => true,
             
         );
         
-        if (current_user_can('can_view_other_schedule')) {
+        if (current_user_can('CanViewOtherSchedule')) {
 	        $inline_js['show_my_appointments'] = false;
 	        $inline_js['locations'] = $locations;
             $inline_js['print_url'] = site_url('backend/calendar/print_schedule');
@@ -919,7 +919,7 @@ class Calendar extends TF_Controller
 		//get all locations.
 		$locations = array();
 		foreach ($this->session->userdata('location') as $row) {
-			if (current_user_can('can_view_schedules_'.$row)) {		
+			if (current_user_can('CanViewSchedules'.$row)) {
 				$locations[] = $row;
 			}
 		}
@@ -929,7 +929,7 @@ class Calendar extends TF_Controller
 		}
 	
 	
-		if ($this->session->userdata('group_id') === '5') {
+		if ($_SESSION['User']['Group']['GroupId'] === '5') {
             //get the recent booking_id
             $this->db->select('bookings.booking_id');
             $this->db->from('bookings');
@@ -969,7 +969,7 @@ class Calendar extends TF_Controller
         $start = $this->uri->segment(5);
         $locations = $this->session->userdata('calendar_view_locations');
         $positions = $this->session->userdata('calendar_view_positions');
-        if ($this->session->userdata('group_id') === '5') {
+        if ($_SESSION['User']['Group']['GroupId'] === '5') {
             //get the recent booking_id
             $this->db->select('bookings.booking_id');
             $this->db->from('bookings');

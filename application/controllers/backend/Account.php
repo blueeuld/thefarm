@@ -5,7 +5,7 @@ class Account extends TF_Controller {
 
     public function index()
     {
-        if (!$this->session->has_userdata('user_id'))
+        if (!$this->session->has_userdata('ContactId'))
         {
             redirect('login');
         }
@@ -107,7 +107,7 @@ class Account extends TF_Controller {
             $contact_id = (int)$this->uri->segment(4);
         }
 
-        if (!current_user_can('can_view_other_profiles') && get_current_user_id() !== $contact_id && is_guest()) {
+        if (!current_user_can('CanViewOtherProfiles') && get_current_user_id() !== $contact_id && is_guest()) {
             show_error('Page Not Found!');
         }
 
@@ -286,7 +286,7 @@ class Account extends TF_Controller {
         
         $locations = array();
         foreach (get_locations() as $location_id => $location_name) {
-            if (current_user_can('can_view_schedules_' . $location_id)) {
+            if (current_user_can('CanViewSchedules' . $location_id)) {
                 $locations[] = (int)$location_id;
             }
         }
@@ -321,7 +321,7 @@ class Account extends TF_Controller {
             ),
             'categories' => array(1, 2, 3, 12),
             'viewFullDetails' => true, //!tf_current_user_can('edit_calendar'),
-            'canChange' => current_user_can('can_add_schedule'),
+            'canChange' => current_user_can('CanAddSchedule'),
             'user_id' => $this->session->userdata('user_id'),
             'show_providers' => false,
         );
@@ -366,7 +366,7 @@ class Account extends TF_Controller {
 		if ($this->session->userdata('user_id') === $data['account']['group_id']) {
 			$editable = true;
 		}
-		elseif (current_user_can('can_edit_other_profiles')) {
+		elseif (current_user_can('CanEditOtherProfiles')) {
 			$editable = true;
 		}
 		

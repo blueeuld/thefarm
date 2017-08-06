@@ -395,7 +395,7 @@ class EventsBuilder
             $results[$i]['editable'] = false;
             $results[$i]['overlap'] = false;
 
-            if ($results[$i]['location_id'] !== null && current_user_can('can_edit_schedules_' . $results[$i]['location_id'])) {
+            if ($results[$i]['location_id'] !== null && current_user_can('CanEditSchedules' . $results[$i]['location_id'])) {
                 $results[$i]['editable'] = true;
             }
 

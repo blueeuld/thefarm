@@ -513,7 +513,7 @@ class Frontend extends TF_Controller
 
         $params = array();
 
-        if ($this->session->userdata('group_id') === 5) {
+        if ($_SESSION['User']['Group']['GroupId'] === 5) {
             //get existing booking
             $query = $this->db->get_where('bookings', 'guest_id = ' . (int)get_current_user_id() . ' AND status = "confirmed"');
             $booking = $query->row_array();
@@ -528,7 +528,7 @@ class Frontend extends TF_Controller
 
         }
 
-        if ($this->session->userdata('group_id') === 11 || $this->session->userdata('group_id') === 13) {
+        if ($_SESSION['User']['Group']['GroupId'] === 11 || $_SESSION['User']['Group']['GroupId'] === 13) {
             $defaultView = 'timelineDay';
             $resource_fld_name = 'guest_id';
             $headerRight = 'timelineDay, timelineThreeDays, agendaWeek, month';

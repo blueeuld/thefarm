@@ -285,10 +285,10 @@
     <column name="position_cd" phpName="PositionCd" type="VARCHAR" size="50"/>
     <column name="is_active" phpName="IsActive" type="BOOLEAN" required="true" />
     <column name="verification_key" phpName="VerificationKey" type="VARCHAR" size="255" defaultValue=""/>
-    <column name="verified" phpName="Verified" type="VARCHAR" size="1" required="true" defaultValue="n"/>
+    <column name="is_verified" phpName="IsVerified" type="BOOLEAN" defaultValue="0"/>
     <column name="nickname" phpName="Nickname" type="VARCHAR" size="50" defaultValue=""/>
     <column name="bio" phpName="Bio" type="LONGVARCHAR" required="true"/>
-    <column name="approved" phpName="Approved" type="VARCHAR" size="1" required="true" defaultValue="y"/>
+    <column name="is_approved" phpName="IsApproved" type="BOOLEAN" defaultValue="0"/>
     <column name="activation_code" phpName="ActivationCode" type="INTEGER"/>
     <foreign-key foreignTable="tf_position" name="position_fk">
       <reference local="position_cd" foreign="position_cd"/>

@@ -33,7 +33,7 @@
 		<!-- Calendar -->
 		<div id='calendar'></div>
 	</div>
-	<?php if (current_user_can('can_assign_schedules')): ?>
+	<?php if (current_user_can('CanAssignSchedules')): ?>
 		<div class="media-right clearfix-xs">
 			<div class="width-300">
 				<h4 class="headline text-center">Services</h4>

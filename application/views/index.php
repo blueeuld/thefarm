@@ -60,7 +60,7 @@
 				</div>
 			</div>
 			
-			<?php if ($this->session->userdata('group_id') === 5): ?>
+			<?php if ($_SESSION['User']['Group']['GroupId'] === 5): ?>
 				
 				<div class="section nobottommargin notopmargin toppadding-md bottompadding-md bgcolor dark">
 					<div class="container center clearfix">

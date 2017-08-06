@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Settings extends TF_Controller {
 	public function index()
 	{
-		if (!$this->session->has_userdata('user_id'))
+		if (!$this->session->has_userdata('ContactId'))
 		{
 			redirect('login');
 		}
