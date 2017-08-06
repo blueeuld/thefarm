@@ -67,7 +67,7 @@ class Contacts extends TF_Controller {
             $search = $search->useUserQuery()->useGroupQuery()->filterByIncludeInProviderList('y')->endUse()->endUse();
         }
 
-        //$search = $search->filterByIsActive(true);
+        $search = $search->filterByIsActive(true);
 
         $contacts = $search->find();
         $contactsArr = [];
