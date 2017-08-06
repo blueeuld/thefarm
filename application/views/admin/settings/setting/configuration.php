@@ -1,32 +1,11 @@
-<!doctype html>
-<html>
-<head>
-		<?php $this->view('partials/head',array('title'=>'Configuration')); ?>
 
-</head>
-<body class="sidebar-push">
-  
-	<?php $this->view('partials/topbar'); ?>
-	
-	<?php $this->view('partials/sidebar'); ?>
 
-  <div class="container-fluid ">
-  
   		<?php echo form_open('settings/configuration', '', array('site_id' => $site_id)); ?>
 
-		<div id="main">
-			<div class="page-header">
-				<h1 class="serif">
-					Configuration
-					
-					<button type="submit" id="save-configuration" data-loading-text="Saving..." class="btn btn-primary" autocomplete="off">
-					  Save Changes
-					</button>
-					
-				</h1>
-				
-				
-			</div>
+        <div class="panel-heading"><b><i class="glyphicon glyphicon-wrench"></i> Configuration</b></div>
+
+        <div class="panel-body">
+
 			<div class="panel panel-default">
 			  	<div class="panel-heading">
 			    	<h3 class="panel-title">Localization</h3>
@@ -64,24 +43,11 @@
 					<input type="text" class="form-control" name="preferences[end_time]" value="<?php echo $preferences['end_time'];?>" />
 				</div>
 			</div>
-			
-			
 
-			<div class="sidebar right-side" id="right-sidebar"></div>
+            <button type="submit" id="save-configuration" data-loading-text="Saving..." class="btn btn-primary" autocomplete="off">
+                Save Changes
+            </button>
+
 		</div>
 		
 		<?php echo form_close(); ?>
-
-
-	  <?php $this->view('partials/footer'); ?>
-	  
-  </div>
-
-
-	<div class="overlay-disabled"></div>
-  
-  <?php $this->view('admin/_common/footer_js'); ?>
-
-
-</body>
-</html>

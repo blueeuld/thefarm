@@ -1,41 +1,19 @@
-<!DOCTYPE html>
-<html lang="en" class="app">
-<head>
-	<?php $this->load->view('admin/_common/head', array('title' => 'Package Types')); ?>
-</head>
-<body class="">
-<section class="vbox">
-	<?php $this->load->view('admin/_common/header'); ?>
-	<section>
-		<section class="hbox stretch">
-			<section id="content">
-				<section class="vbox">
-					<section class="scrollable bg-white">
-						<div class="content">
-							
-							<?php
-							$return = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '/services';
-							?>
-							
-							
-							<div class="container-fluid ">
+<?php
+$return = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '/services';
+?>
+<div class="panel-heading"><b><i class="glyphicon glyphicon-briefcase"></i> Package Types</b></div>
+
+
+<div class="panel-body">
 								
-								<div id="main">
-									<div class="page-header">
-										<h1 class="serif">Package Types <a
+									<div class="pull-right">
+										<a
 												href="<?php echo site_url('backend/packagetype/edit?return=' . urlencode($return)); ?>"
 												class="btn btn-primary" data-toggle="modal" data-target="#modal-popup">Add
-												<i class="fa fa-plus"></i></a></h1>
+												<i class="fa fa-plus"></i></a>
 									</div>
 									<div class="table-responsive">
-										<table id="" data-table
-											   class="table table-striped table-hover dt-responsive dataTable no-footer dtr-inline">
-											<thead>
-											<tr class="text-uppercase">
-												<th>Name</th>
-												<th class="text-center">Action</th>
-											</tr>
-											</thead>
+										<table class="table table-striped table-hover dt-responsive no-footer dtr-inline">
 											<tbody>
 											<?php foreach ($packagetypes as $row) : ?>
 												<tr>
@@ -57,13 +35,3 @@
 										</table>
 									</div>
 								</div>
-							</div>
-					</section>
-				</section>
-			</section>
-		</section>
-	</section>
-</section>
-<?php $this->view('admin/_common/footer_js'); ?>
-</body>
-</html>

@@ -35,8 +35,7 @@
 								<?php if (current_user_can('CanAdminServices')) : ?>
 									<li><a
 										href="<?php echo site_url('backend/services'); ?>"><i class="md md-list"></i> Services</a></li>
-									<li><a
-										href="<?php echo site_url('backend/category'); ?>"><i class="md md-list"></i> Categories</a></li><?php endif; ?>
+									<?php endif; ?>
 								<?php if (current_user_can('CanAdminProviders')) : ?>
 									<li>
 									<a href="<?php echo site_url('backend/contacts/provider'); ?>"><i class="md md-person"></i> Providers</a></li><?php endif; ?>
@@ -47,8 +46,6 @@
 								<?php if (current_user_can('CanAdminPackages')) : ?>
 									<li><a
 										href="<?php echo site_url('backend/packages'); ?>"><i class="md md-list"></i> Packages </a></li>
-									<li><a
-										href="<?php echo site_url('backend/packagetype'); ?>"><i class="md md-list"></i> Package Types</a></li>
 									<?php endif; ?>
 								<?php if (current_user_can('CanAdminFacilities')) : ?>
 									<li>

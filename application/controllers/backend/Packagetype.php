@@ -44,26 +44,7 @@ class Packagetype extends TF_Controller {
         redirect($this->input->get_post('return'));
     }
 
-	public function index()
-	{
-		if (!$this->session->has_userdata('ContactId'))
-		{
-			redirect('login');
-		}
 
-		$this->db->select('package_types.*');
-		$this->db->from('package_types');
-		
-		$this->db->order_by('package_types.package_type_name', 'asc');
-
-		$categories = $this->db->get();
-
-		$data = array();
-		$data['packagetypes'] = $categories->result_array();
-
-
-		$this->load->view('admin/package_type/index', $data);
-	}
 
 	function edit() {
         if (!$this->session->has_userdata('ContactId'))

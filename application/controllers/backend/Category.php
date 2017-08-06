@@ -45,34 +45,6 @@ class Category extends TF_Controller
         redirect($this->input->get_post('return'));
     }
 
-    public function index()
-    {
-        if (!$this->session->has_userdata('ContactId')) {
-            redirect('login');
-        }
-
-        $this->db->select('categories.*');
-        $this->db->from('categories');
-        if ($_SESSION['User']['LocationId']) {
-            $location = $_SESSION['User']['LocationId'];
-            $this->db->where_in('categories.location_id', array(0, $location));
-        }
-
-        if ($this->input->get_post('keyword')) {
-            $this->db->where("categories.cat_name LIKE '%" . $this->input->get_post('keyword') . "%'");
-        }
-
-        $this->db->order_by('categories.parent_id', 'asc');
-
-        $categories = $this->db->get();
-
-        $data = array();
-        $data['categories'] = $categories->result_array();
-
-
-        $this->load->view('admin/category/index', $data);
-    }
-
     function edit()
     {
         if (!$this->session->has_userdata('ContactId')) {

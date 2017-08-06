@@ -292,6 +292,8 @@ label.error {
 
 .bs-callout-info {
     border-left-color: #1b809e;
+    font-weight: bold;
+    color: #000;
 }
 
 <?php if (isset($inline_css)) : ?>

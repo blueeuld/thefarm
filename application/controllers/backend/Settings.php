@@ -8,7 +8,7 @@ class Settings extends TF_Controller {
 		{
 			redirect('login');
 		}
-		$this->load->view('admin/settings/index');
+		$this->load->view('admin/settings/index', ['setting' => '']);
 	}
 	
 	public function configuration() {
@@ -37,7 +37,97 @@ class Settings extends TF_Controller {
 		
 		$data['preferences'] = $pref;
 		$data['site_id'] = $site['site_id'];
-		
-		$this->load->view('admin/settings/configuration', $data);
+        $data['setting'] = 'configuration';
+
+		$this->load->view('admin/settings/index', $data);
+	}
+
+    public function users () {
+        $data = array();
+
+        $users = \TheFarm\Models\ContactQuery::create()->useUserQuery()->useGroupQuery()->filterByGroupCd('administrator')->endUse()->endUse()->find();
+
+        $userArr = [];
+        foreach ($users as $key => $user) {
+            $userArr[$key] = $user->toArray();
+        }
+
+
+        $data['users'] = $userArr;
+
+        $data['setting'] = 'users';
+
+        $this->load->view('admin/settings/index', $data);
+    }
+
+    public function category() {
+
+        if (!$this->session->has_userdata('ContactId')) {
+            redirect('login');
+        }
+
+        $this->db->select('categories.*');
+        $this->db->from('categories');
+        if ($_SESSION['User']['LocationId']) {
+            $location = $_SESSION['User']['LocationId'];
+            $this->db->where_in('categories.location_id', array(0, $location));
+        }
+
+        $this->db->order_by('categories.parent_id', 'asc');
+
+        $categories = $this->db->get();
+
+        $data = array();
+        $data['categories'] = $categories->result_array();
+
+        $data['setting'] = 'category';
+
+        $this->load->view('admin/settings/index', $data);
+    }
+
+    public function package_types()
+    {
+        if (!$this->session->has_userdata('ContactId'))
+        {
+            redirect('login');
+        }
+
+        $this->db->select('package_types.*');
+        $this->db->from('package_types');
+
+        $this->db->order_by('package_types.package_type_name', 'asc');
+
+        $categories = $this->db->get();
+
+        $data = array();
+        $data['packagetypes'] = $categories->result_array();
+
+
+        $data['setting'] = 'package_types';
+
+        $this->load->view('admin/settings/index', $data);
+    }
+
+    public function groups()
+    {
+        if (!$this->session->has_userdata('ContactId'))
+        {
+            redirect('login');
+        }
+
+        $data = array();
+        $data['groups'] = $this->db->get('groups')->result_array();
+
+        $data['setting'] = 'groups';
+        $this->load->view('admin/settings/index', $data);
+    }
+
+    public function forms() {
+
+        $data['forms'] = $this->db->get('forms')->result_array();
+        $data['fields'] = $this->db->get('fields')->result_array();
+
+        $data['setting'] = 'forms';
+        $this->load->view('admin/settings/index', $data);
 	}
 }
