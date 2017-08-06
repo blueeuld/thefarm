@@ -1015,7 +1015,7 @@ CREATE TABLE `tf_user_work_plan_day`
     `date` DATE NOT NULL,
     `work_code` VARCHAR(16) NOT NULL,
     UNIQUE INDEX `contact_id` (`contact_id`, `date`)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
 -- tf_user_work_plan_time
@@ -1025,9 +1025,11 @@ DROP TABLE IF EXISTS `tf_user_work_plan_time`;
 
 CREATE TABLE `tf_user_work_plan_time`
 (
-    `contact_id` INTEGER(5) NOT NULL,
+    `contact_id` INTEGER NOT NULL,
     `start_date` DATETIME NOT NULL,
-    `end_date` DATETIME NOT NULL
+    `end_date` DATETIME NOT NULL,
+    `is_working` TINYINT(1) DEFAULT 1,
+    INDEX `contact_fk1` (`contact_id`)
 ) ENGINE=MyISAM;
 
 -- ---------------------------------------------------------------------

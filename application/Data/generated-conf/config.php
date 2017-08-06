@@ -14,8 +14,8 @@ $serviceContainer->setLogger('defaultLogger', $logger);
 $manager = new \Propel\Runtime\Connection\ConnectionManagerSingle();
 $manager->setConfiguration(array (
   'dsn' => 'mysql:host=localhost;port=3306;dbname=scheduledb',
-  'user' => 'root',
-  'password' => '',
+  'user' => 'marvin',
+  'password' => 'marvin',
   'settings' =>
   array (
     'charset' => 'utf8',

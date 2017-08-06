@@ -47,7 +47,7 @@
 							lifestyle.
 						</p>
 						<!--<span>Sarah Smith - Trip Advisor</span>//-->
-						<?php if (!$_SESSION['ContactId']) : ?>
+						<?php if (!isset($_SESSION['ContactId'])) : ?>
 						<div style="width:300px;" class="center"><a href="#login" data-toggle="modal" data-target="#login-modal" type="submit" value="Submit"
 																	class="button button-small button-full button-reveal button-check tright hvr-bounce-to-top"><span>FIND OUT MORE</span>
 								<i class="icon-chevron-right"></i></a>
@@ -60,7 +60,7 @@
 				</div>
 			</div>
 			
-			<?php if ($_SESSION['User']['Group']['GroupId'] === 5): ?>
+			<?php if (isset($_SESSION['ContactId']) && $_SESSION['User']['Group']['GroupId'] === 5): ?>
 				
 				<div class="section nobottommargin notopmargin toppadding-md bottompadding-md bgcolor dark">
 					<div class="container center clearfix">

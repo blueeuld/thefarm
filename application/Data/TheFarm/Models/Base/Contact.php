@@ -32,11 +32,14 @@ use TheFarm\Models\Position as ChildPosition;
 use TheFarm\Models\PositionQuery as ChildPositionQuery;
 use TheFarm\Models\User as ChildUser;
 use TheFarm\Models\UserQuery as ChildUserQuery;
+use TheFarm\Models\UserWorkPlanTime as ChildUserWorkPlanTime;
+use TheFarm\Models\UserWorkPlanTimeQuery as ChildUserWorkPlanTimeQuery;
 use TheFarm\Models\Map\BookingEventTableMap;
 use TheFarm\Models\Map\BookingEventUserTableMap;
 use TheFarm\Models\Map\BookingTableMap;
 use TheFarm\Models\Map\ContactTableMap;
 use TheFarm\Models\Map\ItemsRelatedUserTableMap;
+use TheFarm\Models\Map\UserWorkPlanTimeTableMap;
 
 /**
  * Base class that represents a row from the 'tf_contacts' table.
@@ -337,6 +340,12 @@ abstract class Contact implements ActiveRecordInterface
     protected $collItemsRelatedUsersPartial;
 
     /**
+     * @var        ObjectCollection|ChildUserWorkPlanTime[] Collection to store aggregation of ChildUserWorkPlanTime objects.
+     */
+    protected $collUserWorkPlanTimes;
+    protected $collUserWorkPlanTimesPartial;
+
+    /**
      * @var        ChildUser one-to-one related ChildUser object
      */
     protected $singleUser;
@@ -396,6 +405,12 @@ abstract class Contact implements ActiveRecordInterface
      * @var ObjectCollection|ChildItemsRelatedUser[]
      */
     protected $itemsRelatedUsersScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildUserWorkPlanTime[]
+     */
+    protected $userWorkPlanTimesScheduledForDeletion = null;
 
     /**
      * Applies default values to this object.
@@ -1808,6 +1823,8 @@ abstract class Contact implements ActiveRecordInterface
 
             $this->collItemsRelatedUsers = null;
 
+            $this->collUserWorkPlanTimes = null;
+
             $this->singleUser = null;
 
         } // if (deep)
@@ -2072,6 +2089,23 @@ abstract class Contact implements ActiveRecordInterface
 
             if ($this->collItemsRelatedUsers !== null) {
                 foreach ($this->collItemsRelatedUsers as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->userWorkPlanTimesScheduledForDeletion !== null) {
+                if (!$this->userWorkPlanTimesScheduledForDeletion->isEmpty()) {
+                    \TheFarm\Models\UserWorkPlanTimeQuery::create()
+                        ->filterByPrimaryKeys($this->userWorkPlanTimesScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->userWorkPlanTimesScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collUserWorkPlanTimes !== null) {
+                foreach ($this->collUserWorkPlanTimes as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -2633,6 +2667,21 @@ abstract class Contact implements ActiveRecordInterface
 
                 $result[$key] = $this->collItemsRelatedUsers->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
+            if (null !== $this->collUserWorkPlanTimes) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'userWorkPlanTimes';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'tf_user_work_plan_times';
+                        break;
+                    default:
+                        $key = 'UserWorkPlanTimes';
+                }
+
+                $result[$key] = $this->collUserWorkPlanTimes->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
             if (null !== $this->singleUser) {
 
                 switch ($keyType) {
@@ -3158,6 +3207,12 @@ abstract class Contact implements ActiveRecordInterface
                 }
             }
 
+            foreach ($this->getUserWorkPlanTimes() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addUserWorkPlanTime($relObj->copy($deepCopy));
+                }
+            }
+
             $relObj = $this->getUser();
             if ($relObj) {
                 $copyObj->setUser($relObj->copy($deepCopy));
@@ -3285,6 +3340,10 @@ abstract class Contact implements ActiveRecordInterface
         }
         if ('ItemsRelatedUser' == $relationName) {
             $this->initItemsRelatedUsers();
+            return;
+        }
+        if ('UserWorkPlanTime' == $relationName) {
+            $this->initUserWorkPlanTimes();
             return;
         }
     }
@@ -5768,6 +5827,231 @@ abstract class Contact implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collUserWorkPlanTimes collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addUserWorkPlanTimes()
+     */
+    public function clearUserWorkPlanTimes()
+    {
+        $this->collUserWorkPlanTimes = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collUserWorkPlanTimes collection loaded partially.
+     */
+    public function resetPartialUserWorkPlanTimes($v = true)
+    {
+        $this->collUserWorkPlanTimesPartial = $v;
+    }
+
+    /**
+     * Initializes the collUserWorkPlanTimes collection.
+     *
+     * By default this just sets the collUserWorkPlanTimes collection to an empty array (like clearcollUserWorkPlanTimes());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initUserWorkPlanTimes($overrideExisting = true)
+    {
+        if (null !== $this->collUserWorkPlanTimes && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = UserWorkPlanTimeTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collUserWorkPlanTimes = new $collectionClassName;
+        $this->collUserWorkPlanTimes->setModel('\TheFarm\Models\UserWorkPlanTime');
+    }
+
+    /**
+     * Gets an array of ChildUserWorkPlanTime objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildContact is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildUserWorkPlanTime[] List of ChildUserWorkPlanTime objects
+     * @throws PropelException
+     */
+    public function getUserWorkPlanTimes(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collUserWorkPlanTimesPartial && !$this->isNew();
+        if (null === $this->collUserWorkPlanTimes || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collUserWorkPlanTimes) {
+                // return empty collection
+                $this->initUserWorkPlanTimes();
+            } else {
+                $collUserWorkPlanTimes = ChildUserWorkPlanTimeQuery::create(null, $criteria)
+                    ->filterByContact($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collUserWorkPlanTimesPartial && count($collUserWorkPlanTimes)) {
+                        $this->initUserWorkPlanTimes(false);
+
+                        foreach ($collUserWorkPlanTimes as $obj) {
+                            if (false == $this->collUserWorkPlanTimes->contains($obj)) {
+                                $this->collUserWorkPlanTimes->append($obj);
+                            }
+                        }
+
+                        $this->collUserWorkPlanTimesPartial = true;
+                    }
+
+                    return $collUserWorkPlanTimes;
+                }
+
+                if ($partial && $this->collUserWorkPlanTimes) {
+                    foreach ($this->collUserWorkPlanTimes as $obj) {
+                        if ($obj->isNew()) {
+                            $collUserWorkPlanTimes[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collUserWorkPlanTimes = $collUserWorkPlanTimes;
+                $this->collUserWorkPlanTimesPartial = false;
+            }
+        }
+
+        return $this->collUserWorkPlanTimes;
+    }
+
+    /**
+     * Sets a collection of ChildUserWorkPlanTime objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $userWorkPlanTimes A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildContact The current object (for fluent API support)
+     */
+    public function setUserWorkPlanTimes(Collection $userWorkPlanTimes, ConnectionInterface $con = null)
+    {
+        /** @var ChildUserWorkPlanTime[] $userWorkPlanTimesToDelete */
+        $userWorkPlanTimesToDelete = $this->getUserWorkPlanTimes(new Criteria(), $con)->diff($userWorkPlanTimes);
+
+
+        $this->userWorkPlanTimesScheduledForDeletion = $userWorkPlanTimesToDelete;
+
+        foreach ($userWorkPlanTimesToDelete as $userWorkPlanTimeRemoved) {
+            $userWorkPlanTimeRemoved->setContact(null);
+        }
+
+        $this->collUserWorkPlanTimes = null;
+        foreach ($userWorkPlanTimes as $userWorkPlanTime) {
+            $this->addUserWorkPlanTime($userWorkPlanTime);
+        }
+
+        $this->collUserWorkPlanTimes = $userWorkPlanTimes;
+        $this->collUserWorkPlanTimesPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related UserWorkPlanTime objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related UserWorkPlanTime objects.
+     * @throws PropelException
+     */
+    public function countUserWorkPlanTimes(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collUserWorkPlanTimesPartial && !$this->isNew();
+        if (null === $this->collUserWorkPlanTimes || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collUserWorkPlanTimes) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getUserWorkPlanTimes());
+            }
+
+            $query = ChildUserWorkPlanTimeQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByContact($this)
+                ->count($con);
+        }
+
+        return count($this->collUserWorkPlanTimes);
+    }
+
+    /**
+     * Method called to associate a ChildUserWorkPlanTime object to this object
+     * through the ChildUserWorkPlanTime foreign key attribute.
+     *
+     * @param  ChildUserWorkPlanTime $l ChildUserWorkPlanTime
+     * @return $this|\TheFarm\Models\Contact The current object (for fluent API support)
+     */
+    public function addUserWorkPlanTime(ChildUserWorkPlanTime $l)
+    {
+        if ($this->collUserWorkPlanTimes === null) {
+            $this->initUserWorkPlanTimes();
+            $this->collUserWorkPlanTimesPartial = true;
+        }
+
+        if (!$this->collUserWorkPlanTimes->contains($l)) {
+            $this->doAddUserWorkPlanTime($l);
+
+            if ($this->userWorkPlanTimesScheduledForDeletion and $this->userWorkPlanTimesScheduledForDeletion->contains($l)) {
+                $this->userWorkPlanTimesScheduledForDeletion->remove($this->userWorkPlanTimesScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildUserWorkPlanTime $userWorkPlanTime The ChildUserWorkPlanTime object to add.
+     */
+    protected function doAddUserWorkPlanTime(ChildUserWorkPlanTime $userWorkPlanTime)
+    {
+        $this->collUserWorkPlanTimes[]= $userWorkPlanTime;
+        $userWorkPlanTime->setContact($this);
+    }
+
+    /**
+     * @param  ChildUserWorkPlanTime $userWorkPlanTime The ChildUserWorkPlanTime object to remove.
+     * @return $this|ChildContact The current object (for fluent API support)
+     */
+    public function removeUserWorkPlanTime(ChildUserWorkPlanTime $userWorkPlanTime)
+    {
+        if ($this->getUserWorkPlanTimes()->contains($userWorkPlanTime)) {
+            $pos = $this->collUserWorkPlanTimes->search($userWorkPlanTime);
+            $this->collUserWorkPlanTimes->remove($pos);
+            if (null === $this->userWorkPlanTimesScheduledForDeletion) {
+                $this->userWorkPlanTimesScheduledForDeletion = clone $this->collUserWorkPlanTimes;
+                $this->userWorkPlanTimesScheduledForDeletion->clear();
+            }
+            $this->userWorkPlanTimesScheduledForDeletion[]= clone $userWorkPlanTime;
+            $userWorkPlanTime->setContact(null);
+        }
+
+        return $this;
+    }
+
+    /**
      * Gets a single ChildUser object, which is related to this object by a one-to-one relationship.
      *
      * @param  ConnectionInterface $con optional connection object
@@ -5899,6 +6183,11 @@ abstract class Contact implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collUserWorkPlanTimes) {
+                foreach ($this->collUserWorkPlanTimes as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->singleUser) {
                 $this->singleUser->clearAllReferences($deep);
             }
@@ -5912,6 +6201,7 @@ abstract class Contact implements ActiveRecordInterface
         $this->collBookingsRelatedByAuthorId = null;
         $this->collBookingsRelatedByGuestId = null;
         $this->collItemsRelatedUsers = null;
+        $this->collUserWorkPlanTimes = null;
         $this->singleUser = null;
         $this->aPosition = null;
     }

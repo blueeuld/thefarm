@@ -18,15 +18,27 @@ $qstr = $qstr ? $qstr.'&return='.$return : '?return=' . $return;
 					<section class="scrollable bg-white">
 						<div class="content">
 							
-							<?php $this->load->view('admin/_common/search_bar', array('title' => $account['first_name'] . ' ' . $account['last_name'], 'qstr' => $qstr)); ?>
-							
+
 							<div class="container-fluid ">
 								
 								<div id="main">
 
                                     <div class="row" style="padding-bottom: 20px">
                                         <div class="col-md-12 col-lg-12">
-                                            <a class="btn btn-default" href="<?php echo $this->input->get_post('return');?>">Back</a>
+                                            <a class="btn btn-default" href="<?php echo $this->input->get_post('return');?>"><i class="glyphicon glyphicon-chevron-left"></i></a>
+                                            <a class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span></a>
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    Actions <span class="caret"></span>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a href="#">Action</a></li>
+                                                    <li><a href="#">Another action</a></li>
+                                                    <li><a href="#">Something else here</a></li>
+                                                    <li role="separator" class="divider"></li>
+                                                    <li><a href="#">Separated link</a></li>
+                                                </ul>
+                                            </div>
                                         </div>
                                     </div>
 

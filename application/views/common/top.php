@@ -7,7 +7,7 @@ $return = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '/';
         <div class="top-nav semi-transparent">
         	<div class="container clearfix">
         		<ul class="serif">
-					<?php if (!$_SESSION['ContactId']) : ?>
+					<?php if (!isset($_SESSION['ContactId'])) : ?>
                     <li><a href="#" data-toggle="modal" data-target="#login-modal" class="button button-border button-dark button-mini">Log-In</a></li>
 					<?php else : ?>
 					<li>Welcome <?php echo $_SESSION['FirstName'];?>!

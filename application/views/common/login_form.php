@@ -24,6 +24,7 @@ treatments while with us at The Farm</h1><br>
 		</div>
 		
 		<?php
+        if (isset($_REQUEST['ContactId'])) :
 		$q = $this->db->get_where('contacts', array('contact_id' => $_SESSION['ContactId']));
 		$result = $q->row_array();
 		if ($result['is_active'] === '0') :
@@ -42,7 +43,10 @@ treatments while with us at The Farm</h1><br>
 			</div>
 		</div>
 		
-		<?php endif; ?>
+		<?php
+        endif;
+		endif;
+		?>
 		
 		<div class="modal fade" id="register-modal" tabindex="-1" role="dialog" aria-labelledby="Register" aria-hidden="true" style="display: none;">
 			<div class="modal-dialog">

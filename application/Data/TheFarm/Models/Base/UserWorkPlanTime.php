@@ -17,6 +17,8 @@ use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
 use Propel\Runtime\Util\PropelDateTime;
+use TheFarm\Models\Contact as ChildContact;
+use TheFarm\Models\ContactQuery as ChildContactQuery;
 use TheFarm\Models\UserWorkPlanTimeQuery as ChildUserWorkPlanTimeQuery;
 use TheFarm\Models\Map\UserWorkPlanTimeTableMap;
 
@@ -83,6 +85,19 @@ abstract class UserWorkPlanTime implements ActiveRecordInterface
     protected $end_date;
 
     /**
+     * The value for the is_working field.
+     *
+     * Note: this column has a database default value of: true
+     * @var        boolean
+     */
+    protected $is_working;
+
+    /**
+     * @var        ChildContact
+     */
+    protected $aContact;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
@@ -91,10 +106,23 @@ abstract class UserWorkPlanTime implements ActiveRecordInterface
     protected $alreadyInSave = false;
 
     /**
+     * Applies default values to this object.
+     * This method should be called from the object's constructor (or
+     * equivalent initialization method).
+     * @see __construct()
+     */
+    public function applyDefaultValues()
+    {
+        $this->is_working = true;
+    }
+
+    /**
      * Initializes internal state of TheFarm\Models\Base\UserWorkPlanTime object.
+     * @see applyDefaults()
      */
     public function __construct()
     {
+        $this->applyDefaultValues();
     }
 
     /**
@@ -366,6 +394,26 @@ abstract class UserWorkPlanTime implements ActiveRecordInterface
     }
 
     /**
+     * Get the [is_working] column value.
+     *
+     * @return boolean
+     */
+    public function getIsWorking()
+    {
+        return $this->is_working;
+    }
+
+    /**
+     * Get the [is_working] column value.
+     *
+     * @return boolean
+     */
+    public function isWorking()
+    {
+        return $this->getIsWorking();
+    }
+
+    /**
      * Set the value of [contact_id] column.
      *
      * @param int $v new value
@@ -380,6 +428,10 @@ abstract class UserWorkPlanTime implements ActiveRecordInterface
         if ($this->contact_id !== $v) {
             $this->contact_id = $v;
             $this->modifiedColumns[UserWorkPlanTimeTableMap::COL_CONTACT_ID] = true;
+        }
+
+        if ($this->aContact !== null && $this->aContact->getContactId() !== $v) {
+            $this->aContact = null;
         }
 
         return $this;
@@ -426,6 +478,34 @@ abstract class UserWorkPlanTime implements ActiveRecordInterface
     } // setEndDate()
 
     /**
+     * Sets the value of the [is_working] column.
+     * Non-boolean arguments are converted using the following rules:
+     *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     *
+     * @param  boolean|integer|string $v The new value
+     * @return $this|\TheFarm\Models\UserWorkPlanTime The current object (for fluent API support)
+     */
+    public function setIsWorking($v)
+    {
+        if ($v !== null) {
+            if (is_string($v)) {
+                $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            } else {
+                $v = (boolean) $v;
+            }
+        }
+
+        if ($this->is_working !== $v) {
+            $this->is_working = $v;
+            $this->modifiedColumns[UserWorkPlanTimeTableMap::COL_IS_WORKING] = true;
+        }
+
+        return $this;
+    } // setIsWorking()
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -435,6 +515,10 @@ abstract class UserWorkPlanTime implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
+            if ($this->is_working !== true) {
+                return false;
+            }
+
         // otherwise, everything was equal, so return TRUE
         return true;
     } // hasOnlyDefaultValues()
@@ -475,6 +559,9 @@ abstract class UserWorkPlanTime implements ActiveRecordInterface
                 $col = null;
             }
             $this->end_date = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : UserWorkPlanTimeTableMap::translateFieldName('IsWorking', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->is_working = (null !== $col) ? (boolean) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -483,7 +570,7 @@ abstract class UserWorkPlanTime implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 3; // 3 = UserWorkPlanTimeTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 4; // 4 = UserWorkPlanTimeTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\TheFarm\\Models\\UserWorkPlanTime'), 0, $e);
@@ -505,6 +592,9 @@ abstract class UserWorkPlanTime implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
+        if ($this->aContact !== null && $this->contact_id !== $this->aContact->getContactId()) {
+            $this->aContact = null;
+        }
     } // ensureConsistency
 
     /**
@@ -544,6 +634,7 @@ abstract class UserWorkPlanTime implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
+            $this->aContact = null;
         } // if (deep)
     }
 
@@ -647,6 +738,18 @@ abstract class UserWorkPlanTime implements ActiveRecordInterface
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
 
+            // We call the save method on the following object(s) if they
+            // were passed to this object by their corresponding set
+            // method.  This object relates to these object(s) by a
+            // foreign key reference.
+
+            if ($this->aContact !== null) {
+                if ($this->aContact->isModified() || $this->aContact->isNew()) {
+                    $affectedRows += $this->aContact->save($con);
+                }
+                $this->setContact($this->aContact);
+            }
+
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -689,6 +792,9 @@ abstract class UserWorkPlanTime implements ActiveRecordInterface
         if ($this->isColumnModified(UserWorkPlanTimeTableMap::COL_END_DATE)) {
             $modifiedColumns[':p' . $index++]  = 'end_date';
         }
+        if ($this->isColumnModified(UserWorkPlanTimeTableMap::COL_IS_WORKING)) {
+            $modifiedColumns[':p' . $index++]  = 'is_working';
+        }
 
         $sql = sprintf(
             'INSERT INTO tf_user_work_plan_time (%s) VALUES (%s)',
@@ -708,6 +814,9 @@ abstract class UserWorkPlanTime implements ActiveRecordInterface
                         break;
                     case 'end_date':
                         $stmt->bindValue($identifier, $this->end_date ? $this->end_date->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
+                        break;
+                    case 'is_working':
+                        $stmt->bindValue($identifier, (int) $this->is_working, PDO::PARAM_INT);
                         break;
                 }
             }
@@ -773,6 +882,9 @@ abstract class UserWorkPlanTime implements ActiveRecordInterface
             case 2:
                 return $this->getEndDate();
                 break;
+            case 3:
+                return $this->getIsWorking();
+                break;
             default:
                 return null;
                 break;
@@ -790,10 +902,11 @@ abstract class UserWorkPlanTime implements ActiveRecordInterface
      *                    Defaults to TableMap::TYPE_PHPNAME.
      * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
      * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
+     * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
      *
      * @return array an associative array containing the field names (as keys) and field values
      */
-    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array())
+    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
 
         if (isset($alreadyDumpedObjects['UserWorkPlanTime'][$this->hashCode()])) {
@@ -805,6 +918,7 @@ abstract class UserWorkPlanTime implements ActiveRecordInterface
             $keys[0] => $this->getContactId(),
             $keys[1] => $this->getStartDate(),
             $keys[2] => $this->getEndDate(),
+            $keys[3] => $this->getIsWorking(),
         );
         if ($result[$keys[1]] instanceof \DateTimeInterface) {
             $result[$keys[1]] = $result[$keys[1]]->format('c');
@@ -819,6 +933,23 @@ abstract class UserWorkPlanTime implements ActiveRecordInterface
             $result[$key] = $virtualColumn;
         }
 
+        if ($includeForeignObjects) {
+            if (null !== $this->aContact) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'contact';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'tf_contacts';
+                        break;
+                    default:
+                        $key = 'Contact';
+                }
+
+                $result[$key] = $this->aContact->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+        }
 
         return $result;
     }
@@ -861,6 +992,9 @@ abstract class UserWorkPlanTime implements ActiveRecordInterface
             case 2:
                 $this->setEndDate($value);
                 break;
+            case 3:
+                $this->setIsWorking($value);
+                break;
         } // switch()
 
         return $this;
@@ -895,6 +1029,9 @@ abstract class UserWorkPlanTime implements ActiveRecordInterface
         }
         if (array_key_exists($keys[2], $arr)) {
             $this->setEndDate($arr[$keys[2]]);
+        }
+        if (array_key_exists($keys[3], $arr)) {
+            $this->setIsWorking($arr[$keys[3]]);
         }
     }
 
@@ -945,6 +1082,9 @@ abstract class UserWorkPlanTime implements ActiveRecordInterface
         }
         if ($this->isColumnModified(UserWorkPlanTimeTableMap::COL_END_DATE)) {
             $criteria->add(UserWorkPlanTimeTableMap::COL_END_DATE, $this->end_date);
+        }
+        if ($this->isColumnModified(UserWorkPlanTimeTableMap::COL_IS_WORKING)) {
+            $criteria->add(UserWorkPlanTimeTableMap::COL_IS_WORKING, $this->is_working);
         }
 
         return $criteria;
@@ -1038,6 +1178,7 @@ abstract class UserWorkPlanTime implements ActiveRecordInterface
         $copyObj->setContactId($this->getContactId());
         $copyObj->setStartDate($this->getStartDate());
         $copyObj->setEndDate($this->getEndDate());
+        $copyObj->setIsWorking($this->getIsWorking());
         if ($makeNew) {
             $copyObj->setNew(true);
         }
@@ -1066,17 +1207,73 @@ abstract class UserWorkPlanTime implements ActiveRecordInterface
     }
 
     /**
+     * Declares an association between this object and a ChildContact object.
+     *
+     * @param  ChildContact $v
+     * @return $this|\TheFarm\Models\UserWorkPlanTime The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setContact(ChildContact $v = null)
+    {
+        if ($v === null) {
+            $this->setContactId(NULL);
+        } else {
+            $this->setContactId($v->getContactId());
+        }
+
+        $this->aContact = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildContact object, it will not be re-added.
+        if ($v !== null) {
+            $v->addUserWorkPlanTime($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildContact object
+     *
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildContact The associated ChildContact object.
+     * @throws PropelException
+     */
+    public function getContact(ConnectionInterface $con = null)
+    {
+        if ($this->aContact === null && ($this->contact_id !== null)) {
+            $this->aContact = ChildContactQuery::create()->findPk($this->contact_id, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aContact->addUserWorkPlanTimes($this);
+             */
+        }
+
+        return $this->aContact;
+    }
+
+    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
      */
     public function clear()
     {
+        if (null !== $this->aContact) {
+            $this->aContact->removeUserWorkPlanTime($this);
+        }
         $this->contact_id = null;
         $this->start_date = null;
         $this->end_date = null;
+        $this->is_working = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
+        $this->applyDefaultValues();
         $this->resetModified();
         $this->setNew(true);
         $this->setDeleted(false);
@@ -1095,6 +1292,7 @@ abstract class UserWorkPlanTime implements ActiveRecordInterface
         if ($deep) {
         } // if ($deep)
 
+        $this->aContact = null;
     }
 
     /**

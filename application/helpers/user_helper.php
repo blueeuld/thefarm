@@ -14,7 +14,7 @@ function get_current_user_data() {
 //commit test
 function get_current_user_id() {
     $TF =& get_instance();
-    return (int)$TF->session->userdata('ContactId');
+    return $TF->session->userdata('ContactId');
 }
 
 function get_current_user_group() {

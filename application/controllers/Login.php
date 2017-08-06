@@ -47,13 +47,13 @@ class Login extends TF_Controller {
 			$userApi = new UserApi();
 			$userData = $userApi->validate_user($username, do_hash($password));
 
+			var_dump($userData);
+
 
 			if (is_null($userData)) {
                 $this->show_result('Invalid username / password.', true);
             }
             else {
-
-                $data = [];
 
                 if (!$userData['IsVerified']) {
                     $this->show_result('Your account has not been VERIFIED yet. <br /><a href="' . site_url('/register/resend/' . $userData['ContactId']) . '">Click here to resend email verification</a>', true);

@@ -60,7 +60,7 @@ class UserWorkPlanTimeTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 3;
+    const NUM_COLUMNS = 4;
 
     /**
      * The number of lazy-loaded columns
@@ -70,7 +70,7 @@ class UserWorkPlanTimeTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 3;
+    const NUM_HYDRATE_COLUMNS = 4;
 
     /**
      * the column name for the contact_id field
@@ -88,6 +88,11 @@ class UserWorkPlanTimeTableMap extends TableMap
     const COL_END_DATE = 'tf_user_work_plan_time.end_date';
 
     /**
+     * the column name for the is_working field
+     */
+    const COL_IS_WORKING = 'tf_user_work_plan_time.is_working';
+
+    /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -99,11 +104,11 @@ class UserWorkPlanTimeTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('ContactId', 'StartDate', 'EndDate', ),
-        self::TYPE_CAMELNAME     => array('contactId', 'startDate', 'endDate', ),
-        self::TYPE_COLNAME       => array(UserWorkPlanTimeTableMap::COL_CONTACT_ID, UserWorkPlanTimeTableMap::COL_START_DATE, UserWorkPlanTimeTableMap::COL_END_DATE, ),
-        self::TYPE_FIELDNAME     => array('contact_id', 'start_date', 'end_date', ),
-        self::TYPE_NUM           => array(0, 1, 2, )
+        self::TYPE_PHPNAME       => array('ContactId', 'StartDate', 'EndDate', 'IsWorking', ),
+        self::TYPE_CAMELNAME     => array('contactId', 'startDate', 'endDate', 'isWorking', ),
+        self::TYPE_COLNAME       => array(UserWorkPlanTimeTableMap::COL_CONTACT_ID, UserWorkPlanTimeTableMap::COL_START_DATE, UserWorkPlanTimeTableMap::COL_END_DATE, UserWorkPlanTimeTableMap::COL_IS_WORKING, ),
+        self::TYPE_FIELDNAME     => array('contact_id', 'start_date', 'end_date', 'is_working', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, )
     );
 
     /**
@@ -113,11 +118,11 @@ class UserWorkPlanTimeTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('ContactId' => 0, 'StartDate' => 1, 'EndDate' => 2, ),
-        self::TYPE_CAMELNAME     => array('contactId' => 0, 'startDate' => 1, 'endDate' => 2, ),
-        self::TYPE_COLNAME       => array(UserWorkPlanTimeTableMap::COL_CONTACT_ID => 0, UserWorkPlanTimeTableMap::COL_START_DATE => 1, UserWorkPlanTimeTableMap::COL_END_DATE => 2, ),
-        self::TYPE_FIELDNAME     => array('contact_id' => 0, 'start_date' => 1, 'end_date' => 2, ),
-        self::TYPE_NUM           => array(0, 1, 2, )
+        self::TYPE_PHPNAME       => array('ContactId' => 0, 'StartDate' => 1, 'EndDate' => 2, 'IsWorking' => 3, ),
+        self::TYPE_CAMELNAME     => array('contactId' => 0, 'startDate' => 1, 'endDate' => 2, 'isWorking' => 3, ),
+        self::TYPE_COLNAME       => array(UserWorkPlanTimeTableMap::COL_CONTACT_ID => 0, UserWorkPlanTimeTableMap::COL_START_DATE => 1, UserWorkPlanTimeTableMap::COL_END_DATE => 2, UserWorkPlanTimeTableMap::COL_IS_WORKING => 3, ),
+        self::TYPE_FIELDNAME     => array('contact_id' => 0, 'start_date' => 1, 'end_date' => 2, 'is_working' => 3, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, )
     );
 
     /**
@@ -137,9 +142,10 @@ class UserWorkPlanTimeTableMap extends TableMap
         $this->setPackage('TheFarm.Models');
         $this->setUseIdGenerator(false);
         // columns
-        $this->addColumn('contact_id', 'ContactId', 'INTEGER', true, 5, null);
+        $this->addForeignKey('contact_id', 'ContactId', 'INTEGER', 'tf_contacts', 'contact_id', true, null, null);
         $this->addColumn('start_date', 'StartDate', 'TIMESTAMP', true, null, null);
         $this->addColumn('end_date', 'EndDate', 'TIMESTAMP', true, null, null);
+        $this->addColumn('is_working', 'IsWorking', 'BOOLEAN', false, 1, true);
     } // initialize()
 
     /**
@@ -147,6 +153,13 @@ class UserWorkPlanTimeTableMap extends TableMap
      */
     public function buildRelations()
     {
+        $this->addRelation('Contact', '\\TheFarm\\Models\\Contact', RelationMap::MANY_TO_ONE, array (
+  0 =>
+  array (
+    0 => ':contact_id',
+    1 => ':contact_id',
+  ),
+), null, null, null, false);
     } // buildRelations()
 
     /**
@@ -284,10 +297,12 @@ class UserWorkPlanTimeTableMap extends TableMap
             $criteria->addSelectColumn(UserWorkPlanTimeTableMap::COL_CONTACT_ID);
             $criteria->addSelectColumn(UserWorkPlanTimeTableMap::COL_START_DATE);
             $criteria->addSelectColumn(UserWorkPlanTimeTableMap::COL_END_DATE);
+            $criteria->addSelectColumn(UserWorkPlanTimeTableMap::COL_IS_WORKING);
         } else {
             $criteria->addSelectColumn($alias . '.contact_id');
             $criteria->addSelectColumn($alias . '.start_date');
             $criteria->addSelectColumn($alias . '.end_date');
+            $criteria->addSelectColumn($alias . '.is_working');
         }
     }
 

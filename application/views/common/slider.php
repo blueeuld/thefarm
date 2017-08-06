@@ -6,7 +6,7 @@
   <ol class="carousel-indicators">
     <li data-target="#bs-carousel" data-slide-to="0" class="active"></li>
     <li data-target="#bs-carousel" data-slide-to="1"></li>
-    <?php if (!$_SESSION['ContactId']) : ?>
+    <?php if (!isset($_SESSION['ContactId'])) : ?>
     <li data-target="#bs-carousel" data-slide-to="2"></li>
     <?php endif; ?>
   </ol>
@@ -54,7 +54,7 @@
         <a class="btn-text" role="button" href="http://www.thefarmatsanbenito.com/retreats-2/">Click here to learn more about our Programmes <i class="glyphicon glyphicon-chevron-right"></i></a>
       </div>
     </div>
-    <?php if (!$_SESSION['ContactId']) : ?>
+    <?php if (!isset($_SESSION['ContactId'])) : ?>
     <div class="item slides row">
       <div class="slide-3"></div>
       <div class="hero col-lg-4 col-md-6 col-xs-10">        

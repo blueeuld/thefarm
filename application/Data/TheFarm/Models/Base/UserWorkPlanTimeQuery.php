@@ -6,6 +6,7 @@ use \Exception;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
+use Propel\Runtime\ActiveQuery\ModelJoin;
 use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\LogicException;
@@ -22,10 +23,12 @@ use TheFarm\Models\Map\UserWorkPlanTimeTableMap;
  * @method     ChildUserWorkPlanTimeQuery orderByContactId($order = Criteria::ASC) Order by the contact_id column
  * @method     ChildUserWorkPlanTimeQuery orderByStartDate($order = Criteria::ASC) Order by the start_date column
  * @method     ChildUserWorkPlanTimeQuery orderByEndDate($order = Criteria::ASC) Order by the end_date column
+ * @method     ChildUserWorkPlanTimeQuery orderByIsWorking($order = Criteria::ASC) Order by the is_working column
  *
  * @method     ChildUserWorkPlanTimeQuery groupByContactId() Group by the contact_id column
  * @method     ChildUserWorkPlanTimeQuery groupByStartDate() Group by the start_date column
  * @method     ChildUserWorkPlanTimeQuery groupByEndDate() Group by the end_date column
+ * @method     ChildUserWorkPlanTimeQuery groupByIsWorking() Group by the is_working column
  *
  * @method     ChildUserWorkPlanTimeQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildUserWorkPlanTimeQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -35,12 +38,25 @@ use TheFarm\Models\Map\UserWorkPlanTimeTableMap;
  * @method     ChildUserWorkPlanTimeQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildUserWorkPlanTimeQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
  *
+ * @method     ChildUserWorkPlanTimeQuery leftJoinContact($relationAlias = null) Adds a LEFT JOIN clause to the query using the Contact relation
+ * @method     ChildUserWorkPlanTimeQuery rightJoinContact($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Contact relation
+ * @method     ChildUserWorkPlanTimeQuery innerJoinContact($relationAlias = null) Adds a INNER JOIN clause to the query using the Contact relation
+ *
+ * @method     ChildUserWorkPlanTimeQuery joinWithContact($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Contact relation
+ *
+ * @method     ChildUserWorkPlanTimeQuery leftJoinWithContact() Adds a LEFT JOIN clause and with to the query using the Contact relation
+ * @method     ChildUserWorkPlanTimeQuery rightJoinWithContact() Adds a RIGHT JOIN clause and with to the query using the Contact relation
+ * @method     ChildUserWorkPlanTimeQuery innerJoinWithContact() Adds a INNER JOIN clause and with to the query using the Contact relation
+ *
+ * @method     \TheFarm\Models\ContactQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ *
  * @method     ChildUserWorkPlanTime findOne(ConnectionInterface $con = null) Return the first ChildUserWorkPlanTime matching the query
  * @method     ChildUserWorkPlanTime findOneOrCreate(ConnectionInterface $con = null) Return the first ChildUserWorkPlanTime matching the query, or a new ChildUserWorkPlanTime object populated from the query conditions when no match is found
  *
  * @method     ChildUserWorkPlanTime findOneByContactId(int $contact_id) Return the first ChildUserWorkPlanTime filtered by the contact_id column
  * @method     ChildUserWorkPlanTime findOneByStartDate(string $start_date) Return the first ChildUserWorkPlanTime filtered by the start_date column
- * @method     ChildUserWorkPlanTime findOneByEndDate(string $end_date) Return the first ChildUserWorkPlanTime filtered by the end_date column *
+ * @method     ChildUserWorkPlanTime findOneByEndDate(string $end_date) Return the first ChildUserWorkPlanTime filtered by the end_date column
+ * @method     ChildUserWorkPlanTime findOneByIsWorking(boolean $is_working) Return the first ChildUserWorkPlanTime filtered by the is_working column *
 
  * @method     ChildUserWorkPlanTime requirePk($key, ConnectionInterface $con = null) Return the ChildUserWorkPlanTime by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUserWorkPlanTime requireOne(ConnectionInterface $con = null) Return the first ChildUserWorkPlanTime matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -48,11 +64,13 @@ use TheFarm\Models\Map\UserWorkPlanTimeTableMap;
  * @method     ChildUserWorkPlanTime requireOneByContactId(int $contact_id) Return the first ChildUserWorkPlanTime filtered by the contact_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUserWorkPlanTime requireOneByStartDate(string $start_date) Return the first ChildUserWorkPlanTime filtered by the start_date column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUserWorkPlanTime requireOneByEndDate(string $end_date) Return the first ChildUserWorkPlanTime filtered by the end_date column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUserWorkPlanTime requireOneByIsWorking(boolean $is_working) Return the first ChildUserWorkPlanTime filtered by the is_working column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildUserWorkPlanTime[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildUserWorkPlanTime objects based on current ModelCriteria
  * @method     ChildUserWorkPlanTime[]|ObjectCollection findByContactId(int $contact_id) Return ChildUserWorkPlanTime objects filtered by the contact_id column
  * @method     ChildUserWorkPlanTime[]|ObjectCollection findByStartDate(string $start_date) Return ChildUserWorkPlanTime objects filtered by the start_date column
  * @method     ChildUserWorkPlanTime[]|ObjectCollection findByEndDate(string $end_date) Return ChildUserWorkPlanTime objects filtered by the end_date column
+ * @method     ChildUserWorkPlanTime[]|ObjectCollection findByIsWorking(boolean $is_working) Return ChildUserWorkPlanTime objects filtered by the is_working column
  * @method     ChildUserWorkPlanTime[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -163,6 +181,8 @@ abstract class UserWorkPlanTimeQuery extends ModelCriteria
      * $query->filterByContactId(array(12, 34)); // WHERE contact_id IN (12, 34)
      * $query->filterByContactId(array('min' => 12)); // WHERE contact_id > 12
      * </code>
+     *
+     * @see       filterByContact()
      *
      * @param     mixed $contactId The value to use as filter.
      *              Use scalar values for equality.
@@ -279,6 +299,110 @@ abstract class UserWorkPlanTimeQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(UserWorkPlanTimeTableMap::COL_END_DATE, $endDate, $comparison);
+    }
+
+    /**
+     * Filter the query on the is_working column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByIsWorking(true); // WHERE is_working = true
+     * $query->filterByIsWorking('yes'); // WHERE is_working = true
+     * </code>
+     *
+     * @param     boolean|string $isWorking The value to use as filter.
+     *              Non-boolean arguments are converted using the following rules:
+     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildUserWorkPlanTimeQuery The current query, for fluid interface
+     */
+    public function filterByIsWorking($isWorking = null, $comparison = null)
+    {
+        if (is_string($isWorking)) {
+            $isWorking = in_array(strtolower($isWorking), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+        }
+
+        return $this->addUsingAlias(UserWorkPlanTimeTableMap::COL_IS_WORKING, $isWorking, $comparison);
+    }
+
+    /**
+     * Filter the query by a related \TheFarm\Models\Contact object
+     *
+     * @param \TheFarm\Models\Contact|ObjectCollection $contact The related object(s) to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @throws \Propel\Runtime\Exception\PropelException
+     *
+     * @return ChildUserWorkPlanTimeQuery The current query, for fluid interface
+     */
+    public function filterByContact($contact, $comparison = null)
+    {
+        if ($contact instanceof \TheFarm\Models\Contact) {
+            return $this
+                ->addUsingAlias(UserWorkPlanTimeTableMap::COL_CONTACT_ID, $contact->getContactId(), $comparison);
+        } elseif ($contact instanceof ObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
+            return $this
+                ->addUsingAlias(UserWorkPlanTimeTableMap::COL_CONTACT_ID, $contact->toKeyValue('PrimaryKey', 'ContactId'), $comparison);
+        } else {
+            throw new PropelException('filterByContact() only accepts arguments of type \TheFarm\Models\Contact or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Contact relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildUserWorkPlanTimeQuery The current query, for fluid interface
+     */
+    public function joinContact($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Contact');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Contact');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Contact relation Contact object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \TheFarm\Models\ContactQuery A secondary query class using the current class as primary query
+     */
+    public function useContactQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinContact($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Contact', '\TheFarm\Models\ContactQuery');
     }
 
     /**

@@ -45,11 +45,16 @@ class Frontend extends TF_Controller
 
     public function index()
     {
+        if ($this->session->userdata('ContactId')) {
+            //get existing booking
+            $booking = $this->get_booking();
+            $data['return'] = '';
+            $data['contact_id'] = $_SESSION['ContactId'];
+        }
+        else {
+            $booking = null;
+        }
 
-        //get existing booking
-        $booking = $this->get_booking();
-        $data['return'] = '';
-        $data['contact_id'] = $_SESSION['ContactId'];
 
         $activities = $this->get_activities(time());
 
