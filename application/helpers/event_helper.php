@@ -244,11 +244,11 @@ function get_event_users($event_id)
 
 }
 
-function to_full_calendar_events ($events) {
+function to_full_calendar_events ($events, $showGuestName = false, $showFacility = false) {
 
     $eventsArray = [];
     foreach($events as $eventData) {
-        $event = to_full_calendar_event($eventData);
+        $event = to_full_calendar_event($eventData, $showGuestName, $showFacility);
         $eventsArray[] = $event;
     }
 
@@ -260,7 +260,7 @@ function to_full_calendar_events ($events) {
  * @param $eventData
  * @return array
  */
-function to_full_calendar_event($eventData)
+function to_full_calendar_event($eventData, $showGuestName = false, $showFacility = false)
 {
     $bookingItemData = $eventData['BookingItem'];
     $itemData = $bookingItemData['Item'];
@@ -299,7 +299,7 @@ function to_full_calendar_event($eventData)
 
     $resourceIds = [];
 
-    if ($eventData['BookingEventUsers']) {
+    if (isset($eventData['BookingEventUsers']) && $eventData['BookingEventUsers']) {
         foreach ($eventData['BookingEventUsers'] as $eventUser) {
             if ($eventUser['IsGuest'] === false) {
                 $resourceIds[] = $eventUser['UserId'];

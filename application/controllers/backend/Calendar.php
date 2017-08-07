@@ -927,7 +927,8 @@ class Calendar extends TF_Controller
 		if (!$categories) {
 			$categories = array(1, 2, 3);
 		}
-	
+
+        $eventApi = new EventApi();
 	
 		if ($_SESSION['User']['Group']['GroupId'] === '5') {
             //get the recent booking_id
@@ -939,27 +940,37 @@ class Calendar extends TF_Controller
             $this->db->limit(1);
             $result = $this->db->get()->row_array();
             $booking_id = $result['booking_id'];
+            $events = $eventApi->get_events($start, $end, get_current_user_id(), $categories, $locations);
         }
+        else {
+            $events = $eventApi->get_events($start, $end, null, $categories, $locations);
+        }
+
+        $fcEvents = to_full_calendar_events($events, $show_guest_name, $show_facility);
+
+        $this->output->set_content_type('application/json')->set_output(json_encode($fcEvents));
+
+
         
-        $params = array();
-		$params['booking_id'] = $booking_id;
-		$params['resource_fld_name'] = $resource_field_id;
-		$params['start'] = $start;
-		$params['end'] = $end;
-		$params['event_status'] = $statuses;
-		$params['locations'] = $locations;
-		$params['show_guest_name'] = $show_guest_name;
-		$params['show_facility_name'] = $show_facility;
-		$params['abbreviate'] = $abbreviate;
-		$params['guest_id'] = $guest_id;
-		$params['categories'] = $categories;
-		
-		if ($show_my_appointments) $params['provider_id'] = $_SESSION['ContactId'];
-		
-        $this->load->library('Eventsbuilder', $params);
-		
-		$this->eventsbuilder->build();
-        $this->output->set_content_type('application/json')->set_output(json_encode($this->eventsbuilder->get_events()));
+//      $params = array();
+//		$params['booking_id'] = $booking_id;
+//		$params['resource_fld_name'] = $resource_field_id;
+//		$params['start'] = $start;
+//		$params['end'] = $end;
+//		$params['event_status'] = $statuses;
+//		$params['locations'] = $locations;
+//		$params['show_guest_name'] = $show_guest_name;
+//		$params['show_facility_name'] = $show_facility;
+//		$params['abbreviate'] = $abbreviate;
+//		$params['guest_id'] = $guest_id;
+//		$params['categories'] = $categories;
+//
+//		if ($show_my_appointments) $params['provider_id'] = $_SESSION['ContactId'];
+//
+//        $this->load->library('Eventsbuilder', $params);
+//
+//		$this->eventsbuilder->build();
+//        $this->output->set_content_type('application/json')->set_output(json_encode($this->eventsbuilder->get_events()));
     }
 
     public function print_schedule()
@@ -1053,7 +1064,7 @@ class Calendar extends TF_Controller
     public function unassigned_events() {
 
 	    $eventApi = new EventApi();
-	    $fcEvents = to_full_calendar_events($eventApi->get_events(null, null, [1, 2, 9], $_SESSION['User']['LocationId'], true, 'P7D', true));
+	    $fcEvents = to_full_calendar_events($eventApi->get_upcoming_events([1, 2, 9], $_SESSION['User']['LocationId'], [], true));
 
         $this->output->set_content_type('application/json')->set_output(json_encode($fcEvents));
     }

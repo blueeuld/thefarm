@@ -59,16 +59,25 @@ class EventApi {
         }
     }
 
-    public function get_events($eventId = null, $guestId = null, $categories = [], $locations = [], $upcoming = false, $upcomingThreshold = 'P7D', $unAssignedEventOnly) {
+    public function get_event($eventId) {
+        $search = \TheFarm\Models\BookingEventQuery::create()->findOneByEventId($eventId);
+        return $search->toArray();
+    }
+
+    public function get_upcoming_events($categories, $locations, $eventStatus, $unAssignedEventOnly) {
+
+        return $this->get_events(null, null, null, $categories, $locations, $eventStatus, true, 'P7D', $unAssignedEventOnly);
+
+    }
+
+    public function get_events($start = null, $end = null, $guestId = null, $categories = [], $locations = [], $eventStatus = null, $upcoming = false, $upcomingThreshold = 'P7D', $unAssignedEventOnly = false) {
 
          $search = \TheFarm\Models\BookingEventQuery::create();
 
-         if ($eventId) {
-             $search = $search->filterByEventId($eventId);
-         }
-
          if ($guestId) {
-             $search = $search->useBookingItemQuery()->useBookingQuery()->filterByGuestId($guestId)->endUse()->endUse();
+             $search = $search->useBookingItemQuery()->useBookingQuery()
+                 ->filterByStatus('confirmed')
+                 ->filterByGuestId($guestId)->endUse()->endUse();
          }
 
          if ($categories) {
@@ -90,6 +99,11 @@ class EventApi {
 //            $this->start = $start->format('Y-m-d H:i:s');
 //            $this->end = $end->format('Y-m-d H:i:s');
 //            $this->TF->db->where("tf_booking_events.end_dt BETWEEN '{$this->start}' AND '{$this->end}'");
+        }
+        elseif ($start && $end) {
+             $start = new DateTime($start);
+             $end = new DateTime($end);
+             $search = $search->filterByEndDate(['min' => $start->format('Y-m-d H:i:s'), 'max' => $end->format('Y-m-d H:i:s')]);
         }
 
 
