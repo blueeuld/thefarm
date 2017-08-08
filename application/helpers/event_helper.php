@@ -244,11 +244,11 @@ function get_event_users($event_id)
 
 }
 
-function to_full_calendar_events ($events, $showGuestName = false, $showFacility = false) {
+function to_full_calendar_events ($events, $showGuestName = false, $showFacility = false, $abbreviate = true) {
 
     $eventsArray = [];
     foreach($events as $eventData) {
-        $event = to_full_calendar_event($eventData, $showGuestName, $showFacility);
+        $event = to_full_calendar_event($eventData, $showGuestName, $showFacility, $abbreviate);
         $eventsArray[] = $event;
     }
 
@@ -260,7 +260,7 @@ function to_full_calendar_events ($events, $showGuestName = false, $showFacility
  * @param $eventData
  * @return array
  */
-function to_full_calendar_event($eventData, $showGuestName = false, $showFacility = false)
+function to_full_calendar_event($eventData, $showGuestName = false, $showFacility = false, $abbreviate = true)
 {
     $bookingItemData = $eventData['BookingItem'];
     $itemData = $bookingItemData['Item'];
@@ -268,6 +268,7 @@ function to_full_calendar_event($eventData, $showGuestName = false, $showFacilit
 
     $classNames = array();
     $event = [];
+    $event['eventData'] = $eventData;
     $event['id'] = $eventData['EventId'];
     $event['event_id'] = $eventData['EventId'];
     $event['title'] = $eventData['EventTitle'];
@@ -277,13 +278,18 @@ function to_full_calendar_event($eventData, $showGuestName = false, $showFacilit
     $event['guest_name'] = $guestData['FirstName'] . ' ' . $guestData['LastName'];
     $event['item_name'] = $itemData['Title'];
     $event['status'] = $eventData['Status'];
+    $event['editable'] = false;
 
-//    if ($event['location_id'] !== null && current_user_can('can_edit_schedules_' . $event['location_id'])) {
-//        $event['editable'] = true;
-//    }
-//    else {
-//        $event['editable'] = false;
-//    }
+    $categories = $eventData['BookingItem']['Item']['Categories'];
+
+    if ($categories) {
+        foreach ($categories as $category) {
+            if ($category['Category']['LocationId'] && current_user_can('CanEditSchedules'.$category['Category']['LocationId'])) {
+                $event['editable'] = true;
+                break;
+            }
+        }
+    }
 
     if ($eventData['Incl'] === 1) {
         $classNames[] = 'fc-event-included';
@@ -339,15 +345,15 @@ function to_full_calendar_event($eventData, $showGuestName = false, $showFacilit
 
     $titles = array();
 
-    if ($itemData['Abbr']) {
+    if ($abbreviate && $itemData['Abbr']) {
         $titles[] = $itemData['Abbr'];
     } elseif ($itemData['Title']) {
         $titles[] = $itemData['Title'];
     }
 
-    if (isset($eventData['Facility'])) {
+    if ($showFacility && isset($eventData['Facility'])) {
         $facilityData = $eventData['Facility'];
-        if ($facilityData['Abbr']) {
+        if ($abbreviate && $facilityData['Abbr']) {
             $titles[] = $facilityData['Abbr'];
         } elseif ($facilityData['FacilityName']) {
             $titles[] = $facilityData['FacilityName'];
@@ -356,10 +362,10 @@ function to_full_calendar_event($eventData, $showGuestName = false, $showFacilit
 
     $event['titles'] = $titles;
 
-    if (true) {
+    if ($showGuestName) {
         $title = $guestData['FirstName'] . ' ' . $guestData['LastName'] . (count($titles) > 0 ? "\n" . implode('/', $titles) : '');
     } else {
-        $event['backgroundColor'] = $eventData['bg_color'];
+        // $event['backgroundColor'] = $eventData['bg_color'];
         $title = (count($titles) > 0 ? implode('/', $titles) : '');
     }
 

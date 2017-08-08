@@ -18,7 +18,7 @@ function get_current_user_data($key = null) {
 
 function get_current_user_id() {
     $TF =& get_instance();
-    return $TF->session->userdata('ContactId');
+    return (int)$TF->session->userdata('ContactId');
 }
 
 function get_current_user_locations() {

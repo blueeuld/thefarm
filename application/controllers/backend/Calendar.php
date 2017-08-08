@@ -946,7 +946,7 @@ class Calendar extends TF_Controller
             $events = $eventApi->get_events($start, $end, null, $categories, $locations);
         }
 
-        $fcEvents = to_full_calendar_events($events, $show_guest_name, $show_facility);
+        $fcEvents = to_full_calendar_events($events, $show_guest_name, $show_facility, $abbreviate);
 
         $this->output->set_content_type('application/json')->set_output(json_encode($fcEvents));
 

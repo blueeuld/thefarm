@@ -19,7 +19,7 @@
 	TF.now = function() {
 		return moment.unix(<?php echo now(); ?>);
 	};
-	TF.is_logged = '<?php echo $_SESSION['User']['Group']['GroupId'] ?>';
+	TF.is_logged = <?php echo json_encode(get_current_user_id() > 0); ?>;
 	TF.baseURL = '<?php echo site_url();?>';
 	TF.dateFormat = 'MM/DD/YYYY';
 	<?php if (isset($inline_js) && $inline_js) : ?>
@@ -110,7 +110,7 @@
                     actionUpload: '<button type="button" class="kv-file-upload btn btn-default" title="{uploadTitle}"><i class="fa fa-upload"></i> Upload</button>\n'
 				},
 				allowedFileExtensions: ["jpg", "png", "gif", "jpeg"],
-                uploadUrl: '/frontend/upload_photo/<?php echo $_SESSION['ContactId'];?>',
+                uploadUrl: '/frontend/upload_photo/<?php echo get_current_user_id();?>',
 				uploadAsync: false
 			});
 

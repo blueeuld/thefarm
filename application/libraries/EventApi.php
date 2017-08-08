@@ -107,6 +107,8 @@ class EventApi {
         }
 
 
+        $search = $search->useBookingQuery()->filterByStatus('confirmed')->endUse();
+
          $search = $search->useBookingItemQuery()->useBookingQuery()->filterByIsActive(true)->endUse()->endUse();
 
          $search->orderByStartDate();
