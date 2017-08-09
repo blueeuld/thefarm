@@ -824,11 +824,11 @@
     </index>
 
     <vendor type="mysql">
-      <parameter name="Engine" value="MyISAM"/>
+      <parameter name="Engine" value="InnoDB"/>
     </vendor>
   </table>
   <table name="tf_users" idMethod="native" phpName="User" namespace="Models">
-    <column name="contact_id" phpName="ContactId" type="INTEGER" primaryKey="true" required="true" defaultValue="0"/>
+    <column name="contact_id" phpName="ContactId" type="INTEGER" primaryKey="true" required="true"/>
     <column name="username" phpName="Username" type="VARCHAR" size="100" required="true"/>
     <column name="group_id" phpName="GroupId" type="INTEGER"/>
     <column name="last_login" phpName="LastLogin" type="INTEGER" size="10" required="true"/>

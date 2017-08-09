@@ -2,21 +2,49 @@
 
 class UserApi {
 
-    function get_users($providersOnly = false, $locations = []) {
+    function get_user($userId) {
+
+        $user = \TheFarm\Models\ContactQuery::create()->findOneByContactId($userId);
+
+        $userArr = $user->toArray();
+        $userArr['UserWorkPlanTimes'] = $user->getUserWorkPlanTimes()->toArray();
+
+        return $userArr;
+    }
+
+    function get_users($providersOnly = false, $locations = [], $relatedItemId = null, $availableProvidersOnly = null, $startTime = null, $endTime = null) {
         $search = \TheFarm\Models\ContactQuery::create()
             ->filterByIsActive(true);
 
         if ($providersOnly) {
             $search = $search->useUserQuery()->useGroupQuery()->filterByIncludeInProviderList('y')->endUse()->endUse();
+
+            if ($availableProvidersOnly && !is_null($startTime) && !is_null($endTime)) {
+                $search = $search->useUserWorkPlanTimeQuery('work_plan')->where("(work_plan.start_date BETWEEN '".$startTime."' AND '".$endTime."') OR (work_plan.end_date BETWEEN '".$startTime."' AND '".$endTime."') OR ('".$startTime."' BETWEEN work_plan.start_date AND work_plan.end_date)")->endUse();
+            }
         }
 
         if ($locations) {
-            $search = $search->useUserQuery()->filterByLocationId($locations);
+            $search = $search->useUserQuery()->filterByLocationId($locations)->endUse();
         }
 
-        $search = $search->find();
+        if (!is_null($relatedItemId)) {
+            $search = $search->useItemsRelatedUserQuery()->filterByItemId($relatedItemId)->endUse();
+        }
 
-        return $search->toArray();
+        $users = $search->find();
+        $userArr = [];
+        if ($users) {
+
+            foreach ($users as $key => $user) {
+                $userArr[$key] = $user->toArray();
+                if ($providersOnly) {
+                    $userArr[$key]['UserWorkPlanTimes'] = $user->getUserWorkPlanTimes()->toArray();
+                }
+            }
+        }
+
+        return $userArr;
     }
 
     function delete_user($contactId) {
@@ -44,5 +72,4 @@ class UserApi {
         return null;
 
     }
-
 }

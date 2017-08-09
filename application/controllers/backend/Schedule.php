@@ -15,7 +15,7 @@ class Schedule extends TF_Controller {
 
         $userApi = new UserApi();
         $providers = $userApi->get_users(true, $_SESSION['User']['LocationId']);
-		
+
         $data['providers'] = $providers;
 
         $data['contact_id'] = $contact_id;
@@ -25,6 +25,15 @@ class Schedule extends TF_Controller {
         $query = $this->db->get_where('users', 'contact_id='.(int)$contact_id);
 
         $result = $query->row_array();
+
+        $currentUser = $userApi->get_user($contact_id);
+
+        $workPlanArr = [];
+        foreach ($currentUser['UserWorkPlanTimes'] as $workPlan) {
+            $workPlanArr[date('Y-m-d', strtotime($workPlan['StartDate']))][] = date('H:i', strtotime($workPlan['StartDate']));
+        }
+
+        var_dump($currentUser['UserWorkPlanTimes'], $workPlanArr);
 
         $params['date'] = $week;
         $params['base'] = 'backend/schedule/view/'.$contact_id;

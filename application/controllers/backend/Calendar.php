@@ -694,27 +694,6 @@ class Calendar extends TF_Controller
 
         $this->load->view('admin/calendar/by_facilities', $data);
     }
-    
-    
-
-    public function get_available_peoples()
-    {		
-	    $start = !isset($_REQUEST['start_time']) ? date('Y-m-d H:g:s') : $_REQUEST['start_time'];
-        $end = !isset($_REQUEST['end_time']) ? date('Y-m-d H:g:s') : $_REQUEST['end_time'];
-        $event_id = isset($_REQUEST['event_id']) ? (int)$_REQUEST['event_id'] : 0;
-        $status = isset($_REQUEST['status']) ? (int)$_REQUEST['status'] : 0;
-		$item_id = isset($_REQUEST['item_id']) ? $_REQUEST['item_id'] : 0;
-		
-		$params = array(
-			'start_date' => $start,
-			'end_date' => $end,
-			'item_id' => $item_id
-		);
-		
-		$this->load->library('ProviderAvailability', $params);
-		
-		$this->output->set_content_type('application/json')->set_output(json_encode($this->provideravailability->get_available()));
-    }
 
     public function get_available_providers()
     {

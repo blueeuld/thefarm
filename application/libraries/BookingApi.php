@@ -2,6 +2,31 @@
 
 class BookingApi {
 
+    public function search_bookings($date, $statusCd) {
+
+        $search = \TheFarm\Models\BookingQuery::create()
+            ->where(sprintf('\'%s\' BETWEEN FROM_UNIXTIME(tf_bookings.start_date) AND FROM_UNIXTIME(tf_bookings.end_date)', date('Y-m-d', strtotime($date))));
+
+        if ($statusCd) {
+            $search = $search->filterByStatus($statusCd);
+        }
+
+        $bookings = $search->find();
+        $bookingArr = [];
+
+        if ($bookings) {
+            foreach ($bookings as $key => $booking) {
+                $bookingArr[$key] = $booking->toArray();
+                $bookingArr[$key]['Guest'] = $booking->getContactRelatedByGuestId()->toArray();
+                if ($booking->getPackage()) {
+                    $bookingArr[$key]['Package'] = $booking->getPackage()->toArray();
+                }
+            }
+        }
+
+        return $bookingArr;
+    }
+
     public function save_booking($bookingData, $notifyGuest = false) {
 
         if ($bookingData['BookingId']) {

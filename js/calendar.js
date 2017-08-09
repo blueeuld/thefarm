@@ -191,7 +191,7 @@
             $('select[name="assigned_to"]').attr('disabled', 'disabled');
             $.ajax({
                 dataType: "json",
-                url: TF.baseURL + 'calendar/get_available_peoples',
+                url: TF.baseURL + 'event/get_available_peoples',
                 data: {
                     item_id: item_id,
                     event_id: $('input[name="event_id"]').val(),
@@ -606,12 +606,19 @@
                 post_data.booking_id = TF.booking_id;
             }
 
-            var modal = $('#modal-popup');
+            var modal = $('#modal-popup'), url;
+
+            if (event.id) {
+                url = TF.baseURL + 'event/edit_event';
+            }
+            else {
+                url = TF.baseURL + 'event/new_event';
+            }
 
             modal.modal('show');
             modal.data('event', event);
             modal.html(renderPopupWaiting('Appointment', 'Please wait...'));
-            modal.load(TF.baseURL + 'account/event/', post_data, function () {
+            modal.load(url, post_data, function () {
 
                 //modal.find('.datepicker').datepicker();
                 //modal.find('.timepicker').timepicker();
