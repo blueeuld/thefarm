@@ -7,6 +7,16 @@ if ($eventData) {
     $foc = $eventData['Foc'];
     $not_incl = $eventData['NotInc'];
     $incl_os_done_number = $eventData['InclOsDoneNumber'];
+    $assigned_to = [];
+
+    if (isset($eventData['BookingEventUsers'])) {
+
+        foreach ($eventData['BookingEventUsers'] as $bookingEventUser) {
+            if (!$bookingEventUser['IsGuest']) {
+                $assigned_to[] = $bookingEventUser['UserId'];
+            }
+        }
+    }
 }
 else {
     $booking_id = null;
@@ -14,6 +24,7 @@ else {
     $incl = false;
     $foc = false;
     $not_incl = false;
+    $assigned_to = [];
 }
 
 ?>
