@@ -50,6 +50,7 @@ class EventApi {
             $eventArr['Booking'] = $event->getBooking()->toArray();
             $eventArr['Booking']['Guest'] = $event->getBooking()->getContactRelatedByGuestId()->toArray();
             $eventArr['Item'] = $event->getItem()->toArray();
+            $eventArr['Item']['Categories'] = $event->getItem()->getItemCategoriesJoinCategory()->toArray();
 
             return $eventArr;
         }
@@ -64,8 +65,8 @@ class EventApi {
         $eventArr['Item'] = $event->getItem()->toArray();
         $eventArr['Booking'] = $event->getBooking()->toArray();
         $eventArr['Booking']['Guest'] = $event->getBooking()->getContactRelatedByGuestId()->toArray();
-        $eventArr['EventUsers'] = $event->getEventUsers()->toArray();
-        $eventArr['Facility'] = $event->getFacility()->toArray();
+        if ($event->getEventUsers()) $eventArr['EventUsers'] = $event->getEventUsers()->toArray();
+        if ($event->getFacility()) $eventArr['Facility'] = $event->getFacility()->toArray();
 
         return $eventArr;
     }
@@ -119,6 +120,8 @@ class EventApi {
         $search = $search->useBookingQuery()->filterByStatus('confirmed')->endUse();
 
          $search = $search->useBookingQuery()->filterByIsActive(true)->endUse();
+
+         $search = $search->filterByIsActive(true);
 
          $search->orderByStartDate();
 

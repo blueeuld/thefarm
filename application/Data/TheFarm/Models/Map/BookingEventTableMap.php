@@ -293,7 +293,7 @@ class BookingEventTableMap extends TableMap
         $this->addColumn('cancelled_reason', 'CancelledReason', 'VARCHAR', false, 50, '');
         $this->addColumn('date_cancelled', 'DateCancelled', 'INTEGER', false, 10, 0);
         $this->addColumn('personalized', 'Personalized', 'VARCHAR', false, 100, '');
-        $this->addColumn('is_active', 'IsActive', 'VARCHAR', false, 1, 'n');
+        $this->addColumn('is_active', 'IsActive', 'BOOLEAN', false, 1, true);
         $this->addColumn('deleted_date', 'DeletedDate', 'INTEGER', false, 10, 0);
         $this->addForeignKey('deleted_by', 'DeletedBy', 'INTEGER', 'tf_contacts', 'contact_id', false, null, null);
         $this->addForeignKey('item_id', 'ItemId', 'INTEGER', 'tf_items', 'item_id', false, null, null);

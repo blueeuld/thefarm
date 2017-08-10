@@ -69,7 +69,7 @@ CREATE TABLE `tf_booking_events`
     `cancelled_reason` VARCHAR(50) DEFAULT '',
     `date_cancelled` INTEGER(10) DEFAULT 0,
     `personalized` VARCHAR(100) DEFAULT '',
-    `is_active` VARCHAR(1) DEFAULT 'n',
+    `is_active` TINYINT(1) DEFAULT 1,
     `deleted_date` INTEGER(10) DEFAULT 0,
     `deleted_by` INTEGER,
     `item_id` INTEGER,

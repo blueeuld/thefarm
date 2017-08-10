@@ -30,7 +30,7 @@
 							<a href="#"  aria-haspopup="true" aria-expanded="false" class="dropdown-toggle" data-toggle="dropdown"><i class="md md-apps"></i> Manage</a>
 							<ul class="dropdown-menu">
 								<?php if (current_user_can('CanAdminGuest')) : ?>
-									<li><a href="<?php echo site_url('backend/contacts/guest'); ?>"><i class="fa fa-group"></i> Guest</a>
+									<li><a href="<?php echo site_url('backend/guests'); ?>"><i class="fa fa-group"></i> Guest</a>
 									</li><?php endif; ?>
 								<?php if (current_user_can('CanAdminServices')) : ?>
 									<li><a

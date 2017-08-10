@@ -24,11 +24,129 @@ class Event extends TF_Controller {
     }
 
     public function save_event() {
+        $this->load->helper('event');
+        $booking_id = $this->input->get_post('booking_id') ? $this->input->get_post('booking_id') : NULL;
+        $event_id = $this->input->get_post('event_id') ? $this->input->get_post('event_id') : NULL;
+        $item_id = $this->input->get_post('item_id');
+        $end_date = $this->input->get_post('end_date');
+        $end_time = $this->input->get_post('end_time');
+        $start_date = $this->input->get_post('start_date');
+        $start_time = $this->input->get_post('start_time');
+        $status = $this->input->get_post('status');
+        $notes = $this->input->get_post('notes');
+        $booking_item_id = (int)$this->input->get_post('booking_item_id');
+        $event_title = $this->input->get_post('event_title') ? $this->input->get_post('event_title') : '';
+        $included = (int)$this->input->get_post('incl');
+        $not_included = (int)$this->input->get_post('not_incl');
+        $foc = (int)$this->input->get_post('foc');
 
+        $update_calendar_views = $this->input->get_post('update_calendar_views');
+
+        $eventData = [
+            'EventId' => $event_id,
+            'AllDay' => false,
+            'Status' => $status,
+            'EventTitle' => $event_title,
+            'Notes' => $notes,
+            'Incl' => $included,
+            'NotIncl' => $not_included,
+            'Foc' => $foc,
+            'InclOsDoneNumber' => $this->input->get_post('incl_os_done_number'),
+            'InclOsDoneAmount' => $this->input->get_post('incl_os_done_amount'),
+            'FocOsDoneNumber' => $this->input->get_post('foc_os_done_number'),
+            'FocOsDoneAmount' => $this->input->get_post('foc_os_done_amount'),
+            'NotInclOsDoneNumber' => $this->input->get_post('not_incl_os_done_number'),
+            'NotInclOsDoneAmount' => $this->input->get_post('not_incl_os_done_amount'),
+        ];
+
+        $bookingEventUsers = [];
+
+        if (!$booking_id) {
+            // create the guest.
+            $first_name = $this->input->get_post('first_name');
+            $last_name = $this->input->get_post('last_name');
+            $package_type = $this->input->get_post('package_type');
+            $contact_id = $this->input->get_post('guest_id');
+            $guestData = [];
+
+            if (!$contact_id) {
+
+                $guestData = [
+                    'FirstName' => $first_name,
+                    'LastName' => $last_name,
+                    'DateJoined' => data('Y-m-d')
+                ];
+
+                $bookingEventUsers[] = ['User' => $guestData, 'IsGuest' => true, 'EventId' => $event_id];
+            }
+
+            $arrival = strtotime($this->input->get_post('arrival_date'));
+            $departure = strtotime($this->input->get_post('departure_date'));
+
+            $eventData['Booking'] = [
+                'Guest' => $guestData,
+                'Title' => $first_name . ' ' . $last_name . ' Personalized Program',
+                'StartDate' => $arrival,
+                'EndDate' => $departure,
+                'AuthorId' => get_current_user_id(),
+                'Personalized' => 1,
+                'PackageTypeId' => $package_type,
+                'Status' => 'confirmed'
+            ];
+        }
+        else
+        {
+            $bookingGuest = \TheFarm\Models\BookingQuery::create()->findOneByBookingId($booking_id);
+            $bookingEventUsers[] = ['UserId' => $bookingGuest->getGuestId(), 'IsGuest' => true, 'EventId' => $event_id];
+        }
+
+        if ($status === 'cancelled') {
+            $eventData['CalledBy'] = $this->input->get_post('called_by') ? $this->input->get_post('called_by') : NULL;
+            $eventData['CancelledBy'] = $this->input->get_post('cancelled_by') ? $this->input->get_post('cancelled_by') : NULL;
+            $eventData['CancelledReason'] = $this->input->get_post('cancelled_reason');
+            $eventData['DateCancelled'] = strtotime($this->input->get_post('date_cancelled'));
+        }
+
+        $eventData['StartDate'] = date('Y-m-d H:i:s', strtotime($start_date . ' ' . $start_time));
+        $eventData['EndDate'] = date('Y-m-d H:i:s', strtotime($end_date . ' ' . $end_time));
+        /* Event Data End */
+
+        if ($facility = $this->input->get_post('facility_id')) {
+            $event['FacilityId'] = $facility;
+        }
+
+        $assignedTo = array();
+        if ($assignedTo = $this->input->get_post('assigned_to')) {
+            if (!is_array($assignedTo)) $assignedTo = array((int)$assignedTo);
+
+            foreach ($assignedTo as $item) {
+                if ($item) $bookingEventUsers[] = ['UserId' => $item, 'IsGuest' => false, 'EventId' => $event_id];
+            }
+        }
+
+        $eventData['BookingEventUsers'] = $bookingEventUsers;
+
+        $eventData['ItemId'] = $item_id;
+        $eventData['BookingId'] = $booking_id;
+        $eventData['BookingItemId'] = $booking_item_id;
+
+        $eventApi = new EventApi();
+        $event = $eventApi->save_event($eventData);
+
+        echo json_encode(to_full_calendar_event($event));
+        exit ( 0 );
     }
 
-    public function delete_event() {
+    public function delete_event($eventId) {
 
+        $eventApi = new EventApi();
+        $event = $eventApi->get_event($eventId);
+        $event['IsActive'] = false;
+        $event['DeletedBy'] = get_current_user_id();
+        $event['DeletedDate'] = now();
+
+        $event = $eventApi->save_event($event);
+        echo json_encode($event);
     }
 
     public function index() {
@@ -208,10 +326,11 @@ class Event extends TF_Controller {
         $this->load->view('admin/appointment', $data);
     }
 
-    public function get_available_peoples($itemId)
+    public function get_available_peoples($itemId = null)
     {
         $startTime = date('Y-m-d H:i:s', strtotime($this->input->get_post('start_time')));
         $endTime = date('Y-m-d H:i:s', strtotime($this->input->get_post('end_time')));
+        if (is_null($itemId)) $itemId = $this->input->get_post('item_id');
 
         $userApi = new UserApi();
         $availableProviders = $userApi->get_users(true, [0, get_current_user_location_id()], $itemId, true, $startTime, $endTime);

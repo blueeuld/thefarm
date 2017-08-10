@@ -93,6 +93,7 @@ if ($availableProviders) {
     }
 }
 
+$audit_users = ['' => '-Select-'];
 $auditUsersArr = $userApi->get_users(true, null, null, null, null, null, true);
 foreach ($auditUsersArr as $item) {
     $audit_users[$item['ContactId']] = $item['FirstName'] . ' ' . $item['LastName'];
@@ -101,13 +102,14 @@ foreach ($auditUsersArr as $item) {
 $reasons = array('Reason 1', 'Reason 2', 'Reason 3', 'N/A');
 
 $statusesArr = $eventApi->get_statuses();
+$statuses = ['' => '-Select-'];
 foreach ($statusesArr as $item) {
     $statuses[$item['StatusCd']] = $item['StatusValue'];
 }
 
 // Bookings.
 $bookingsArr = $bookingApi->search_bookings($date, ['confirmed']);
-$bookings = [];
+$bookings = ['' => '-Select-'];
 foreach ($bookingsArr as $booking) {
     $bookings[$booking['BookingId']] = $booking['Guest']['FirstName'] . ' ' . $booking['Guest']['LastName'];
 }
@@ -122,6 +124,7 @@ foreach ($date_range as $date) $dates[$date] = date('m/d/Y', strtotime($date));
 
 // Facilities
 $facilitiesArr = $facilityApi->search_facilities(get_current_user_locations());
+$facilities = ['' => '-Select-'];
 if ($facilitiesArr) {
     foreach ($facilitiesArr as $facility) {
         $facilities[$facility['FacilityId']] = $facility['FacilityName'];
@@ -130,6 +133,7 @@ if ($facilitiesArr) {
 
 // Package Types
 $packageTypesArr = $bookingApi->get_package_types();
+$package_types = ['' => '-Select-'];
 if ($packageTypesArr) {
     foreach ($packageTypesArr as $item) {
         $package_types[$item['PackageTypeId']] = $item['PackageTypeName'];
@@ -350,11 +354,11 @@ $contents = ob_get_clean();
 $hidden_fields = ['event_id' => $event_id];
 
 $this->view('partials/modal', array(
-    'action' => 'backend/calendar',
+    'action' => 'backend/event/save_event',
     'ajax' => true,
     'form_id' => 'appointmentForm',
     'form_name' => 'appointmentForm',
-    'custom_buttons' => $event_id ? '<a class="btn btn-danger btn-confirm pull-left" title="Are you sure you want to delete this appointment" href="' . site_url('backend/calendar/delete/' . $event_id) . '">Delete</a>' : '',
+    'custom_buttons' => $event_id ? '<a class="btn btn-danger btn-confirm pull-left" title="Are you sure you want to delete this appointment" href="' . site_url('backend/event/delete_event/' . $event_id) . '">Delete</a>' : '',
     'title' => 'Appointment',
     'hidden_fields' => $hidden_fields,
     'contents' => $contents

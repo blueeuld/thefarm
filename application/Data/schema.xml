@@ -51,7 +51,7 @@
     <column name="cancelled_reason" phpName="CancelledReason" type="VARCHAR" size="50" defaultValue=""/>
     <column name="date_cancelled" phpName="DateCancelled" type="INTEGER" size="10" defaultValue="0"/>
     <column name="personalized" phpName="Personalized" type="VARCHAR" size="100" defaultValue=""/>
-    <column name="is_active" phpName="IsActive" type="VARCHAR" size="1" defaultValue="n"/>
+    <column name="is_active" phpName="IsActive" type="BOOLEAN" defaultValue="1"/>
     <column name="deleted_date" phpName="DeletedDate" type="INTEGER" size="10" defaultValue="0"/>
     <column name="deleted_by" phpName="DeletedBy" type="INTEGER"/>
     <column name="item_id" phpName="ItemId" type="INTEGER"/>

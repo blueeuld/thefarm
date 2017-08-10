@@ -204,7 +204,7 @@ use TheFarm\Models\Map\BookingEventTableMap;
  * @method     ChildBookingEvent findOneByCancelledReason(string $cancelled_reason) Return the first ChildBookingEvent filtered by the cancelled_reason column
  * @method     ChildBookingEvent findOneByDateCancelled(int $date_cancelled) Return the first ChildBookingEvent filtered by the date_cancelled column
  * @method     ChildBookingEvent findOneByPersonalized(string $personalized) Return the first ChildBookingEvent filtered by the personalized column
- * @method     ChildBookingEvent findOneByIsActive(string $is_active) Return the first ChildBookingEvent filtered by the is_active column
+ * @method     ChildBookingEvent findOneByIsActive(boolean $is_active) Return the first ChildBookingEvent filtered by the is_active column
  * @method     ChildBookingEvent findOneByDeletedDate(int $deleted_date) Return the first ChildBookingEvent filtered by the deleted_date column
  * @method     ChildBookingEvent findOneByDeletedBy(int $deleted_by) Return the first ChildBookingEvent filtered by the deleted_by column
  * @method     ChildBookingEvent findOneByItemId(int $item_id) Return the first ChildBookingEvent filtered by the item_id column
@@ -239,7 +239,7 @@ use TheFarm\Models\Map\BookingEventTableMap;
  * @method     ChildBookingEvent requireOneByCancelledReason(string $cancelled_reason) Return the first ChildBookingEvent filtered by the cancelled_reason column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildBookingEvent requireOneByDateCancelled(int $date_cancelled) Return the first ChildBookingEvent filtered by the date_cancelled column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildBookingEvent requireOneByPersonalized(string $personalized) Return the first ChildBookingEvent filtered by the personalized column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildBookingEvent requireOneByIsActive(string $is_active) Return the first ChildBookingEvent filtered by the is_active column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildBookingEvent requireOneByIsActive(boolean $is_active) Return the first ChildBookingEvent filtered by the is_active column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildBookingEvent requireOneByDeletedDate(int $deleted_date) Return the first ChildBookingEvent filtered by the deleted_date column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildBookingEvent requireOneByDeletedBy(int $deleted_by) Return the first ChildBookingEvent filtered by the deleted_by column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildBookingEvent requireOneByItemId(int $item_id) Return the first ChildBookingEvent filtered by the item_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -272,7 +272,7 @@ use TheFarm\Models\Map\BookingEventTableMap;
  * @method     ChildBookingEvent[]|ObjectCollection findByCancelledReason(string $cancelled_reason) Return ChildBookingEvent objects filtered by the cancelled_reason column
  * @method     ChildBookingEvent[]|ObjectCollection findByDateCancelled(int $date_cancelled) Return ChildBookingEvent objects filtered by the date_cancelled column
  * @method     ChildBookingEvent[]|ObjectCollection findByPersonalized(string $personalized) Return ChildBookingEvent objects filtered by the personalized column
- * @method     ChildBookingEvent[]|ObjectCollection findByIsActive(string $is_active) Return ChildBookingEvent objects filtered by the is_active column
+ * @method     ChildBookingEvent[]|ObjectCollection findByIsActive(boolean $is_active) Return ChildBookingEvent objects filtered by the is_active column
  * @method     ChildBookingEvent[]|ObjectCollection findByDeletedDate(int $deleted_date) Return ChildBookingEvent objects filtered by the deleted_date column
  * @method     ChildBookingEvent[]|ObjectCollection findByDeletedBy(int $deleted_by) Return ChildBookingEvent objects filtered by the deleted_by column
  * @method     ChildBookingEvent[]|ObjectCollection findByItemId(int $item_id) Return ChildBookingEvent objects filtered by the item_id column
@@ -1110,21 +1110,23 @@ abstract class BookingEventQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByIsActive('fooValue');   // WHERE is_active = 'fooValue'
-     * $query->filterByIsActive('%fooValue%', Criteria::LIKE); // WHERE is_active LIKE '%fooValue%'
+     * $query->filterByIsActive(true); // WHERE is_active = true
+     * $query->filterByIsActive('yes'); // WHERE is_active = true
      * </code>
      *
-     * @param     string $isActive The value to use as filter.
+     * @param     boolean|string $isActive The value to use as filter.
+     *              Non-boolean arguments are converted using the following rules:
+     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildBookingEventQuery The current query, for fluid interface
      */
     public function filterByIsActive($isActive = null, $comparison = null)
     {
-        if (null === $comparison) {
-            if (is_array($isActive)) {
-                $comparison = Criteria::IN;
-            }
+        if (is_string($isActive)) {
+            $isActive = in_array(strtolower($isActive), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
         }
 
         return $this->addUsingAlias(BookingEventTableMap::COL_IS_ACTIVE, $isActive, $comparison);

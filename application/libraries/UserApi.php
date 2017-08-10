@@ -8,6 +8,23 @@ class UserApi {
 
         $userArr = $user->toArray();
         $userArr['UserWorkPlanTimes'] = $user->getUserWorkPlanTimes()->toArray();
+        if ($user->getBookingsRelatedByGuestId()) {
+            $bookings = $user->getBookingsRelatedByGuestId();
+            $bookingsArr = $bookings->toArray();
+//            foreach ($bookings as $key => $booking) {
+//                $userArr['Bookings'][$key]['Forms'] = $booking->getBookingF
+//            }
+            $userArr['Bookings'] = $bookingsArr;
+        }
+
+        if ($user->getUser()) {
+            $userArr['User'] = $user->getUser()->toArray();
+            $userArr['User']['Group'] = $user->getUser()->getGroup()->toArray();
+        }
+
+        if ($user->getItemsRelatedUsers()) {
+            $userArr['UserItems'] = $user->getItemsRelatedUsers()->toArray();
+        }
 
         return $userArr;
     }
@@ -75,5 +92,11 @@ class UserApi {
 
         return null;
 
+    }
+
+    function get_job_titles() {
+        $jobTitles = \TheFarm\Models\PositionQuery::create()->orderByPositionOrder()->find();
+
+        return $jobTitles->toArray();
     }
 }

@@ -204,8 +204,8 @@ abstract class BookingEvent implements ActiveRecordInterface
     /**
      * The value for the is_active field.
      *
-     * Note: this column has a database default value of: 'n'
-     * @var        string
+     * Note: this column has a database default value of: true
+     * @var        boolean
      */
     protected $is_active;
 
@@ -379,7 +379,7 @@ abstract class BookingEvent implements ActiveRecordInterface
         $this->cancelled_reason = '';
         $this->date_cancelled = 0;
         $this->personalized = '';
-        $this->is_active = 'n';
+        $this->is_active = true;
         $this->deleted_date = 0;
         $this->is_kids = false;
         $this->incl_os_done_amount = '0.00';
@@ -807,11 +807,21 @@ abstract class BookingEvent implements ActiveRecordInterface
     /**
      * Get the [is_active] column value.
      *
-     * @return string
+     * @return boolean
      */
     public function getIsActive()
     {
         return $this->is_active;
+    }
+
+    /**
+     * Get the [is_active] column value.
+     *
+     * @return boolean
+     */
+    public function isActive()
+    {
+        return $this->getIsActive();
     }
 
     /**
@@ -1319,15 +1329,23 @@ abstract class BookingEvent implements ActiveRecordInterface
     } // setPersonalized()
 
     /**
-     * Set the value of [is_active] column.
+     * Sets the value of the [is_active] column.
+     * Non-boolean arguments are converted using the following rules:
+     *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
      *
-     * @param string $v new value
+     * @param  boolean|integer|string $v The new value
      * @return $this|\TheFarm\Models\BookingEvent The current object (for fluent API support)
      */
     public function setIsActive($v)
     {
         if ($v !== null) {
-            $v = (string) $v;
+            if (is_string($v)) {
+                $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            } else {
+                $v = (boolean) $v;
+            }
         }
 
         if ($this->is_active !== $v) {
@@ -1648,7 +1666,7 @@ abstract class BookingEvent implements ActiveRecordInterface
                 return false;
             }
 
-            if ($this->is_active !== 'n') {
+            if ($this->is_active !== true) {
                 return false;
             }
 
@@ -1756,7 +1774,7 @@ abstract class BookingEvent implements ActiveRecordInterface
             $this->personalized = (null !== $col) ? (string) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 17 + $startcol : BookingEventTableMap::translateFieldName('IsActive', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->is_active = (null !== $col) ? (string) $col : null;
+            $this->is_active = (null !== $col) ? (boolean) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 18 + $startcol : BookingEventTableMap::translateFieldName('DeletedDate', TableMap::TYPE_PHPNAME, $indexType)];
             $this->deleted_date = (null !== $col) ? (int) $col : null;
@@ -2273,7 +2291,7 @@ abstract class BookingEvent implements ActiveRecordInterface
                         $stmt->bindValue($identifier, $this->personalized, PDO::PARAM_STR);
                         break;
                     case 'is_active':
-                        $stmt->bindValue($identifier, $this->is_active, PDO::PARAM_STR);
+                        $stmt->bindValue($identifier, (int) $this->is_active, PDO::PARAM_INT);
                         break;
                     case 'deleted_date':
                         $stmt->bindValue($identifier, $this->deleted_date, PDO::PARAM_INT);

@@ -1,16 +1,16 @@
-<?php echo form_open('backend/account/login', array('id' => 'validateLogin', 'class'=>'validate form-horizontal padding-15'), array('contact_id' => $contact_id, 'return' => $return));?>
+<?php echo form_open('backend/account/login', array('id' => 'validateLogin', 'class'=>'validate form-horizontal padding-15'), array('contact_id' => $userData['ContactId'], 'return' => $return));?>
     <div class="form-group">
         <label for="" class="col-sm-3 control-label">Username</label>
         <div class="col-sm-9">
-            <input type="text" class="form-control required" id="username" name="username" value="<?php echo $account['username'] ? $account['username'] : $account['email'];?>">
+            <input type="text" class="form-control required" id="username" name="username" value="<?php echo $userData['Username'] ? $userData['Username'] : $userData['Email'];?>">
         </div>
     </div>
-    <?php if ($account['username']) : ?>
+    <?php if ($userData['Username']) : ?>
     <?php if (is_admin()) : ?>
         <div class="form-group">
             <label for="" class="col-sm-3 control-label">Member Group Assignment</label>
             <div class="col-sm-9">
-                <?php echo form_dropdown('group_id', tf_user_groups(), !$account['group_id'] ? 5 : $account['group_id'], array('class' => 'form-control')); ?>
+                <?php echo form_dropdown('group_id', tf_user_groups(), !$userData['GroupId'] ? 5 : $userData['GroupId'], array('class' => 'form-control')); ?>
             </div>
         </div>
     <?php endif; ?>
@@ -18,17 +18,17 @@
         <div class="form-group">
             <label for="" class="col-sm-3 control-label">Assignment</label>
             <div class="col-sm-9">
-                <?php echo form_dropdown('location_id', get_locations(), $account['location_id'], array('class' => 'form-control')); ?>
+                <?php echo form_dropdown('location_id', get_locations(), $userData['LocationId'], array('class' => 'form-control')); ?>
             </div>
         </div>
     <?php endif; ?>
     <div class="form-group">
         <label for="" class="col-sm-3 control-label">Last Login</label>
         <div class="col-sm-9">
-            <?php if (!$account['last_login']) : ?>
+            <?php if (!$userData['LastLogin']) : ?>
                 Never
             <?php else : ?>
-                <?php echo date('c', $account['last_login']); ?>
+                <?php echo date('c', $userData['LastLogin']); ?>
             <?php endif; ?>
         </div>
     </div>
@@ -66,7 +66,7 @@
         <div class="form-group">
             <label for="" class="col-sm-3 control-label">Member Group Assignment</label>
             <div class="col-sm-9">
-                <?php echo form_dropdown('group_id', tf_user_groups(), !$account['group_id'] ? 5 : $account['group_id'], array('class' => 'form-control')); ?>
+                <?php echo form_dropdown('group_id', tf_user_groups(), !$userData['GroupId'] ? 5 : $userData['GroupId'], array('class' => 'form-control')); ?>
             </div>
         </div>
     <?php endif; ?>
@@ -74,17 +74,17 @@
         <div class="form-group">
             <label for="" class="col-sm-3 control-label">Assignment</label>
             <div class="col-sm-9">
-                <?php echo form_dropdown('location_id', get_locations(), isset($account['location_id']) ? $account['location_id'] : 0, array('class' => 'form-control')); ?>
+                <?php echo form_dropdown('location_id', get_locations(), isset($userData['LocationId']) ? $userData['LocationId'] : 0, array('class' => 'form-control')); ?>
             </div>
         </div>
     <?php endif; ?>
     <div class="form-group">
         <label for="" class="col-sm-3 control-label">Last Login</label>
         <div class="col-sm-9">
-            <?php if (!$account['last_login']) : ?>
+            <?php if (!$userData['LastLogin']) : ?>
                 Never
             <?php else : ?>
-                <?php echo date('c', $account['last_login']); ?>
+                <?php echo date('c', $userData['LastLogin']); ?>
             <?php endif; ?>
         </div>
     </div>
