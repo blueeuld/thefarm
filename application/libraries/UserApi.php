@@ -12,16 +12,20 @@ class UserApi {
         return $userArr;
     }
 
-    function get_users($providersOnly = false, $locations = [], $relatedItemId = null, $availableProvidersOnly = null, $startTime = null, $endTime = null) {
+    function get_users($providersOnly = false, $locations = [], $relatedItemId = null, $availableProvidersOnly = null, $startDateTime = null, $endDateTime = null, $auditUsersOnly = false) {
         $search = \TheFarm\Models\ContactQuery::create()
             ->filterByIsActive(true);
 
         if ($providersOnly) {
             $search = $search->useUserQuery()->useGroupQuery()->filterByIncludeInProviderList('y')->endUse()->endUse();
 
-            if ($availableProvidersOnly && !is_null($startTime) && !is_null($endTime)) {
-                $search = $search->useUserWorkPlanTimeQuery('work_plan')->where("(work_plan.start_date BETWEEN '".$startTime."' AND '".$endTime."') OR (work_plan.end_date BETWEEN '".$startTime."' AND '".$endTime."') OR ('".$startTime."' BETWEEN work_plan.start_date AND work_plan.end_date)")->endUse();
+            if ($availableProvidersOnly && !is_null($startDateTime) && !is_null($endDateTime)) {
+                $search = $search->useUserWorkPlanTimeQuery('work_plan')->where("(work_plan.start_date BETWEEN '".$startDateTime."' AND '".$endDateTime."') OR (work_plan.end_date BETWEEN '".$startDateTime."' AND '".$endDateTime."') OR ('".$startDateTime."' BETWEEN work_plan.start_date AND work_plan.end_date)")->endUse();
             }
+        }
+
+        if ($auditUsersOnly) {
+            $search = $search->useUserQuery()->useGroupQuery()->filterByIncludeInAuditList('y')->endUse()->endUse();
         }
 
         if ($locations) {

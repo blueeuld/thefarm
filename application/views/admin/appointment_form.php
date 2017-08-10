@@ -1,11 +1,20 @@
 <?php ob_start(); ?>
 <?php
+$dateTimeFormat = 'Y-m-d H:i:s';
+$eventApi = new EventApi();
+$bookingApi = new BookingApi();
+$userApi = new UserApi();
+$facilityApi = new FacilityApi();
+
+
 if ($eventData) {
+    $event_id = $eventData['EventId'];
     $booking_id = $eventData['BookingId'];
     $item_id = $eventData['Item']['ItemId'];
+    $duration = $eventData['Item']['Duration'];
     $incl = $eventData['Incl'];
     $foc = $eventData['Foc'];
-    $not_incl = $eventData['NotInc'];
+    $not_incl = $eventData['NotIncl'];
     $incl_os_done_number = $eventData['InclOsDoneNumber'];
     $assigned_to = [];
 
@@ -17,18 +26,120 @@ if ($eventData) {
             }
         }
     }
+
+    $start_date = date('Y-m-d', strtotime($eventData['StartDate']));
+    $start_time = date('H:i', strtotime($eventData['StartDate']));
+    $end_date = date('Y-m-d', strtotime($eventData['EndDate']));
+    $end_time = date('H:i', strtotime($eventData['EndDate']));
+    $author_id = $eventData['AuthorId'];
+    $status = $eventData['Status'];
+    $max_provider = $eventData['Item']['MaxProvider'];
+    $facility_id = $eventData['FacilityId'];
+    $notes = $eventData['Notes'];
+    $called_by = $eventData['CalledBy'];
+    $cancelled_by = $eventData['CancelledBy'];
+    $cancelled_reason = $eventData['CancelledReason'];
+    $date_cancelled = $eventData['DateCancelled'];
+    $incl_os_done_amount = $eventData['InclOsDoneAmount'];
+    $not_incl_os_done_number = $eventData['NotInclOsDoneNumber'];
+    $not_incl_os_done_amount = $eventData['NotInclOsDoneAmount'];
+    $foc_os_done_number = $eventData['FocOsDoneNumber'];
+    $foc_os_done_amount = $eventData['FocOsDoneAmount'];
+    $date = $start_date;
+
+    $availableProviders = $userApi->get_users(false, [0, get_current_user_location_id()], $item_id, true, $eventData['StartDate'], $eventData['EndDate']);
 }
 else {
-    $booking_id = null;
-    $item_id = null;
-    $incl = false;
+
+    $date = $this->input->get_post('start');
+    $item_id = $this->input->get_post('item_id');
+    $booking_id = (int)$this->input->get_post('booking_id');
+    $assigned_to = [$this->input->get_post('assigned_to')];
+    $duration = is_int($this->input->get_post('duration')) ? $this->input->get_post('duration') : 60;
+
+    $start_date_dt = new DateTime($date);
+    $end_date_dt = new DateTime($date);
+    $end_date_dt->add(new DateInterval('PT'.$duration.'M'));
+
+    $event_id = null;
+    $incl = true;
     $foc = false;
     $not_incl = false;
-    $assigned_to = [];
+    $start_date = $start_date_dt->format('Y-m-d');
+    $start_time = $start_date_dt->format('H:i');
+    $end_date = $end_date_dt->format('Y-m-d');
+    $end_time = $end_date_dt->format('H:i');
+    $facility_id = null;
+    $max_provider = 1;
+    $notes = '';
+    $status = '';
+    $author_id = get_current_user_id();
+    $cancelled_reason = '';
+    $cancelled_by = null;
+    $called_by = null;
+    $date_cancelled = null;
+    $incl_os_done_amount = '';
+    $not_incl_os_done_number = '';
+    $not_incl_os_done_amount = '';
+    $foc_os_done_number = '';
+    $foc_os_done_amount = '';
+    $availableProviders = $userApi->get_users(false, [0, get_current_user_location_id()], $item_id, true, $start_date_dt->format($dateTimeFormat), $end_date_dt->format($dateTimeFormat));
 }
 
+$providers = [];
+if ($availableProviders) {
+    foreach ($availableProviders as $availableProvider) {
+        $providers[$availableProvider['ContactId']] = $availableProvider['FirstName'] . ' ' . $availableProvider['LastName'];
+    }
+}
+
+$auditUsersArr = $userApi->get_users(true, null, null, null, null, null, true);
+foreach ($auditUsersArr as $item) {
+    $audit_users[$item['ContactId']] = $item['FirstName'] . ' ' . $item['LastName'];
+}
+
+$reasons = array('Reason 1', 'Reason 2', 'Reason 3', 'N/A');
+
+$statusesArr = $eventApi->get_statuses();
+foreach ($statusesArr as $item) {
+    $statuses[$item['StatusCd']] = $item['StatusValue'];
+}
+
+// Bookings.
+$bookingsArr = $bookingApi->search_bookings($date, ['confirmed']);
+$bookings = [];
+foreach ($bookingsArr as $booking) {
+    $bookings[$booking['BookingId']] = $booking['Guest']['FirstName'] . ' ' . $booking['Guest']['LastName'];
+}
+
+$endDate = new DateTime($date);
+$endDate->add(new DateInterval('P1W'));
+
+$date_range = createDateRangeArray($date, $endDate->format('Y-m-d'));
+$dates = [];
+foreach ($date_range as $date) $dates[$date] = date('m/d/Y', strtotime($date));
+
+
+// Facilities
+$facilitiesArr = $facilityApi->search_facilities(get_current_user_locations());
+if ($facilitiesArr) {
+    foreach ($facilitiesArr as $facility) {
+        $facilities[$facility['FacilityId']] = $facility['FacilityName'];
+    }
+}
+
+// Package Types
+$packageTypesArr = $bookingApi->get_package_types();
+if ($packageTypesArr) {
+    foreach ($packageTypesArr as $item) {
+        $package_types[$item['PackageTypeId']] = $item['PackageTypeName'];
+    }
+}
+
+$times = createTimeRangeArray(1800*12, 3600*23, 60*10);
+
 ?>
-<?php if (!isset($eventData['BookingId'])) : ?>
+<?php if (!$booking_id) : ?>
     <ul class="nav nav-tabs">
         <li class="active"><a href="#existing" aria-controls="existing" role="tab" data-toggle="tab">Select Existing Guest</a></li>
         <li><a href="#new-guest" aria-controls="new-guest" role="tab" data-toggle="tab">New Guest</a></li>
@@ -71,7 +182,7 @@ else {
 
 <?php else : ?>
     <h3 class="bg-info" style="background: #d9edf7; color: #333; padding: 10px; margin-top: 10px; margin-bottom: 10px;">
-        <?php echo $booking_data['first_name'] . ' ' . $booking_data['last_name']; ?></strong> - <label style="font-size: 16px; padding-top: 7px" class="label label-primary"><?php echo $booking_data['title']; ?></label>
+        <strong><?php echo $eventData['Booking']['Guest']['FirstName'] . ' ' . $eventData['Booking']['Guest']['LastName']; ?></strong> - <label style="font-size: 16px; padding-top: 7px" class="label label-primary"><?php echo $eventData['Booking']['Title']; ?></label>
         <?php echo form_hidden('booking_id', $booking_id); ?>
     </h3>
 <?php endif; ?>
@@ -236,17 +347,14 @@ else {
 <?php
 $contents = ob_get_clean();
 
-$hidden_fields = [];
-if (isset($eventData['EventId'])) {
-    $hidden_fields['event_id'] = $eventData['EventId'];
-}
+$hidden_fields = ['event_id' => $event_id];
 
 $this->view('partials/modal', array(
     'action' => 'backend/calendar',
     'ajax' => true,
     'form_id' => 'appointmentForm',
     'form_name' => 'appointmentForm',
-    'custom_buttons' => isset($eventData['EventId']) ? '<a class="btn btn-danger btn-confirm pull-left" title="Are you sure you want to delete this appointment" href="' . site_url('backend/calendar/delete/' . $eventData['EventId']) . '">Delete</a>' : '',
+    'custom_buttons' => $event_id ? '<a class="btn btn-danger btn-confirm pull-left" title="Are you sure you want to delete this appointment" href="' . site_url('backend/calendar/delete/' . $event_id) . '">Delete</a>' : '',
     'title' => 'Appointment',
     'hidden_fields' => $hidden_fields,
     'contents' => $contents

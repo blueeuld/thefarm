@@ -98,11 +98,14 @@ class BookingApi {
             $messageApi->sendMessage($subject, $booking->getGuestId());
         }
 
-        var_dump($booking->toArray());
-        var_dump($booking->getBookingItems()->toArray());
-
         return $booking->toArray();
 
+    }
+
+    public function get_package_types() {
+        $packageTypes = \TheFarm\Models\PackageTypeQuery::create()->find();
+
+        return $packageTypes->toArray();
     }
 
 

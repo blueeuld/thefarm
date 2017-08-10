@@ -60,14 +60,24 @@ class EventApi {
     }
 
     public function get_event($eventId) {
-        $search = \TheFarm\Models\BookingEventQuery::create()->findOneByEventId($eventId);
-        return $search->toArray();
+        $event = \TheFarm\Models\BookingEventQuery::create()->findOneByEventId($eventId);
+        $eventArr = $event->toArray();
+        $eventArr['Item'] = $event->getItem()->toArray();
+        $eventArr['Booking'] = $event->getBooking()->toArray();
+        $eventArr['Booking']['Guest'] = $event->getBooking()->getContactRelatedByGuestId()->toArray();
+        $eventArr['BookingEventUsers'] = $event->getBookingEventUsers()->toArray();
+        $eventArr['Facility'] = $event->getFacility()->toArray();
+
+        return $eventArr;
     }
 
     public function get_upcoming_events($categories, $locations, $eventStatus, $unAssignedEventOnly) {
-
         return $this->get_events(null, null, null, $categories, $locations, $eventStatus, true, 'P7D', $unAssignedEventOnly);
+    }
 
+    public function get_statuses() {
+        $statuses = \TheFarm\Models\EventStatusQuery::create()->find();
+        return $statuses->toArray();
     }
 
     public function get_events($start = null, $end = null, $guestId = null, $categories = [], $locations = [], $eventStatus = null, $upcoming = false, $upcomingThreshold = 'P7D', $unAssignedEventOnly = false) {

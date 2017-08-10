@@ -6,38 +6,15 @@ class Event extends TF_Controller {
 
     public function new_event() {
 
-        $bookingApi = new BookingApi();
-
-        $date = $this->input->get_post('start');
-
         $data = [];
         $data['eventData'] = [];
-        $bookings = $bookingApi->search_bookings($date, ['confirmed']);
-
-        $bookingsArr = [];
-        foreach ($bookings as $booking) {
-            $bookingsArr[$booking['BookingId']] = $booking['Guest']['FirstName'] . ' ' . $booking['Guest']['LastName'];
-        }
-
-        $data['bookings'] = $bookingsArr;
-
-        $endDate = new DateTime($_REQUEST['start']);
-        $endDate->add(new DateInterval('P1W'));
-
-        $date_range = createDateRangeArray($_REQUEST['start'], $endDate->format('Y-m-d'));
-        $dates = array();
-        foreach ($date_range as $date) $dates[$date] = date('m/d/Y', strtotime($date));
-
-        $data['dates'] = $dates;
 
         $this->load->view('admin/appointment_form', $data);
     }
 
     public function edit_event() {
         $eventId = $this->input->get_post('id');
-        $date = $this->input->get_post('start');
         $eventApi = new EventApi();
-        $bookingApi = new BookingApi();
         $event = $eventApi->get_event($eventId);
 
         $data = [];
@@ -99,23 +76,6 @@ class Event extends TF_Controller {
         );
 
 
-        if($event_id) {
-
-            $this->db->select('booking_events.*, items.duration, items.max_provider, 
-                bookings.booking_id, bookings.guest_id, booking_events.notes, 
-                booking_items.item_id');
-            $this->db->from('booking_events');
-            $this->db->join('booking_items', 'booking_events.booking_item_id = booking_items.booking_item_id', 'left');
-            $this->db->join('bookings', 'bookings.booking_id = booking_items.booking_id', 'left');
-            $this->db->join('items', 'booking_items.item_id=items.item_id', 'left');
-            $this->db->where('event_id = ', $event_id);
-            $this->db->where('items.is_active', 1);
-            $query = $this->db->get();
-            $event_data = $query->row_array();
-
-            $query->free_result();
-        }
-
         $date_cancelled = (int)$event_data['date_cancelled'] === 0 ? now() : (int)$event_data['date_cancelled'];
 
         $booking_id = (int)$event_data['booking_id'];
@@ -152,34 +112,6 @@ class Event extends TF_Controller {
 
         $data['assigned_to'] = $assigned_to;
 
-        if ($event_id > 0) {
-
-            $query = $this->db->get_where('booking_event_users', 'event_id='.$event_id);
-            $assigned_to = array();
-            if ($query->num_rows() > 0) {
-                foreach ($query->result_array() as $row) {
-                    $assigned_to[] = (int)$row['staff_id'];
-                }
-            }
-            $query->free_result();
-            $data['assigned_to'] = $assigned_to;
-        }
-
-        $facilities = array('' => '');
-
-        $this->db->select('facility_id, facility_name');
-        $this->db->from('facilities');
-        $this->db->where('facilities.status', 1);
-        if (get_current_user_locations())
-        {
-            $this->db->where_in('facilities.location_id', get_current_user_locations());
-        }
-
-        $query = $this->db->get();
-        foreach ($query->result_array() as $row) {
-            $facilities[$row['facility_id']] = $row['facility_name'];
-        }
-        $query->free_result();
         $params = array();
         $params['start'] = date('Y-m-d H:i:s', strtotime($event_data['start_dt']));
         $params['end'] = date('Y-m-d H:i:s', strtotime($event_data['end_dt']));
@@ -270,19 +202,8 @@ class Event extends TF_Controller {
 
         $data['package_types'] = $package_types;
 
-        $data['times'] = createTimeRangeArray(1800*12, 3600*23, 60*10);
-
         $data['booking_item_id'] = $booking_item_id;
 
-        $data['reasons'] = array('Reason 1', 'Reason 2', 'Reason 3', 'N/A');
-
-        $audit_users = array();
-        $audit_users[get_current_user_id()] = 'Me';
-        foreach (get_audit_users(array(get_current_user_id())) as $row) {
-            $audit_users[$row['contact_id']] = $row['first_name'] . ' ' . $row['last_name'];;
-        }
-
-        $data['audit_users'] = $audit_users;
 
         $this->load->view('admin/appointment', $data);
     }
@@ -292,8 +213,8 @@ class Event extends TF_Controller {
         $startTime = date('Y-m-d H:i:s', strtotime($this->input->get_post('start_time')));
         $endTime = date('Y-m-d H:i:s', strtotime($this->input->get_post('end_time')));
 
-
-        $availableProviders = $this->userApi->get_users(true, [0, get_current_user_location_id()], $itemId, true, $startTime, $endTime);
+        $userApi = new UserApi();
+        $availableProviders = $userApi->get_users(true, [0, get_current_user_location_id()], $itemId, true, $startTime, $endTime);
         $this->output->set_content_type('application/json')->set_output(json_encode($availableProviders));
 
 //        $availableProviders = [];
