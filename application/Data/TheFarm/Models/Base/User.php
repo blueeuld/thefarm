@@ -68,7 +68,6 @@ abstract class User implements ActiveRecordInterface
     /**
      * The value for the contact_id field.
      *
-     * Note: this column has a database default value of: 0
      * @var        int
      */
     protected $contact_id;
@@ -214,7 +213,6 @@ abstract class User implements ActiveRecordInterface
      */
     public function applyDefaultValues()
     {
-        $this->contact_id = 0;
         $this->user_order = 0;
         $this->calendar_view_positions = '';
         $this->calendar_show_my_schedule_only = 'y';
@@ -951,10 +949,6 @@ abstract class User implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
-            if ($this->contact_id !== 0) {
-                return false;
-            }
-
             if ($this->user_order !== 0) {
                 return false;
             }
@@ -1990,7 +1984,7 @@ abstract class User implements ActiveRecordInterface
     public function setContact(ChildContact $v = null)
     {
         if ($v === null) {
-            $this->setContactId(0);
+            $this->setContactId(NULL);
         } else {
             $this->setContactId($v->getContactId());
         }

@@ -51,7 +51,6 @@
     <column name="cancelled_reason" phpName="CancelledReason" type="VARCHAR" size="50" defaultValue=""/>
     <column name="date_cancelled" phpName="DateCancelled" type="INTEGER" size="10" defaultValue="0"/>
     <column name="personalized" phpName="Personalized" type="VARCHAR" size="100" defaultValue=""/>
-    <column name="booking_item_id" phpName="BookingItemId" type="INTEGER"/>
     <column name="is_active" phpName="IsActive" type="VARCHAR" size="1" defaultValue="n"/>
     <column name="deleted_date" phpName="DeletedDate" type="INTEGER" size="10" defaultValue="0"/>
     <column name="deleted_by" phpName="DeletedBy" type="INTEGER"/>
@@ -71,9 +70,6 @@
     </foreign-key>
     <foreign-key foreignTable="tf_bookings" name="booking_fk">
       <reference local="booking_id" foreign="booking_id"/>
-    </foreign-key>
-    <foreign-key foreignTable="tf_booking_items" name="booking_event_booking_item_by_fk">
-      <reference local="booking_item_id" foreign="booking_item_id"/>
     </foreign-key>
     <foreign-key foreignTable="tf_contacts" name="booking_event_called_by_fk">
       <reference local="called_by" foreign="contact_id"/>
@@ -141,7 +137,6 @@
     </vendor>
   </table>
   <table name="tf_booking_items" idMethod="native" phpName="BookingItem" namespace="Models">
-    <column name="booking_item_id" phpName="BookingItemId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="booking_id" phpName="BookingId" type="INTEGER" required="true"/>
     <column name="item_id" phpName="ItemId" type="INTEGER" required="true"/>
     <column name="quantity" phpName="Quantity" type="INTEGER" size="5" required="true"/>
@@ -816,7 +811,7 @@
     <column name="end_date" phpName="EndDate" type="TIMESTAMP" required="true"/>
     <column name="is_working" phpName="IsWorking" type="Boolean" defaultValue="1"/>
 
-    <foreign-key foreignTable="tf_contacts" name="contact_fk1">
+    <foreign-key foreignTable="tf_contacts" name="contact_fk2">
       <reference local="contact_id" foreign="contact_id"/>
     </foreign-key>
     <index name="contact_fk1">

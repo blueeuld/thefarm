@@ -21,21 +21,19 @@ use Propel\Runtime\Util\PropelDateTime;
 use TheFarm\Models\Booking as ChildBooking;
 use TheFarm\Models\BookingEvent as ChildBookingEvent;
 use TheFarm\Models\BookingEventQuery as ChildBookingEventQuery;
-use TheFarm\Models\BookingEventUser as ChildBookingEventUser;
-use TheFarm\Models\BookingEventUserQuery as ChildBookingEventUserQuery;
-use TheFarm\Models\BookingItem as ChildBookingItem;
-use TheFarm\Models\BookingItemQuery as ChildBookingItemQuery;
 use TheFarm\Models\BookingQuery as ChildBookingQuery;
 use TheFarm\Models\Contact as ChildContact;
 use TheFarm\Models\ContactQuery as ChildContactQuery;
 use TheFarm\Models\EventStatus as ChildEventStatus;
 use TheFarm\Models\EventStatusQuery as ChildEventStatusQuery;
+use TheFarm\Models\EventUser as ChildEventUser;
+use TheFarm\Models\EventUserQuery as ChildEventUserQuery;
 use TheFarm\Models\Facility as ChildFacility;
 use TheFarm\Models\FacilityQuery as ChildFacilityQuery;
 use TheFarm\Models\Item as ChildItem;
 use TheFarm\Models\ItemQuery as ChildItemQuery;
 use TheFarm\Models\Map\BookingEventTableMap;
-use TheFarm\Models\Map\BookingEventUserTableMap;
+use TheFarm\Models\Map\EventUserTableMap;
 
 /**
  * Base class that represents a row from the 'tf_booking_events' table.
@@ -204,13 +202,6 @@ abstract class BookingEvent implements ActiveRecordInterface
     protected $personalized;
 
     /**
-     * The value for the booking_item_id field.
-     *
-     * @var        int
-     */
-    protected $booking_item_id;
-
-    /**
      * The value for the is_active field.
      *
      * Note: this column has a database default value of: 'n'
@@ -325,11 +316,6 @@ abstract class BookingEvent implements ActiveRecordInterface
     protected $aBooking;
 
     /**
-     * @var        ChildBookingItem
-     */
-    protected $aBookingItem;
-
-    /**
      * @var        ChildContact
      */
     protected $aContactRelatedByCalledBy;
@@ -360,10 +346,10 @@ abstract class BookingEvent implements ActiveRecordInterface
     protected $aEventStatus;
 
     /**
-     * @var        ObjectCollection|ChildBookingEventUser[] Collection to store aggregation of ChildBookingEventUser objects.
+     * @var        ObjectCollection|ChildEventUser[] Collection to store aggregation of ChildEventUser objects.
      */
-    protected $collBookingEventUsers;
-    protected $collBookingEventUsersPartial;
+    protected $collEventUsers;
+    protected $collEventUsersPartial;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -375,9 +361,9 @@ abstract class BookingEvent implements ActiveRecordInterface
 
     /**
      * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildBookingEventUser[]
+     * @var ObjectCollection|ChildEventUser[]
      */
-    protected $bookingEventUsersScheduledForDeletion = null;
+    protected $eventUsersScheduledForDeletion = null;
 
     /**
      * Applies default values to this object.
@@ -816,16 +802,6 @@ abstract class BookingEvent implements ActiveRecordInterface
     public function getPersonalized()
     {
         return $this->personalized;
-    }
-
-    /**
-     * Get the [booking_item_id] column value.
-     *
-     * @return int
-     */
-    public function getBookingItemId()
-    {
-        return $this->booking_item_id;
     }
 
     /**
@@ -1343,30 +1319,6 @@ abstract class BookingEvent implements ActiveRecordInterface
     } // setPersonalized()
 
     /**
-     * Set the value of [booking_item_id] column.
-     *
-     * @param int $v new value
-     * @return $this|\TheFarm\Models\BookingEvent The current object (for fluent API support)
-     */
-    public function setBookingItemId($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->booking_item_id !== $v) {
-            $this->booking_item_id = $v;
-            $this->modifiedColumns[BookingEventTableMap::COL_BOOKING_ITEM_ID] = true;
-        }
-
-        if ($this->aBookingItem !== null && $this->aBookingItem->getBookingItemId() !== $v) {
-            $this->aBookingItem = null;
-        }
-
-        return $this;
-    } // setBookingItemId()
-
-    /**
      * Set the value of [is_active] column.
      *
      * @param string $v new value
@@ -1803,49 +1755,46 @@ abstract class BookingEvent implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 16 + $startcol : BookingEventTableMap::translateFieldName('Personalized', TableMap::TYPE_PHPNAME, $indexType)];
             $this->personalized = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 17 + $startcol : BookingEventTableMap::translateFieldName('BookingItemId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->booking_item_id = (null !== $col) ? (int) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 18 + $startcol : BookingEventTableMap::translateFieldName('IsActive', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 17 + $startcol : BookingEventTableMap::translateFieldName('IsActive', TableMap::TYPE_PHPNAME, $indexType)];
             $this->is_active = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 19 + $startcol : BookingEventTableMap::translateFieldName('DeletedDate', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 18 + $startcol : BookingEventTableMap::translateFieldName('DeletedDate', TableMap::TYPE_PHPNAME, $indexType)];
             $this->deleted_date = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 20 + $startcol : BookingEventTableMap::translateFieldName('DeletedBy', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 19 + $startcol : BookingEventTableMap::translateFieldName('DeletedBy', TableMap::TYPE_PHPNAME, $indexType)];
             $this->deleted_by = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 21 + $startcol : BookingEventTableMap::translateFieldName('ItemId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 20 + $startcol : BookingEventTableMap::translateFieldName('ItemId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->item_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 22 + $startcol : BookingEventTableMap::translateFieldName('IsKids', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 21 + $startcol : BookingEventTableMap::translateFieldName('IsKids', TableMap::TYPE_PHPNAME, $indexType)];
             $this->is_kids = (null !== $col) ? (boolean) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 23 + $startcol : BookingEventTableMap::translateFieldName('InclOsDoneNumber', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 22 + $startcol : BookingEventTableMap::translateFieldName('InclOsDoneNumber', TableMap::TYPE_PHPNAME, $indexType)];
             $this->incl_os_done_number = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 24 + $startcol : BookingEventTableMap::translateFieldName('InclOsDoneAmount', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 23 + $startcol : BookingEventTableMap::translateFieldName('InclOsDoneAmount', TableMap::TYPE_PHPNAME, $indexType)];
             $this->incl_os_done_amount = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 25 + $startcol : BookingEventTableMap::translateFieldName('FocOsDoneNumber', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 24 + $startcol : BookingEventTableMap::translateFieldName('FocOsDoneNumber', TableMap::TYPE_PHPNAME, $indexType)];
             $this->foc_os_done_number = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 26 + $startcol : BookingEventTableMap::translateFieldName('FocOsDoneAmount', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 25 + $startcol : BookingEventTableMap::translateFieldName('FocOsDoneAmount', TableMap::TYPE_PHPNAME, $indexType)];
             $this->foc_os_done_amount = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 27 + $startcol : BookingEventTableMap::translateFieldName('NotInclOsDoneNumber', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 26 + $startcol : BookingEventTableMap::translateFieldName('NotInclOsDoneNumber', TableMap::TYPE_PHPNAME, $indexType)];
             $this->not_incl_os_done_number = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 28 + $startcol : BookingEventTableMap::translateFieldName('NotInclOsDoneAmount', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 27 + $startcol : BookingEventTableMap::translateFieldName('NotInclOsDoneAmount', TableMap::TYPE_PHPNAME, $indexType)];
             $this->not_incl_os_done_amount = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 29 + $startcol : BookingEventTableMap::translateFieldName('Incl', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 28 + $startcol : BookingEventTableMap::translateFieldName('Incl', TableMap::TYPE_PHPNAME, $indexType)];
             $this->incl = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 30 + $startcol : BookingEventTableMap::translateFieldName('NotIncl', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 29 + $startcol : BookingEventTableMap::translateFieldName('NotIncl', TableMap::TYPE_PHPNAME, $indexType)];
             $this->not_incl = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 31 + $startcol : BookingEventTableMap::translateFieldName('Foc', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 30 + $startcol : BookingEventTableMap::translateFieldName('Foc', TableMap::TYPE_PHPNAME, $indexType)];
             $this->foc = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
@@ -1855,7 +1804,7 @@ abstract class BookingEvent implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 32; // 32 = BookingEventTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 31; // 31 = BookingEventTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\TheFarm\\Models\\BookingEvent'), 0, $e);
@@ -1894,9 +1843,6 @@ abstract class BookingEvent implements ActiveRecordInterface
         }
         if ($this->aContactRelatedByCancelledBy !== null && $this->cancelled_by !== $this->aContactRelatedByCancelledBy->getContactId()) {
             $this->aContactRelatedByCancelledBy = null;
-        }
-        if ($this->aBookingItem !== null && $this->booking_item_id !== $this->aBookingItem->getBookingItemId()) {
-            $this->aBookingItem = null;
         }
         if ($this->aContactRelatedByDeletedBy !== null && $this->deleted_by !== $this->aContactRelatedByDeletedBy->getContactId()) {
             $this->aContactRelatedByDeletedBy = null;
@@ -1945,14 +1891,13 @@ abstract class BookingEvent implements ActiveRecordInterface
 
             $this->aContactRelatedByAuthorId = null;
             $this->aBooking = null;
-            $this->aBookingItem = null;
             $this->aContactRelatedByCalledBy = null;
             $this->aContactRelatedByCancelledBy = null;
             $this->aContactRelatedByDeletedBy = null;
             $this->aFacility = null;
             $this->aItem = null;
             $this->aEventStatus = null;
-            $this->collBookingEventUsers = null;
+            $this->collEventUsers = null;
 
         } // if (deep)
     }
@@ -2076,13 +2021,6 @@ abstract class BookingEvent implements ActiveRecordInterface
                 $this->setBooking($this->aBooking);
             }
 
-            if ($this->aBookingItem !== null) {
-                if ($this->aBookingItem->isModified() || $this->aBookingItem->isNew()) {
-                    $affectedRows += $this->aBookingItem->save($con);
-                }
-                $this->setBookingItem($this->aBookingItem);
-            }
-
             if ($this->aContactRelatedByCalledBy !== null) {
                 if ($this->aContactRelatedByCalledBy->isModified() || $this->aContactRelatedByCalledBy->isNew()) {
                     $affectedRows += $this->aContactRelatedByCalledBy->save($con);
@@ -2136,17 +2074,17 @@ abstract class BookingEvent implements ActiveRecordInterface
                 $this->resetModified();
             }
 
-            if ($this->bookingEventUsersScheduledForDeletion !== null) {
-                if (!$this->bookingEventUsersScheduledForDeletion->isEmpty()) {
-                    \TheFarm\Models\BookingEventUserQuery::create()
-                        ->filterByPrimaryKeys($this->bookingEventUsersScheduledForDeletion->getPrimaryKeys(false))
+            if ($this->eventUsersScheduledForDeletion !== null) {
+                if (!$this->eventUsersScheduledForDeletion->isEmpty()) {
+                    \TheFarm\Models\EventUserQuery::create()
+                        ->filterByPrimaryKeys($this->eventUsersScheduledForDeletion->getPrimaryKeys(false))
                         ->delete($con);
-                    $this->bookingEventUsersScheduledForDeletion = null;
+                    $this->eventUsersScheduledForDeletion = null;
                 }
             }
 
-            if ($this->collBookingEventUsers !== null) {
-                foreach ($this->collBookingEventUsers as $referrerFK) {
+            if ($this->collEventUsers !== null) {
+                foreach ($this->collEventUsers as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -2229,9 +2167,6 @@ abstract class BookingEvent implements ActiveRecordInterface
         }
         if ($this->isColumnModified(BookingEventTableMap::COL_PERSONALIZED)) {
             $modifiedColumns[':p' . $index++]  = 'personalized';
-        }
-        if ($this->isColumnModified(BookingEventTableMap::COL_BOOKING_ITEM_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'booking_item_id';
         }
         if ($this->isColumnModified(BookingEventTableMap::COL_IS_ACTIVE)) {
             $modifiedColumns[':p' . $index++]  = 'is_active';
@@ -2336,9 +2271,6 @@ abstract class BookingEvent implements ActiveRecordInterface
                         break;
                     case 'personalized':
                         $stmt->bindValue($identifier, $this->personalized, PDO::PARAM_STR);
-                        break;
-                    case 'booking_item_id':
-                        $stmt->bindValue($identifier, $this->booking_item_id, PDO::PARAM_INT);
                         break;
                     case 'is_active':
                         $stmt->bindValue($identifier, $this->is_active, PDO::PARAM_STR);
@@ -2496,48 +2428,45 @@ abstract class BookingEvent implements ActiveRecordInterface
                 return $this->getPersonalized();
                 break;
             case 17:
-                return $this->getBookingItemId();
-                break;
-            case 18:
                 return $this->getIsActive();
                 break;
-            case 19:
+            case 18:
                 return $this->getDeletedDate();
                 break;
-            case 20:
+            case 19:
                 return $this->getDeletedBy();
                 break;
-            case 21:
+            case 20:
                 return $this->getItemId();
                 break;
-            case 22:
+            case 21:
                 return $this->getIsKids();
                 break;
-            case 23:
+            case 22:
                 return $this->getInclOsDoneNumber();
                 break;
-            case 24:
+            case 23:
                 return $this->getInclOsDoneAmount();
                 break;
-            case 25:
+            case 24:
                 return $this->getFocOsDoneNumber();
                 break;
-            case 26:
+            case 25:
                 return $this->getFocOsDoneAmount();
                 break;
-            case 27:
+            case 26:
                 return $this->getNotInclOsDoneNumber();
                 break;
-            case 28:
+            case 27:
                 return $this->getNotInclOsDoneAmount();
                 break;
-            case 29:
+            case 28:
                 return $this->getIncl();
                 break;
-            case 30:
+            case 29:
                 return $this->getNotIncl();
                 break;
-            case 31:
+            case 30:
                 return $this->getFoc();
                 break;
             default:
@@ -2587,21 +2516,20 @@ abstract class BookingEvent implements ActiveRecordInterface
             $keys[14] => $this->getCancelledReason(),
             $keys[15] => $this->getDateCancelled(),
             $keys[16] => $this->getPersonalized(),
-            $keys[17] => $this->getBookingItemId(),
-            $keys[18] => $this->getIsActive(),
-            $keys[19] => $this->getDeletedDate(),
-            $keys[20] => $this->getDeletedBy(),
-            $keys[21] => $this->getItemId(),
-            $keys[22] => $this->getIsKids(),
-            $keys[23] => $this->getInclOsDoneNumber(),
-            $keys[24] => $this->getInclOsDoneAmount(),
-            $keys[25] => $this->getFocOsDoneNumber(),
-            $keys[26] => $this->getFocOsDoneAmount(),
-            $keys[27] => $this->getNotInclOsDoneNumber(),
-            $keys[28] => $this->getNotInclOsDoneAmount(),
-            $keys[29] => $this->getIncl(),
-            $keys[30] => $this->getNotIncl(),
-            $keys[31] => $this->getFoc(),
+            $keys[17] => $this->getIsActive(),
+            $keys[18] => $this->getDeletedDate(),
+            $keys[19] => $this->getDeletedBy(),
+            $keys[20] => $this->getItemId(),
+            $keys[21] => $this->getIsKids(),
+            $keys[22] => $this->getInclOsDoneNumber(),
+            $keys[23] => $this->getInclOsDoneAmount(),
+            $keys[24] => $this->getFocOsDoneNumber(),
+            $keys[25] => $this->getFocOsDoneAmount(),
+            $keys[26] => $this->getNotInclOsDoneNumber(),
+            $keys[27] => $this->getNotInclOsDoneAmount(),
+            $keys[28] => $this->getIncl(),
+            $keys[29] => $this->getNotIncl(),
+            $keys[30] => $this->getFoc(),
         );
         if ($result[$keys[3]] instanceof \DateTimeInterface) {
             $result[$keys[3]] = $result[$keys[3]]->format('c');
@@ -2646,21 +2574,6 @@ abstract class BookingEvent implements ActiveRecordInterface
                 }
 
                 $result[$key] = $this->aBooking->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
-            }
-            if (null !== $this->aBookingItem) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_CAMELNAME:
-                        $key = 'bookingItem';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'tf_booking_items';
-                        break;
-                    default:
-                        $key = 'BookingItem';
-                }
-
-                $result[$key] = $this->aBookingItem->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
             if (null !== $this->aContactRelatedByCalledBy) {
 
@@ -2752,20 +2665,20 @@ abstract class BookingEvent implements ActiveRecordInterface
 
                 $result[$key] = $this->aEventStatus->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
-            if (null !== $this->collBookingEventUsers) {
+            if (null !== $this->collEventUsers) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'bookingEventUsers';
+                        $key = 'eventUsers';
                         break;
                     case TableMap::TYPE_FIELDNAME:
                         $key = 'tf_booking_event_userss';
                         break;
                     default:
-                        $key = 'BookingEventUsers';
+                        $key = 'EventUsers';
                 }
 
-                $result[$key] = $this->collBookingEventUsers->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+                $result[$key] = $this->collEventUsers->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -2853,48 +2766,45 @@ abstract class BookingEvent implements ActiveRecordInterface
                 $this->setPersonalized($value);
                 break;
             case 17:
-                $this->setBookingItemId($value);
-                break;
-            case 18:
                 $this->setIsActive($value);
                 break;
-            case 19:
+            case 18:
                 $this->setDeletedDate($value);
                 break;
-            case 20:
+            case 19:
                 $this->setDeletedBy($value);
                 break;
-            case 21:
+            case 20:
                 $this->setItemId($value);
                 break;
-            case 22:
+            case 21:
                 $this->setIsKids($value);
                 break;
-            case 23:
+            case 22:
                 $this->setInclOsDoneNumber($value);
                 break;
-            case 24:
+            case 23:
                 $this->setInclOsDoneAmount($value);
                 break;
-            case 25:
+            case 24:
                 $this->setFocOsDoneNumber($value);
                 break;
-            case 26:
+            case 25:
                 $this->setFocOsDoneAmount($value);
                 break;
-            case 27:
+            case 26:
                 $this->setNotInclOsDoneNumber($value);
                 break;
-            case 28:
+            case 27:
                 $this->setNotInclOsDoneAmount($value);
                 break;
-            case 29:
+            case 28:
                 $this->setIncl($value);
                 break;
-            case 30:
+            case 29:
                 $this->setNotIncl($value);
                 break;
-            case 31:
+            case 30:
                 $this->setFoc($value);
                 break;
         } // switch()
@@ -2975,49 +2885,46 @@ abstract class BookingEvent implements ActiveRecordInterface
             $this->setPersonalized($arr[$keys[16]]);
         }
         if (array_key_exists($keys[17], $arr)) {
-            $this->setBookingItemId($arr[$keys[17]]);
+            $this->setIsActive($arr[$keys[17]]);
         }
         if (array_key_exists($keys[18], $arr)) {
-            $this->setIsActive($arr[$keys[18]]);
+            $this->setDeletedDate($arr[$keys[18]]);
         }
         if (array_key_exists($keys[19], $arr)) {
-            $this->setDeletedDate($arr[$keys[19]]);
+            $this->setDeletedBy($arr[$keys[19]]);
         }
         if (array_key_exists($keys[20], $arr)) {
-            $this->setDeletedBy($arr[$keys[20]]);
+            $this->setItemId($arr[$keys[20]]);
         }
         if (array_key_exists($keys[21], $arr)) {
-            $this->setItemId($arr[$keys[21]]);
+            $this->setIsKids($arr[$keys[21]]);
         }
         if (array_key_exists($keys[22], $arr)) {
-            $this->setIsKids($arr[$keys[22]]);
+            $this->setInclOsDoneNumber($arr[$keys[22]]);
         }
         if (array_key_exists($keys[23], $arr)) {
-            $this->setInclOsDoneNumber($arr[$keys[23]]);
+            $this->setInclOsDoneAmount($arr[$keys[23]]);
         }
         if (array_key_exists($keys[24], $arr)) {
-            $this->setInclOsDoneAmount($arr[$keys[24]]);
+            $this->setFocOsDoneNumber($arr[$keys[24]]);
         }
         if (array_key_exists($keys[25], $arr)) {
-            $this->setFocOsDoneNumber($arr[$keys[25]]);
+            $this->setFocOsDoneAmount($arr[$keys[25]]);
         }
         if (array_key_exists($keys[26], $arr)) {
-            $this->setFocOsDoneAmount($arr[$keys[26]]);
+            $this->setNotInclOsDoneNumber($arr[$keys[26]]);
         }
         if (array_key_exists($keys[27], $arr)) {
-            $this->setNotInclOsDoneNumber($arr[$keys[27]]);
+            $this->setNotInclOsDoneAmount($arr[$keys[27]]);
         }
         if (array_key_exists($keys[28], $arr)) {
-            $this->setNotInclOsDoneAmount($arr[$keys[28]]);
+            $this->setIncl($arr[$keys[28]]);
         }
         if (array_key_exists($keys[29], $arr)) {
-            $this->setIncl($arr[$keys[29]]);
+            $this->setNotIncl($arr[$keys[29]]);
         }
         if (array_key_exists($keys[30], $arr)) {
-            $this->setNotIncl($arr[$keys[30]]);
-        }
-        if (array_key_exists($keys[31], $arr)) {
-            $this->setFoc($arr[$keys[31]]);
+            $this->setFoc($arr[$keys[30]]);
         }
     }
 
@@ -3110,9 +3017,6 @@ abstract class BookingEvent implements ActiveRecordInterface
         }
         if ($this->isColumnModified(BookingEventTableMap::COL_PERSONALIZED)) {
             $criteria->add(BookingEventTableMap::COL_PERSONALIZED, $this->personalized);
-        }
-        if ($this->isColumnModified(BookingEventTableMap::COL_BOOKING_ITEM_ID)) {
-            $criteria->add(BookingEventTableMap::COL_BOOKING_ITEM_ID, $this->booking_item_id);
         }
         if ($this->isColumnModified(BookingEventTableMap::COL_IS_ACTIVE)) {
             $criteria->add(BookingEventTableMap::COL_IS_ACTIVE, $this->is_active);
@@ -3258,7 +3162,6 @@ abstract class BookingEvent implements ActiveRecordInterface
         $copyObj->setCancelledReason($this->getCancelledReason());
         $copyObj->setDateCancelled($this->getDateCancelled());
         $copyObj->setPersonalized($this->getPersonalized());
-        $copyObj->setBookingItemId($this->getBookingItemId());
         $copyObj->setIsActive($this->getIsActive());
         $copyObj->setDeletedDate($this->getDeletedDate());
         $copyObj->setDeletedBy($this->getDeletedBy());
@@ -3279,9 +3182,9 @@ abstract class BookingEvent implements ActiveRecordInterface
             // the getter/setter methods for fkey referrer objects.
             $copyObj->setNew(false);
 
-            foreach ($this->getBookingEventUsers() as $relObj) {
+            foreach ($this->getEventUsers() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addBookingEventUser($relObj->copy($deepCopy));
+                    $copyObj->addEventUser($relObj->copy($deepCopy));
                 }
             }
 
@@ -3415,57 +3318,6 @@ abstract class BookingEvent implements ActiveRecordInterface
         }
 
         return $this->aBooking;
-    }
-
-    /**
-     * Declares an association between this object and a ChildBookingItem object.
-     *
-     * @param  ChildBookingItem $v
-     * @return $this|\TheFarm\Models\BookingEvent The current object (for fluent API support)
-     * @throws PropelException
-     */
-    public function setBookingItem(ChildBookingItem $v = null)
-    {
-        if ($v === null) {
-            $this->setBookingItemId(NULL);
-        } else {
-            $this->setBookingItemId($v->getBookingItemId());
-        }
-
-        $this->aBookingItem = $v;
-
-        // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildBookingItem object, it will not be re-added.
-        if ($v !== null) {
-            $v->addBookingEvent($this);
-        }
-
-
-        return $this;
-    }
-
-
-    /**
-     * Get the associated ChildBookingItem object
-     *
-     * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildBookingItem The associated ChildBookingItem object.
-     * @throws PropelException
-     */
-    public function getBookingItem(ConnectionInterface $con = null)
-    {
-        if ($this->aBookingItem === null && ($this->booking_item_id !== null)) {
-            $this->aBookingItem = ChildBookingItemQuery::create()->findPk($this->booking_item_id, $con);
-            /* The following can be used additionally to
-                guarantee the related object contains a reference
-                to this object.  This level of coupling may, however, be
-                undesirable since it could result in an only partially populated collection
-                in the referenced object.
-                $this->aBookingItem->addBookingEvents($this);
-             */
-        }
-
-        return $this->aBookingItem;
     }
 
     /**
@@ -3785,38 +3637,38 @@ abstract class BookingEvent implements ActiveRecordInterface
      */
     public function initRelation($relationName)
     {
-        if ('BookingEventUser' == $relationName) {
-            $this->initBookingEventUsers();
+        if ('EventUser' == $relationName) {
+            $this->initEventUsers();
             return;
         }
     }
 
     /**
-     * Clears out the collBookingEventUsers collection
+     * Clears out the collEventUsers collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
      * @return void
-     * @see        addBookingEventUsers()
+     * @see        addEventUsers()
      */
-    public function clearBookingEventUsers()
+    public function clearEventUsers()
     {
-        $this->collBookingEventUsers = null; // important to set this to NULL since that means it is uninitialized
+        $this->collEventUsers = null; // important to set this to NULL since that means it is uninitialized
     }
 
     /**
-     * Reset is the collBookingEventUsers collection loaded partially.
+     * Reset is the collEventUsers collection loaded partially.
      */
-    public function resetPartialBookingEventUsers($v = true)
+    public function resetPartialEventUsers($v = true)
     {
-        $this->collBookingEventUsersPartial = $v;
+        $this->collEventUsersPartial = $v;
     }
 
     /**
-     * Initializes the collBookingEventUsers collection.
+     * Initializes the collEventUsers collection.
      *
-     * By default this just sets the collBookingEventUsers collection to an empty array (like clearcollBookingEventUsers());
+     * By default this just sets the collEventUsers collection to an empty array (like clearcollEventUsers());
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
@@ -3825,20 +3677,20 @@ abstract class BookingEvent implements ActiveRecordInterface
      *
      * @return void
      */
-    public function initBookingEventUsers($overrideExisting = true)
+    public function initEventUsers($overrideExisting = true)
     {
-        if (null !== $this->collBookingEventUsers && !$overrideExisting) {
+        if (null !== $this->collEventUsers && !$overrideExisting) {
             return;
         }
 
-        $collectionClassName = BookingEventUserTableMap::getTableMap()->getCollectionClassName();
+        $collectionClassName = EventUserTableMap::getTableMap()->getCollectionClassName();
 
-        $this->collBookingEventUsers = new $collectionClassName;
-        $this->collBookingEventUsers->setModel('\TheFarm\Models\BookingEventUser');
+        $this->collEventUsers = new $collectionClassName;
+        $this->collEventUsers->setModel('\TheFarm\Models\EventUser');
     }
 
     /**
-     * Gets an array of ChildBookingEventUser objects which contain a foreign key that references this object.
+     * Gets an array of ChildEventUser objects which contain a foreign key that references this object.
      *
      * If the $criteria is not null, it is used to always fetch the results from the database.
      * Otherwise the results are fetched from the database the first time, then cached.
@@ -3848,111 +3700,111 @@ abstract class BookingEvent implements ActiveRecordInterface
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildBookingEventUser[] List of ChildBookingEventUser objects
+     * @return ObjectCollection|ChildEventUser[] List of ChildEventUser objects
      * @throws PropelException
      */
-    public function getBookingEventUsers(Criteria $criteria = null, ConnectionInterface $con = null)
+    public function getEventUsers(Criteria $criteria = null, ConnectionInterface $con = null)
     {
-        $partial = $this->collBookingEventUsersPartial && !$this->isNew();
-        if (null === $this->collBookingEventUsers || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collBookingEventUsers) {
+        $partial = $this->collEventUsersPartial && !$this->isNew();
+        if (null === $this->collEventUsers || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collEventUsers) {
                 // return empty collection
-                $this->initBookingEventUsers();
+                $this->initEventUsers();
             } else {
-                $collBookingEventUsers = ChildBookingEventUserQuery::create(null, $criteria)
+                $collEventUsers = ChildEventUserQuery::create(null, $criteria)
                     ->filterByBookingEvent($this)
                     ->find($con);
 
                 if (null !== $criteria) {
-                    if (false !== $this->collBookingEventUsersPartial && count($collBookingEventUsers)) {
-                        $this->initBookingEventUsers(false);
+                    if (false !== $this->collEventUsersPartial && count($collEventUsers)) {
+                        $this->initEventUsers(false);
 
-                        foreach ($collBookingEventUsers as $obj) {
-                            if (false == $this->collBookingEventUsers->contains($obj)) {
-                                $this->collBookingEventUsers->append($obj);
+                        foreach ($collEventUsers as $obj) {
+                            if (false == $this->collEventUsers->contains($obj)) {
+                                $this->collEventUsers->append($obj);
                             }
                         }
 
-                        $this->collBookingEventUsersPartial = true;
+                        $this->collEventUsersPartial = true;
                     }
 
-                    return $collBookingEventUsers;
+                    return $collEventUsers;
                 }
 
-                if ($partial && $this->collBookingEventUsers) {
-                    foreach ($this->collBookingEventUsers as $obj) {
+                if ($partial && $this->collEventUsers) {
+                    foreach ($this->collEventUsers as $obj) {
                         if ($obj->isNew()) {
-                            $collBookingEventUsers[] = $obj;
+                            $collEventUsers[] = $obj;
                         }
                     }
                 }
 
-                $this->collBookingEventUsers = $collBookingEventUsers;
-                $this->collBookingEventUsersPartial = false;
+                $this->collEventUsers = $collEventUsers;
+                $this->collEventUsersPartial = false;
             }
         }
 
-        return $this->collBookingEventUsers;
+        return $this->collEventUsers;
     }
 
     /**
-     * Sets a collection of ChildBookingEventUser objects related by a one-to-many relationship
+     * Sets a collection of ChildEventUser objects related by a one-to-many relationship
      * to the current object.
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param      Collection $bookingEventUsers A Propel collection.
+     * @param      Collection $eventUsers A Propel collection.
      * @param      ConnectionInterface $con Optional connection object
      * @return $this|ChildBookingEvent The current object (for fluent API support)
      */
-    public function setBookingEventUsers(Collection $bookingEventUsers, ConnectionInterface $con = null)
+    public function setEventUsers(Collection $eventUsers, ConnectionInterface $con = null)
     {
-        /** @var ChildBookingEventUser[] $bookingEventUsersToDelete */
-        $bookingEventUsersToDelete = $this->getBookingEventUsers(new Criteria(), $con)->diff($bookingEventUsers);
+        /** @var ChildEventUser[] $eventUsersToDelete */
+        $eventUsersToDelete = $this->getEventUsers(new Criteria(), $con)->diff($eventUsers);
 
 
         //since at least one column in the foreign key is at the same time a PK
         //we can not just set a PK to NULL in the lines below. We have to store
         //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
-        $this->bookingEventUsersScheduledForDeletion = clone $bookingEventUsersToDelete;
+        $this->eventUsersScheduledForDeletion = clone $eventUsersToDelete;
 
-        foreach ($bookingEventUsersToDelete as $bookingEventUserRemoved) {
-            $bookingEventUserRemoved->setBookingEvent(null);
+        foreach ($eventUsersToDelete as $eventUserRemoved) {
+            $eventUserRemoved->setBookingEvent(null);
         }
 
-        $this->collBookingEventUsers = null;
-        foreach ($bookingEventUsers as $bookingEventUser) {
-            $this->addBookingEventUser($bookingEventUser);
+        $this->collEventUsers = null;
+        foreach ($eventUsers as $eventUser) {
+            $this->addEventUser($eventUser);
         }
 
-        $this->collBookingEventUsers = $bookingEventUsers;
-        $this->collBookingEventUsersPartial = false;
+        $this->collEventUsers = $eventUsers;
+        $this->collEventUsersPartial = false;
 
         return $this;
     }
 
     /**
-     * Returns the number of related BookingEventUser objects.
+     * Returns the number of related EventUser objects.
      *
      * @param      Criteria $criteria
      * @param      boolean $distinct
      * @param      ConnectionInterface $con
-     * @return int             Count of related BookingEventUser objects.
+     * @return int             Count of related EventUser objects.
      * @throws PropelException
      */
-    public function countBookingEventUsers(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function countEventUsers(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
     {
-        $partial = $this->collBookingEventUsersPartial && !$this->isNew();
-        if (null === $this->collBookingEventUsers || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collBookingEventUsers) {
+        $partial = $this->collEventUsersPartial && !$this->isNew();
+        if (null === $this->collEventUsers || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collEventUsers) {
                 return 0;
             }
 
             if ($partial && !$criteria) {
-                return count($this->getBookingEventUsers());
+                return count($this->getEventUsers());
             }
 
-            $query = ChildBookingEventUserQuery::create(null, $criteria);
+            $query = ChildEventUserQuery::create(null, $criteria);
             if ($distinct) {
                 $query->distinct();
             }
@@ -3962,28 +3814,28 @@ abstract class BookingEvent implements ActiveRecordInterface
                 ->count($con);
         }
 
-        return count($this->collBookingEventUsers);
+        return count($this->collEventUsers);
     }
 
     /**
-     * Method called to associate a ChildBookingEventUser object to this object
-     * through the ChildBookingEventUser foreign key attribute.
+     * Method called to associate a ChildEventUser object to this object
+     * through the ChildEventUser foreign key attribute.
      *
-     * @param  ChildBookingEventUser $l ChildBookingEventUser
+     * @param  ChildEventUser $l ChildEventUser
      * @return $this|\TheFarm\Models\BookingEvent The current object (for fluent API support)
      */
-    public function addBookingEventUser(ChildBookingEventUser $l)
+    public function addEventUser(ChildEventUser $l)
     {
-        if ($this->collBookingEventUsers === null) {
-            $this->initBookingEventUsers();
-            $this->collBookingEventUsersPartial = true;
+        if ($this->collEventUsers === null) {
+            $this->initEventUsers();
+            $this->collEventUsersPartial = true;
         }
 
-        if (!$this->collBookingEventUsers->contains($l)) {
-            $this->doAddBookingEventUser($l);
+        if (!$this->collEventUsers->contains($l)) {
+            $this->doAddEventUser($l);
 
-            if ($this->bookingEventUsersScheduledForDeletion and $this->bookingEventUsersScheduledForDeletion->contains($l)) {
-                $this->bookingEventUsersScheduledForDeletion->remove($this->bookingEventUsersScheduledForDeletion->search($l));
+            if ($this->eventUsersScheduledForDeletion and $this->eventUsersScheduledForDeletion->contains($l)) {
+                $this->eventUsersScheduledForDeletion->remove($this->eventUsersScheduledForDeletion->search($l));
             }
         }
 
@@ -3991,29 +3843,29 @@ abstract class BookingEvent implements ActiveRecordInterface
     }
 
     /**
-     * @param ChildBookingEventUser $bookingEventUser The ChildBookingEventUser object to add.
+     * @param ChildEventUser $eventUser The ChildEventUser object to add.
      */
-    protected function doAddBookingEventUser(ChildBookingEventUser $bookingEventUser)
+    protected function doAddEventUser(ChildEventUser $eventUser)
     {
-        $this->collBookingEventUsers[]= $bookingEventUser;
-        $bookingEventUser->setBookingEvent($this);
+        $this->collEventUsers[]= $eventUser;
+        $eventUser->setBookingEvent($this);
     }
 
     /**
-     * @param  ChildBookingEventUser $bookingEventUser The ChildBookingEventUser object to remove.
+     * @param  ChildEventUser $eventUser The ChildEventUser object to remove.
      * @return $this|ChildBookingEvent The current object (for fluent API support)
      */
-    public function removeBookingEventUser(ChildBookingEventUser $bookingEventUser)
+    public function removeEventUser(ChildEventUser $eventUser)
     {
-        if ($this->getBookingEventUsers()->contains($bookingEventUser)) {
-            $pos = $this->collBookingEventUsers->search($bookingEventUser);
-            $this->collBookingEventUsers->remove($pos);
-            if (null === $this->bookingEventUsersScheduledForDeletion) {
-                $this->bookingEventUsersScheduledForDeletion = clone $this->collBookingEventUsers;
-                $this->bookingEventUsersScheduledForDeletion->clear();
+        if ($this->getEventUsers()->contains($eventUser)) {
+            $pos = $this->collEventUsers->search($eventUser);
+            $this->collEventUsers->remove($pos);
+            if (null === $this->eventUsersScheduledForDeletion) {
+                $this->eventUsersScheduledForDeletion = clone $this->collEventUsers;
+                $this->eventUsersScheduledForDeletion->clear();
             }
-            $this->bookingEventUsersScheduledForDeletion[]= clone $bookingEventUser;
-            $bookingEventUser->setBookingEvent(null);
+            $this->eventUsersScheduledForDeletion[]= clone $eventUser;
+            $eventUser->setBookingEvent(null);
         }
 
         return $this;
@@ -4025,7 +3877,7 @@ abstract class BookingEvent implements ActiveRecordInterface
      * an identical criteria, it returns the collection.
      * Otherwise if this BookingEvent is new, it will return
      * an empty collection; or if this BookingEvent has previously
-     * been saved, it will retrieve related BookingEventUsers from storage.
+     * been saved, it will retrieve related EventUsers from storage.
      *
      * This method is protected by default in order to keep the public
      * api reasonable.  You can provide public methods for those you
@@ -4034,14 +3886,14 @@ abstract class BookingEvent implements ActiveRecordInterface
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildBookingEventUser[] List of ChildBookingEventUser objects
+     * @return ObjectCollection|ChildEventUser[] List of ChildEventUser objects
      */
-    public function getBookingEventUsersJoinContact(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getEventUsersJoinContact(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
-        $query = ChildBookingEventUserQuery::create(null, $criteria);
+        $query = ChildEventUserQuery::create(null, $criteria);
         $query->joinWith('Contact', $joinBehavior);
 
-        return $this->getBookingEventUsers($query, $con);
+        return $this->getEventUsers($query, $con);
     }
 
     /**
@@ -4056,9 +3908,6 @@ abstract class BookingEvent implements ActiveRecordInterface
         }
         if (null !== $this->aBooking) {
             $this->aBooking->removeBookingEvent($this);
-        }
-        if (null !== $this->aBookingItem) {
-            $this->aBookingItem->removeBookingEvent($this);
         }
         if (null !== $this->aContactRelatedByCalledBy) {
             $this->aContactRelatedByCalledBy->removeBookingEventRelatedByCalledBy($this);
@@ -4095,7 +3944,6 @@ abstract class BookingEvent implements ActiveRecordInterface
         $this->cancelled_reason = null;
         $this->date_cancelled = null;
         $this->personalized = null;
-        $this->booking_item_id = null;
         $this->is_active = null;
         $this->deleted_date = null;
         $this->deleted_by = null;
@@ -4129,17 +3977,16 @@ abstract class BookingEvent implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
-            if ($this->collBookingEventUsers) {
-                foreach ($this->collBookingEventUsers as $o) {
+            if ($this->collEventUsers) {
+                foreach ($this->collEventUsers as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
         } // if ($deep)
 
-        $this->collBookingEventUsers = null;
+        $this->collEventUsers = null;
         $this->aContactRelatedByAuthorId = null;
         $this->aBooking = null;
-        $this->aBookingItem = null;
         $this->aContactRelatedByCalledBy = null;
         $this->aContactRelatedByCancelledBy = null;
         $this->aContactRelatedByDeletedBy = null;

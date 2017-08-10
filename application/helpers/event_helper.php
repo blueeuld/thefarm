@@ -262,9 +262,8 @@ function to_full_calendar_events ($events, $showGuestName = false, $showFacility
  */
 function to_full_calendar_event($eventData, $showGuestName = false, $showFacility = false, $abbreviate = true)
 {
-    $bookingItemData = $eventData['BookingItem'];
-    $itemData = $bookingItemData['Item'];
-    $guestData = $eventData['BookingItem']['Booking']['Guest'];
+    $itemData = $eventData['Item'];
+    $guestData = $eventData['Booking']['Guest'];
 
     $classNames = array();
     $event = [];
@@ -280,7 +279,7 @@ function to_full_calendar_event($eventData, $showGuestName = false, $showFacilit
     $event['status'] = $eventData['Status'];
     $event['editable'] = false;
 
-    $categories = $eventData['BookingItem']['Item']['Categories'];
+    $categories = $itemData['Categories'];
 
     if ($categories) {
         foreach ($categories as $category) {
@@ -295,9 +294,9 @@ function to_full_calendar_event($eventData, $showGuestName = false, $showFacilit
         $classNames[] = 'fc-event-included';
     }
 
-    if ($bookingItemData['Upsell'] === '1') {
-        $classNames[] = 'fc-event-upsell';
-    }
+//    if ($itemData['Upsell'] === '1') {
+//        $classNames[] = 'fc-event-upsell';
+//    }
 
     if ($eventData['Foc'] === '1') {
         $classNames[] = 'fc-event-foc';
@@ -305,8 +304,8 @@ function to_full_calendar_event($eventData, $showGuestName = false, $showFacilit
 
     $resourceIds = [];
 
-    if (isset($eventData['BookingEventUsers']) && $eventData['BookingEventUsers']) {
-        foreach ($eventData['BookingEventUsers'] as $eventUser) {
+    if (isset($eventData['EventUsers']) && $eventData['EventUsers']) {
+        foreach ($eventData['EventUsers'] as $eventUser) {
             if ($eventUser['IsGuest'] === false) {
                 $resourceIds[] = $eventUser['UserId'];
             }

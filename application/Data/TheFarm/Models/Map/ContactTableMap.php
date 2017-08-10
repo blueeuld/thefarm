@@ -297,13 +297,13 @@ class ContactTableMap extends TableMap
     1 => ':position_cd',
   ),
 ), null, null, null, false);
-        $this->addRelation('BookingEventUser', '\\TheFarm\\Models\\BookingEventUser', RelationMap::ONE_TO_MANY, array (
+        $this->addRelation('EventUser', '\\TheFarm\\Models\\EventUser', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
     0 => ':staff_id',
     1 => ':contact_id',
   ),
-), null, null, 'BookingEventUsers', false);
+), null, null, 'EventUsers', false);
         $this->addRelation('BookingEventRelatedByAuthorId', '\\TheFarm\\Models\\BookingEvent', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (

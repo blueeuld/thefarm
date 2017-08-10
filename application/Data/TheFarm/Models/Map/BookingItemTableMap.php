@@ -7,6 +7,7 @@ use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\DataFetcher\DataFetcherInterface;
+use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\RelationMap;
 use Propel\Runtime\Map\TableMap;
@@ -59,7 +60,7 @@ class BookingItemTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 9;
+    const NUM_COLUMNS = 8;
 
     /**
      * The number of lazy-loaded columns
@@ -69,12 +70,7 @@ class BookingItemTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 9;
-
-    /**
-     * the column name for the booking_item_id field
-     */
-    const COL_BOOKING_ITEM_ID = 'tf_booking_items.booking_item_id';
+    const NUM_HYDRATE_COLUMNS = 8;
 
     /**
      * the column name for the booking_id field
@@ -128,11 +124,11 @@ class BookingItemTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('BookingItemId', 'BookingId', 'ItemId', 'Quantity', 'Included', 'Foc', 'Upsell', 'Upgrade', 'Inventory', ),
-        self::TYPE_CAMELNAME     => array('bookingItemId', 'bookingId', 'itemId', 'quantity', 'included', 'foc', 'upsell', 'upgrade', 'inventory', ),
-        self::TYPE_COLNAME       => array(BookingItemTableMap::COL_BOOKING_ITEM_ID, BookingItemTableMap::COL_BOOKING_ID, BookingItemTableMap::COL_ITEM_ID, BookingItemTableMap::COL_QUANTITY, BookingItemTableMap::COL_INCLUDED, BookingItemTableMap::COL_FOC, BookingItemTableMap::COL_UPSELL, BookingItemTableMap::COL_UPGRADE, BookingItemTableMap::COL_INVENTORY, ),
-        self::TYPE_FIELDNAME     => array('booking_item_id', 'booking_id', 'item_id', 'quantity', 'included', 'foc', 'upsell', 'upgrade', 'inventory', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
+        self::TYPE_PHPNAME       => array('BookingId', 'ItemId', 'Quantity', 'Included', 'Foc', 'Upsell', 'Upgrade', 'Inventory', ),
+        self::TYPE_CAMELNAME     => array('bookingId', 'itemId', 'quantity', 'included', 'foc', 'upsell', 'upgrade', 'inventory', ),
+        self::TYPE_COLNAME       => array(BookingItemTableMap::COL_BOOKING_ID, BookingItemTableMap::COL_ITEM_ID, BookingItemTableMap::COL_QUANTITY, BookingItemTableMap::COL_INCLUDED, BookingItemTableMap::COL_FOC, BookingItemTableMap::COL_UPSELL, BookingItemTableMap::COL_UPGRADE, BookingItemTableMap::COL_INVENTORY, ),
+        self::TYPE_FIELDNAME     => array('booking_id', 'item_id', 'quantity', 'included', 'foc', 'upsell', 'upgrade', 'inventory', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
     /**
@@ -142,11 +138,11 @@ class BookingItemTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('BookingItemId' => 0, 'BookingId' => 1, 'ItemId' => 2, 'Quantity' => 3, 'Included' => 4, 'Foc' => 5, 'Upsell' => 6, 'Upgrade' => 7, 'Inventory' => 8, ),
-        self::TYPE_CAMELNAME     => array('bookingItemId' => 0, 'bookingId' => 1, 'itemId' => 2, 'quantity' => 3, 'included' => 4, 'foc' => 5, 'upsell' => 6, 'upgrade' => 7, 'inventory' => 8, ),
-        self::TYPE_COLNAME       => array(BookingItemTableMap::COL_BOOKING_ITEM_ID => 0, BookingItemTableMap::COL_BOOKING_ID => 1, BookingItemTableMap::COL_ITEM_ID => 2, BookingItemTableMap::COL_QUANTITY => 3, BookingItemTableMap::COL_INCLUDED => 4, BookingItemTableMap::COL_FOC => 5, BookingItemTableMap::COL_UPSELL => 6, BookingItemTableMap::COL_UPGRADE => 7, BookingItemTableMap::COL_INVENTORY => 8, ),
-        self::TYPE_FIELDNAME     => array('booking_item_id' => 0, 'booking_id' => 1, 'item_id' => 2, 'quantity' => 3, 'included' => 4, 'foc' => 5, 'upsell' => 6, 'upgrade' => 7, 'inventory' => 8, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
+        self::TYPE_PHPNAME       => array('BookingId' => 0, 'ItemId' => 1, 'Quantity' => 2, 'Included' => 3, 'Foc' => 4, 'Upsell' => 5, 'Upgrade' => 6, 'Inventory' => 7, ),
+        self::TYPE_CAMELNAME     => array('bookingId' => 0, 'itemId' => 1, 'quantity' => 2, 'included' => 3, 'foc' => 4, 'upsell' => 5, 'upgrade' => 6, 'inventory' => 7, ),
+        self::TYPE_COLNAME       => array(BookingItemTableMap::COL_BOOKING_ID => 0, BookingItemTableMap::COL_ITEM_ID => 1, BookingItemTableMap::COL_QUANTITY => 2, BookingItemTableMap::COL_INCLUDED => 3, BookingItemTableMap::COL_FOC => 4, BookingItemTableMap::COL_UPSELL => 5, BookingItemTableMap::COL_UPGRADE => 6, BookingItemTableMap::COL_INVENTORY => 7, ),
+        self::TYPE_FIELDNAME     => array('booking_id' => 0, 'item_id' => 1, 'quantity' => 2, 'included' => 3, 'foc' => 4, 'upsell' => 5, 'upgrade' => 6, 'inventory' => 7, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
     /**
@@ -164,9 +160,8 @@ class BookingItemTableMap extends TableMap
         $this->setIdentifierQuoting(false);
         $this->setClassName('\\TheFarm\\Models\\BookingItem');
         $this->setPackage('TheFarm.Models');
-        $this->setUseIdGenerator(true);
+        $this->setUseIdGenerator(false);
         // columns
-        $this->addPrimaryKey('booking_item_id', 'BookingItemId', 'INTEGER', true, null, null);
         $this->addForeignKey('booking_id', 'BookingId', 'INTEGER', 'tf_bookings', 'booking_id', true, null, null);
         $this->addForeignKey('item_id', 'ItemId', 'INTEGER', 'tf_items', 'item_id', true, null, null);
         $this->addColumn('quantity', 'Quantity', 'INTEGER', true, 5, null);
@@ -196,13 +191,6 @@ class BookingItemTableMap extends TableMap
     1 => ':item_id',
   ),
 ), null, null, null, false);
-        $this->addRelation('BookingEvent', '\\TheFarm\\Models\\BookingEvent', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':booking_item_id',
-    1 => ':booking_item_id',
-  ),
-), null, null, 'BookingEvents', false);
     } // buildRelations()
 
     /**
@@ -220,12 +208,7 @@ class BookingItemTableMap extends TableMap
      */
     public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        // If the PK cannot be derived from the row, return NULL.
-        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('BookingItemId', TableMap::TYPE_PHPNAME, $indexType)] === null) {
-            return null;
-        }
-
-        return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('BookingItemId', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('BookingItemId', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('BookingItemId', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('BookingItemId', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('BookingItemId', TableMap::TYPE_PHPNAME, $indexType)];
+        return null;
     }
 
     /**
@@ -242,11 +225,7 @@ class BookingItemTableMap extends TableMap
      */
     public static function getPrimaryKeyFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        return (int) $row[
-            $indexType == TableMap::TYPE_NUM
-                ? 0 + $offset
-                : self::translateFieldName('BookingItemId', TableMap::TYPE_PHPNAME, $indexType)
-        ];
+        return '';
     }
 
     /**
@@ -346,7 +325,6 @@ class BookingItemTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(BookingItemTableMap::COL_BOOKING_ITEM_ID);
             $criteria->addSelectColumn(BookingItemTableMap::COL_BOOKING_ID);
             $criteria->addSelectColumn(BookingItemTableMap::COL_ITEM_ID);
             $criteria->addSelectColumn(BookingItemTableMap::COL_QUANTITY);
@@ -356,7 +334,6 @@ class BookingItemTableMap extends TableMap
             $criteria->addSelectColumn(BookingItemTableMap::COL_UPGRADE);
             $criteria->addSelectColumn(BookingItemTableMap::COL_INVENTORY);
         } else {
-            $criteria->addSelectColumn($alias . '.booking_item_id');
             $criteria->addSelectColumn($alias . '.booking_id');
             $criteria->addSelectColumn($alias . '.item_id');
             $criteria->addSelectColumn($alias . '.quantity');
@@ -412,11 +389,10 @@ class BookingItemTableMap extends TableMap
             // rename for clarity
             $criteria = $values;
         } elseif ($values instanceof \TheFarm\Models\BookingItem) { // it's a model object
-            // create criteria based on pk values
-            $criteria = $values->buildPkeyCriteria();
+            // create criteria based on pk value
+            $criteria = $values->buildCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(BookingItemTableMap::DATABASE_NAME);
-            $criteria->add(BookingItemTableMap::COL_BOOKING_ITEM_ID, (array) $values, Criteria::IN);
+            throw new LogicException('The BookingItem object has no primary key');
         }
 
         $query = BookingItemQuery::create()->mergeWith($criteria);
@@ -462,10 +438,6 @@ class BookingItemTableMap extends TableMap
             $criteria = clone $criteria; // rename for clarity
         } else {
             $criteria = $criteria->buildCriteria(); // build Criteria from BookingItem object
-        }
-
-        if ($criteria->containsKey(BookingItemTableMap::COL_BOOKING_ITEM_ID) && $criteria->keyContainsValue(BookingItemTableMap::COL_BOOKING_ITEM_ID) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.BookingItemTableMap::COL_BOOKING_ITEM_ID.')');
         }
 
 

@@ -69,7 +69,6 @@ CREATE TABLE `tf_booking_events`
     `cancelled_reason` VARCHAR(50) DEFAULT '',
     `date_cancelled` INTEGER(10) DEFAULT 0,
     `personalized` VARCHAR(100) DEFAULT '',
-    `booking_item_id` INTEGER,
     `is_active` VARCHAR(1) DEFAULT 'n',
     `deleted_date` INTEGER(10) DEFAULT 0,
     `deleted_by` INTEGER,
@@ -100,9 +99,6 @@ CREATE TABLE `tf_booking_events`
     CONSTRAINT `booking_fk`
         FOREIGN KEY (`booking_id`)
         REFERENCES `tf_bookings` (`booking_id`),
-    CONSTRAINT `booking_event_booking_item_by_fk`
-        FOREIGN KEY (`booking_item_id`)
-        REFERENCES `tf_booking_items` (`booking_item_id`),
     CONSTRAINT `booking_event_called_by_fk`
         FOREIGN KEY (`called_by`)
         REFERENCES `tf_contacts` (`contact_id`),
@@ -152,7 +148,6 @@ DROP TABLE IF EXISTS `tf_booking_items`;
 
 CREATE TABLE `tf_booking_items`
 (
-    `booking_item_id` INTEGER NOT NULL AUTO_INCREMENT,
     `booking_id` INTEGER NOT NULL,
     `item_id` INTEGER NOT NULL,
     `quantity` INTEGER(5) NOT NULL,
@@ -161,7 +156,6 @@ CREATE TABLE `tf_booking_items`
     `upsell` TINYINT(1),
     `upgrade` TINYINT(1),
     `inventory` INTEGER(5) DEFAULT 0,
-    PRIMARY KEY (`booking_item_id`),
     INDEX `booking_item_item_fk` (`item_id`),
     INDEX `booking_item_booking_fk` (`booking_id`),
     CONSTRAINT `booking_item_booking_fk`
@@ -1029,8 +1023,11 @@ CREATE TABLE `tf_user_work_plan_time`
     `start_date` DATETIME NOT NULL,
     `end_date` DATETIME NOT NULL,
     `is_working` TINYINT(1) DEFAULT 1,
-    INDEX `contact_fk1` (`contact_id`)
-) ENGINE=MyISAM;
+    INDEX `contact_fk1` (`contact_id`),
+    CONSTRAINT `contact_fk2`
+        FOREIGN KEY (`contact_id`)
+        REFERENCES `tf_contacts` (`contact_id`)
+) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
 -- tf_users
@@ -1040,7 +1037,7 @@ DROP TABLE IF EXISTS `tf_users`;
 
 CREATE TABLE `tf_users`
 (
-    `contact_id` INTEGER DEFAULT 0 NOT NULL,
+    `contact_id` INTEGER NOT NULL,
     `username` VARCHAR(100) NOT NULL,
     `group_id` INTEGER,
     `last_login` INTEGER(10) NOT NULL,

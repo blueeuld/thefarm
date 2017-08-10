@@ -59,7 +59,7 @@ class BookingEventTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 32;
+    const NUM_COLUMNS = 31;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class BookingEventTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 32;
+    const NUM_HYDRATE_COLUMNS = 31;
 
     /**
      * the column name for the event_id field
@@ -157,11 +157,6 @@ class BookingEventTableMap extends TableMap
     const COL_PERSONALIZED = 'tf_booking_events.personalized';
 
     /**
-     * the column name for the booking_item_id field
-     */
-    const COL_BOOKING_ITEM_ID = 'tf_booking_events.booking_item_id';
-
-    /**
      * the column name for the is_active field
      */
     const COL_IS_ACTIVE = 'tf_booking_events.is_active';
@@ -243,11 +238,11 @@ class BookingEventTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('EventId', 'BookingId', 'EventTitle', 'StartDate', 'EndDate', 'FacilityId', 'AllDay', 'Status', 'AuthorId', 'EntryDate', 'EditDate', 'Notes', 'CalledBy', 'CancelledBy', 'CancelledReason', 'DateCancelled', 'Personalized', 'BookingItemId', 'IsActive', 'DeletedDate', 'DeletedBy', 'ItemId', 'IsKids', 'InclOsDoneNumber', 'InclOsDoneAmount', 'FocOsDoneNumber', 'FocOsDoneAmount', 'NotInclOsDoneNumber', 'NotInclOsDoneAmount', 'Incl', 'NotIncl', 'Foc', ),
-        self::TYPE_CAMELNAME     => array('eventId', 'bookingId', 'eventTitle', 'startDate', 'endDate', 'facilityId', 'allDay', 'status', 'authorId', 'entryDate', 'editDate', 'notes', 'calledBy', 'cancelledBy', 'cancelledReason', 'dateCancelled', 'personalized', 'bookingItemId', 'isActive', 'deletedDate', 'deletedBy', 'itemId', 'isKids', 'inclOsDoneNumber', 'inclOsDoneAmount', 'focOsDoneNumber', 'focOsDoneAmount', 'notInclOsDoneNumber', 'notInclOsDoneAmount', 'incl', 'notIncl', 'foc', ),
-        self::TYPE_COLNAME       => array(BookingEventTableMap::COL_EVENT_ID, BookingEventTableMap::COL_BOOKING_ID, BookingEventTableMap::COL_EVENT_TITLE, BookingEventTableMap::COL_START_DT, BookingEventTableMap::COL_END_DT, BookingEventTableMap::COL_FACILITY_ID, BookingEventTableMap::COL_ALL_DAY, BookingEventTableMap::COL_STATUS, BookingEventTableMap::COL_AUTHOR_ID, BookingEventTableMap::COL_ENTRY_DATE, BookingEventTableMap::COL_EDIT_DATE, BookingEventTableMap::COL_NOTES, BookingEventTableMap::COL_CALLED_BY, BookingEventTableMap::COL_CANCELLED_BY, BookingEventTableMap::COL_CANCELLED_REASON, BookingEventTableMap::COL_DATE_CANCELLED, BookingEventTableMap::COL_PERSONALIZED, BookingEventTableMap::COL_BOOKING_ITEM_ID, BookingEventTableMap::COL_IS_ACTIVE, BookingEventTableMap::COL_DELETED_DATE, BookingEventTableMap::COL_DELETED_BY, BookingEventTableMap::COL_ITEM_ID, BookingEventTableMap::COL_IS_KIDS, BookingEventTableMap::COL_INCL_OS_DONE_NUMBER, BookingEventTableMap::COL_INCL_OS_DONE_AMOUNT, BookingEventTableMap::COL_FOC_OS_DONE_NUMBER, BookingEventTableMap::COL_FOC_OS_DONE_AMOUNT, BookingEventTableMap::COL_NOT_INCL_OS_DONE_NUMBER, BookingEventTableMap::COL_NOT_INCL_OS_DONE_AMOUNT, BookingEventTableMap::COL_INCL, BookingEventTableMap::COL_NOT_INCL, BookingEventTableMap::COL_FOC, ),
-        self::TYPE_FIELDNAME     => array('event_id', 'booking_id', 'event_title', 'start_dt', 'end_dt', 'facility_id', 'all_day', 'status', 'author_id', 'entry_date', 'edit_date', 'notes', 'called_by', 'cancelled_by', 'cancelled_reason', 'date_cancelled', 'personalized', 'booking_item_id', 'is_active', 'deleted_date', 'deleted_by', 'item_id', 'is_kids', 'incl_os_done_number', 'incl_os_done_amount', 'foc_os_done_number', 'foc_os_done_amount', 'not_incl_os_done_number', 'not_incl_os_done_amount', 'incl', 'not_incl', 'foc', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, )
+        self::TYPE_PHPNAME       => array('EventId', 'BookingId', 'EventTitle', 'StartDate', 'EndDate', 'FacilityId', 'AllDay', 'Status', 'AuthorId', 'EntryDate', 'EditDate', 'Notes', 'CalledBy', 'CancelledBy', 'CancelledReason', 'DateCancelled', 'Personalized', 'IsActive', 'DeletedDate', 'DeletedBy', 'ItemId', 'IsKids', 'InclOsDoneNumber', 'InclOsDoneAmount', 'FocOsDoneNumber', 'FocOsDoneAmount', 'NotInclOsDoneNumber', 'NotInclOsDoneAmount', 'Incl', 'NotIncl', 'Foc', ),
+        self::TYPE_CAMELNAME     => array('eventId', 'bookingId', 'eventTitle', 'startDate', 'endDate', 'facilityId', 'allDay', 'status', 'authorId', 'entryDate', 'editDate', 'notes', 'calledBy', 'cancelledBy', 'cancelledReason', 'dateCancelled', 'personalized', 'isActive', 'deletedDate', 'deletedBy', 'itemId', 'isKids', 'inclOsDoneNumber', 'inclOsDoneAmount', 'focOsDoneNumber', 'focOsDoneAmount', 'notInclOsDoneNumber', 'notInclOsDoneAmount', 'incl', 'notIncl', 'foc', ),
+        self::TYPE_COLNAME       => array(BookingEventTableMap::COL_EVENT_ID, BookingEventTableMap::COL_BOOKING_ID, BookingEventTableMap::COL_EVENT_TITLE, BookingEventTableMap::COL_START_DT, BookingEventTableMap::COL_END_DT, BookingEventTableMap::COL_FACILITY_ID, BookingEventTableMap::COL_ALL_DAY, BookingEventTableMap::COL_STATUS, BookingEventTableMap::COL_AUTHOR_ID, BookingEventTableMap::COL_ENTRY_DATE, BookingEventTableMap::COL_EDIT_DATE, BookingEventTableMap::COL_NOTES, BookingEventTableMap::COL_CALLED_BY, BookingEventTableMap::COL_CANCELLED_BY, BookingEventTableMap::COL_CANCELLED_REASON, BookingEventTableMap::COL_DATE_CANCELLED, BookingEventTableMap::COL_PERSONALIZED, BookingEventTableMap::COL_IS_ACTIVE, BookingEventTableMap::COL_DELETED_DATE, BookingEventTableMap::COL_DELETED_BY, BookingEventTableMap::COL_ITEM_ID, BookingEventTableMap::COL_IS_KIDS, BookingEventTableMap::COL_INCL_OS_DONE_NUMBER, BookingEventTableMap::COL_INCL_OS_DONE_AMOUNT, BookingEventTableMap::COL_FOC_OS_DONE_NUMBER, BookingEventTableMap::COL_FOC_OS_DONE_AMOUNT, BookingEventTableMap::COL_NOT_INCL_OS_DONE_NUMBER, BookingEventTableMap::COL_NOT_INCL_OS_DONE_AMOUNT, BookingEventTableMap::COL_INCL, BookingEventTableMap::COL_NOT_INCL, BookingEventTableMap::COL_FOC, ),
+        self::TYPE_FIELDNAME     => array('event_id', 'booking_id', 'event_title', 'start_dt', 'end_dt', 'facility_id', 'all_day', 'status', 'author_id', 'entry_date', 'edit_date', 'notes', 'called_by', 'cancelled_by', 'cancelled_reason', 'date_cancelled', 'personalized', 'is_active', 'deleted_date', 'deleted_by', 'item_id', 'is_kids', 'incl_os_done_number', 'incl_os_done_amount', 'foc_os_done_number', 'foc_os_done_amount', 'not_incl_os_done_number', 'not_incl_os_done_amount', 'incl', 'not_incl', 'foc', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, )
     );
 
     /**
@@ -257,11 +252,11 @@ class BookingEventTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('EventId' => 0, 'BookingId' => 1, 'EventTitle' => 2, 'StartDate' => 3, 'EndDate' => 4, 'FacilityId' => 5, 'AllDay' => 6, 'Status' => 7, 'AuthorId' => 8, 'EntryDate' => 9, 'EditDate' => 10, 'Notes' => 11, 'CalledBy' => 12, 'CancelledBy' => 13, 'CancelledReason' => 14, 'DateCancelled' => 15, 'Personalized' => 16, 'BookingItemId' => 17, 'IsActive' => 18, 'DeletedDate' => 19, 'DeletedBy' => 20, 'ItemId' => 21, 'IsKids' => 22, 'InclOsDoneNumber' => 23, 'InclOsDoneAmount' => 24, 'FocOsDoneNumber' => 25, 'FocOsDoneAmount' => 26, 'NotInclOsDoneNumber' => 27, 'NotInclOsDoneAmount' => 28, 'Incl' => 29, 'NotIncl' => 30, 'Foc' => 31, ),
-        self::TYPE_CAMELNAME     => array('eventId' => 0, 'bookingId' => 1, 'eventTitle' => 2, 'startDate' => 3, 'endDate' => 4, 'facilityId' => 5, 'allDay' => 6, 'status' => 7, 'authorId' => 8, 'entryDate' => 9, 'editDate' => 10, 'notes' => 11, 'calledBy' => 12, 'cancelledBy' => 13, 'cancelledReason' => 14, 'dateCancelled' => 15, 'personalized' => 16, 'bookingItemId' => 17, 'isActive' => 18, 'deletedDate' => 19, 'deletedBy' => 20, 'itemId' => 21, 'isKids' => 22, 'inclOsDoneNumber' => 23, 'inclOsDoneAmount' => 24, 'focOsDoneNumber' => 25, 'focOsDoneAmount' => 26, 'notInclOsDoneNumber' => 27, 'notInclOsDoneAmount' => 28, 'incl' => 29, 'notIncl' => 30, 'foc' => 31, ),
-        self::TYPE_COLNAME       => array(BookingEventTableMap::COL_EVENT_ID => 0, BookingEventTableMap::COL_BOOKING_ID => 1, BookingEventTableMap::COL_EVENT_TITLE => 2, BookingEventTableMap::COL_START_DT => 3, BookingEventTableMap::COL_END_DT => 4, BookingEventTableMap::COL_FACILITY_ID => 5, BookingEventTableMap::COL_ALL_DAY => 6, BookingEventTableMap::COL_STATUS => 7, BookingEventTableMap::COL_AUTHOR_ID => 8, BookingEventTableMap::COL_ENTRY_DATE => 9, BookingEventTableMap::COL_EDIT_DATE => 10, BookingEventTableMap::COL_NOTES => 11, BookingEventTableMap::COL_CALLED_BY => 12, BookingEventTableMap::COL_CANCELLED_BY => 13, BookingEventTableMap::COL_CANCELLED_REASON => 14, BookingEventTableMap::COL_DATE_CANCELLED => 15, BookingEventTableMap::COL_PERSONALIZED => 16, BookingEventTableMap::COL_BOOKING_ITEM_ID => 17, BookingEventTableMap::COL_IS_ACTIVE => 18, BookingEventTableMap::COL_DELETED_DATE => 19, BookingEventTableMap::COL_DELETED_BY => 20, BookingEventTableMap::COL_ITEM_ID => 21, BookingEventTableMap::COL_IS_KIDS => 22, BookingEventTableMap::COL_INCL_OS_DONE_NUMBER => 23, BookingEventTableMap::COL_INCL_OS_DONE_AMOUNT => 24, BookingEventTableMap::COL_FOC_OS_DONE_NUMBER => 25, BookingEventTableMap::COL_FOC_OS_DONE_AMOUNT => 26, BookingEventTableMap::COL_NOT_INCL_OS_DONE_NUMBER => 27, BookingEventTableMap::COL_NOT_INCL_OS_DONE_AMOUNT => 28, BookingEventTableMap::COL_INCL => 29, BookingEventTableMap::COL_NOT_INCL => 30, BookingEventTableMap::COL_FOC => 31, ),
-        self::TYPE_FIELDNAME     => array('event_id' => 0, 'booking_id' => 1, 'event_title' => 2, 'start_dt' => 3, 'end_dt' => 4, 'facility_id' => 5, 'all_day' => 6, 'status' => 7, 'author_id' => 8, 'entry_date' => 9, 'edit_date' => 10, 'notes' => 11, 'called_by' => 12, 'cancelled_by' => 13, 'cancelled_reason' => 14, 'date_cancelled' => 15, 'personalized' => 16, 'booking_item_id' => 17, 'is_active' => 18, 'deleted_date' => 19, 'deleted_by' => 20, 'item_id' => 21, 'is_kids' => 22, 'incl_os_done_number' => 23, 'incl_os_done_amount' => 24, 'foc_os_done_number' => 25, 'foc_os_done_amount' => 26, 'not_incl_os_done_number' => 27, 'not_incl_os_done_amount' => 28, 'incl' => 29, 'not_incl' => 30, 'foc' => 31, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, )
+        self::TYPE_PHPNAME       => array('EventId' => 0, 'BookingId' => 1, 'EventTitle' => 2, 'StartDate' => 3, 'EndDate' => 4, 'FacilityId' => 5, 'AllDay' => 6, 'Status' => 7, 'AuthorId' => 8, 'EntryDate' => 9, 'EditDate' => 10, 'Notes' => 11, 'CalledBy' => 12, 'CancelledBy' => 13, 'CancelledReason' => 14, 'DateCancelled' => 15, 'Personalized' => 16, 'IsActive' => 17, 'DeletedDate' => 18, 'DeletedBy' => 19, 'ItemId' => 20, 'IsKids' => 21, 'InclOsDoneNumber' => 22, 'InclOsDoneAmount' => 23, 'FocOsDoneNumber' => 24, 'FocOsDoneAmount' => 25, 'NotInclOsDoneNumber' => 26, 'NotInclOsDoneAmount' => 27, 'Incl' => 28, 'NotIncl' => 29, 'Foc' => 30, ),
+        self::TYPE_CAMELNAME     => array('eventId' => 0, 'bookingId' => 1, 'eventTitle' => 2, 'startDate' => 3, 'endDate' => 4, 'facilityId' => 5, 'allDay' => 6, 'status' => 7, 'authorId' => 8, 'entryDate' => 9, 'editDate' => 10, 'notes' => 11, 'calledBy' => 12, 'cancelledBy' => 13, 'cancelledReason' => 14, 'dateCancelled' => 15, 'personalized' => 16, 'isActive' => 17, 'deletedDate' => 18, 'deletedBy' => 19, 'itemId' => 20, 'isKids' => 21, 'inclOsDoneNumber' => 22, 'inclOsDoneAmount' => 23, 'focOsDoneNumber' => 24, 'focOsDoneAmount' => 25, 'notInclOsDoneNumber' => 26, 'notInclOsDoneAmount' => 27, 'incl' => 28, 'notIncl' => 29, 'foc' => 30, ),
+        self::TYPE_COLNAME       => array(BookingEventTableMap::COL_EVENT_ID => 0, BookingEventTableMap::COL_BOOKING_ID => 1, BookingEventTableMap::COL_EVENT_TITLE => 2, BookingEventTableMap::COL_START_DT => 3, BookingEventTableMap::COL_END_DT => 4, BookingEventTableMap::COL_FACILITY_ID => 5, BookingEventTableMap::COL_ALL_DAY => 6, BookingEventTableMap::COL_STATUS => 7, BookingEventTableMap::COL_AUTHOR_ID => 8, BookingEventTableMap::COL_ENTRY_DATE => 9, BookingEventTableMap::COL_EDIT_DATE => 10, BookingEventTableMap::COL_NOTES => 11, BookingEventTableMap::COL_CALLED_BY => 12, BookingEventTableMap::COL_CANCELLED_BY => 13, BookingEventTableMap::COL_CANCELLED_REASON => 14, BookingEventTableMap::COL_DATE_CANCELLED => 15, BookingEventTableMap::COL_PERSONALIZED => 16, BookingEventTableMap::COL_IS_ACTIVE => 17, BookingEventTableMap::COL_DELETED_DATE => 18, BookingEventTableMap::COL_DELETED_BY => 19, BookingEventTableMap::COL_ITEM_ID => 20, BookingEventTableMap::COL_IS_KIDS => 21, BookingEventTableMap::COL_INCL_OS_DONE_NUMBER => 22, BookingEventTableMap::COL_INCL_OS_DONE_AMOUNT => 23, BookingEventTableMap::COL_FOC_OS_DONE_NUMBER => 24, BookingEventTableMap::COL_FOC_OS_DONE_AMOUNT => 25, BookingEventTableMap::COL_NOT_INCL_OS_DONE_NUMBER => 26, BookingEventTableMap::COL_NOT_INCL_OS_DONE_AMOUNT => 27, BookingEventTableMap::COL_INCL => 28, BookingEventTableMap::COL_NOT_INCL => 29, BookingEventTableMap::COL_FOC => 30, ),
+        self::TYPE_FIELDNAME     => array('event_id' => 0, 'booking_id' => 1, 'event_title' => 2, 'start_dt' => 3, 'end_dt' => 4, 'facility_id' => 5, 'all_day' => 6, 'status' => 7, 'author_id' => 8, 'entry_date' => 9, 'edit_date' => 10, 'notes' => 11, 'called_by' => 12, 'cancelled_by' => 13, 'cancelled_reason' => 14, 'date_cancelled' => 15, 'personalized' => 16, 'is_active' => 17, 'deleted_date' => 18, 'deleted_by' => 19, 'item_id' => 20, 'is_kids' => 21, 'incl_os_done_number' => 22, 'incl_os_done_amount' => 23, 'foc_os_done_number' => 24, 'foc_os_done_amount' => 25, 'not_incl_os_done_number' => 26, 'not_incl_os_done_amount' => 27, 'incl' => 28, 'not_incl' => 29, 'foc' => 30, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, )
     );
 
     /**
@@ -298,7 +293,6 @@ class BookingEventTableMap extends TableMap
         $this->addColumn('cancelled_reason', 'CancelledReason', 'VARCHAR', false, 50, '');
         $this->addColumn('date_cancelled', 'DateCancelled', 'INTEGER', false, 10, 0);
         $this->addColumn('personalized', 'Personalized', 'VARCHAR', false, 100, '');
-        $this->addForeignKey('booking_item_id', 'BookingItemId', 'INTEGER', 'tf_booking_items', 'booking_item_id', false, null, null);
         $this->addColumn('is_active', 'IsActive', 'VARCHAR', false, 1, 'n');
         $this->addColumn('deleted_date', 'DeletedDate', 'INTEGER', false, 10, 0);
         $this->addForeignKey('deleted_by', 'DeletedBy', 'INTEGER', 'tf_contacts', 'contact_id', false, null, null);
@@ -332,13 +326,6 @@ class BookingEventTableMap extends TableMap
   array (
     0 => ':booking_id',
     1 => ':booking_id',
-  ),
-), null, null, null, false);
-        $this->addRelation('BookingItem', '\\TheFarm\\Models\\BookingItem', RelationMap::MANY_TO_ONE, array (
-  0 =>
-  array (
-    0 => ':booking_item_id',
-    1 => ':booking_item_id',
   ),
 ), null, null, null, false);
         $this->addRelation('ContactRelatedByCalledBy', '\\TheFarm\\Models\\Contact', RelationMap::MANY_TO_ONE, array (
@@ -383,13 +370,13 @@ class BookingEventTableMap extends TableMap
     1 => ':status_cd',
   ),
 ), null, null, null, false);
-        $this->addRelation('BookingEventUser', '\\TheFarm\\Models\\BookingEventUser', RelationMap::ONE_TO_MANY, array (
+        $this->addRelation('EventUser', '\\TheFarm\\Models\\EventUser', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
     0 => ':event_id',
     1 => ':event_id',
   ),
-), null, null, 'BookingEventUsers', false);
+), null, null, 'EventUsers', false);
     } // buildRelations()
 
     /**
@@ -550,7 +537,6 @@ class BookingEventTableMap extends TableMap
             $criteria->addSelectColumn(BookingEventTableMap::COL_CANCELLED_REASON);
             $criteria->addSelectColumn(BookingEventTableMap::COL_DATE_CANCELLED);
             $criteria->addSelectColumn(BookingEventTableMap::COL_PERSONALIZED);
-            $criteria->addSelectColumn(BookingEventTableMap::COL_BOOKING_ITEM_ID);
             $criteria->addSelectColumn(BookingEventTableMap::COL_IS_ACTIVE);
             $criteria->addSelectColumn(BookingEventTableMap::COL_DELETED_DATE);
             $criteria->addSelectColumn(BookingEventTableMap::COL_DELETED_BY);
@@ -583,7 +569,6 @@ class BookingEventTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.cancelled_reason');
             $criteria->addSelectColumn($alias . '.date_cancelled');
             $criteria->addSelectColumn($alias . '.personalized');
-            $criteria->addSelectColumn($alias . '.booking_item_id');
             $criteria->addSelectColumn($alias . '.is_active');
             $criteria->addSelectColumn($alias . '.deleted_date');
             $criteria->addSelectColumn($alias . '.deleted_by');

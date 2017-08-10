@@ -201,7 +201,7 @@ class UserTableMap extends TableMap
         $this->setPackage('TheFarm.Models');
         $this->setUseIdGenerator(false);
         // columns
-        $this->addForeignPrimaryKey('contact_id', 'ContactId', 'INTEGER' , 'tf_contacts', 'contact_id', true, null, 0);
+        $this->addForeignPrimaryKey('contact_id', 'ContactId', 'INTEGER' , 'tf_contacts', 'contact_id', true, null, null);
         $this->addColumn('username', 'Username', 'VARCHAR', true, 100, null);
         $this->addForeignKey('group_id', 'GroupId', 'INTEGER', 'tf_groups', 'group_id', false, null, null);
         $this->addColumn('last_login', 'LastLogin', 'INTEGER', true, 10, null);

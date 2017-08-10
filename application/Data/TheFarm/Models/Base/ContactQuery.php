@@ -94,15 +94,15 @@ use TheFarm\Models\Map\ContactTableMap;
  * @method     ChildContactQuery rightJoinWithPosition() Adds a RIGHT JOIN clause and with to the query using the Position relation
  * @method     ChildContactQuery innerJoinWithPosition() Adds a INNER JOIN clause and with to the query using the Position relation
  *
- * @method     ChildContactQuery leftJoinBookingEventUser($relationAlias = null) Adds a LEFT JOIN clause to the query using the BookingEventUser relation
- * @method     ChildContactQuery rightJoinBookingEventUser($relationAlias = null) Adds a RIGHT JOIN clause to the query using the BookingEventUser relation
- * @method     ChildContactQuery innerJoinBookingEventUser($relationAlias = null) Adds a INNER JOIN clause to the query using the BookingEventUser relation
+ * @method     ChildContactQuery leftJoinEventUser($relationAlias = null) Adds a LEFT JOIN clause to the query using the EventUser relation
+ * @method     ChildContactQuery rightJoinEventUser($relationAlias = null) Adds a RIGHT JOIN clause to the query using the EventUser relation
+ * @method     ChildContactQuery innerJoinEventUser($relationAlias = null) Adds a INNER JOIN clause to the query using the EventUser relation
  *
- * @method     ChildContactQuery joinWithBookingEventUser($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the BookingEventUser relation
+ * @method     ChildContactQuery joinWithEventUser($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the EventUser relation
  *
- * @method     ChildContactQuery leftJoinWithBookingEventUser() Adds a LEFT JOIN clause and with to the query using the BookingEventUser relation
- * @method     ChildContactQuery rightJoinWithBookingEventUser() Adds a RIGHT JOIN clause and with to the query using the BookingEventUser relation
- * @method     ChildContactQuery innerJoinWithBookingEventUser() Adds a INNER JOIN clause and with to the query using the BookingEventUser relation
+ * @method     ChildContactQuery leftJoinWithEventUser() Adds a LEFT JOIN clause and with to the query using the EventUser relation
+ * @method     ChildContactQuery rightJoinWithEventUser() Adds a RIGHT JOIN clause and with to the query using the EventUser relation
+ * @method     ChildContactQuery innerJoinWithEventUser() Adds a INNER JOIN clause and with to the query using the EventUser relation
  *
  * @method     ChildContactQuery leftJoinBookingEventRelatedByAuthorId($relationAlias = null) Adds a LEFT JOIN clause to the query using the BookingEventRelatedByAuthorId relation
  * @method     ChildContactQuery rightJoinBookingEventRelatedByAuthorId($relationAlias = null) Adds a RIGHT JOIN clause to the query using the BookingEventRelatedByAuthorId relation
@@ -194,7 +194,7 @@ use TheFarm\Models\Map\ContactTableMap;
  * @method     ChildContactQuery rightJoinWithUser() Adds a RIGHT JOIN clause and with to the query using the User relation
  * @method     ChildContactQuery innerJoinWithUser() Adds a INNER JOIN clause and with to the query using the User relation
  *
- * @method     \TheFarm\Models\PositionQuery|\TheFarm\Models\BookingEventUserQuery|\TheFarm\Models\BookingEventQuery|\TheFarm\Models\BookingQuery|\TheFarm\Models\ItemsRelatedUserQuery|\TheFarm\Models\UserWorkPlanTimeQuery|\TheFarm\Models\UserQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \TheFarm\Models\PositionQuery|\TheFarm\Models\EventUserQuery|\TheFarm\Models\BookingEventQuery|\TheFarm\Models\BookingQuery|\TheFarm\Models\ItemsRelatedUserQuery|\TheFarm\Models\UserWorkPlanTimeQuery|\TheFarm\Models\UserQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildContact findOne(ConnectionInterface $con = null) Return the first ChildContact matching the query
  * @method     ChildContact findOneOrCreate(ConnectionInterface $con = null) Return the first ChildContact matching the query, or a new ChildContact object populated from the query conditions when no match is found
@@ -1317,40 +1317,40 @@ abstract class ContactQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \TheFarm\Models\BookingEventUser object
+     * Filter the query by a related \TheFarm\Models\EventUser object
      *
-     * @param \TheFarm\Models\BookingEventUser|ObjectCollection $bookingEventUser the related object to use as filter
+     * @param \TheFarm\Models\EventUser|ObjectCollection $eventUser the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildContactQuery The current query, for fluid interface
      */
-    public function filterByBookingEventUser($bookingEventUser, $comparison = null)
+    public function filterByEventUser($eventUser, $comparison = null)
     {
-        if ($bookingEventUser instanceof \TheFarm\Models\BookingEventUser) {
+        if ($eventUser instanceof \TheFarm\Models\EventUser) {
             return $this
-                ->addUsingAlias(ContactTableMap::COL_CONTACT_ID, $bookingEventUser->getUserId(), $comparison);
-        } elseif ($bookingEventUser instanceof ObjectCollection) {
+                ->addUsingAlias(ContactTableMap::COL_CONTACT_ID, $eventUser->getUserId(), $comparison);
+        } elseif ($eventUser instanceof ObjectCollection) {
             return $this
-                ->useBookingEventUserQuery()
-                ->filterByPrimaryKeys($bookingEventUser->getPrimaryKeys())
+                ->useEventUserQuery()
+                ->filterByPrimaryKeys($eventUser->getPrimaryKeys())
                 ->endUse();
         } else {
-            throw new PropelException('filterByBookingEventUser() only accepts arguments of type \TheFarm\Models\BookingEventUser or Collection');
+            throw new PropelException('filterByEventUser() only accepts arguments of type \TheFarm\Models\EventUser or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the BookingEventUser relation
+     * Adds a JOIN clause to the query using the EventUser relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildContactQuery The current query, for fluid interface
      */
-    public function joinBookingEventUser($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinEventUser($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('BookingEventUser');
+        $relationMap = $tableMap->getRelation('EventUser');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -1365,14 +1365,14 @@ abstract class ContactQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'BookingEventUser');
+            $this->addJoinObject($join, 'EventUser');
         }
 
         return $this;
     }
 
     /**
-     * Use the BookingEventUser relation BookingEventUser object
+     * Use the EventUser relation EventUser object
      *
      * @see useQuery()
      *
@@ -1380,13 +1380,13 @@ abstract class ContactQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \TheFarm\Models\BookingEventUserQuery A secondary query class using the current class as primary query
+     * @return \TheFarm\Models\EventUserQuery A secondary query class using the current class as primary query
      */
-    public function useBookingEventUserQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useEventUserQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinBookingEventUser($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'BookingEventUser', '\TheFarm\Models\BookingEventUserQuery');
+            ->joinEventUser($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'EventUser', '\TheFarm\Models\EventUserQuery');
     }
 
     /**

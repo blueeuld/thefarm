@@ -21,11 +21,11 @@ use Propel\Runtime\Util\PropelDateTime;
 use TheFarm\Models\Booking as ChildBooking;
 use TheFarm\Models\BookingEvent as ChildBookingEvent;
 use TheFarm\Models\BookingEventQuery as ChildBookingEventQuery;
-use TheFarm\Models\BookingEventUser as ChildBookingEventUser;
-use TheFarm\Models\BookingEventUserQuery as ChildBookingEventUserQuery;
 use TheFarm\Models\BookingQuery as ChildBookingQuery;
 use TheFarm\Models\Contact as ChildContact;
 use TheFarm\Models\ContactQuery as ChildContactQuery;
+use TheFarm\Models\EventUser as ChildEventUser;
+use TheFarm\Models\EventUserQuery as ChildEventUserQuery;
 use TheFarm\Models\ItemsRelatedUser as ChildItemsRelatedUser;
 use TheFarm\Models\ItemsRelatedUserQuery as ChildItemsRelatedUserQuery;
 use TheFarm\Models\Position as ChildPosition;
@@ -35,9 +35,9 @@ use TheFarm\Models\UserQuery as ChildUserQuery;
 use TheFarm\Models\UserWorkPlanTime as ChildUserWorkPlanTime;
 use TheFarm\Models\UserWorkPlanTimeQuery as ChildUserWorkPlanTimeQuery;
 use TheFarm\Models\Map\BookingEventTableMap;
-use TheFarm\Models\Map\BookingEventUserTableMap;
 use TheFarm\Models\Map\BookingTableMap;
 use TheFarm\Models\Map\ContactTableMap;
+use TheFarm\Models\Map\EventUserTableMap;
 use TheFarm\Models\Map\ItemsRelatedUserTableMap;
 use TheFarm\Models\Map\UserWorkPlanTimeTableMap;
 
@@ -292,10 +292,10 @@ abstract class Contact implements ActiveRecordInterface
     protected $aPosition;
 
     /**
-     * @var        ObjectCollection|ChildBookingEventUser[] Collection to store aggregation of ChildBookingEventUser objects.
+     * @var        ObjectCollection|ChildEventUser[] Collection to store aggregation of ChildEventUser objects.
      */
-    protected $collBookingEventUsers;
-    protected $collBookingEventUsersPartial;
+    protected $collEventUsers;
+    protected $collEventUsersPartial;
 
     /**
      * @var        ObjectCollection|ChildBookingEvent[] Collection to store aggregation of ChildBookingEvent objects.
@@ -360,9 +360,9 @@ abstract class Contact implements ActiveRecordInterface
 
     /**
      * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildBookingEventUser[]
+     * @var ObjectCollection|ChildEventUser[]
      */
-    protected $bookingEventUsersScheduledForDeletion = null;
+    protected $eventUsersScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -1807,7 +1807,7 @@ abstract class Contact implements ActiveRecordInterface
         if ($deep) {  // also de-associate any related objects?
 
             $this->aPosition = null;
-            $this->collBookingEventUsers = null;
+            $this->collEventUsers = null;
 
             $this->collBookingEventsRelatedByAuthorId = null;
 
@@ -1953,17 +1953,17 @@ abstract class Contact implements ActiveRecordInterface
                 $this->resetModified();
             }
 
-            if ($this->bookingEventUsersScheduledForDeletion !== null) {
-                if (!$this->bookingEventUsersScheduledForDeletion->isEmpty()) {
-                    \TheFarm\Models\BookingEventUserQuery::create()
-                        ->filterByPrimaryKeys($this->bookingEventUsersScheduledForDeletion->getPrimaryKeys(false))
+            if ($this->eventUsersScheduledForDeletion !== null) {
+                if (!$this->eventUsersScheduledForDeletion->isEmpty()) {
+                    \TheFarm\Models\EventUserQuery::create()
+                        ->filterByPrimaryKeys($this->eventUsersScheduledForDeletion->getPrimaryKeys(false))
                         ->delete($con);
-                    $this->bookingEventUsersScheduledForDeletion = null;
+                    $this->eventUsersScheduledForDeletion = null;
                 }
             }
 
-            if ($this->collBookingEventUsers !== null) {
-                foreach ($this->collBookingEventUsers as $referrerFK) {
+            if ($this->collEventUsers !== null) {
+                foreach ($this->collEventUsers as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -2547,20 +2547,20 @@ abstract class Contact implements ActiveRecordInterface
 
                 $result[$key] = $this->aPosition->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
-            if (null !== $this->collBookingEventUsers) {
+            if (null !== $this->collEventUsers) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'bookingEventUsers';
+                        $key = 'eventUsers';
                         break;
                     case TableMap::TYPE_FIELDNAME:
                         $key = 'tf_booking_event_userss';
                         break;
                     default:
-                        $key = 'BookingEventUsers';
+                        $key = 'EventUsers';
                 }
 
-                $result[$key] = $this->collBookingEventUsers->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+                $result[$key] = $this->collEventUsers->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
             if (null !== $this->collBookingEventsRelatedByAuthorId) {
 
@@ -3159,9 +3159,9 @@ abstract class Contact implements ActiveRecordInterface
             // the getter/setter methods for fkey referrer objects.
             $copyObj->setNew(false);
 
-            foreach ($this->getBookingEventUsers() as $relObj) {
+            foreach ($this->getEventUsers() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addBookingEventUser($relObj->copy($deepCopy));
+                    $copyObj->addEventUser($relObj->copy($deepCopy));
                 }
             }
 
@@ -3310,8 +3310,8 @@ abstract class Contact implements ActiveRecordInterface
      */
     public function initRelation($relationName)
     {
-        if ('BookingEventUser' == $relationName) {
-            $this->initBookingEventUsers();
+        if ('EventUser' == $relationName) {
+            $this->initEventUsers();
             return;
         }
         if ('BookingEventRelatedByAuthorId' == $relationName) {
@@ -3349,31 +3349,31 @@ abstract class Contact implements ActiveRecordInterface
     }
 
     /**
-     * Clears out the collBookingEventUsers collection
+     * Clears out the collEventUsers collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
      * @return void
-     * @see        addBookingEventUsers()
+     * @see        addEventUsers()
      */
-    public function clearBookingEventUsers()
+    public function clearEventUsers()
     {
-        $this->collBookingEventUsers = null; // important to set this to NULL since that means it is uninitialized
+        $this->collEventUsers = null; // important to set this to NULL since that means it is uninitialized
     }
 
     /**
-     * Reset is the collBookingEventUsers collection loaded partially.
+     * Reset is the collEventUsers collection loaded partially.
      */
-    public function resetPartialBookingEventUsers($v = true)
+    public function resetPartialEventUsers($v = true)
     {
-        $this->collBookingEventUsersPartial = $v;
+        $this->collEventUsersPartial = $v;
     }
 
     /**
-     * Initializes the collBookingEventUsers collection.
+     * Initializes the collEventUsers collection.
      *
-     * By default this just sets the collBookingEventUsers collection to an empty array (like clearcollBookingEventUsers());
+     * By default this just sets the collEventUsers collection to an empty array (like clearcollEventUsers());
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
@@ -3382,20 +3382,20 @@ abstract class Contact implements ActiveRecordInterface
      *
      * @return void
      */
-    public function initBookingEventUsers($overrideExisting = true)
+    public function initEventUsers($overrideExisting = true)
     {
-        if (null !== $this->collBookingEventUsers && !$overrideExisting) {
+        if (null !== $this->collEventUsers && !$overrideExisting) {
             return;
         }
 
-        $collectionClassName = BookingEventUserTableMap::getTableMap()->getCollectionClassName();
+        $collectionClassName = EventUserTableMap::getTableMap()->getCollectionClassName();
 
-        $this->collBookingEventUsers = new $collectionClassName;
-        $this->collBookingEventUsers->setModel('\TheFarm\Models\BookingEventUser');
+        $this->collEventUsers = new $collectionClassName;
+        $this->collEventUsers->setModel('\TheFarm\Models\EventUser');
     }
 
     /**
-     * Gets an array of ChildBookingEventUser objects which contain a foreign key that references this object.
+     * Gets an array of ChildEventUser objects which contain a foreign key that references this object.
      *
      * If the $criteria is not null, it is used to always fetch the results from the database.
      * Otherwise the results are fetched from the database the first time, then cached.
@@ -3405,111 +3405,111 @@ abstract class Contact implements ActiveRecordInterface
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildBookingEventUser[] List of ChildBookingEventUser objects
+     * @return ObjectCollection|ChildEventUser[] List of ChildEventUser objects
      * @throws PropelException
      */
-    public function getBookingEventUsers(Criteria $criteria = null, ConnectionInterface $con = null)
+    public function getEventUsers(Criteria $criteria = null, ConnectionInterface $con = null)
     {
-        $partial = $this->collBookingEventUsersPartial && !$this->isNew();
-        if (null === $this->collBookingEventUsers || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collBookingEventUsers) {
+        $partial = $this->collEventUsersPartial && !$this->isNew();
+        if (null === $this->collEventUsers || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collEventUsers) {
                 // return empty collection
-                $this->initBookingEventUsers();
+                $this->initEventUsers();
             } else {
-                $collBookingEventUsers = ChildBookingEventUserQuery::create(null, $criteria)
+                $collEventUsers = ChildEventUserQuery::create(null, $criteria)
                     ->filterByContact($this)
                     ->find($con);
 
                 if (null !== $criteria) {
-                    if (false !== $this->collBookingEventUsersPartial && count($collBookingEventUsers)) {
-                        $this->initBookingEventUsers(false);
+                    if (false !== $this->collEventUsersPartial && count($collEventUsers)) {
+                        $this->initEventUsers(false);
 
-                        foreach ($collBookingEventUsers as $obj) {
-                            if (false == $this->collBookingEventUsers->contains($obj)) {
-                                $this->collBookingEventUsers->append($obj);
+                        foreach ($collEventUsers as $obj) {
+                            if (false == $this->collEventUsers->contains($obj)) {
+                                $this->collEventUsers->append($obj);
                             }
                         }
 
-                        $this->collBookingEventUsersPartial = true;
+                        $this->collEventUsersPartial = true;
                     }
 
-                    return $collBookingEventUsers;
+                    return $collEventUsers;
                 }
 
-                if ($partial && $this->collBookingEventUsers) {
-                    foreach ($this->collBookingEventUsers as $obj) {
+                if ($partial && $this->collEventUsers) {
+                    foreach ($this->collEventUsers as $obj) {
                         if ($obj->isNew()) {
-                            $collBookingEventUsers[] = $obj;
+                            $collEventUsers[] = $obj;
                         }
                     }
                 }
 
-                $this->collBookingEventUsers = $collBookingEventUsers;
-                $this->collBookingEventUsersPartial = false;
+                $this->collEventUsers = $collEventUsers;
+                $this->collEventUsersPartial = false;
             }
         }
 
-        return $this->collBookingEventUsers;
+        return $this->collEventUsers;
     }
 
     /**
-     * Sets a collection of ChildBookingEventUser objects related by a one-to-many relationship
+     * Sets a collection of ChildEventUser objects related by a one-to-many relationship
      * to the current object.
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param      Collection $bookingEventUsers A Propel collection.
+     * @param      Collection $eventUsers A Propel collection.
      * @param      ConnectionInterface $con Optional connection object
      * @return $this|ChildContact The current object (for fluent API support)
      */
-    public function setBookingEventUsers(Collection $bookingEventUsers, ConnectionInterface $con = null)
+    public function setEventUsers(Collection $eventUsers, ConnectionInterface $con = null)
     {
-        /** @var ChildBookingEventUser[] $bookingEventUsersToDelete */
-        $bookingEventUsersToDelete = $this->getBookingEventUsers(new Criteria(), $con)->diff($bookingEventUsers);
+        /** @var ChildEventUser[] $eventUsersToDelete */
+        $eventUsersToDelete = $this->getEventUsers(new Criteria(), $con)->diff($eventUsers);
 
 
         //since at least one column in the foreign key is at the same time a PK
         //we can not just set a PK to NULL in the lines below. We have to store
         //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
-        $this->bookingEventUsersScheduledForDeletion = clone $bookingEventUsersToDelete;
+        $this->eventUsersScheduledForDeletion = clone $eventUsersToDelete;
 
-        foreach ($bookingEventUsersToDelete as $bookingEventUserRemoved) {
-            $bookingEventUserRemoved->setContact(null);
+        foreach ($eventUsersToDelete as $eventUserRemoved) {
+            $eventUserRemoved->setContact(null);
         }
 
-        $this->collBookingEventUsers = null;
-        foreach ($bookingEventUsers as $bookingEventUser) {
-            $this->addBookingEventUser($bookingEventUser);
+        $this->collEventUsers = null;
+        foreach ($eventUsers as $eventUser) {
+            $this->addEventUser($eventUser);
         }
 
-        $this->collBookingEventUsers = $bookingEventUsers;
-        $this->collBookingEventUsersPartial = false;
+        $this->collEventUsers = $eventUsers;
+        $this->collEventUsersPartial = false;
 
         return $this;
     }
 
     /**
-     * Returns the number of related BookingEventUser objects.
+     * Returns the number of related EventUser objects.
      *
      * @param      Criteria $criteria
      * @param      boolean $distinct
      * @param      ConnectionInterface $con
-     * @return int             Count of related BookingEventUser objects.
+     * @return int             Count of related EventUser objects.
      * @throws PropelException
      */
-    public function countBookingEventUsers(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function countEventUsers(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
     {
-        $partial = $this->collBookingEventUsersPartial && !$this->isNew();
-        if (null === $this->collBookingEventUsers || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collBookingEventUsers) {
+        $partial = $this->collEventUsersPartial && !$this->isNew();
+        if (null === $this->collEventUsers || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collEventUsers) {
                 return 0;
             }
 
             if ($partial && !$criteria) {
-                return count($this->getBookingEventUsers());
+                return count($this->getEventUsers());
             }
 
-            $query = ChildBookingEventUserQuery::create(null, $criteria);
+            $query = ChildEventUserQuery::create(null, $criteria);
             if ($distinct) {
                 $query->distinct();
             }
@@ -3519,28 +3519,28 @@ abstract class Contact implements ActiveRecordInterface
                 ->count($con);
         }
 
-        return count($this->collBookingEventUsers);
+        return count($this->collEventUsers);
     }
 
     /**
-     * Method called to associate a ChildBookingEventUser object to this object
-     * through the ChildBookingEventUser foreign key attribute.
+     * Method called to associate a ChildEventUser object to this object
+     * through the ChildEventUser foreign key attribute.
      *
-     * @param  ChildBookingEventUser $l ChildBookingEventUser
+     * @param  ChildEventUser $l ChildEventUser
      * @return $this|\TheFarm\Models\Contact The current object (for fluent API support)
      */
-    public function addBookingEventUser(ChildBookingEventUser $l)
+    public function addEventUser(ChildEventUser $l)
     {
-        if ($this->collBookingEventUsers === null) {
-            $this->initBookingEventUsers();
-            $this->collBookingEventUsersPartial = true;
+        if ($this->collEventUsers === null) {
+            $this->initEventUsers();
+            $this->collEventUsersPartial = true;
         }
 
-        if (!$this->collBookingEventUsers->contains($l)) {
-            $this->doAddBookingEventUser($l);
+        if (!$this->collEventUsers->contains($l)) {
+            $this->doAddEventUser($l);
 
-            if ($this->bookingEventUsersScheduledForDeletion and $this->bookingEventUsersScheduledForDeletion->contains($l)) {
-                $this->bookingEventUsersScheduledForDeletion->remove($this->bookingEventUsersScheduledForDeletion->search($l));
+            if ($this->eventUsersScheduledForDeletion and $this->eventUsersScheduledForDeletion->contains($l)) {
+                $this->eventUsersScheduledForDeletion->remove($this->eventUsersScheduledForDeletion->search($l));
             }
         }
 
@@ -3548,29 +3548,29 @@ abstract class Contact implements ActiveRecordInterface
     }
 
     /**
-     * @param ChildBookingEventUser $bookingEventUser The ChildBookingEventUser object to add.
+     * @param ChildEventUser $eventUser The ChildEventUser object to add.
      */
-    protected function doAddBookingEventUser(ChildBookingEventUser $bookingEventUser)
+    protected function doAddEventUser(ChildEventUser $eventUser)
     {
-        $this->collBookingEventUsers[]= $bookingEventUser;
-        $bookingEventUser->setContact($this);
+        $this->collEventUsers[]= $eventUser;
+        $eventUser->setContact($this);
     }
 
     /**
-     * @param  ChildBookingEventUser $bookingEventUser The ChildBookingEventUser object to remove.
+     * @param  ChildEventUser $eventUser The ChildEventUser object to remove.
      * @return $this|ChildContact The current object (for fluent API support)
      */
-    public function removeBookingEventUser(ChildBookingEventUser $bookingEventUser)
+    public function removeEventUser(ChildEventUser $eventUser)
     {
-        if ($this->getBookingEventUsers()->contains($bookingEventUser)) {
-            $pos = $this->collBookingEventUsers->search($bookingEventUser);
-            $this->collBookingEventUsers->remove($pos);
-            if (null === $this->bookingEventUsersScheduledForDeletion) {
-                $this->bookingEventUsersScheduledForDeletion = clone $this->collBookingEventUsers;
-                $this->bookingEventUsersScheduledForDeletion->clear();
+        if ($this->getEventUsers()->contains($eventUser)) {
+            $pos = $this->collEventUsers->search($eventUser);
+            $this->collEventUsers->remove($pos);
+            if (null === $this->eventUsersScheduledForDeletion) {
+                $this->eventUsersScheduledForDeletion = clone $this->collEventUsers;
+                $this->eventUsersScheduledForDeletion->clear();
             }
-            $this->bookingEventUsersScheduledForDeletion[]= clone $bookingEventUser;
-            $bookingEventUser->setContact(null);
+            $this->eventUsersScheduledForDeletion[]= clone $eventUser;
+            $eventUser->setContact(null);
         }
 
         return $this;
@@ -3582,7 +3582,7 @@ abstract class Contact implements ActiveRecordInterface
      * an identical criteria, it returns the collection.
      * Otherwise if this Contact is new, it will return
      * an empty collection; or if this Contact has previously
-     * been saved, it will retrieve related BookingEventUsers from storage.
+     * been saved, it will retrieve related EventUsers from storage.
      *
      * This method is protected by default in order to keep the public
      * api reasonable.  You can provide public methods for those you
@@ -3591,14 +3591,14 @@ abstract class Contact implements ActiveRecordInterface
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildBookingEventUser[] List of ChildBookingEventUser objects
+     * @return ObjectCollection|ChildEventUser[] List of ChildEventUser objects
      */
-    public function getBookingEventUsersJoinBookingEvent(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getEventUsersJoinBookingEvent(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
-        $query = ChildBookingEventUserQuery::create(null, $criteria);
+        $query = ChildEventUserQuery::create(null, $criteria);
         $query->joinWith('BookingEvent', $joinBehavior);
 
-        return $this->getBookingEventUsers($query, $con);
+        return $this->getEventUsers($query, $con);
     }
 
     /**
@@ -3847,31 +3847,6 @@ abstract class Contact implements ActiveRecordInterface
     {
         $query = ChildBookingEventQuery::create(null, $criteria);
         $query->joinWith('Booking', $joinBehavior);
-
-        return $this->getBookingEventsRelatedByAuthorId($query, $con);
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Contact is new, it will return
-     * an empty collection; or if this Contact has previously
-     * been saved, it will retrieve related BookingEventsRelatedByAuthorId from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Contact.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildBookingEvent[] List of ChildBookingEvent objects
-     */
-    public function getBookingEventsRelatedByAuthorIdJoinBookingItem(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
-    {
-        $query = ChildBookingEventQuery::create(null, $criteria);
-        $query->joinWith('BookingItem', $joinBehavior);
 
         return $this->getBookingEventsRelatedByAuthorId($query, $con);
     }
@@ -4218,31 +4193,6 @@ abstract class Contact implements ActiveRecordInterface
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return ObjectCollection|ChildBookingEvent[] List of ChildBookingEvent objects
      */
-    public function getBookingEventsRelatedByCalledByJoinBookingItem(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
-    {
-        $query = ChildBookingEventQuery::create(null, $criteria);
-        $query->joinWith('BookingItem', $joinBehavior);
-
-        return $this->getBookingEventsRelatedByCalledBy($query, $con);
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Contact is new, it will return
-     * an empty collection; or if this Contact has previously
-     * been saved, it will retrieve related BookingEventsRelatedByCalledBy from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Contact.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildBookingEvent[] List of ChildBookingEvent objects
-     */
     public function getBookingEventsRelatedByCalledByJoinFacility(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ChildBookingEventQuery::create(null, $criteria);
@@ -4568,31 +4518,6 @@ abstract class Contact implements ActiveRecordInterface
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return ObjectCollection|ChildBookingEvent[] List of ChildBookingEvent objects
      */
-    public function getBookingEventsRelatedByCancelledByJoinBookingItem(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
-    {
-        $query = ChildBookingEventQuery::create(null, $criteria);
-        $query->joinWith('BookingItem', $joinBehavior);
-
-        return $this->getBookingEventsRelatedByCancelledBy($query, $con);
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Contact is new, it will return
-     * an empty collection; or if this Contact has previously
-     * been saved, it will retrieve related BookingEventsRelatedByCancelledBy from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Contact.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildBookingEvent[] List of ChildBookingEvent objects
-     */
     public function getBookingEventsRelatedByCancelledByJoinFacility(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ChildBookingEventQuery::create(null, $criteria);
@@ -4897,31 +4822,6 @@ abstract class Contact implements ActiveRecordInterface
     {
         $query = ChildBookingEventQuery::create(null, $criteria);
         $query->joinWith('Booking', $joinBehavior);
-
-        return $this->getBookingEventsRelatedByDeletedBy($query, $con);
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Contact is new, it will return
-     * an empty collection; or if this Contact has previously
-     * been saved, it will retrieve related BookingEventsRelatedByDeletedBy from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Contact.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildBookingEvent[] List of ChildBookingEvent objects
-     */
-    public function getBookingEventsRelatedByDeletedByJoinBookingItem(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
-    {
-        $query = ChildBookingEventQuery::create(null, $criteria);
-        $query->joinWith('BookingItem', $joinBehavior);
 
         return $this->getBookingEventsRelatedByDeletedBy($query, $con);
     }
@@ -6143,8 +6043,8 @@ abstract class Contact implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
-            if ($this->collBookingEventUsers) {
-                foreach ($this->collBookingEventUsers as $o) {
+            if ($this->collEventUsers) {
+                foreach ($this->collEventUsers as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
@@ -6193,7 +6093,7 @@ abstract class Contact implements ActiveRecordInterface
             }
         } // if ($deep)
 
-        $this->collBookingEventUsers = null;
+        $this->collEventUsers = null;
         $this->collBookingEventsRelatedByAuthorId = null;
         $this->collBookingEventsRelatedByCalledBy = null;
         $this->collBookingEventsRelatedByCancelledBy = null;

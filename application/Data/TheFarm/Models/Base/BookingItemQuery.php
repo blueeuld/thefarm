@@ -3,13 +3,13 @@
 namespace TheFarm\Models\Base;
 
 use \Exception;
-use \PDO;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveQuery\ModelJoin;
 use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
+use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use TheFarm\Models\BookingItem as ChildBookingItem;
 use TheFarm\Models\BookingItemQuery as ChildBookingItemQuery;
@@ -20,7 +20,6 @@ use TheFarm\Models\Map\BookingItemTableMap;
  *
  *
  *
- * @method     ChildBookingItemQuery orderByBookingItemId($order = Criteria::ASC) Order by the booking_item_id column
  * @method     ChildBookingItemQuery orderByBookingId($order = Criteria::ASC) Order by the booking_id column
  * @method     ChildBookingItemQuery orderByItemId($order = Criteria::ASC) Order by the item_id column
  * @method     ChildBookingItemQuery orderByQuantity($order = Criteria::ASC) Order by the quantity column
@@ -30,7 +29,6 @@ use TheFarm\Models\Map\BookingItemTableMap;
  * @method     ChildBookingItemQuery orderByUpgrade($order = Criteria::ASC) Order by the upgrade column
  * @method     ChildBookingItemQuery orderByInventory($order = Criteria::ASC) Order by the inventory column
  *
- * @method     ChildBookingItemQuery groupByBookingItemId() Group by the booking_item_id column
  * @method     ChildBookingItemQuery groupByBookingId() Group by the booking_id column
  * @method     ChildBookingItemQuery groupByItemId() Group by the item_id column
  * @method     ChildBookingItemQuery groupByQuantity() Group by the quantity column
@@ -68,22 +66,11 @@ use TheFarm\Models\Map\BookingItemTableMap;
  * @method     ChildBookingItemQuery rightJoinWithItem() Adds a RIGHT JOIN clause and with to the query using the Item relation
  * @method     ChildBookingItemQuery innerJoinWithItem() Adds a INNER JOIN clause and with to the query using the Item relation
  *
- * @method     ChildBookingItemQuery leftJoinBookingEvent($relationAlias = null) Adds a LEFT JOIN clause to the query using the BookingEvent relation
- * @method     ChildBookingItemQuery rightJoinBookingEvent($relationAlias = null) Adds a RIGHT JOIN clause to the query using the BookingEvent relation
- * @method     ChildBookingItemQuery innerJoinBookingEvent($relationAlias = null) Adds a INNER JOIN clause to the query using the BookingEvent relation
- *
- * @method     ChildBookingItemQuery joinWithBookingEvent($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the BookingEvent relation
- *
- * @method     ChildBookingItemQuery leftJoinWithBookingEvent() Adds a LEFT JOIN clause and with to the query using the BookingEvent relation
- * @method     ChildBookingItemQuery rightJoinWithBookingEvent() Adds a RIGHT JOIN clause and with to the query using the BookingEvent relation
- * @method     ChildBookingItemQuery innerJoinWithBookingEvent() Adds a INNER JOIN clause and with to the query using the BookingEvent relation
- *
- * @method     \TheFarm\Models\BookingQuery|\TheFarm\Models\ItemQuery|\TheFarm\Models\BookingEventQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \TheFarm\Models\BookingQuery|\TheFarm\Models\ItemQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildBookingItem findOne(ConnectionInterface $con = null) Return the first ChildBookingItem matching the query
  * @method     ChildBookingItem findOneOrCreate(ConnectionInterface $con = null) Return the first ChildBookingItem matching the query, or a new ChildBookingItem object populated from the query conditions when no match is found
  *
- * @method     ChildBookingItem findOneByBookingItemId(int $booking_item_id) Return the first ChildBookingItem filtered by the booking_item_id column
  * @method     ChildBookingItem findOneByBookingId(int $booking_id) Return the first ChildBookingItem filtered by the booking_id column
  * @method     ChildBookingItem findOneByItemId(int $item_id) Return the first ChildBookingItem filtered by the item_id column
  * @method     ChildBookingItem findOneByQuantity(int $quantity) Return the first ChildBookingItem filtered by the quantity column
@@ -96,7 +83,6 @@ use TheFarm\Models\Map\BookingItemTableMap;
  * @method     ChildBookingItem requirePk($key, ConnectionInterface $con = null) Return the ChildBookingItem by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildBookingItem requireOne(ConnectionInterface $con = null) Return the first ChildBookingItem matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
- * @method     ChildBookingItem requireOneByBookingItemId(int $booking_item_id) Return the first ChildBookingItem filtered by the booking_item_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildBookingItem requireOneByBookingId(int $booking_id) Return the first ChildBookingItem filtered by the booking_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildBookingItem requireOneByItemId(int $item_id) Return the first ChildBookingItem filtered by the item_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildBookingItem requireOneByQuantity(int $quantity) Return the first ChildBookingItem filtered by the quantity column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -107,7 +93,6 @@ use TheFarm\Models\Map\BookingItemTableMap;
  * @method     ChildBookingItem requireOneByInventory(int $inventory) Return the first ChildBookingItem filtered by the inventory column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildBookingItem[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildBookingItem objects based on current ModelCriteria
- * @method     ChildBookingItem[]|ObjectCollection findByBookingItemId(int $booking_item_id) Return ChildBookingItem objects filtered by the booking_item_id column
  * @method     ChildBookingItem[]|ObjectCollection findByBookingId(int $booking_id) Return ChildBookingItem objects filtered by the booking_id column
  * @method     ChildBookingItem[]|ObjectCollection findByItemId(int $item_id) Return ChildBookingItem objects filtered by the item_id column
  * @method     ChildBookingItem[]|ObjectCollection findByQuantity(int $quantity) Return ChildBookingItem objects filtered by the quantity column
@@ -175,89 +160,13 @@ abstract class BookingItemQuery extends ModelCriteria
      */
     public function findPk($key, ConnectionInterface $con = null)
     {
-        if ($key === null) {
-            return null;
-        }
-
-        if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(BookingItemTableMap::DATABASE_NAME);
-        }
-
-        $this->basePreSelect($con);
-
-        if (
-            $this->formatter || $this->modelAlias || $this->with || $this->select
-            || $this->selectColumns || $this->asColumns || $this->selectModifiers
-            || $this->map || $this->having || $this->joins
-        ) {
-            return $this->findPkComplex($key, $con);
-        }
-
-        if ((null !== ($obj = BookingItemTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key)))) {
-            // the object is already in the instance pool
-            return $obj;
-        }
-
-        return $this->findPkSimple($key, $con);
-    }
-
-    /**
-     * Find object by primary key using raw SQL to go fast.
-     * Bypass doSelect() and the object formatter by using generated code.
-     *
-     * @param     mixed $key Primary key to use for the query
-     * @param     ConnectionInterface $con A connection object
-     *
-     * @throws \Propel\Runtime\Exception\PropelException
-     *
-     * @return ChildBookingItem A model object, or null if the key is not found
-     */
-    protected function findPkSimple($key, ConnectionInterface $con)
-    {
-        $sql = 'SELECT booking_item_id, booking_id, item_id, quantity, included, foc, upsell, upgrade, inventory FROM tf_booking_items WHERE booking_item_id = :p0';
-        try {
-            $stmt = $con->prepare($sql);
-            $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
-            $stmt->execute();
-        } catch (Exception $e) {
-            Propel::log($e->getMessage(), Propel::LOG_ERR);
-            throw new PropelException(sprintf('Unable to execute SELECT statement [%s]', $sql), 0, $e);
-        }
-        $obj = null;
-        if ($row = $stmt->fetch(\PDO::FETCH_NUM)) {
-            /** @var ChildBookingItem $obj */
-            $obj = new ChildBookingItem();
-            $obj->hydrate($row);
-            BookingItemTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
-        }
-        $stmt->closeCursor();
-
-        return $obj;
-    }
-
-    /**
-     * Find object by primary key.
-     *
-     * @param     mixed $key Primary key to use for the query
-     * @param     ConnectionInterface $con A connection object
-     *
-     * @return ChildBookingItem|array|mixed the result, formatted by the current formatter
-     */
-    protected function findPkComplex($key, ConnectionInterface $con)
-    {
-        // As the query uses a PK condition, no limit(1) is necessary.
-        $criteria = $this->isKeepQuery() ? clone $this : $this;
-        $dataFetcher = $criteria
-            ->filterByPrimaryKey($key)
-            ->doSelect($con);
-
-        return $criteria->getFormatter()->init($criteria)->formatOne($dataFetcher);
+        throw new LogicException('The BookingItem object has no primary key');
     }
 
     /**
      * Find objects by primary key
      * <code>
-     * $objs = $c->findPks(array(12, 56, 832), $con);
+     * $objs = $c->findPks(array(array(12, 56), array(832, 123), array(123, 456)), $con);
      * </code>
      * @param     array $keys Primary keys to use for the query
      * @param     ConnectionInterface $con an optional connection object
@@ -266,16 +175,7 @@ abstract class BookingItemQuery extends ModelCriteria
      */
     public function findPks($keys, ConnectionInterface $con = null)
     {
-        if (null === $con) {
-            $con = Propel::getServiceContainer()->getReadConnection($this->getDbName());
-        }
-        $this->basePreSelect($con);
-        $criteria = $this->isKeepQuery() ? clone $this : $this;
-        $dataFetcher = $criteria
-            ->filterByPrimaryKeys($keys)
-            ->doSelect($con);
-
-        return $criteria->getFormatter()->init($criteria)->format($dataFetcher);
+        throw new LogicException('The BookingItem object has no primary key');
     }
 
     /**
@@ -287,8 +187,7 @@ abstract class BookingItemQuery extends ModelCriteria
      */
     public function filterByPrimaryKey($key)
     {
-
-        return $this->addUsingAlias(BookingItemTableMap::COL_BOOKING_ITEM_ID, $key, Criteria::EQUAL);
+        throw new LogicException('The BookingItem object has no primary key');
     }
 
     /**
@@ -300,49 +199,7 @@ abstract class BookingItemQuery extends ModelCriteria
      */
     public function filterByPrimaryKeys($keys)
     {
-
-        return $this->addUsingAlias(BookingItemTableMap::COL_BOOKING_ITEM_ID, $keys, Criteria::IN);
-    }
-
-    /**
-     * Filter the query on the booking_item_id column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByBookingItemId(1234); // WHERE booking_item_id = 1234
-     * $query->filterByBookingItemId(array(12, 34)); // WHERE booking_item_id IN (12, 34)
-     * $query->filterByBookingItemId(array('min' => 12)); // WHERE booking_item_id > 12
-     * </code>
-     *
-     * @param     mixed $bookingItemId The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildBookingItemQuery The current query, for fluid interface
-     */
-    public function filterByBookingItemId($bookingItemId = null, $comparison = null)
-    {
-        if (is_array($bookingItemId)) {
-            $useMinMax = false;
-            if (isset($bookingItemId['min'])) {
-                $this->addUsingAlias(BookingItemTableMap::COL_BOOKING_ITEM_ID, $bookingItemId['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($bookingItemId['max'])) {
-                $this->addUsingAlias(BookingItemTableMap::COL_BOOKING_ITEM_ID, $bookingItemId['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(BookingItemTableMap::COL_BOOKING_ITEM_ID, $bookingItemId, $comparison);
+        throw new LogicException('The BookingItem object has no primary key');
     }
 
     /**
@@ -776,79 +633,6 @@ abstract class BookingItemQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \TheFarm\Models\BookingEvent object
-     *
-     * @param \TheFarm\Models\BookingEvent|ObjectCollection $bookingEvent the related object to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return ChildBookingItemQuery The current query, for fluid interface
-     */
-    public function filterByBookingEvent($bookingEvent, $comparison = null)
-    {
-        if ($bookingEvent instanceof \TheFarm\Models\BookingEvent) {
-            return $this
-                ->addUsingAlias(BookingItemTableMap::COL_BOOKING_ITEM_ID, $bookingEvent->getBookingItemId(), $comparison);
-        } elseif ($bookingEvent instanceof ObjectCollection) {
-            return $this
-                ->useBookingEventQuery()
-                ->filterByPrimaryKeys($bookingEvent->getPrimaryKeys())
-                ->endUse();
-        } else {
-            throw new PropelException('filterByBookingEvent() only accepts arguments of type \TheFarm\Models\BookingEvent or Collection');
-        }
-    }
-
-    /**
-     * Adds a JOIN clause to the query using the BookingEvent relation
-     *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return $this|ChildBookingItemQuery The current query, for fluid interface
-     */
-    public function joinBookingEvent($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
-    {
-        $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('BookingEvent');
-
-        // create a ModelJoin object for this join
-        $join = new ModelJoin();
-        $join->setJoinType($joinType);
-        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
-        if ($previousJoin = $this->getPreviousJoin()) {
-            $join->setPreviousJoin($previousJoin);
-        }
-
-        // add the ModelJoin to the current object
-        if ($relationAlias) {
-            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
-            $this->addJoinObject($join, $relationAlias);
-        } else {
-            $this->addJoinObject($join, 'BookingEvent');
-        }
-
-        return $this;
-    }
-
-    /**
-     * Use the BookingEvent relation BookingEvent object
-     *
-     * @see useQuery()
-     *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return \TheFarm\Models\BookingEventQuery A secondary query class using the current class as primary query
-     */
-    public function useBookingEventQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
-    {
-        return $this
-            ->joinBookingEvent($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'BookingEvent', '\TheFarm\Models\BookingEventQuery');
-    }
-
-    /**
      * Exclude object from result
      *
      * @param   ChildBookingItem $bookingItem Object to remove from the list of results
@@ -858,7 +642,8 @@ abstract class BookingItemQuery extends ModelCriteria
     public function prune($bookingItem = null)
     {
         if ($bookingItem) {
-            $this->addUsingAlias(BookingItemTableMap::COL_BOOKING_ITEM_ID, $bookingItem->getBookingItemId(), Criteria::NOT_EQUAL);
+            throw new LogicException('BookingItem object has no primary key');
+
         }
 
         return $this;
