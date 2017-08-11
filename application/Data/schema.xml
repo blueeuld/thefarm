@@ -826,12 +826,14 @@
     <column name="end_date" phpName="EndDate" type="TIMESTAMP" required="true"/>
     <column name="is_working" phpName="IsWorking" type="Boolean" defaultValue="1"/>
 
-    <foreign-key foreignTable="tf_contacts" name="contact_fk2">
+    <foreign-key foreignTable="tf_contacts" name="user_work_plan_time_contact_fk">
       <reference local="contact_id" foreign="contact_id"/>
     </foreign-key>
-    <index name="contact_fk2">
+
+    <index name="user_work_plan_time_contact_fk">
       <index-column name="contact_id"/>
     </index>
+
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
