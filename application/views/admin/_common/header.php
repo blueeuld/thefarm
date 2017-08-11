@@ -41,7 +41,7 @@
 									<a href="<?php echo site_url('backend/providers'); ?>"><i class="md md-person"></i> Providers</a></li><?php endif; ?>
 								<?php if (current_user_can('CanAdminProviders')) : ?>
 									<li><a
-										href="<?php echo site_url('backend/schedule/view'); ?>"><i class="md md-timer"></i> Provider Schedules</a>
+										href="<?php echo site_url('backend/providers/schedule'); ?>"><i class="md md-timer"></i> Provider Schedules</a>
 									</li><?php endif; ?>
 								<?php if (current_user_can('CanAdminPackages')) : ?>
 									<li><a
@@ -61,11 +61,7 @@
 							</ul>
 						</li>
 					<?php endif; ?>
-					<?php if (is_admin()): ?>
-						<li class="<?php if ($this->uri->segment(1) === 'settings'): ?>active<?php endif; ?>"><a
-								href="<?php echo site_url('backend/settings'); ?>"><i class="md md-settings"></i>Settings</a>
-						</li>
-					<?php endif; ?>
+
 					<li class="hidden-lg hidden-md"><a href="<?php echo site_url('logout?return=/'); ?>">Logout</a></li>
 				</ul>
 				
@@ -88,7 +84,13 @@
 								<?php echo img(array('src' => get_current_user_photo())); ?> </span> <?php echo $_SESSION['FirstName']; ?>
 							<b class="caret"></b> </a>
 						<ul class="dropdown-menu animated fadeInRight">
-							<li><a href="<?php echo site_url('logout?return=/'); ?>">Logout</a></li>
+                            <?php if (is_admin()): ?>
+                            <li class="<?php if ($this->uri->segment(1) === 'settings'): ?>active<?php endif; ?>"><a
+                                        href="<?php echo site_url('backend/settings'); ?>"><i class="glyphicon glyphicon-cog"></i> System Settings</a>
+                            </li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="<?php echo site_url('logout?return=/'); ?>"><i class="glyphicon glyphicon-log-out"></i> Logout</a></li>
+                            <?php endif; ?>
 						</ul>
 					</li>
 				</ul>

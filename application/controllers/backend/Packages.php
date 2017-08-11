@@ -14,6 +14,6 @@ class Packages extends TF_Controller {
 		$data = array();
 		$data['packages'] = $this->db->get('packages')->result_array();
 		
-		$this->load->view('admin/package/index', $data);
+		$this->load->view('admin/packages/index', $data);
 	}
 }

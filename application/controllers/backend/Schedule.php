@@ -7,43 +7,6 @@ class Schedule extends TF_Controller {
         $this->view();
     }
 
-    public function view() {
-
-        $contact_id = (int)$this->uri->segment(4);
-        $week = $this->uri->segment(5);
-        if (!$week) $week = date('Y-m-d');
-
-        $userApi = new UserApi();
-        $providers = $userApi->get_users(true, $_SESSION['User']['LocationId']);
-
-        $data['providers'] = $providers;
-
-        $data['contact_id'] = $contact_id;
-
-        $data['week'] = $week;
-
-        $query = $this->db->get_where('users', 'contact_id='.(int)$contact_id);
-
-        $result = $query->row_array();
-
-        $currentUser = $userApi->get_user($contact_id);
-
-        $workPlanArr = [];
-        foreach ($currentUser['UserWorkPlanTimes'] as $workPlan) {
-            $workPlanArr[date('Y-m-d', strtotime($workPlan['StartDate']))][] = date('H:i', strtotime($workPlan['StartDate']));
-        }
-
-        var_dump($currentUser['UserWorkPlanTimes'], $workPlanArr);
-
-        $params['date'] = $week;
-        $params['base'] = 'backend/schedule/view/'.$contact_id;
-        $params['schedule'] = $result['work_plan'] ? unserialize($result['work_plan']) : false;
-        $params['schedule_code'] = $result['work_plan_code'] ? unserialize($result['work_plan_code']) : false;
-
-        $this->load->library('weeklycalendar', $params);
-
-        $this->load->view('admin/schedule/index', $data);
-    }
 
     public function check() {
         $date = $this->input->get_post('date');

@@ -23,7 +23,9 @@ class UserApi {
         $user = \TheFarm\Models\ContactQuery::create()->findOneByContactId($userId);
 
         $userArr = $user->toArray();
-        $userArr['UserWorkPlanTimes'] = $user->getUserWorkPlanTimes()->toArray();
+        if ($user->getUserWorkPlanTimes()) {
+            $userArr['UserWorkPlanTimes'] = $user->getUserWorkPlanTimes()->toArray();
+        }
         if ($user->getBookingsRelatedByGuestId()) {
             $bookings = $user->getBookingsRelatedByGuestId();
             $bookingsArr = $bookings->toArray();

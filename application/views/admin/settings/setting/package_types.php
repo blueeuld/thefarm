@@ -1,17 +1,20 @@
 <?php
 $return = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '/services';
 ?>
-<div class="panel-heading"><b><i class="glyphicon glyphicon-briefcase"></i> Package Types</b></div>
+<div class="panel-heading"><b><i class="glyphicon glyphicon-briefcase"></i> Package Types</b>
+
+    <div class="pull-right">
+        <a
+                href="<?php echo site_url('backend/packagetype/edit?return=' . urlencode($return)); ?>"
+                class="btn btn-xs btn-primary" data-toggle="modal" data-target="#modal-popup">Add
+            <i class="fa fa-plus"></i></a>
+    </div>
+</div>
 
 
 <div class="panel-body">
 								
-									<div class="pull-right">
-										<a
-												href="<?php echo site_url('backend/packagetype/edit?return=' . urlencode($return)); ?>"
-												class="btn btn-primary" data-toggle="modal" data-target="#modal-popup">Add
-												<i class="fa fa-plus"></i></a>
-									</div>
+
 									<div class="table-responsive">
 										<table class="table table-striped table-hover dt-responsive no-footer dtr-inline">
 											<tbody>

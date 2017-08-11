@@ -24,6 +24,42 @@ class Providers extends TF_Controller {
 
         $this->load->view('admin/users', $data);
     }
+
+    public function schedule($contact_id = null) {
+
+        $week = $this->uri->segment(5);
+        if (!$week) $week = date('Y-m-d');
+
+        $userApi = new UserApi();
+        $providers = $userApi->get_users(true, $_SESSION['User']['LocationId']);
+
+        $data['providers'] = $providers;
+
+        $data['contact_id'] = $contact_id;
+
+        $data['week'] = $week;
+
+        $query = $this->db->get_where('users', 'contact_id='.(int)$contact_id);
+
+        $result = $query->row_array();
+
+        if ($contact_id) {
+            $currentUser = $userApi->get_user($contact_id);
+            $workPlanArr = [];
+            foreach ($currentUser['UserWorkPlanTimes'] as $workPlan) {
+                $workPlanArr[date('Y-m-d', strtotime($workPlan['StartDate']))][] = date('H:i', strtotime($workPlan['StartDate']));
+            }
+        }
+
+        $params['date'] = $week;
+        $params['base'] = 'backend/providers/schedule/'.$contact_id;
+        $params['schedule'] = $result['work_plan'] ? unserialize($result['work_plan']) : false;
+        $params['schedule_code'] = $result['work_plan_code'] ? unserialize($result['work_plan_code']) : false;
+
+        $this->load->library('weeklycalendar', $params);
+
+        $this->load->view('admin/providers/schedule', $data);
+    }
     
     public function order() {
         $data['contacts'] = get_provider_list(false, false, false, $_SESSION['User']['LocationId']);
