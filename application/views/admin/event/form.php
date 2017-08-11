@@ -10,7 +10,7 @@ ob_start();
 				<div class="form-group">
 					<div class="input-group" style="width:100%">
 						<?php echo form_dropdown('item_id', available_booking_items(0, $categories), $item_id,
-							'class="show-tick form-control" '.($item_id ? 'readonly' : '')); ?>
+							'class="show-tick form-control"'); ?>
 					</div>
 				</div>
 			</div>

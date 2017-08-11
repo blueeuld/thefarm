@@ -199,7 +199,7 @@ $times = createTimeRangeArray(1800*12, 3600*23, 60*10);
                 <div class="form-group">
                     <div class="input-group" id="available-services" style="width:100%">
                         <?php echo form_dropdown('item_id', available_booking_items($booking_id), $item_id,
-                            'class="form-control" ' . ($item_id ? 'readonly' : '')); ?>
+                            'class="form-control"'); ?>
                     </div>
                 </div>
                 <input type="checkbox" value="1" name="incl" <?php echo $incl ? 'checked' : '';?>> Included
