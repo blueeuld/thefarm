@@ -210,16 +210,16 @@
 
                         var s = '';
 
-                        if (data[contact].contact_id === selected) {
+                        if (data[contact].ContactId === selected) {
                             s = ' selected="selected"';
                         }
 
                         $('select[name="assigned_to[]"]').append(
-                            '<option value="' + data[contact].contact_id + '"' + s + '>' + data[contact].first_name + ' ' + data[contact].last_name + '</option>'
+                            '<option value="' + data[contact].ContactId + '"' + s + '>' + data[contact].FirstName + ' ' + data[contact].LastName + '</option>'
                         );
                     }
                 },
-                type: "POST"
+                type: "GET"
             });
         }
     };

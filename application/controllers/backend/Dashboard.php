@@ -5,19 +5,24 @@ class Dashboard extends TF_Controller {
 
 	function index() {
 
+	    /*
 		$params = array();
         $params['locations'] = $_SESSION['User']['LocationId'];
 
         $this->load->library('Eventsbuilder');
 		$sales = $this->eventsbuilder->build_sales($params);
-		
+		$data['sales'] = $sales;
+		*/
 		$data['yesterday'] = date('Y-m-d', strtotime('-1 day'));
 		
 		$data['today'] = date('Y-m-d');
 
-		$data['sales'] = $sales;
-		
+        $data['sales'] = [];
+
+
 		$data['providers'] = get_available_providers(date('Y-m-d'), $_SESSION['User']['LocationId']); // get_provider_list(false, false, false, $_SESSION['User']['LocationId']);
+
+
 		
 		$this->db->select('contacts.first_name, contacts.last_name, bookings.booking_id, items.title as room_name, contacts.contact_id, package_types.package_type_name');
 		$this->db->from('contacts');

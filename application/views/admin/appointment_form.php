@@ -40,6 +40,7 @@ if ($eventData) {
     $cancelled_by = $eventData['CancelledBy'];
     $cancelled_reason = $eventData['CancelledReason'];
     $date_cancelled = $eventData['DateCancelled'];
+    $incl_os_done_number = $eventData['InclOsDoneNumber'];
     $incl_os_done_amount = $eventData['InclOsDoneAmount'];
     $not_incl_os_done_number = $eventData['NotInclOsDoneNumber'];
     $not_incl_os_done_amount = $eventData['NotInclOsDoneAmount'];
@@ -47,7 +48,7 @@ if ($eventData) {
     $foc_os_done_amount = $eventData['FocOsDoneAmount'];
     $date = $start_date;
 
-    $availableProviders = $userApi->get_users(true, [0, get_current_user_location_id()], $item_id, true, $eventData['StartDate'], $eventData['EndDate']);
+    $availableProviders = $userApi->get_users(false, [0, get_current_user_location_id()], $item_id, true, $eventData['StartDate'], $eventData['EndDate']);
 }
 else {
 
@@ -78,15 +79,16 @@ else {
     $cancelled_by = null;
     $called_by = null;
     $date_cancelled = null;
+    $incl_os_done_number = '';
     $incl_os_done_amount = '';
     $not_incl_os_done_number = '';
     $not_incl_os_done_amount = '';
     $foc_os_done_number = '';
     $foc_os_done_amount = '';
 
-    $availableProviders = $userApi->get_users(true, [0, get_current_user_location_id()], $item_id, true, $start_date_dt->format($dateTimeFormat), $end_date_dt->format($dateTimeFormat));
+    $availableProviders = $userApi->get_users(false, [0, get_current_user_location_id()], $item_id, true, $start_date_dt->format($dateTimeFormat), $end_date_dt->format($dateTimeFormat));
 }
-var_dump($availableProviders);
+
 $providers = [];
 if ($availableProviders) {
     foreach ($availableProviders as $availableProvider) {
