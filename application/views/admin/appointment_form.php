@@ -47,7 +47,7 @@ if ($eventData) {
     $foc_os_done_amount = $eventData['FocOsDoneAmount'];
     $date = $start_date;
 
-    $availableProviders = $userApi->get_users(false, [0, get_current_user_location_id()], $item_id, true, $eventData['StartDate'], $eventData['EndDate']);
+    $availableProviders = $userApi->get_users(true, [0, get_current_user_location_id()], $item_id, true, $eventData['StartDate'], $eventData['EndDate']);
 }
 else {
 
@@ -55,7 +55,7 @@ else {
     $item_id = $this->input->get_post('item_id');
     $booking_id = (int)$this->input->get_post('booking_id');
     $assigned_to = [$this->input->get_post('assigned_to')];
-    $duration = is_int($this->input->get_post('duration')) ? $this->input->get_post('duration') : 60;
+    $duration = is_int($this->input->get_post('duration')) ? $this->input->get_post('duration') : 30;
 
     $start_date_dt = new DateTime($date);
     $end_date_dt = new DateTime($date);
@@ -83,9 +83,10 @@ else {
     $not_incl_os_done_amount = '';
     $foc_os_done_number = '';
     $foc_os_done_amount = '';
-    $availableProviders = $userApi->get_users(false, [0, get_current_user_location_id()], $item_id, true, $start_date_dt->format($dateTimeFormat), $end_date_dt->format($dateTimeFormat));
-}
 
+    $availableProviders = $userApi->get_users(true, [0, get_current_user_location_id()], $item_id, true, $start_date_dt->format($dateTimeFormat), $end_date_dt->format($dateTimeFormat));
+}
+var_dump($availableProviders);
 $providers = [];
 if ($availableProviders) {
     foreach ($availableProviders as $availableProvider) {
@@ -94,7 +95,7 @@ if ($availableProviders) {
 }
 
 $audit_users = ['' => '-Select-'];
-$auditUsersArr = $userApi->get_users(true, null, null, null, null, null, true);
+$auditUsersArr = $userApi->get_users(false, null, null, null, null, null, true);
 foreach ($auditUsersArr as $item) {
     $audit_users[$item['ContactId']] = $item['FirstName'] . ' ' . $item['LastName'];
 }
@@ -110,8 +111,10 @@ foreach ($statusesArr as $item) {
 // Bookings.
 $bookingsArr = $bookingApi->search_bookings($date, ['confirmed']);
 $bookings = ['' => '-Select-'];
-foreach ($bookingsArr as $booking) {
-    $bookings[$booking['BookingId']] = $booking['Guest']['FirstName'] . ' ' . $booking['Guest']['LastName'];
+if ($bookingsArr) {
+    foreach ($bookingsArr as $booking) {
+        $bookings[$booking['BookingId']] = $booking['Guest']['FirstName'] . ' ' . $booking['Guest']['LastName'];
+    }
 }
 
 $endDate = new DateTime($date);

@@ -26,6 +26,8 @@ class BookingApi {
             $search = $search->filterByStatus($statusCd);
         }
 
+        $search = $search->filterByGuestId(null, '<>');
+
         $search = $search->filterByIsActive(true);
 
         $bookings = $search->find();
@@ -34,7 +36,9 @@ class BookingApi {
         if ($bookings) {
             foreach ($bookings as $key => $booking) {
                 $bookingArr[$key] = $booking->toArray();
-                $bookingArr[$key]['Guest'] = $booking->getContactRelatedByGuestId()->toArray();
+                if ($booking->getContactRelatedByGuestId()) {
+                    $bookingArr[$key]['Guest'] = $booking->getContactRelatedByGuestId()->toArray();
+                }
                 if ($booking->getPackage()) {
                     $bookingArr[$key]['Package'] = $booking->getPackage()->toArray();
                 }

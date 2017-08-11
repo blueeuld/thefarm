@@ -55,7 +55,7 @@ class UserApi {
             $search = $search->useUserQuery()->useGroupQuery()->filterByIncludeInProviderList('y')->endUse()->endUse();
         }
         elseif ($availableProvidersOnly && !is_null($startDateTime) && !is_null($endDateTime)) {
-            $search = $search->useUserWorkPlanTimeQuery('work_plan')->where("(work_plan.start_date BETWEEN '".$startDateTime."' AND '".$endDateTime."') OR (work_plan.end_date BETWEEN '".$startDateTime."' AND '".$endDateTime."') OR ('".$startDateTime."' BETWEEN work_plan.start_date AND work_plan.end_date)")->endUse();
+            // $search = $search->useUserWorkPlanTimeQuery('work_plan')->where("(work_plan.start_date BETWEEN '".$startDateTime."' AND '".$endDateTime."') OR (work_plan.end_date BETWEEN '".$startDateTime."' AND '".$endDateTime."') OR ('".$startDateTime."' BETWEEN work_plan.start_date AND work_plan.end_date)")->endUse();
         }
 
         if ($auditUsersOnly) {
@@ -66,7 +66,7 @@ class UserApi {
             $search = $search->useUserQuery()->filterByLocationId($locations)->endUse();
         }
 
-        if (!is_null($relatedItemId)) {
+        if (!is_null($relatedItemId) && $relatedItemId) {
             $search = $search->useItemsRelatedUserQuery()->filterByItemId($relatedItemId)->endUse();
         }
 
@@ -76,9 +76,9 @@ class UserApi {
 
             foreach ($users as $key => $user) {
                 $userArr[$key] = $user->toArray();
-                if ($providersOnly) {
-                    $userArr[$key]['UserWorkPlanTimes'] = $user->getUserWorkPlanTimes()->toArray();
-                }
+//                if ($providersOnly) {
+//                    $userArr[$key]['UserWorkPlanTimes'] = $user->getUserWorkPlanTimes()->toArray();
+//                }
             }
         }
 
