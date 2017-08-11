@@ -11,10 +11,8 @@ class Booking extends TF_Controller {
 
 	public function index()
 	{
-		if (!$_POST) return;
-
 		$booking_id = $this->input->get_post('id') ? $this->input->get_post('id') : null;
-		$guest_id = (int)$this->input->get_post('guest_id');
+		$guest_id = $this->input->get_post('guest_id') ? $this->input->get_post('guest_id') : null;
         $personalized = (int)$this->input->get_post('personalized');
         $room_id = $this->input->get_post('room_id') ? $this->input->get_post('room_id') : null;
 		$status = $this->input->get_post('status');
@@ -29,7 +27,8 @@ class Booking extends TF_Controller {
             'Personalized' => $personalized,
             'RoomId' => $room_id,
             'Restrictions' => $this->input->get_post('restrictions'),
-            'AuthorId' => get_current_user_id()
+            'AuthorId' => get_current_user_id(),
+            'Notes' => $this->input->get_post('notes')
 		);
 
 		if ($this->input->get_post('start_date')) {
@@ -67,7 +66,7 @@ class Booking extends TF_Controller {
 
                         if (stripos($id, 'new') !== false) {
                             $bookingItemData['inventory'] = isset($data['quantity']) ? $data['quantity'] : 1;
-                            $data['BookingItems'][] = $bookingItemData;
+                            $data['Items'][] = $bookingItemData;
                         }
                     }
                 }
@@ -90,7 +89,7 @@ class Booking extends TF_Controller {
                     ]
                 ]];
 
-                $data['BookingAttachments'] = $attachments;
+                $data['Attachments'] = $attachments;
             }
 
             if ($this->input->get_post('booking_forms'))
@@ -110,11 +109,15 @@ class Booking extends TF_Controller {
                     ];
                 }
 
-                $data['BookingForms'] = $forms;
+                $data['Forms'] = $forms;
             }
+
+            var_dump($data);
 
             $bookingApi = new BookingApi();
             $booking = $bookingApi->save_booking($data, isset($_REQUEST['skip_confirmation']));
+
+            var_dump($booking);
 
         }
 
@@ -183,93 +186,26 @@ class Booking extends TF_Controller {
 //            }
 //        }
 //    }
-	
-	public function edit()
+
+    public function create($contactId) {
+	    $bookingApi = new BookingApi();
+	    $bookingApi->get_package_types();
+
+        $data = ['bookingData' => false, 'contact_id' => $contactId];
+
+
+        $this->load->view('admin/booking_form', $data);
+    }
+
+	public function edit($bookingId)
 	{
-		$this->load->helper('item');
-		
-		$data = array(
-			'contact_id' => $this->uri->segment(4),
-			'booking_id' => intval($this->uri->segment(5)),
-			'start_date' => '',
-			'end_date' => '',
-			'title' => '',
-			'notes' => '',
-			'status' => '',
-			'package_id' => null,
-			'fax' => 1,
-            'personalized' => 0,
-            'room_id' => null,
-            'restrictions' => '',
-		);
 
-		$query = $this->db->get_where('bookings', array('booking_id' => $data['booking_id']));
+	    $bookingApi = new BookingApi();
+	    $bookingData = $bookingApi->get_booking($bookingId);
 
-		if ($query->num_rows() > 0) {
-			$booking_data = $query->row_array();
-			$data = array_merge($data, $booking_data);
-		}
+	    $data = ['bookingData' => $bookingData];
 
-		$data['personalized'] = (int)$data['personalized'];
-
-		$data['packages'] = $this->db->get('packages')->result_array();
-		
-		$data['services'] = $this->db->get('items')->result_array();
-
-		$statuses = array_merge(array('' => '-Select-'), get_booking_statuses());
-		$data['statuses'] = $statuses;
-
-		$data['booking_items'] = booking_items($data['booking_id']);
-		
-		$this->db->select('*');
-		$this->db->from('items');
-		$this->db->join('item_categories', 'items.item_id = item_categories.item_id');
-		$this->db->where('item_categories.category_id', 8);
-		$this->db->where('items.is_active', 1);
-		$this->db->order_by('items.title');
-		$query = $this->db->get();
-		$facilities = $query->result_array();
-        $facilities_array = array(0 => 'None');
-
-        foreach ($facilities as $row) {
-            $facilities_array[$row['item_id']] = $row['title'];
-        }
-        
-        $data['facilities'] = $facilities_array;
-		
-		$this->db->select('files.file_name, files.file_id, files.upload_date');
-		$this->db->join('files', 'files.file_id = booking_attachments.file_id');
-		$this->db->from('booking_attachments');
-		$this->db->where('booking_attachments.booking_id', $data['booking_id']);
-		
-		$data['attachments'] = $this->db->get()->result_array();
-		
-		if ($data['booking_id']) {
-			$this->db->select('forms.form_id, forms.form_name, booking_forms.required, booking_forms.submitted, booking_forms.notify_user_on_submit');
-			$this->db->from('forms');
-			$this->db->join('booking_forms', 'booking_forms.form_id = forms.form_id', 'left');
-			$this->db->where('booking_forms.booking_id = ' . $data['booking_id']);
-		}
-		else {
-			$this->db->select('forms.form_id, forms.form_name, "n" as required, "n" as submitted, "" as notify_user_on_submit');
-			$this->db->from('forms');
-		}
-
-		$query = $this->db->get();
-		
-		$booking_forms = array();
-		if ($query->num_rows() > 0) {
-			$booking_forms = $query->result_array();
-		}
-
-		$notify_users = array();
-		$notify_users[get_current_user_id()] = 'Me'; //get_service_providers();
-		$notify_users = array_merge($notify_users, get_service_providers());
-		
-		$data['notify_users'] = $notify_users;
-		$data['forms'] = $booking_forms;
-
-		$this->load->view('admin/booking/edit', $data);
+		$this->load->view('admin/booking_form', $data);
 	}
 
 	public function delete() {

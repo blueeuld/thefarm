@@ -2,14 +2,31 @@
 
 class BookingApi {
 
+    public function get_booking($bookingId) {
+        $booking = \TheFarm\Models\BookingQuery::create()->findOneByBookingId($bookingId);
+
+        $bookingArr = $booking->toArray();
+        $bookingArr['Items'] = $booking->getBookingItemsJoinItem()->toArray();
+        $bookingArr['Forms'] = [];
+        if ($booking->getBookingAttachments())
+            $bookingArr['Attachments'] = $booking->getBookingAttachments()->toArray();
+
+        return $bookingArr;
+    }
+
     public function search_bookings($date, $statusCd) {
 
-        $search = \TheFarm\Models\BookingQuery::create()
-            ->where(sprintf('\'%s\' BETWEEN FROM_UNIXTIME(tf_bookings.start_date) AND FROM_UNIXTIME(tf_bookings.end_date)', date('Y-m-d', strtotime($date))));
+        $search = \TheFarm\Models\BookingQuery::create();
+
+        if ($date) {
+            $search = $search->where(sprintf('\'%s\' BETWEEN FROM_UNIXTIME(tf_bookings.start_date) AND FROM_UNIXTIME(tf_bookings.end_date)', date('Y-m-d', strtotime($date))));
+        }
 
         if ($statusCd) {
             $search = $search->filterByStatus($statusCd);
         }
+
+        $search = $search->filterByIsActive(true);
 
         $bookings = $search->find();
         $bookingArr = [];
@@ -46,16 +63,16 @@ class BookingApi {
             $originalStatus = false;
         }
 
-        if (isset($bookingData['BookingItems'])) {
-            $this->save_items($booking, $bookingData['BookingItems']);
+        if (isset($bookingData['Items'])) {
+            $this->save_items($booking, $bookingData['Items']);
         }
 
-        if (isset($bookingData['BookingAttachments'])) {
-            $this->save_attachments($booking, $bookingData['BookingAttachments']);
+        if (isset($bookingData['Attachments'])) {
+            $this->save_attachments($booking, $bookingData['Attachments']);
         }
 
-        if (isset($bookingData['BookingForms'])) {
-            $this->save_forms($booking, $bookingData['BookingForms']);
+        if (isset($bookingData['Forms'])) {
+            $this->save_forms($booking, $bookingData['Forms']);
         }
 
         $booking->save();

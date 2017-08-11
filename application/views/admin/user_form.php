@@ -45,11 +45,11 @@ if ($userData) {
                                                     Actions <span class="caret"></span>
                                                 </button>
                                                 <ul class="dropdown-menu">
-                                                    <li><a href="#">Action</a></li>
-                                                    <li><a href="#">Another action</a></li>
-                                                    <li><a href="#">Something else here</a></li>
-                                                    <li role="separator" class="divider"></li>
-                                                    <li><a href="#">Separated link</a></li>
+                                                    <?php if (!$isProvider) : ?>
+                                                    <li><a href="<?php echo site_url('backend/booking/create/' . $contact_id) ?>"
+                                                           data-toggle="modal"
+                                                           data-target="#modal-popup"><i class="fa fa-plus"></i> Add Booking</a></li><?php endif; ?>
+                                                    <li><a href="<?php echo site_url('backend/account/delete/' . $contact_id); ?>" class="btn-confirm" title="Are you sure you want to delete this user?"><i class="fa fa-trash-o"></i> Delete this user</a></li>
                                                 </ul>
                                             </div>
                                         </div>
