@@ -5726,6 +5726,31 @@ abstract class Contact implements ActiveRecordInterface
         return $this;
     }
 
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Contact is new, it will return
+     * an empty collection; or if this Contact has previously
+     * been saved, it will retrieve related ItemsRelatedUsers from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Contact.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildItemsRelatedUser[] List of ChildItemsRelatedUser objects
+     */
+    public function getItemsRelatedUsersJoinItem(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildItemsRelatedUserQuery::create(null, $criteria);
+        $query->joinWith('Item', $joinBehavior);
+
+        return $this->getItemsRelatedUsers($query, $con);
+    }
+
     /**
      * Clears out the collUserWorkPlanTimes collection
      *

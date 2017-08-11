@@ -3,11 +3,26 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Providers extends TF_Controller {
 
-    public function index() {
-        $data = array();
-        $data['group_name'] = 'Service Providers';
-        $data['contacts'] = get_provider_list(false, false, false, $_SESSION['User']['LocationId']);
-        $this->load->view('admin/providers/index', $data);
+
+    public function index()
+    {
+        $search = \TheFarm\Models\ContactQuery::create();
+        $search = $search->useUserQuery()->useGroupQuery()->filterByIncludeInProviderList('y')->endUse()->endUse();
+
+        $search = $search->filterByIsActive(true);
+
+        $contacts = $search->find();
+        $contactsArr = [];
+        foreach ($contacts as $key => $contact) {
+            $contactsArr[$key] = $contact->toArray();
+            $contactsArr[$key]['User'] = $contact->getUser()->toArray();
+            $contactsArr[$key]['User']['Group'] = $contact->getUser()->getGroup()->toArray();
+        }
+
+        $data['contacts'] = $contactsArr;
+
+
+        $this->load->view('admin/users', $data);
     }
     
     public function order() {

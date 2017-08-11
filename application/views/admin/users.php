@@ -22,11 +22,11 @@ $qstr = $qstr ? $qstr.'&return='.$return : '?return=' . $return;
                             <nav class="navbar navbar-default">
                                 <div class="container-fluid">
                                     <div class="navbar-header">
-                                        <a class="navbar-brand" href="#">Guests</a>
+                                        <a class="navbar-brand" href="#"><?php echo ucfirst($this->uri->segment(2));?></a>
                                     </div>
                                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                                         <ul class="nav navbar-nav navbar-right">
-                                            <li><a href="#" class="btn"><i class="fa fa-plus-circle"></i> Add Guest</a></li>
+                                            <li><a href="#" class="btn"><i class="fa fa-plus-circle"></i> Add <?php echo rtrim($this->uri->segment(2), 's');?></a></li>
                                         </ul>
                                     </div><!-- /.navbar-collapse -->
                                 </div><!-- /.container-fluid -->
@@ -56,7 +56,7 @@ $qstr = $qstr ? $qstr.'&return='.$return : '?return=' . $return;
                                             <?php foreach ($contacts as $row) : ?>
                                                 <tr class="contacts" id="contact-<?php echo $row['ContactId'];?>">
                                                     <td>
-                                                        <?php echo anchor('backend/guest/edit_guest/' . $row['ContactId'].$qstr, $row['FirstName'] . ' ' . $row['LastName'], 'class="text-regular"'); ?>
+                                                        <?php echo anchor('backend/'.rtrim($this->uri->segment(2), 's').'/edit/' . $row['ContactId'].$qstr, $row['FirstName'] . ' ' . $row['LastName'], 'class="text-regular"'); ?>
                                                        </td>
                                                     <td><?php echo $row['Email']; ?></td>
                                                     <?php if (is_admin()) : ?>

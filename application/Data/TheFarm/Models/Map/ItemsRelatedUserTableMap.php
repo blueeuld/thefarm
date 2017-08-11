@@ -132,7 +132,7 @@ class ItemsRelatedUserTableMap extends TableMap
         $this->setPackage('TheFarm.Models');
         $this->setUseIdGenerator(false);
         // columns
-        $this->addColumn('item_id', 'ItemId', 'INTEGER', true, null, null);
+        $this->addForeignKey('item_id', 'ItemId', 'INTEGER', 'tf_items', 'item_id', true, null, null);
         $this->addForeignKey('contact_id', 'ContactId', 'INTEGER', 'tf_contacts', 'contact_id', true, null, null);
     } // initialize()
 
@@ -146,6 +146,13 @@ class ItemsRelatedUserTableMap extends TableMap
   array (
     0 => ':contact_id',
     1 => ':contact_id',
+  ),
+), null, null, null, false);
+        $this->addRelation('Item', '\\TheFarm\\Models\\Item', RelationMap::MANY_TO_ONE, array (
+  0 =>
+  array (
+    0 => ':item_id',
+    1 => ':item_id',
   ),
 ), null, null, null, false);
     } // buildRelations()

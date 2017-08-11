@@ -90,7 +90,6 @@ CREATE TABLE `tf_booking_events`
     INDEX `booking_event_cancelled_by_fk` (`cancelled_by`),
     INDEX `booking_event_deleted_by_fk` (`deleted_by`),
     INDEX `booking_event_item_by_fk` (`item_id`),
-    INDEX `booking_event_booking_item_by_fk` (`booking_item_id`),
     INDEX `booking_event_status_fk` (`status`),
     INDEX `fi_king_fk` (`booking_id`),
     CONSTRAINT `booking_event_author_fk`
@@ -798,9 +797,13 @@ CREATE TABLE `tf_items_related_users`
     `item_id` INTEGER NOT NULL,
     `contact_id` INTEGER NOT NULL,
     INDEX `contact_fk1` (`contact_id`),
+    INDEX `item_fk1` (`item_id`),
     CONSTRAINT `contact_fk1`
         FOREIGN KEY (`contact_id`)
-        REFERENCES `tf_contacts` (`contact_id`)
+        REFERENCES `tf_contacts` (`contact_id`),
+    CONSTRAINT `item_fk1`
+        FOREIGN KEY (`item_id`)
+        REFERENCES `tf_items` (`item_id`)
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------

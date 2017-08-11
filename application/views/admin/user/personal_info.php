@@ -69,7 +69,7 @@ $group_cd = isset($userData['User']) ? $userData['User']['Group']['GroupCd'] : '
     </div>
 <?php endif ?>
 
-<?php echo form_open_multipart('backend/account', array('class'=>'form-horizontal padding-15 validate'), array('contact_id' => $userData['ContactId'], 'return' => $return));?>
+<?php echo form_open_multipart('backend/guest/save', array('class'=>'form-horizontal padding-15 validate'), array('contact_id' => $userData['ContactId'], 'return' => $return));?>
     <div class="form-group">
         <label for="avatar" class="col-sm-3 control-label">Profile Picture</label>
         <div class="col-sm-9">

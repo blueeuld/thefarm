@@ -2,6 +2,22 @@
 
 class UserApi {
 
+    function save_user($userData) {
+
+        if ($userData['ContactId']) {
+            $user = \TheFarm\Models\ContactQuery::create()->findOneByContactId($userData['ContactId']);
+            $user->fromArray($userData);
+        }
+        else {
+            $user = new \TheFarm\Models\Contact();
+            $user->fromArray($userData);
+        }
+
+        $user->save();
+        return $user->toArray();
+
+    }
+
     function get_user($userId) {
 
         $user = \TheFarm\Models\ContactQuery::create()->findOneByContactId($userId);
@@ -23,7 +39,7 @@ class UserApi {
         }
 
         if ($user->getItemsRelatedUsers()) {
-            $userArr['UserItems'] = $user->getItemsRelatedUsers()->toArray();
+            $userArr['UserItems'] = $user->getItemsRelatedUsersJoinItem()->toArray();
         }
 
         return $userArr;

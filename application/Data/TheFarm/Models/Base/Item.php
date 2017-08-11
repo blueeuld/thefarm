@@ -28,6 +28,8 @@ use TheFarm\Models\Item as ChildItem;
 use TheFarm\Models\ItemCategory as ChildItemCategory;
 use TheFarm\Models\ItemCategoryQuery as ChildItemCategoryQuery;
 use TheFarm\Models\ItemQuery as ChildItemQuery;
+use TheFarm\Models\ItemsRelatedUser as ChildItemsRelatedUser;
+use TheFarm\Models\ItemsRelatedUserQuery as ChildItemsRelatedUserQuery;
 use TheFarm\Models\PackageItem as ChildPackageItem;
 use TheFarm\Models\PackageItemQuery as ChildPackageItemQuery;
 use TheFarm\Models\Map\BookingEventTableMap;
@@ -35,6 +37,7 @@ use TheFarm\Models\Map\BookingItemTableMap;
 use TheFarm\Models\Map\BookingTableMap;
 use TheFarm\Models\Map\ItemCategoryTableMap;
 use TheFarm\Models\Map\ItemTableMap;
+use TheFarm\Models\Map\ItemsRelatedUserTableMap;
 use TheFarm\Models\Map\PackageItemTableMap;
 
 /**
@@ -210,6 +213,12 @@ abstract class Item implements ActiveRecordInterface
     protected $collItemCategoriesPartial;
 
     /**
+     * @var        ObjectCollection|ChildItemsRelatedUser[] Collection to store aggregation of ChildItemsRelatedUser objects.
+     */
+    protected $collItemsRelatedUsers;
+    protected $collItemsRelatedUsersPartial;
+
+    /**
      * @var        ObjectCollection|ChildPackageItem[] Collection to store aggregation of ChildPackageItem objects.
      */
     protected $collPackageItems;
@@ -246,6 +255,12 @@ abstract class Item implements ActiveRecordInterface
      * @var ObjectCollection|ChildItemCategory[]
      */
     protected $itemCategoriesScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildItemsRelatedUser[]
+     */
+    protected $itemsRelatedUsersScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -1092,6 +1107,8 @@ abstract class Item implements ActiveRecordInterface
 
             $this->collItemCategories = null;
 
+            $this->collItemsRelatedUsers = null;
+
             $this->collPackageItems = null;
 
         } // if (deep)
@@ -1284,6 +1301,23 @@ abstract class Item implements ActiveRecordInterface
 
             if ($this->collItemCategories !== null) {
                 foreach ($this->collItemCategories as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->itemsRelatedUsersScheduledForDeletion !== null) {
+                if (!$this->itemsRelatedUsersScheduledForDeletion->isEmpty()) {
+                    \TheFarm\Models\ItemsRelatedUserQuery::create()
+                        ->filterByPrimaryKeys($this->itemsRelatedUsersScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->itemsRelatedUsersScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collItemsRelatedUsers !== null) {
+                foreach ($this->collItemsRelatedUsers as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -1658,6 +1692,21 @@ abstract class Item implements ActiveRecordInterface
 
                 $result[$key] = $this->collItemCategories->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
+            if (null !== $this->collItemsRelatedUsers) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'itemsRelatedUsers';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'tf_items_related_userss';
+                        break;
+                    default:
+                        $key = 'ItemsRelatedUsers';
+                }
+
+                $result[$key] = $this->collItemsRelatedUsers->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
             if (null !== $this->collPackageItems) {
 
                 switch ($keyType) {
@@ -2029,6 +2078,12 @@ abstract class Item implements ActiveRecordInterface
                 }
             }
 
+            foreach ($this->getItemsRelatedUsers() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addItemsRelatedUser($relObj->copy($deepCopy));
+                }
+            }
+
             foreach ($this->getPackageItems() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addPackageItem($relObj->copy($deepCopy));
@@ -2141,6 +2196,10 @@ abstract class Item implements ActiveRecordInterface
         }
         if ('ItemCategory' == $relationName) {
             $this->initItemCategories();
+            return;
+        }
+        if ('ItemsRelatedUser' == $relationName) {
+            $this->initItemsRelatedUsers();
             return;
         }
         if ('PackageItem' == $relationName) {
@@ -3378,6 +3437,256 @@ abstract class Item implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collItemsRelatedUsers collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addItemsRelatedUsers()
+     */
+    public function clearItemsRelatedUsers()
+    {
+        $this->collItemsRelatedUsers = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collItemsRelatedUsers collection loaded partially.
+     */
+    public function resetPartialItemsRelatedUsers($v = true)
+    {
+        $this->collItemsRelatedUsersPartial = $v;
+    }
+
+    /**
+     * Initializes the collItemsRelatedUsers collection.
+     *
+     * By default this just sets the collItemsRelatedUsers collection to an empty array (like clearcollItemsRelatedUsers());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initItemsRelatedUsers($overrideExisting = true)
+    {
+        if (null !== $this->collItemsRelatedUsers && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = ItemsRelatedUserTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collItemsRelatedUsers = new $collectionClassName;
+        $this->collItemsRelatedUsers->setModel('\TheFarm\Models\ItemsRelatedUser');
+    }
+
+    /**
+     * Gets an array of ChildItemsRelatedUser objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildItem is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildItemsRelatedUser[] List of ChildItemsRelatedUser objects
+     * @throws PropelException
+     */
+    public function getItemsRelatedUsers(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collItemsRelatedUsersPartial && !$this->isNew();
+        if (null === $this->collItemsRelatedUsers || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collItemsRelatedUsers) {
+                // return empty collection
+                $this->initItemsRelatedUsers();
+            } else {
+                $collItemsRelatedUsers = ChildItemsRelatedUserQuery::create(null, $criteria)
+                    ->filterByItem($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collItemsRelatedUsersPartial && count($collItemsRelatedUsers)) {
+                        $this->initItemsRelatedUsers(false);
+
+                        foreach ($collItemsRelatedUsers as $obj) {
+                            if (false == $this->collItemsRelatedUsers->contains($obj)) {
+                                $this->collItemsRelatedUsers->append($obj);
+                            }
+                        }
+
+                        $this->collItemsRelatedUsersPartial = true;
+                    }
+
+                    return $collItemsRelatedUsers;
+                }
+
+                if ($partial && $this->collItemsRelatedUsers) {
+                    foreach ($this->collItemsRelatedUsers as $obj) {
+                        if ($obj->isNew()) {
+                            $collItemsRelatedUsers[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collItemsRelatedUsers = $collItemsRelatedUsers;
+                $this->collItemsRelatedUsersPartial = false;
+            }
+        }
+
+        return $this->collItemsRelatedUsers;
+    }
+
+    /**
+     * Sets a collection of ChildItemsRelatedUser objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $itemsRelatedUsers A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildItem The current object (for fluent API support)
+     */
+    public function setItemsRelatedUsers(Collection $itemsRelatedUsers, ConnectionInterface $con = null)
+    {
+        /** @var ChildItemsRelatedUser[] $itemsRelatedUsersToDelete */
+        $itemsRelatedUsersToDelete = $this->getItemsRelatedUsers(new Criteria(), $con)->diff($itemsRelatedUsers);
+
+
+        $this->itemsRelatedUsersScheduledForDeletion = $itemsRelatedUsersToDelete;
+
+        foreach ($itemsRelatedUsersToDelete as $itemsRelatedUserRemoved) {
+            $itemsRelatedUserRemoved->setItem(null);
+        }
+
+        $this->collItemsRelatedUsers = null;
+        foreach ($itemsRelatedUsers as $itemsRelatedUser) {
+            $this->addItemsRelatedUser($itemsRelatedUser);
+        }
+
+        $this->collItemsRelatedUsers = $itemsRelatedUsers;
+        $this->collItemsRelatedUsersPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related ItemsRelatedUser objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related ItemsRelatedUser objects.
+     * @throws PropelException
+     */
+    public function countItemsRelatedUsers(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collItemsRelatedUsersPartial && !$this->isNew();
+        if (null === $this->collItemsRelatedUsers || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collItemsRelatedUsers) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getItemsRelatedUsers());
+            }
+
+            $query = ChildItemsRelatedUserQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByItem($this)
+                ->count($con);
+        }
+
+        return count($this->collItemsRelatedUsers);
+    }
+
+    /**
+     * Method called to associate a ChildItemsRelatedUser object to this object
+     * through the ChildItemsRelatedUser foreign key attribute.
+     *
+     * @param  ChildItemsRelatedUser $l ChildItemsRelatedUser
+     * @return $this|\TheFarm\Models\Item The current object (for fluent API support)
+     */
+    public function addItemsRelatedUser(ChildItemsRelatedUser $l)
+    {
+        if ($this->collItemsRelatedUsers === null) {
+            $this->initItemsRelatedUsers();
+            $this->collItemsRelatedUsersPartial = true;
+        }
+
+        if (!$this->collItemsRelatedUsers->contains($l)) {
+            $this->doAddItemsRelatedUser($l);
+
+            if ($this->itemsRelatedUsersScheduledForDeletion and $this->itemsRelatedUsersScheduledForDeletion->contains($l)) {
+                $this->itemsRelatedUsersScheduledForDeletion->remove($this->itemsRelatedUsersScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildItemsRelatedUser $itemsRelatedUser The ChildItemsRelatedUser object to add.
+     */
+    protected function doAddItemsRelatedUser(ChildItemsRelatedUser $itemsRelatedUser)
+    {
+        $this->collItemsRelatedUsers[]= $itemsRelatedUser;
+        $itemsRelatedUser->setItem($this);
+    }
+
+    /**
+     * @param  ChildItemsRelatedUser $itemsRelatedUser The ChildItemsRelatedUser object to remove.
+     * @return $this|ChildItem The current object (for fluent API support)
+     */
+    public function removeItemsRelatedUser(ChildItemsRelatedUser $itemsRelatedUser)
+    {
+        if ($this->getItemsRelatedUsers()->contains($itemsRelatedUser)) {
+            $pos = $this->collItemsRelatedUsers->search($itemsRelatedUser);
+            $this->collItemsRelatedUsers->remove($pos);
+            if (null === $this->itemsRelatedUsersScheduledForDeletion) {
+                $this->itemsRelatedUsersScheduledForDeletion = clone $this->collItemsRelatedUsers;
+                $this->itemsRelatedUsersScheduledForDeletion->clear();
+            }
+            $this->itemsRelatedUsersScheduledForDeletion[]= clone $itemsRelatedUser;
+            $itemsRelatedUser->setItem(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Item is new, it will return
+     * an empty collection; or if this Item has previously
+     * been saved, it will retrieve related ItemsRelatedUsers from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Item.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildItemsRelatedUser[] List of ChildItemsRelatedUser objects
+     */
+    public function getItemsRelatedUsersJoinContact(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildItemsRelatedUserQuery::create(null, $criteria);
+        $query->joinWith('Contact', $joinBehavior);
+
+        return $this->getItemsRelatedUsers($query, $con);
+    }
+
+    /**
      * Clears out the collPackageItems collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
@@ -3693,6 +4002,11 @@ abstract class Item implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collItemsRelatedUsers) {
+                foreach ($this->collItemsRelatedUsers as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->collPackageItems) {
                 foreach ($this->collPackageItems as $o) {
                     $o->clearAllReferences($deep);
@@ -3704,6 +4018,7 @@ abstract class Item implements ActiveRecordInterface
         $this->collBookingItems = null;
         $this->collBookings = null;
         $this->collItemCategories = null;
+        $this->collItemsRelatedUsers = null;
         $this->collPackageItems = null;
         $this->aFiles = null;
     }

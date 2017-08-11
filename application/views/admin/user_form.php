@@ -148,9 +148,9 @@ if ($userData) {
 
                                                     <?php endif; ?>
 
-                                                    <?php if (current_user_can('IncludeInProviderList', $contact_id)) : ?>
+                                                    <?php if ($isProvider) : ?>
 
-                                                        <?php $this->view('admin/user/related_items', ['userItems' => $userData['UserItems'], 'return' => $return, 'contactId' => $contact_id]); ?>
+                                                        <?php $this->view('admin/user/related_items', ['userItems' => $userData['UserItems'], 'return' => $return, 'contact_id' => $contact_id]); ?>
 
                                                     <?php endif; ?>
 

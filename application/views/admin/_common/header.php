@@ -38,7 +38,7 @@
 									<?php endif; ?>
 								<?php if (current_user_can('CanAdminProviders')) : ?>
 									<li>
-									<a href="<?php echo site_url('backend/contacts/provider'); ?>"><i class="md md-person"></i> Providers</a></li><?php endif; ?>
+									<a href="<?php echo site_url('backend/providers'); ?>"><i class="md md-person"></i> Providers</a></li><?php endif; ?>
 								<?php if (current_user_can('CanAdminProviders')) : ?>
 									<li><a
 										href="<?php echo site_url('backend/schedule/view'); ?>"><i class="md md-timer"></i> Provider Schedules</a>

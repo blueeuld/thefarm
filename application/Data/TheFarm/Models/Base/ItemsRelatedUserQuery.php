@@ -44,7 +44,17 @@ use TheFarm\Models\Map\ItemsRelatedUserTableMap;
  * @method     ChildItemsRelatedUserQuery rightJoinWithContact() Adds a RIGHT JOIN clause and with to the query using the Contact relation
  * @method     ChildItemsRelatedUserQuery innerJoinWithContact() Adds a INNER JOIN clause and with to the query using the Contact relation
  *
- * @method     \TheFarm\Models\ContactQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     ChildItemsRelatedUserQuery leftJoinItem($relationAlias = null) Adds a LEFT JOIN clause to the query using the Item relation
+ * @method     ChildItemsRelatedUserQuery rightJoinItem($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Item relation
+ * @method     ChildItemsRelatedUserQuery innerJoinItem($relationAlias = null) Adds a INNER JOIN clause to the query using the Item relation
+ *
+ * @method     ChildItemsRelatedUserQuery joinWithItem($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Item relation
+ *
+ * @method     ChildItemsRelatedUserQuery leftJoinWithItem() Adds a LEFT JOIN clause and with to the query using the Item relation
+ * @method     ChildItemsRelatedUserQuery rightJoinWithItem() Adds a RIGHT JOIN clause and with to the query using the Item relation
+ * @method     ChildItemsRelatedUserQuery innerJoinWithItem() Adds a INNER JOIN clause and with to the query using the Item relation
+ *
+ * @method     \TheFarm\Models\ContactQuery|\TheFarm\Models\ItemQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildItemsRelatedUser findOne(ConnectionInterface $con = null) Return the first ChildItemsRelatedUser matching the query
  * @method     ChildItemsRelatedUser findOneOrCreate(ConnectionInterface $con = null) Return the first ChildItemsRelatedUser matching the query, or a new ChildItemsRelatedUser object populated from the query conditions when no match is found
@@ -171,6 +181,8 @@ abstract class ItemsRelatedUserQuery extends ModelCriteria
      * $query->filterByItemId(array(12, 34)); // WHERE item_id IN (12, 34)
      * $query->filterByItemId(array('min' => 12)); // WHERE item_id > 12
      * </code>
+     *
+     * @see       filterByItem()
      *
      * @param     mixed $itemId The value to use as filter.
      *              Use scalar values for equality.
@@ -321,6 +333,83 @@ abstract class ItemsRelatedUserQuery extends ModelCriteria
         return $this
             ->joinContact($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'Contact', '\TheFarm\Models\ContactQuery');
+    }
+
+    /**
+     * Filter the query by a related \TheFarm\Models\Item object
+     *
+     * @param \TheFarm\Models\Item|ObjectCollection $item The related object(s) to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @throws \Propel\Runtime\Exception\PropelException
+     *
+     * @return ChildItemsRelatedUserQuery The current query, for fluid interface
+     */
+    public function filterByItem($item, $comparison = null)
+    {
+        if ($item instanceof \TheFarm\Models\Item) {
+            return $this
+                ->addUsingAlias(ItemsRelatedUserTableMap::COL_ITEM_ID, $item->getItemId(), $comparison);
+        } elseif ($item instanceof ObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
+            return $this
+                ->addUsingAlias(ItemsRelatedUserTableMap::COL_ITEM_ID, $item->toKeyValue('PrimaryKey', 'ItemId'), $comparison);
+        } else {
+            throw new PropelException('filterByItem() only accepts arguments of type \TheFarm\Models\Item or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Item relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildItemsRelatedUserQuery The current query, for fluid interface
+     */
+    public function joinItem($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Item');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Item');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Item relation Item object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \TheFarm\Models\ItemQuery A secondary query class using the current class as primary query
+     */
+    public function useItemQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinItem($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Item', '\TheFarm\Models\ItemQuery');
     }
 
     /**

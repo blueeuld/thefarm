@@ -1,12 +1,10 @@
 <?php
 
-class Guest extends TF_Controller {
+class Provider extends TF_Controller {
 
-    public function add_guest() {
-
-    }
 
     public function edit($guestId) {
+
         if (!current_user_can('CanViewOtherProfiles') && get_current_user_id() !== $guestId && is_guest()) {
             show_error('Page Not Found!');
         }
