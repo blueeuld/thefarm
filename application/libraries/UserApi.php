@@ -47,6 +47,10 @@ class UserApi {
         return $userArr;
     }
 
+    function get_available_providers($relatedItemId, $startDateTime, $endDateTime) {
+
+    }
+
     function get_users($providersOnly = false, $locations = [], $relatedItemId = null, $availableProvidersOnly = null, $startDateTime = null, $endDateTime = null, $auditUsersOnly = false) {
         $search = \TheFarm\Models\ContactQuery::create()
             ->filterByIsActive(true);

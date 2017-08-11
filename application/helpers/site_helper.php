@@ -670,7 +670,9 @@ function get_available_providers_time($from, $to) {
 }
 
 function get_available_providers($from, $locations = array()) {
-	
+
+    //$search = \TheFarm\Models\ContactQuery::create()
+
 	$TF =& get_instance();
 	
 	$TF->db->select('contacts.first_name, contacts.last_name, contacts.contact_id, user_work_plan_day.work_code, contacts.position_cd');

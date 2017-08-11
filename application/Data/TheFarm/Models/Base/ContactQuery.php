@@ -174,6 +174,16 @@ use TheFarm\Models\Map\ContactTableMap;
  * @method     ChildContactQuery rightJoinWithItemsRelatedUser() Adds a RIGHT JOIN clause and with to the query using the ItemsRelatedUser relation
  * @method     ChildContactQuery innerJoinWithItemsRelatedUser() Adds a INNER JOIN clause and with to the query using the ItemsRelatedUser relation
  *
+ * @method     ChildContactQuery leftJoinUserWorkPlanDay($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserWorkPlanDay relation
+ * @method     ChildContactQuery rightJoinUserWorkPlanDay($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserWorkPlanDay relation
+ * @method     ChildContactQuery innerJoinUserWorkPlanDay($relationAlias = null) Adds a INNER JOIN clause to the query using the UserWorkPlanDay relation
+ *
+ * @method     ChildContactQuery joinWithUserWorkPlanDay($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the UserWorkPlanDay relation
+ *
+ * @method     ChildContactQuery leftJoinWithUserWorkPlanDay() Adds a LEFT JOIN clause and with to the query using the UserWorkPlanDay relation
+ * @method     ChildContactQuery rightJoinWithUserWorkPlanDay() Adds a RIGHT JOIN clause and with to the query using the UserWorkPlanDay relation
+ * @method     ChildContactQuery innerJoinWithUserWorkPlanDay() Adds a INNER JOIN clause and with to the query using the UserWorkPlanDay relation
+ *
  * @method     ChildContactQuery leftJoinUserWorkPlanTime($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserWorkPlanTime relation
  * @method     ChildContactQuery rightJoinUserWorkPlanTime($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserWorkPlanTime relation
  * @method     ChildContactQuery innerJoinUserWorkPlanTime($relationAlias = null) Adds a INNER JOIN clause to the query using the UserWorkPlanTime relation
@@ -194,7 +204,7 @@ use TheFarm\Models\Map\ContactTableMap;
  * @method     ChildContactQuery rightJoinWithUser() Adds a RIGHT JOIN clause and with to the query using the User relation
  * @method     ChildContactQuery innerJoinWithUser() Adds a INNER JOIN clause and with to the query using the User relation
  *
- * @method     \TheFarm\Models\PositionQuery|\TheFarm\Models\EventUserQuery|\TheFarm\Models\BookingEventQuery|\TheFarm\Models\BookingQuery|\TheFarm\Models\ItemsRelatedUserQuery|\TheFarm\Models\UserWorkPlanTimeQuery|\TheFarm\Models\UserQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \TheFarm\Models\PositionQuery|\TheFarm\Models\EventUserQuery|\TheFarm\Models\BookingEventQuery|\TheFarm\Models\BookingQuery|\TheFarm\Models\ItemsRelatedUserQuery|\TheFarm\Models\UserWorkPlanDayQuery|\TheFarm\Models\UserWorkPlanTimeQuery|\TheFarm\Models\UserQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildContact findOne(ConnectionInterface $con = null) Return the first ChildContact matching the query
  * @method     ChildContact findOneOrCreate(ConnectionInterface $con = null) Return the first ChildContact matching the query, or a new ChildContact object populated from the query conditions when no match is found
@@ -1898,6 +1908,79 @@ abstract class ContactQuery extends ModelCriteria
         return $this
             ->joinItemsRelatedUser($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'ItemsRelatedUser', '\TheFarm\Models\ItemsRelatedUserQuery');
+    }
+
+    /**
+     * Filter the query by a related \TheFarm\Models\UserWorkPlanDay object
+     *
+     * @param \TheFarm\Models\UserWorkPlanDay|ObjectCollection $userWorkPlanDay the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildContactQuery The current query, for fluid interface
+     */
+    public function filterByUserWorkPlanDay($userWorkPlanDay, $comparison = null)
+    {
+        if ($userWorkPlanDay instanceof \TheFarm\Models\UserWorkPlanDay) {
+            return $this
+                ->addUsingAlias(ContactTableMap::COL_CONTACT_ID, $userWorkPlanDay->getContactId(), $comparison);
+        } elseif ($userWorkPlanDay instanceof ObjectCollection) {
+            return $this
+                ->useUserWorkPlanDayQuery()
+                ->filterByPrimaryKeys($userWorkPlanDay->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByUserWorkPlanDay() only accepts arguments of type \TheFarm\Models\UserWorkPlanDay or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the UserWorkPlanDay relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildContactQuery The current query, for fluid interface
+     */
+    public function joinUserWorkPlanDay($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('UserWorkPlanDay');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'UserWorkPlanDay');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the UserWorkPlanDay relation UserWorkPlanDay object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \TheFarm\Models\UserWorkPlanDayQuery A secondary query class using the current class as primary query
+     */
+    public function useUserWorkPlanDayQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinUserWorkPlanDay($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'UserWorkPlanDay', '\TheFarm\Models\UserWorkPlanDayQuery');
     }
 
     /**

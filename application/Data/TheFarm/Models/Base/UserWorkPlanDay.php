@@ -17,6 +17,10 @@ use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
 use Propel\Runtime\Util\PropelDateTime;
+use TheFarm\Models\Contact as ChildContact;
+use TheFarm\Models\ContactQuery as ChildContactQuery;
+use TheFarm\Models\UserWorkPlanCode as ChildUserWorkPlanCode;
+use TheFarm\Models\UserWorkPlanCodeQuery as ChildUserWorkPlanCodeQuery;
 use TheFarm\Models\UserWorkPlanDayQuery as ChildUserWorkPlanDayQuery;
 use TheFarm\Models\Map\UserWorkPlanDayTableMap;
 
@@ -81,6 +85,16 @@ abstract class UserWorkPlanDay implements ActiveRecordInterface
      * @var        string
      */
     protected $work_code;
+
+    /**
+     * @var        ChildUserWorkPlanCode
+     */
+    protected $aUserWorkPlanCode;
+
+    /**
+     * @var        ChildContact
+     */
+    protected $aContact;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -350,7 +364,7 @@ abstract class UserWorkPlanDay implements ActiveRecordInterface
      *
      * @return string
      */
-    public function getWorkCode()
+    public function getWorkCodeCd()
     {
         return $this->work_code;
     }
@@ -370,6 +384,10 @@ abstract class UserWorkPlanDay implements ActiveRecordInterface
         if ($this->contact_id !== $v) {
             $this->contact_id = $v;
             $this->modifiedColumns[UserWorkPlanDayTableMap::COL_CONTACT_ID] = true;
+        }
+
+        if ($this->aContact !== null && $this->aContact->getContactId() !== $v) {
+            $this->aContact = null;
         }
 
         return $this;
@@ -401,7 +419,7 @@ abstract class UserWorkPlanDay implements ActiveRecordInterface
      * @param string $v new value
      * @return $this|\TheFarm\Models\UserWorkPlanDay The current object (for fluent API support)
      */
-    public function setWorkCode($v)
+    public function setWorkCodeCd($v)
     {
         if ($v !== null) {
             $v = (string) $v;
@@ -412,8 +430,12 @@ abstract class UserWorkPlanDay implements ActiveRecordInterface
             $this->modifiedColumns[UserWorkPlanDayTableMap::COL_WORK_CODE] = true;
         }
 
+        if ($this->aUserWorkPlanCode !== null && $this->aUserWorkPlanCode->getWorkPlanCd() !== $v) {
+            $this->aUserWorkPlanCode = null;
+        }
+
         return $this;
-    } // setWorkCode()
+    } // setWorkCodeCd()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -460,7 +482,7 @@ abstract class UserWorkPlanDay implements ActiveRecordInterface
             }
             $this->date = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : UserWorkPlanDayTableMap::translateFieldName('WorkCode', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : UserWorkPlanDayTableMap::translateFieldName('WorkCodeCd', TableMap::TYPE_PHPNAME, $indexType)];
             $this->work_code = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
@@ -492,6 +514,12 @@ abstract class UserWorkPlanDay implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
+        if ($this->aContact !== null && $this->contact_id !== $this->aContact->getContactId()) {
+            $this->aContact = null;
+        }
+        if ($this->aUserWorkPlanCode !== null && $this->work_code !== $this->aUserWorkPlanCode->getWorkPlanCd()) {
+            $this->aUserWorkPlanCode = null;
+        }
     } // ensureConsistency
 
     /**
@@ -531,6 +559,8 @@ abstract class UserWorkPlanDay implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
+            $this->aUserWorkPlanCode = null;
+            $this->aContact = null;
         } // if (deep)
     }
 
@@ -633,6 +663,25 @@ abstract class UserWorkPlanDay implements ActiveRecordInterface
         $affectedRows = 0; // initialize var to track total num of affected rows
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
+
+            // We call the save method on the following object(s) if they
+            // were passed to this object by their corresponding set
+            // method.  This object relates to these object(s) by a
+            // foreign key reference.
+
+            if ($this->aUserWorkPlanCode !== null) {
+                if ($this->aUserWorkPlanCode->isModified() || $this->aUserWorkPlanCode->isNew()) {
+                    $affectedRows += $this->aUserWorkPlanCode->save($con);
+                }
+                $this->setUserWorkPlanCode($this->aUserWorkPlanCode);
+            }
+
+            if ($this->aContact !== null) {
+                if ($this->aContact->isModified() || $this->aContact->isNew()) {
+                    $affectedRows += $this->aContact->save($con);
+                }
+                $this->setContact($this->aContact);
+            }
 
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
@@ -758,7 +807,7 @@ abstract class UserWorkPlanDay implements ActiveRecordInterface
                 return $this->getDate();
                 break;
             case 2:
-                return $this->getWorkCode();
+                return $this->getWorkCodeCd();
                 break;
             default:
                 return null;
@@ -777,10 +826,11 @@ abstract class UserWorkPlanDay implements ActiveRecordInterface
      *                    Defaults to TableMap::TYPE_PHPNAME.
      * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
      * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
+     * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
      *
      * @return array an associative array containing the field names (as keys) and field values
      */
-    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array())
+    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
 
         if (isset($alreadyDumpedObjects['UserWorkPlanDay'][$this->hashCode()])) {
@@ -791,7 +841,7 @@ abstract class UserWorkPlanDay implements ActiveRecordInterface
         $result = array(
             $keys[0] => $this->getContactId(),
             $keys[1] => $this->getDate(),
-            $keys[2] => $this->getWorkCode(),
+            $keys[2] => $this->getWorkCodeCd(),
         );
         if ($result[$keys[1]] instanceof \DateTimeInterface) {
             $result[$keys[1]] = $result[$keys[1]]->format('c');
@@ -802,6 +852,38 @@ abstract class UserWorkPlanDay implements ActiveRecordInterface
             $result[$key] = $virtualColumn;
         }
 
+        if ($includeForeignObjects) {
+            if (null !== $this->aUserWorkPlanCode) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'userWorkPlanCode';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'tf_user_work_plan_code';
+                        break;
+                    default:
+                        $key = 'UserWorkPlanCode';
+                }
+
+                $result[$key] = $this->aUserWorkPlanCode->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->aContact) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'contact';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'tf_contacts';
+                        break;
+                    default:
+                        $key = 'Contact';
+                }
+
+                $result[$key] = $this->aContact->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+        }
 
         return $result;
     }
@@ -842,7 +924,7 @@ abstract class UserWorkPlanDay implements ActiveRecordInterface
                 $this->setDate($value);
                 break;
             case 2:
-                $this->setWorkCode($value);
+                $this->setWorkCodeCd($value);
                 break;
         } // switch()
 
@@ -877,7 +959,7 @@ abstract class UserWorkPlanDay implements ActiveRecordInterface
             $this->setDate($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setWorkCode($arr[$keys[2]]);
+            $this->setWorkCodeCd($arr[$keys[2]]);
         }
     }
 
@@ -1020,7 +1102,7 @@ abstract class UserWorkPlanDay implements ActiveRecordInterface
     {
         $copyObj->setContactId($this->getContactId());
         $copyObj->setDate($this->getDate());
-        $copyObj->setWorkCode($this->getWorkCode());
+        $copyObj->setWorkCodeCd($this->getWorkCodeCd());
         if ($makeNew) {
             $copyObj->setNew(true);
         }
@@ -1049,12 +1131,120 @@ abstract class UserWorkPlanDay implements ActiveRecordInterface
     }
 
     /**
+     * Declares an association between this object and a ChildUserWorkPlanCode object.
+     *
+     * @param  ChildUserWorkPlanCode $v
+     * @return $this|\TheFarm\Models\UserWorkPlanDay The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setUserWorkPlanCode(ChildUserWorkPlanCode $v = null)
+    {
+        if ($v === null) {
+            $this->setWorkCodeCd(NULL);
+        } else {
+            $this->setWorkCodeCd($v->getWorkPlanCd());
+        }
+
+        $this->aUserWorkPlanCode = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildUserWorkPlanCode object, it will not be re-added.
+        if ($v !== null) {
+            $v->addUserWorkPlanDay($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildUserWorkPlanCode object
+     *
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildUserWorkPlanCode The associated ChildUserWorkPlanCode object.
+     * @throws PropelException
+     */
+    public function getUserWorkPlanCode(ConnectionInterface $con = null)
+    {
+        if ($this->aUserWorkPlanCode === null && (($this->work_code !== "" && $this->work_code !== null))) {
+            $this->aUserWorkPlanCode = ChildUserWorkPlanCodeQuery::create()->findPk($this->work_code, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aUserWorkPlanCode->addUserWorkPlanDays($this);
+             */
+        }
+
+        return $this->aUserWorkPlanCode;
+    }
+
+    /**
+     * Declares an association between this object and a ChildContact object.
+     *
+     * @param  ChildContact $v
+     * @return $this|\TheFarm\Models\UserWorkPlanDay The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setContact(ChildContact $v = null)
+    {
+        if ($v === null) {
+            $this->setContactId(NULL);
+        } else {
+            $this->setContactId($v->getContactId());
+        }
+
+        $this->aContact = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildContact object, it will not be re-added.
+        if ($v !== null) {
+            $v->addUserWorkPlanDay($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildContact object
+     *
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildContact The associated ChildContact object.
+     * @throws PropelException
+     */
+    public function getContact(ConnectionInterface $con = null)
+    {
+        if ($this->aContact === null && ($this->contact_id !== null)) {
+            $this->aContact = ChildContactQuery::create()->findPk($this->contact_id, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aContact->addUserWorkPlanDays($this);
+             */
+        }
+
+        return $this->aContact;
+    }
+
+    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
      */
     public function clear()
     {
+        if (null !== $this->aUserWorkPlanCode) {
+            $this->aUserWorkPlanCode->removeUserWorkPlanDay($this);
+        }
+        if (null !== $this->aContact) {
+            $this->aContact->removeUserWorkPlanDay($this);
+        }
         $this->contact_id = null;
         $this->date = null;
         $this->work_code = null;
@@ -1078,6 +1268,8 @@ abstract class UserWorkPlanDay implements ActiveRecordInterface
         if ($deep) {
         } // if ($deep)
 
+        $this->aUserWorkPlanCode = null;
+        $this->aContact = null;
     }
 
     /**

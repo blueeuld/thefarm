@@ -99,8 +99,8 @@ class UserWorkPlanDayTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('ContactId', 'Date', 'WorkCode', ),
-        self::TYPE_CAMELNAME     => array('contactId', 'date', 'workCode', ),
+        self::TYPE_PHPNAME       => array('ContactId', 'Date', 'WorkCodeCd', ),
+        self::TYPE_CAMELNAME     => array('contactId', 'date', 'workCodeCd', ),
         self::TYPE_COLNAME       => array(UserWorkPlanDayTableMap::COL_CONTACT_ID, UserWorkPlanDayTableMap::COL_DATE, UserWorkPlanDayTableMap::COL_WORK_CODE, ),
         self::TYPE_FIELDNAME     => array('contact_id', 'date', 'work_code', ),
         self::TYPE_NUM           => array(0, 1, 2, )
@@ -113,8 +113,8 @@ class UserWorkPlanDayTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('ContactId' => 0, 'Date' => 1, 'WorkCode' => 2, ),
-        self::TYPE_CAMELNAME     => array('contactId' => 0, 'date' => 1, 'workCode' => 2, ),
+        self::TYPE_PHPNAME       => array('ContactId' => 0, 'Date' => 1, 'WorkCodeCd' => 2, ),
+        self::TYPE_CAMELNAME     => array('contactId' => 0, 'date' => 1, 'workCodeCd' => 2, ),
         self::TYPE_COLNAME       => array(UserWorkPlanDayTableMap::COL_CONTACT_ID => 0, UserWorkPlanDayTableMap::COL_DATE => 1, UserWorkPlanDayTableMap::COL_WORK_CODE => 2, ),
         self::TYPE_FIELDNAME     => array('contact_id' => 0, 'date' => 1, 'work_code' => 2, ),
         self::TYPE_NUM           => array(0, 1, 2, )
@@ -137,9 +137,9 @@ class UserWorkPlanDayTableMap extends TableMap
         $this->setPackage('TheFarm.Models');
         $this->setUseIdGenerator(false);
         // columns
-        $this->addColumn('contact_id', 'ContactId', 'INTEGER', true, 5, null);
+        $this->addForeignKey('contact_id', 'ContactId', 'INTEGER', 'tf_contacts', 'contact_id', true, null, null);
         $this->addColumn('date', 'Date', 'DATE', true, null, null);
-        $this->addColumn('work_code', 'WorkCode', 'VARCHAR', true, 16, null);
+        $this->addForeignKey('work_code', 'WorkCodeCd', 'VARCHAR', 'tf_user_work_plan_code', 'work_plan_cd', true, 32, null);
     } // initialize()
 
     /**
@@ -147,6 +147,20 @@ class UserWorkPlanDayTableMap extends TableMap
      */
     public function buildRelations()
     {
+        $this->addRelation('UserWorkPlanCode', '\\TheFarm\\Models\\UserWorkPlanCode', RelationMap::MANY_TO_ONE, array (
+  0 =>
+  array (
+    0 => ':work_code',
+    1 => ':work_plan_cd',
+  ),
+), null, null, null, false);
+        $this->addRelation('Contact', '\\TheFarm\\Models\\Contact', RelationMap::MANY_TO_ONE, array (
+  0 =>
+  array (
+    0 => ':contact_id',
+    1 => ':contact_id',
+  ),
+), null, null, null, false);
     } // buildRelations()
 
     /**

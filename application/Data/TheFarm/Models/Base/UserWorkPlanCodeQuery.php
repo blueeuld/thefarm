@@ -7,6 +7,7 @@ use \PDO;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
+use Propel\Runtime\ActiveQuery\ModelJoin;
 use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\PropelException;
@@ -32,6 +33,18 @@ use TheFarm\Models\Map\UserWorkPlanCodeTableMap;
  * @method     ChildUserWorkPlanCodeQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
  * @method     ChildUserWorkPlanCodeQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildUserWorkPlanCodeQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
+ *
+ * @method     ChildUserWorkPlanCodeQuery leftJoinUserWorkPlanDay($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserWorkPlanDay relation
+ * @method     ChildUserWorkPlanCodeQuery rightJoinUserWorkPlanDay($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserWorkPlanDay relation
+ * @method     ChildUserWorkPlanCodeQuery innerJoinUserWorkPlanDay($relationAlias = null) Adds a INNER JOIN clause to the query using the UserWorkPlanDay relation
+ *
+ * @method     ChildUserWorkPlanCodeQuery joinWithUserWorkPlanDay($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the UserWorkPlanDay relation
+ *
+ * @method     ChildUserWorkPlanCodeQuery leftJoinWithUserWorkPlanDay() Adds a LEFT JOIN clause and with to the query using the UserWorkPlanDay relation
+ * @method     ChildUserWorkPlanCodeQuery rightJoinWithUserWorkPlanDay() Adds a RIGHT JOIN clause and with to the query using the UserWorkPlanDay relation
+ * @method     ChildUserWorkPlanCodeQuery innerJoinWithUserWorkPlanDay() Adds a INNER JOIN clause and with to the query using the UserWorkPlanDay relation
+ *
+ * @method     \TheFarm\Models\UserWorkPlanDayQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildUserWorkPlanCode findOne(ConnectionInterface $con = null) Return the first ChildUserWorkPlanCode matching the query
  * @method     ChildUserWorkPlanCode findOneOrCreate(ConnectionInterface $con = null) Return the first ChildUserWorkPlanCode matching the query, or a new ChildUserWorkPlanCode object populated from the query conditions when no match is found
@@ -284,6 +297,79 @@ abstract class UserWorkPlanCodeQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(UserWorkPlanCodeTableMap::COL_WORK_PLAN_NAME, $workPlanName, $comparison);
+    }
+
+    /**
+     * Filter the query by a related \TheFarm\Models\UserWorkPlanDay object
+     *
+     * @param \TheFarm\Models\UserWorkPlanDay|ObjectCollection $userWorkPlanDay the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildUserWorkPlanCodeQuery The current query, for fluid interface
+     */
+    public function filterByUserWorkPlanDay($userWorkPlanDay, $comparison = null)
+    {
+        if ($userWorkPlanDay instanceof \TheFarm\Models\UserWorkPlanDay) {
+            return $this
+                ->addUsingAlias(UserWorkPlanCodeTableMap::COL_WORK_PLAN_CD, $userWorkPlanDay->getWorkCodeCd(), $comparison);
+        } elseif ($userWorkPlanDay instanceof ObjectCollection) {
+            return $this
+                ->useUserWorkPlanDayQuery()
+                ->filterByPrimaryKeys($userWorkPlanDay->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByUserWorkPlanDay() only accepts arguments of type \TheFarm\Models\UserWorkPlanDay or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the UserWorkPlanDay relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildUserWorkPlanCodeQuery The current query, for fluid interface
+     */
+    public function joinUserWorkPlanDay($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('UserWorkPlanDay');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'UserWorkPlanDay');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the UserWorkPlanDay relation UserWorkPlanDay object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \TheFarm\Models\UserWorkPlanDayQuery A secondary query class using the current class as primary query
+     */
+    public function useUserWorkPlanDayQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinUserWorkPlanDay($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'UserWorkPlanDay', '\TheFarm\Models\UserWorkPlanDayQuery');
     }
 
     /**

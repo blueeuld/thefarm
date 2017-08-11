@@ -998,7 +998,7 @@ CREATE TABLE `tf_user_work_plan_code`
     `work_plan_cd` VARCHAR(32) NOT NULL,
     `work_plan_name` VARCHAR(100) NOT NULL,
     PRIMARY KEY (`work_plan_cd`)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
 -- tf_user_work_plan_day
@@ -1008,10 +1008,18 @@ DROP TABLE IF EXISTS `tf_user_work_plan_day`;
 
 CREATE TABLE `tf_user_work_plan_day`
 (
-    `contact_id` INTEGER(5) NOT NULL,
+    `contact_id` INTEGER NOT NULL,
     `date` DATE NOT NULL,
-    `work_code` VARCHAR(16) NOT NULL,
-    UNIQUE INDEX `contact_id` (`contact_id`, `date`)
+    `work_code` VARCHAR(32) NOT NULL,
+    UNIQUE INDEX `contact_id` (`contact_id`, `date`),
+    INDEX `contact_fk1` (`contact_id`),
+    INDEX `fi_k_plan_cd_fk` (`work_code`),
+    CONSTRAINT `work_plan_cd_fk`
+        FOREIGN KEY (`work_code`)
+        REFERENCES `tf_user_work_plan_code` (`work_plan_cd`),
+    CONSTRAINT `contact_fk2`
+        FOREIGN KEY (`contact_id`)
+        REFERENCES `tf_contacts` (`contact_id`)
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
@@ -1026,7 +1034,7 @@ CREATE TABLE `tf_user_work_plan_time`
     `start_date` DATETIME NOT NULL,
     `end_date` DATETIME NOT NULL,
     `is_working` TINYINT(1) DEFAULT 1,
-    INDEX `contact_fk1` (`contact_id`),
+    INDEX `contact_fk2` (`contact_id`),
     CONSTRAINT `contact_fk2`
         FOREIGN KEY (`contact_id`)
         REFERENCES `tf_contacts` (`contact_id`)

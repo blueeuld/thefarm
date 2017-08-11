@@ -32,6 +32,8 @@ use TheFarm\Models\Position as ChildPosition;
 use TheFarm\Models\PositionQuery as ChildPositionQuery;
 use TheFarm\Models\User as ChildUser;
 use TheFarm\Models\UserQuery as ChildUserQuery;
+use TheFarm\Models\UserWorkPlanDay as ChildUserWorkPlanDay;
+use TheFarm\Models\UserWorkPlanDayQuery as ChildUserWorkPlanDayQuery;
 use TheFarm\Models\UserWorkPlanTime as ChildUserWorkPlanTime;
 use TheFarm\Models\UserWorkPlanTimeQuery as ChildUserWorkPlanTimeQuery;
 use TheFarm\Models\Map\BookingEventTableMap;
@@ -39,6 +41,7 @@ use TheFarm\Models\Map\BookingTableMap;
 use TheFarm\Models\Map\ContactTableMap;
 use TheFarm\Models\Map\EventUserTableMap;
 use TheFarm\Models\Map\ItemsRelatedUserTableMap;
+use TheFarm\Models\Map\UserWorkPlanDayTableMap;
 use TheFarm\Models\Map\UserWorkPlanTimeTableMap;
 
 /**
@@ -340,6 +343,12 @@ abstract class Contact implements ActiveRecordInterface
     protected $collItemsRelatedUsersPartial;
 
     /**
+     * @var        ObjectCollection|ChildUserWorkPlanDay[] Collection to store aggregation of ChildUserWorkPlanDay objects.
+     */
+    protected $collUserWorkPlanDays;
+    protected $collUserWorkPlanDaysPartial;
+
+    /**
      * @var        ObjectCollection|ChildUserWorkPlanTime[] Collection to store aggregation of ChildUserWorkPlanTime objects.
      */
     protected $collUserWorkPlanTimes;
@@ -405,6 +414,12 @@ abstract class Contact implements ActiveRecordInterface
      * @var ObjectCollection|ChildItemsRelatedUser[]
      */
     protected $itemsRelatedUsersScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildUserWorkPlanDay[]
+     */
+    protected $userWorkPlanDaysScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -1823,6 +1838,8 @@ abstract class Contact implements ActiveRecordInterface
 
             $this->collItemsRelatedUsers = null;
 
+            $this->collUserWorkPlanDays = null;
+
             $this->collUserWorkPlanTimes = null;
 
             $this->singleUser = null;
@@ -2089,6 +2106,23 @@ abstract class Contact implements ActiveRecordInterface
 
             if ($this->collItemsRelatedUsers !== null) {
                 foreach ($this->collItemsRelatedUsers as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->userWorkPlanDaysScheduledForDeletion !== null) {
+                if (!$this->userWorkPlanDaysScheduledForDeletion->isEmpty()) {
+                    \TheFarm\Models\UserWorkPlanDayQuery::create()
+                        ->filterByPrimaryKeys($this->userWorkPlanDaysScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->userWorkPlanDaysScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collUserWorkPlanDays !== null) {
+                foreach ($this->collUserWorkPlanDays as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -2667,6 +2701,21 @@ abstract class Contact implements ActiveRecordInterface
 
                 $result[$key] = $this->collItemsRelatedUsers->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
+            if (null !== $this->collUserWorkPlanDays) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'userWorkPlanDays';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'tf_user_work_plan_days';
+                        break;
+                    default:
+                        $key = 'UserWorkPlanDays';
+                }
+
+                $result[$key] = $this->collUserWorkPlanDays->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
             if (null !== $this->collUserWorkPlanTimes) {
 
                 switch ($keyType) {
@@ -3207,6 +3256,12 @@ abstract class Contact implements ActiveRecordInterface
                 }
             }
 
+            foreach ($this->getUserWorkPlanDays() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addUserWorkPlanDay($relObj->copy($deepCopy));
+                }
+            }
+
             foreach ($this->getUserWorkPlanTimes() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addUserWorkPlanTime($relObj->copy($deepCopy));
@@ -3340,6 +3395,10 @@ abstract class Contact implements ActiveRecordInterface
         }
         if ('ItemsRelatedUser' == $relationName) {
             $this->initItemsRelatedUsers();
+            return;
+        }
+        if ('UserWorkPlanDay' == $relationName) {
+            $this->initUserWorkPlanDays();
             return;
         }
         if ('UserWorkPlanTime' == $relationName) {
@@ -5752,6 +5811,256 @@ abstract class Contact implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collUserWorkPlanDays collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addUserWorkPlanDays()
+     */
+    public function clearUserWorkPlanDays()
+    {
+        $this->collUserWorkPlanDays = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collUserWorkPlanDays collection loaded partially.
+     */
+    public function resetPartialUserWorkPlanDays($v = true)
+    {
+        $this->collUserWorkPlanDaysPartial = $v;
+    }
+
+    /**
+     * Initializes the collUserWorkPlanDays collection.
+     *
+     * By default this just sets the collUserWorkPlanDays collection to an empty array (like clearcollUserWorkPlanDays());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initUserWorkPlanDays($overrideExisting = true)
+    {
+        if (null !== $this->collUserWorkPlanDays && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = UserWorkPlanDayTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collUserWorkPlanDays = new $collectionClassName;
+        $this->collUserWorkPlanDays->setModel('\TheFarm\Models\UserWorkPlanDay');
+    }
+
+    /**
+     * Gets an array of ChildUserWorkPlanDay objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildContact is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildUserWorkPlanDay[] List of ChildUserWorkPlanDay objects
+     * @throws PropelException
+     */
+    public function getUserWorkPlanDays(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collUserWorkPlanDaysPartial && !$this->isNew();
+        if (null === $this->collUserWorkPlanDays || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collUserWorkPlanDays) {
+                // return empty collection
+                $this->initUserWorkPlanDays();
+            } else {
+                $collUserWorkPlanDays = ChildUserWorkPlanDayQuery::create(null, $criteria)
+                    ->filterByContact($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collUserWorkPlanDaysPartial && count($collUserWorkPlanDays)) {
+                        $this->initUserWorkPlanDays(false);
+
+                        foreach ($collUserWorkPlanDays as $obj) {
+                            if (false == $this->collUserWorkPlanDays->contains($obj)) {
+                                $this->collUserWorkPlanDays->append($obj);
+                            }
+                        }
+
+                        $this->collUserWorkPlanDaysPartial = true;
+                    }
+
+                    return $collUserWorkPlanDays;
+                }
+
+                if ($partial && $this->collUserWorkPlanDays) {
+                    foreach ($this->collUserWorkPlanDays as $obj) {
+                        if ($obj->isNew()) {
+                            $collUserWorkPlanDays[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collUserWorkPlanDays = $collUserWorkPlanDays;
+                $this->collUserWorkPlanDaysPartial = false;
+            }
+        }
+
+        return $this->collUserWorkPlanDays;
+    }
+
+    /**
+     * Sets a collection of ChildUserWorkPlanDay objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $userWorkPlanDays A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildContact The current object (for fluent API support)
+     */
+    public function setUserWorkPlanDays(Collection $userWorkPlanDays, ConnectionInterface $con = null)
+    {
+        /** @var ChildUserWorkPlanDay[] $userWorkPlanDaysToDelete */
+        $userWorkPlanDaysToDelete = $this->getUserWorkPlanDays(new Criteria(), $con)->diff($userWorkPlanDays);
+
+
+        $this->userWorkPlanDaysScheduledForDeletion = $userWorkPlanDaysToDelete;
+
+        foreach ($userWorkPlanDaysToDelete as $userWorkPlanDayRemoved) {
+            $userWorkPlanDayRemoved->setContact(null);
+        }
+
+        $this->collUserWorkPlanDays = null;
+        foreach ($userWorkPlanDays as $userWorkPlanDay) {
+            $this->addUserWorkPlanDay($userWorkPlanDay);
+        }
+
+        $this->collUserWorkPlanDays = $userWorkPlanDays;
+        $this->collUserWorkPlanDaysPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related UserWorkPlanDay objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related UserWorkPlanDay objects.
+     * @throws PropelException
+     */
+    public function countUserWorkPlanDays(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collUserWorkPlanDaysPartial && !$this->isNew();
+        if (null === $this->collUserWorkPlanDays || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collUserWorkPlanDays) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getUserWorkPlanDays());
+            }
+
+            $query = ChildUserWorkPlanDayQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByContact($this)
+                ->count($con);
+        }
+
+        return count($this->collUserWorkPlanDays);
+    }
+
+    /**
+     * Method called to associate a ChildUserWorkPlanDay object to this object
+     * through the ChildUserWorkPlanDay foreign key attribute.
+     *
+     * @param  ChildUserWorkPlanDay $l ChildUserWorkPlanDay
+     * @return $this|\TheFarm\Models\Contact The current object (for fluent API support)
+     */
+    public function addUserWorkPlanDay(ChildUserWorkPlanDay $l)
+    {
+        if ($this->collUserWorkPlanDays === null) {
+            $this->initUserWorkPlanDays();
+            $this->collUserWorkPlanDaysPartial = true;
+        }
+
+        if (!$this->collUserWorkPlanDays->contains($l)) {
+            $this->doAddUserWorkPlanDay($l);
+
+            if ($this->userWorkPlanDaysScheduledForDeletion and $this->userWorkPlanDaysScheduledForDeletion->contains($l)) {
+                $this->userWorkPlanDaysScheduledForDeletion->remove($this->userWorkPlanDaysScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildUserWorkPlanDay $userWorkPlanDay The ChildUserWorkPlanDay object to add.
+     */
+    protected function doAddUserWorkPlanDay(ChildUserWorkPlanDay $userWorkPlanDay)
+    {
+        $this->collUserWorkPlanDays[]= $userWorkPlanDay;
+        $userWorkPlanDay->setContact($this);
+    }
+
+    /**
+     * @param  ChildUserWorkPlanDay $userWorkPlanDay The ChildUserWorkPlanDay object to remove.
+     * @return $this|ChildContact The current object (for fluent API support)
+     */
+    public function removeUserWorkPlanDay(ChildUserWorkPlanDay $userWorkPlanDay)
+    {
+        if ($this->getUserWorkPlanDays()->contains($userWorkPlanDay)) {
+            $pos = $this->collUserWorkPlanDays->search($userWorkPlanDay);
+            $this->collUserWorkPlanDays->remove($pos);
+            if (null === $this->userWorkPlanDaysScheduledForDeletion) {
+                $this->userWorkPlanDaysScheduledForDeletion = clone $this->collUserWorkPlanDays;
+                $this->userWorkPlanDaysScheduledForDeletion->clear();
+            }
+            $this->userWorkPlanDaysScheduledForDeletion[]= clone $userWorkPlanDay;
+            $userWorkPlanDay->setContact(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Contact is new, it will return
+     * an empty collection; or if this Contact has previously
+     * been saved, it will retrieve related UserWorkPlanDays from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Contact.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildUserWorkPlanDay[] List of ChildUserWorkPlanDay objects
+     */
+    public function getUserWorkPlanDaysJoinUserWorkPlanCode(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildUserWorkPlanDayQuery::create(null, $criteria);
+        $query->joinWith('UserWorkPlanCode', $joinBehavior);
+
+        return $this->getUserWorkPlanDays($query, $con);
+    }
+
+    /**
      * Clears out the collUserWorkPlanTimes collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
@@ -6108,6 +6417,11 @@ abstract class Contact implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collUserWorkPlanDays) {
+                foreach ($this->collUserWorkPlanDays as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->collUserWorkPlanTimes) {
                 foreach ($this->collUserWorkPlanTimes as $o) {
                     $o->clearAllReferences($deep);
@@ -6126,6 +6440,7 @@ abstract class Contact implements ActiveRecordInterface
         $this->collBookingsRelatedByAuthorId = null;
         $this->collBookingsRelatedByGuestId = null;
         $this->collItemsRelatedUsers = null;
+        $this->collUserWorkPlanDays = null;
         $this->collUserWorkPlanTimes = null;
         $this->singleUser = null;
         $this->aPosition = null;

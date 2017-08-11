@@ -353,6 +353,13 @@ class ContactTableMap extends TableMap
     1 => ':contact_id',
   ),
 ), null, null, 'ItemsRelatedUsers', false);
+        $this->addRelation('UserWorkPlanDay', '\\TheFarm\\Models\\UserWorkPlanDay', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':contact_id',
+    1 => ':contact_id',
+  ),
+), null, null, 'UserWorkPlanDays', false);
         $this->addRelation('UserWorkPlanTime', '\\TheFarm\\Models\\UserWorkPlanTime', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (

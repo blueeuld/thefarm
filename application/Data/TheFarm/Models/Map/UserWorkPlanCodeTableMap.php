@@ -140,6 +140,13 @@ class UserWorkPlanCodeTableMap extends TableMap
      */
     public function buildRelations()
     {
+        $this->addRelation('UserWorkPlanDay', '\\TheFarm\\Models\\UserWorkPlanDay', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':work_code',
+    1 => ':work_plan_cd',
+  ),
+), null, null, 'UserWorkPlanDays', false);
     } // buildRelations()
 
     /**
