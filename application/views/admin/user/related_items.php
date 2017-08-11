@@ -3,7 +3,9 @@
     <?php echo form_hidden('contact_id', $contact_id); ?>
     <?php $other_services = []; ?>
 
-
+    <pre>
+    <?php print_r($userData); ?>
+    </pre>
 
 
     <ul class="list-group">

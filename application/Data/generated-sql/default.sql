@@ -1034,8 +1034,8 @@ CREATE TABLE `tf_user_work_plan_time`
     `start_date` DATETIME NOT NULL,
     `end_date` DATETIME NOT NULL,
     `is_working` TINYINT(1) DEFAULT 1,
-    INDEX `contact_fk2` (`contact_id`),
-    CONSTRAINT `contact_fk2`
+    INDEX `user_work_plan_time_contact_fk` (`contact_id`),
+    CONSTRAINT `user_work_plan_time_contact_fk`
         FOREIGN KEY (`contact_id`)
         REFERENCES `tf_contacts` (`contact_id`)
 ) ENGINE=InnoDB;

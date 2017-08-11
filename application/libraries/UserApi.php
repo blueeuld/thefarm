@@ -59,7 +59,7 @@ class UserApi {
             $search = $search->useUserQuery()->useGroupQuery()->filterByIncludeInProviderList('y')->endUse()->endUse();
         }
         elseif ($availableProvidersOnly && !is_null($startDateTime) && !is_null($endDateTime)) {
-            $search = $search->useUserWorkPlanTimeQuery()->where("(start_date BETWEEN '".$startDateTime."' AND '".$endDateTime."') OR (end_date BETWEEN '".$startDateTime."' AND '".$endDateTime."') OR ('".$startDateTime."' BETWEEN start_date AND end_date)")->endUse();
+            $search = $search->useUserWorkPlanTimeQuery()->where("((start_date BETWEEN '".$startDateTime."' AND '".$endDateTime."') OR (end_date BETWEEN '".$startDateTime."' AND '".$endDateTime."') OR ('".$startDateTime."' BETWEEN start_date AND end_date))")->endUse();
         }
 
         if ($auditUsersOnly) {
