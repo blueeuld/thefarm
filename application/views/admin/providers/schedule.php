@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en" class="app">
 <head>
 	<?php $this->load->view('admin/_common/head', array('title' => 'Contacts')); ?>

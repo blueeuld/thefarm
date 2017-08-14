@@ -796,12 +796,12 @@ CREATE TABLE `tf_items_related_users`
 (
     `item_id` INTEGER NOT NULL,
     `contact_id` INTEGER NOT NULL,
-    INDEX `contact_fk1` (`contact_id`),
-    INDEX `item_fk1` (`item_id`),
-    CONSTRAINT `contact_fk1`
+    INDEX `tf_items_related_users_fi_6a6d09` (`contact_id`),
+    INDEX `tf_items_related_users_fi_b49f13` (`item_id`),
+    CONSTRAINT `tf_items_related_users_fk_6a6d09`
         FOREIGN KEY (`contact_id`)
         REFERENCES `tf_contacts` (`contact_id`),
-    CONSTRAINT `item_fk1`
+    CONSTRAINT `tf_items_related_users_fk_b49f13`
         FOREIGN KEY (`item_id`)
         REFERENCES `tf_items` (`item_id`)
 ) ENGINE=InnoDB;
@@ -1034,8 +1034,8 @@ CREATE TABLE `tf_user_work_plan_time`
     `start_date` DATETIME NOT NULL,
     `end_date` DATETIME NOT NULL,
     `is_working` TINYINT(1) DEFAULT 1,
-    INDEX `user_work_plan_time_contact_fk` (`contact_id`),
-    CONSTRAINT `user_work_plan_time_contact_fk`
+    INDEX `tf_user_work_plan_time_fi_6a6d09` (`contact_id`),
+    CONSTRAINT `tf_user_work_plan_time_fk_6a6d09`
         FOREIGN KEY (`contact_id`)
         REFERENCES `tf_contacts` (`contact_id`)
 ) ENGINE=InnoDB;
