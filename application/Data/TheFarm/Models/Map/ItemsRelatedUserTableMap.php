@@ -7,7 +7,6 @@ use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\DataFetcher\DataFetcherInterface;
-use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\RelationMap;
 use Propel\Runtime\Map\TableMap;
@@ -131,9 +130,10 @@ class ItemsRelatedUserTableMap extends TableMap
         $this->setClassName('\\TheFarm\\Models\\ItemsRelatedUser');
         $this->setPackage('TheFarm.Models');
         $this->setUseIdGenerator(false);
+        $this->setIsCrossRef(true);
         // columns
-        $this->addForeignKey('item_id', 'ItemId', 'INTEGER', 'tf_items', 'item_id', true, null, null);
-        $this->addForeignKey('contact_id', 'ContactId', 'INTEGER', 'tf_contacts', 'contact_id', true, null, null);
+        $this->addForeignPrimaryKey('item_id', 'ItemId', 'INTEGER' , 'tf_items', 'item_id', true, null, null);
+        $this->addForeignPrimaryKey('contact_id', 'ContactId', 'INTEGER' , 'tf_contacts', 'contact_id', true, null, null);
     } // initialize()
 
     /**
@@ -158,6 +158,59 @@ class ItemsRelatedUserTableMap extends TableMap
     } // buildRelations()
 
     /**
+     * Adds an object to the instance pool.
+     *
+     * Propel keeps cached copies of objects in an instance pool when they are retrieved
+     * from the database. In some cases you may need to explicitly add objects
+     * to the cache in order to ensure that the same objects are always returned by find*()
+     * and findPk*() calls.
+     *
+     * @param \TheFarm\Models\ItemsRelatedUser $obj A \TheFarm\Models\ItemsRelatedUser object.
+     * @param string $key             (optional) key to use for instance map (for performance boost if key was already calculated externally).
+     */
+    public static function addInstanceToPool($obj, $key = null)
+    {
+        if (Propel::isInstancePoolingEnabled()) {
+            if (null === $key) {
+                $key = serialize([(null === $obj->getItemId() || is_scalar($obj->getItemId()) || is_callable([$obj->getItemId(), '__toString']) ? (string) $obj->getItemId() : $obj->getItemId()), (null === $obj->getContactId() || is_scalar($obj->getContactId()) || is_callable([$obj->getContactId(), '__toString']) ? (string) $obj->getContactId() : $obj->getContactId())]);
+            } // if key === null
+            self::$instances[$key] = $obj;
+        }
+    }
+
+    /**
+     * Removes an object from the instance pool.
+     *
+     * Propel keeps cached copies of objects in an instance pool when they are retrieved
+     * from the database.  In some cases -- especially when you override doDelete
+     * methods in your stub classes -- you may need to explicitly remove objects
+     * from the cache in order to prevent returning objects that no longer exist.
+     *
+     * @param mixed $value A \TheFarm\Models\ItemsRelatedUser object or a primary key value.
+     */
+    public static function removeInstanceFromPool($value)
+    {
+        if (Propel::isInstancePoolingEnabled() && null !== $value) {
+            if (is_object($value) && $value instanceof \TheFarm\Models\ItemsRelatedUser) {
+                $key = serialize([(null === $value->getItemId() || is_scalar($value->getItemId()) || is_callable([$value->getItemId(), '__toString']) ? (string) $value->getItemId() : $value->getItemId()), (null === $value->getContactId() || is_scalar($value->getContactId()) || is_callable([$value->getContactId(), '__toString']) ? (string) $value->getContactId() : $value->getContactId())]);
+
+            } elseif (is_array($value) && count($value) === 2) {
+                // assume we've been passed a primary key";
+                $key = serialize([(null === $value[0] || is_scalar($value[0]) || is_callable([$value[0], '__toString']) ? (string) $value[0] : $value[0]), (null === $value[1] || is_scalar($value[1]) || is_callable([$value[1], '__toString']) ? (string) $value[1] : $value[1])]);
+            } elseif ($value instanceof Criteria) {
+                self::$instances = [];
+
+                return;
+            } else {
+                $e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or \TheFarm\Models\ItemsRelatedUser object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value, true)));
+                throw $e;
+            }
+
+            unset(self::$instances[$key]);
+        }
+    }
+
+    /**
      * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
      *
      * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
@@ -172,7 +225,12 @@ class ItemsRelatedUserTableMap extends TableMap
      */
     public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        return null;
+        // If the PK cannot be derived from the row, return NULL.
+        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('ItemId', TableMap::TYPE_PHPNAME, $indexType)] === null && $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('ContactId', TableMap::TYPE_PHPNAME, $indexType)] === null) {
+            return null;
+        }
+
+        return serialize([(null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('ItemId', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('ItemId', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('ItemId', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('ItemId', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('ItemId', TableMap::TYPE_PHPNAME, $indexType)]), (null === $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('ContactId', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('ContactId', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('ContactId', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('ContactId', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('ContactId', TableMap::TYPE_PHPNAME, $indexType)])]);
     }
 
     /**
@@ -189,7 +247,20 @@ class ItemsRelatedUserTableMap extends TableMap
      */
     public static function getPrimaryKeyFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        return '';
+            $pks = [];
+
+        $pks[] = (int) $row[
+            $indexType == TableMap::TYPE_NUM
+                ? 0 + $offset
+                : self::translateFieldName('ItemId', TableMap::TYPE_PHPNAME, $indexType)
+        ];
+        $pks[] = (int) $row[
+            $indexType == TableMap::TYPE_NUM
+                ? 1 + $offset
+                : self::translateFieldName('ContactId', TableMap::TYPE_PHPNAME, $indexType)
+        ];
+
+        return $pks;
     }
 
     /**
@@ -341,10 +412,21 @@ class ItemsRelatedUserTableMap extends TableMap
             // rename for clarity
             $criteria = $values;
         } elseif ($values instanceof \TheFarm\Models\ItemsRelatedUser) { // it's a model object
-            // create criteria based on pk value
-            $criteria = $values->buildCriteria();
+            // create criteria based on pk values
+            $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            throw new LogicException('The ItemsRelatedUser object has no primary key');
+            $criteria = new Criteria(ItemsRelatedUserTableMap::DATABASE_NAME);
+            // primary key is composite; we therefore, expect
+            // the primary key passed to be an array of pkey values
+            if (count($values) == count($values, COUNT_RECURSIVE)) {
+                // array is not multi-dimensional
+                $values = array($values);
+            }
+            foreach ($values as $value) {
+                $criterion = $criteria->getNewCriterion(ItemsRelatedUserTableMap::COL_ITEM_ID, $value[0]);
+                $criterion->addAnd($criteria->getNewCriterion(ItemsRelatedUserTableMap::COL_CONTACT_ID, $value[1]));
+                $criteria->addOr($criterion);
+            }
         }
 
         $query = ItemsRelatedUserQuery::create()->mergeWith($criteria);

@@ -26,6 +26,8 @@ use TheFarm\Models\Contact as ChildContact;
 use TheFarm\Models\ContactQuery as ChildContactQuery;
 use TheFarm\Models\EventUser as ChildEventUser;
 use TheFarm\Models\EventUserQuery as ChildEventUserQuery;
+use TheFarm\Models\Item as ChildItem;
+use TheFarm\Models\ItemQuery as ChildItemQuery;
 use TheFarm\Models\ItemsRelatedUser as ChildItemsRelatedUser;
 use TheFarm\Models\ItemsRelatedUserQuery as ChildItemsRelatedUserQuery;
 use TheFarm\Models\Position as ChildPosition;
@@ -360,12 +362,28 @@ abstract class Contact implements ActiveRecordInterface
     protected $singleUser;
 
     /**
+     * @var        ObjectCollection|ChildItem[] Cross Collection to store aggregation of ChildItem objects.
+     */
+    protected $collItems;
+
+    /**
+     * @var bool
+     */
+    protected $collItemsPartial;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
      * @var boolean
      */
     protected $alreadyInSave = false;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildItem[]
+     */
+    protected $itemsScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -1844,6 +1862,7 @@ abstract class Contact implements ActiveRecordInterface
 
             $this->singleUser = null;
 
+            $this->collItems = null;
         } // if (deep)
     }
 
@@ -1969,6 +1988,35 @@ abstract class Contact implements ActiveRecordInterface
                 }
                 $this->resetModified();
             }
+
+            if ($this->itemsScheduledForDeletion !== null) {
+                if (!$this->itemsScheduledForDeletion->isEmpty()) {
+                    $pks = array();
+                    foreach ($this->itemsScheduledForDeletion as $entry) {
+                        $entryPk = [];
+
+                        $entryPk[1] = $this->getContactId();
+                        $entryPk[0] = $entry->getItemId();
+                        $pks[] = $entryPk;
+                    }
+
+                    \TheFarm\Models\ItemsRelatedUserQuery::create()
+                        ->filterByPrimaryKeys($pks)
+                        ->delete($con);
+
+                    $this->itemsScheduledForDeletion = null;
+                }
+
+            }
+
+            if ($this->collItems) {
+                foreach ($this->collItems as $item) {
+                    if (!$item->isDeleted() && ($item->isNew() || $item->isModified())) {
+                        $item->save($con);
+                    }
+                }
+            }
+
 
             if ($this->eventUsersScheduledForDeletion !== null) {
                 if (!$this->eventUsersScheduledForDeletion->isEmpty()) {
@@ -5680,7 +5728,10 @@ abstract class Contact implements ActiveRecordInterface
         $itemsRelatedUsersToDelete = $this->getItemsRelatedUsers(new Criteria(), $con)->diff($itemsRelatedUsers);
 
 
-        $this->itemsRelatedUsersScheduledForDeletion = $itemsRelatedUsersToDelete;
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->itemsRelatedUsersScheduledForDeletion = clone $itemsRelatedUsersToDelete;
 
         foreach ($itemsRelatedUsersToDelete as $itemsRelatedUserRemoved) {
             $itemsRelatedUserRemoved->setContact(null);
@@ -6322,6 +6373,249 @@ abstract class Contact implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collItems collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addItems()
+     */
+    public function clearItems()
+    {
+        $this->collItems = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Initializes the collItems crossRef collection.
+     *
+     * By default this just sets the collItems collection to an empty collection (like clearItems());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @return void
+     */
+    public function initItems()
+    {
+        $collectionClassName = ItemsRelatedUserTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collItems = new $collectionClassName;
+        $this->collItemsPartial = true;
+        $this->collItems->setModel('\TheFarm\Models\Item');
+    }
+
+    /**
+     * Checks if the collItems collection is loaded.
+     *
+     * @return bool
+     */
+    public function isItemsLoaded()
+    {
+        return null !== $this->collItems;
+    }
+
+    /**
+     * Gets a collection of ChildItem objects related by a many-to-many relationship
+     * to the current object by way of the tf_items_related_users cross-reference table.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildContact is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return ObjectCollection|ChildItem[] List of ChildItem objects
+     */
+    public function getItems(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collItemsPartial && !$this->isNew();
+        if (null === $this->collItems || null !== $criteria || $partial) {
+            if ($this->isNew()) {
+                // return empty collection
+                if (null === $this->collItems) {
+                    $this->initItems();
+                }
+            } else {
+
+                $query = ChildItemQuery::create(null, $criteria)
+                    ->filterByContact($this);
+                $collItems = $query->find($con);
+                if (null !== $criteria) {
+                    return $collItems;
+                }
+
+                if ($partial && $this->collItems) {
+                    //make sure that already added objects gets added to the list of the database.
+                    foreach ($this->collItems as $obj) {
+                        if (!$collItems->contains($obj)) {
+                            $collItems[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collItems = $collItems;
+                $this->collItemsPartial = false;
+            }
+        }
+
+        return $this->collItems;
+    }
+
+    /**
+     * Sets a collection of Item objects related by a many-to-many relationship
+     * to the current object by way of the tf_items_related_users cross-reference table.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param  Collection $items A Propel collection.
+     * @param  ConnectionInterface $con Optional connection object
+     * @return $this|ChildContact The current object (for fluent API support)
+     */
+    public function setItems(Collection $items, ConnectionInterface $con = null)
+    {
+        $this->clearItems();
+        $currentItems = $this->getItems();
+
+        $itemsScheduledForDeletion = $currentItems->diff($items);
+
+        foreach ($itemsScheduledForDeletion as $toDelete) {
+            $this->removeItem($toDelete);
+        }
+
+        foreach ($items as $item) {
+            if (!$currentItems->contains($item)) {
+                $this->doAddItem($item);
+            }
+        }
+
+        $this->collItemsPartial = false;
+        $this->collItems = $items;
+
+        return $this;
+    }
+
+    /**
+     * Gets the number of Item objects related by a many-to-many relationship
+     * to the current object by way of the tf_items_related_users cross-reference table.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      boolean $distinct Set to true to force count distinct
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return int the number of related Item objects
+     */
+    public function countItems(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collItemsPartial && !$this->isNew();
+        if (null === $this->collItems || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collItems) {
+                return 0;
+            } else {
+
+                if ($partial && !$criteria) {
+                    return count($this->getItems());
+                }
+
+                $query = ChildItemQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
+
+                return $query
+                    ->filterByContact($this)
+                    ->count($con);
+            }
+        } else {
+            return count($this->collItems);
+        }
+    }
+
+    /**
+     * Associate a ChildItem to this object
+     * through the tf_items_related_users cross reference table.
+     *
+     * @param ChildItem $item
+     * @return ChildContact The current object (for fluent API support)
+     */
+    public function addItem(ChildItem $item)
+    {
+        if ($this->collItems === null) {
+            $this->initItems();
+        }
+
+        if (!$this->getItems()->contains($item)) {
+            // only add it if the **same** object is not already associated
+            $this->collItems->push($item);
+            $this->doAddItem($item);
+        }
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param ChildItem $item
+     */
+    protected function doAddItem(ChildItem $item)
+    {
+        $itemsRelatedUser = new ChildItemsRelatedUser();
+
+        $itemsRelatedUser->setItem($item);
+
+        $itemsRelatedUser->setContact($this);
+
+        $this->addItemsRelatedUser($itemsRelatedUser);
+
+        // set the back reference to this object directly as using provided method either results
+        // in endless loop or in multiple relations
+        if (!$item->isContactsLoaded()) {
+            $item->initContacts();
+            $item->getContacts()->push($this);
+        } elseif (!$item->getContacts()->contains($this)) {
+            $item->getContacts()->push($this);
+        }
+
+    }
+
+    /**
+     * Remove item of this object
+     * through the tf_items_related_users cross reference table.
+     *
+     * @param ChildItem $item
+     * @return ChildContact The current object (for fluent API support)
+     */
+    public function removeItem(ChildItem $item)
+    {
+        if ($this->getItems()->contains($item)) {
+            $itemsRelatedUser = new ChildItemsRelatedUser();
+            $itemsRelatedUser->setItem($item);
+            if ($item->isContactsLoaded()) {
+                //remove the back reference if available
+                $item->getContacts()->removeObject($this);
+            }
+
+            $itemsRelatedUser->setContact($this);
+            $this->removeItemsRelatedUser(clone $itemsRelatedUser);
+            $itemsRelatedUser->clear();
+
+            $this->collItems->remove($this->collItems->search($item));
+
+            if (null === $this->itemsScheduledForDeletion) {
+                $this->itemsScheduledForDeletion = clone $this->collItems;
+                $this->itemsScheduledForDeletion->clear();
+            }
+
+            $this->itemsScheduledForDeletion->push($item);
+        }
+
+
+        return $this;
+    }
+
+    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
@@ -6430,6 +6724,11 @@ abstract class Contact implements ActiveRecordInterface
             if ($this->singleUser) {
                 $this->singleUser->clearAllReferences($deep);
             }
+            if ($this->collItems) {
+                foreach ($this->collItems as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
 
         $this->collEventUsers = null;
@@ -6443,6 +6742,7 @@ abstract class Contact implements ActiveRecordInterface
         $this->collUserWorkPlanDays = null;
         $this->collUserWorkPlanTimes = null;
         $this->singleUser = null;
+        $this->collItems = null;
         $this->aPosition = null;
     }
 

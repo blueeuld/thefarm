@@ -3,13 +3,13 @@
 namespace TheFarm\Models\Base;
 
 use \Exception;
+use \PDO;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveQuery\ModelJoin;
 use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
-use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use TheFarm\Models\ItemsRelatedUser as ChildItemsRelatedUser;
 use TheFarm\Models\ItemsRelatedUserQuery as ChildItemsRelatedUserQuery;
@@ -120,17 +120,94 @@ abstract class ItemsRelatedUserQuery extends ModelCriteria
      * Go fast if the query is untouched.
      *
      * <code>
-     * $obj  = $c->findPk(12, $con);
+     * $obj = $c->findPk(array(12, 34), $con);
      * </code>
      *
-     * @param mixed $key Primary key to use for the query
+     * @param array[$item_id, $contact_id] $key Primary key to use for the query
      * @param ConnectionInterface $con an optional connection object
      *
      * @return ChildItemsRelatedUser|array|mixed the result, formatted by the current formatter
      */
     public function findPk($key, ConnectionInterface $con = null)
     {
-        throw new LogicException('The ItemsRelatedUser object has no primary key');
+        if ($key === null) {
+            return null;
+        }
+
+        if ($con === null) {
+            $con = Propel::getServiceContainer()->getReadConnection(ItemsRelatedUserTableMap::DATABASE_NAME);
+        }
+
+        $this->basePreSelect($con);
+
+        if (
+            $this->formatter || $this->modelAlias || $this->with || $this->select
+            || $this->selectColumns || $this->asColumns || $this->selectModifiers
+            || $this->map || $this->having || $this->joins
+        ) {
+            return $this->findPkComplex($key, $con);
+        }
+
+        if ((null !== ($obj = ItemsRelatedUserTableMap::getInstanceFromPool(serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])]))))) {
+            // the object is already in the instance pool
+            return $obj;
+        }
+
+        return $this->findPkSimple($key, $con);
+    }
+
+    /**
+     * Find object by primary key using raw SQL to go fast.
+     * Bypass doSelect() and the object formatter by using generated code.
+     *
+     * @param     mixed $key Primary key to use for the query
+     * @param     ConnectionInterface $con A connection object
+     *
+     * @throws \Propel\Runtime\Exception\PropelException
+     *
+     * @return ChildItemsRelatedUser A model object, or null if the key is not found
+     */
+    protected function findPkSimple($key, ConnectionInterface $con)
+    {
+        $sql = 'SELECT item_id, contact_id FROM tf_items_related_users WHERE item_id = :p0 AND contact_id = :p1';
+        try {
+            $stmt = $con->prepare($sql);
+            $stmt->bindValue(':p0', $key[0], PDO::PARAM_INT);
+            $stmt->bindValue(':p1', $key[1], PDO::PARAM_INT);
+            $stmt->execute();
+        } catch (Exception $e) {
+            Propel::log($e->getMessage(), Propel::LOG_ERR);
+            throw new PropelException(sprintf('Unable to execute SELECT statement [%s]', $sql), 0, $e);
+        }
+        $obj = null;
+        if ($row = $stmt->fetch(\PDO::FETCH_NUM)) {
+            /** @var ChildItemsRelatedUser $obj */
+            $obj = new ChildItemsRelatedUser();
+            $obj->hydrate($row);
+            ItemsRelatedUserTableMap::addInstanceToPool($obj, serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])]));
+        }
+        $stmt->closeCursor();
+
+        return $obj;
+    }
+
+    /**
+     * Find object by primary key.
+     *
+     * @param     mixed $key Primary key to use for the query
+     * @param     ConnectionInterface $con A connection object
+     *
+     * @return ChildItemsRelatedUser|array|mixed the result, formatted by the current formatter
+     */
+    protected function findPkComplex($key, ConnectionInterface $con)
+    {
+        // As the query uses a PK condition, no limit(1) is necessary.
+        $criteria = $this->isKeepQuery() ? clone $this : $this;
+        $dataFetcher = $criteria
+            ->filterByPrimaryKey($key)
+            ->doSelect($con);
+
+        return $criteria->getFormatter()->init($criteria)->formatOne($dataFetcher);
     }
 
     /**
@@ -145,7 +222,16 @@ abstract class ItemsRelatedUserQuery extends ModelCriteria
      */
     public function findPks($keys, ConnectionInterface $con = null)
     {
-        throw new LogicException('The ItemsRelatedUser object has no primary key');
+        if (null === $con) {
+            $con = Propel::getServiceContainer()->getReadConnection($this->getDbName());
+        }
+        $this->basePreSelect($con);
+        $criteria = $this->isKeepQuery() ? clone $this : $this;
+        $dataFetcher = $criteria
+            ->filterByPrimaryKeys($keys)
+            ->doSelect($con);
+
+        return $criteria->getFormatter()->init($criteria)->format($dataFetcher);
     }
 
     /**
@@ -157,7 +243,10 @@ abstract class ItemsRelatedUserQuery extends ModelCriteria
      */
     public function filterByPrimaryKey($key)
     {
-        throw new LogicException('The ItemsRelatedUser object has no primary key');
+        $this->addUsingAlias(ItemsRelatedUserTableMap::COL_ITEM_ID, $key[0], Criteria::EQUAL);
+        $this->addUsingAlias(ItemsRelatedUserTableMap::COL_CONTACT_ID, $key[1], Criteria::EQUAL);
+
+        return $this;
     }
 
     /**
@@ -169,7 +258,17 @@ abstract class ItemsRelatedUserQuery extends ModelCriteria
      */
     public function filterByPrimaryKeys($keys)
     {
-        throw new LogicException('The ItemsRelatedUser object has no primary key');
+        if (empty($keys)) {
+            return $this->add(null, '1<>1', Criteria::CUSTOM);
+        }
+        foreach ($keys as $key) {
+            $cton0 = $this->getNewCriterion(ItemsRelatedUserTableMap::COL_ITEM_ID, $key[0], Criteria::EQUAL);
+            $cton1 = $this->getNewCriterion(ItemsRelatedUserTableMap::COL_CONTACT_ID, $key[1], Criteria::EQUAL);
+            $cton0->addAnd($cton1);
+            $this->addOr($cton0);
+        }
+
+        return $this;
     }
 
     /**
@@ -422,8 +521,9 @@ abstract class ItemsRelatedUserQuery extends ModelCriteria
     public function prune($itemsRelatedUser = null)
     {
         if ($itemsRelatedUser) {
-            throw new LogicException('ItemsRelatedUser object has no primary key');
-
+            $this->addCond('pruneCond0', $this->getAliasedColName(ItemsRelatedUserTableMap::COL_ITEM_ID), $itemsRelatedUser->getItemId(), Criteria::NOT_EQUAL);
+            $this->addCond('pruneCond1', $this->getAliasedColName(ItemsRelatedUserTableMap::COL_CONTACT_ID), $itemsRelatedUser->getContactId(), Criteria::NOT_EQUAL);
+            $this->combine(array('pruneCond0', 'pruneCond1'), Criteria::LOGICAL_OR);
         }
 
         return $this;

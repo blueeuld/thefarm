@@ -141,6 +141,7 @@ class UserWorkPlanTimeTableMap extends TableMap
         $this->setClassName('\\TheFarm\\Models\\UserWorkPlanTime');
         $this->setPackage('TheFarm.Models');
         $this->setUseIdGenerator(false);
+        $this->setIsCrossRef(true);
         // columns
         $this->addForeignKey('contact_id', 'ContactId', 'INTEGER', 'tf_contacts', 'contact_id', true, null, null);
         $this->addColumn('start_date', 'StartDate', 'TIMESTAMP', true, null, null);

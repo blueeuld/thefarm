@@ -282,12 +282,9 @@
     <column name="bio" phpName="Bio" type="LONGVARCHAR" required="true"/>
     <column name="is_approved" phpName="IsApproved" type="BOOLEAN" defaultValue="0"/>
     <column name="activation_code" phpName="ActivationCode" type="INTEGER"/>
-    <foreign-key foreignTable="tf_position" name="position_fk">
+    <foreign-key foreignTable="tf_position" phpName="Position" name="position_fk">
       <reference local="position_cd" foreign="position_cd"/>
     </foreign-key>
-    <index name="position_fk">
-      <index-column name="position_cd"/>
-    </index>
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
@@ -653,9 +650,9 @@
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
   </table>
-  <table name="tf_items_related_users" idMethod="native" phpName="ItemsRelatedUser" namespace="Models">
-    <column name="item_id" phpName="ItemId" type="INTEGER" required="true"/>
-    <column name="contact_id" phpName="ContactId" type="INTEGER" required="true"/>
+  <table name="tf_items_related_users" idMethod="native" phpName="ItemsRelatedUser" namespace="Models" isCrossRef="true">
+    <column name="item_id" phpName="ItemId" type="INTEGER" required="true" primaryKey="true"/>
+    <column name="contact_id" phpName="ContactId" type="INTEGER" required="true" primaryKey="true"/>
     <foreign-key foreignTable="tf_contacts" phpName="Contact">
       <reference local="contact_id" foreign="contact_id"/>
     </foreign-key>
@@ -814,13 +811,13 @@
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
   </table>
-  <table name="tf_user_work_plan_time" idMethod="native" phpName="UserWorkPlanTime" namespace="Models">
+  <table name="tf_user_work_plan_time" idMethod="native" phpName="UserWorkPlanTime" namespace="Models" isCrossRef="true">
     <column name="contact_id" phpName="ContactId" type="INTEGER" required="true"/>
     <column name="start_date" phpName="StartDate" type="TIMESTAMP" required="true"/>
     <column name="end_date" phpName="EndDate" type="TIMESTAMP" required="true"/>
     <column name="is_working" phpName="IsWorking" type="Boolean" defaultValue="1"/>
 
-    <foreign-key foreignTable="tf_contacts" phpNname="Contact">
+    <foreign-key foreignTable="tf_contacts" phpName="Contact">
       <reference local="contact_id" foreign="contact_id"/>
     </foreign-key>
 

@@ -374,6 +374,7 @@ class ContactTableMap extends TableMap
     1 => ':contact_id',
   ),
 ), null, null, null, false);
+        $this->addRelation('Item', '\\TheFarm\\Models\\Item', RelationMap::MANY_TO_MANY, array(), null, null, 'Items');
     } // buildRelations()
 
     /**
