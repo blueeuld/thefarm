@@ -26,7 +26,7 @@
                                         <div class="col-lg-2">
                                             <div class="list-group">
                                                 <?php foreach ($providers as $provider) : ?>
-                                                    <a href="<?php echo site_url('backend/providers/schedule/'.$provider['ContactId']);?>" class="list-group-item<?php echo $provider['ContactId'] === $contact_id ? ' disabled bs-callout bs-callout-info' : '';?>">
+                                                    <a href="<?php echo site_url('backend/providers/schedule/'.$provider['ContactId']);?>" class="list-group-item<?php echo $provider['ContactId'] === (int)$contact_id ? ' disabled bs-callout bs-callout-info' : '';?>">
                                                         <?php echo ($provider['FirstName'] . ' ' . $provider['LastName']); ?>
                                                     </a>
                                                 <?php endforeach; ?>
@@ -34,7 +34,7 @@
                                         </div>
                                         <div class="col-lg-10">
                                             <?php if ($contact_id) : ?>
-                                            <?php echo form_open('backend/schedule/update', '', array('contact_id' => $contact_id, 'week' => $week)); ?>
+                                            <?php echo form_open('backend/providers/schedule/update', '', array('contact_id' => $contact_id, 'week' => $week)); ?>
                                             <?php echo $this->weeklycalendar->showCalendar(); ?>
                                             <?php echo form_submit('', 'Save Changes', 'class="btn btn-primary"'); ?>
                                             <?php echo form_close(); ?>

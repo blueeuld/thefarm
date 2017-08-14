@@ -7,7 +7,6 @@ use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\DataFetcher\DataFetcherInterface;
-use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\RelationMap;
 use Propel\Runtime\Map\TableMap;
@@ -143,10 +142,10 @@ class UserWorkPlanTimeTableMap extends TableMap
         $this->setUseIdGenerator(false);
         $this->setIsCrossRef(true);
         // columns
-        $this->addForeignKey('contact_id', 'ContactId', 'INTEGER', 'tf_contacts', 'contact_id', true, null, null);
-        $this->addColumn('start_date', 'StartDate', 'TIMESTAMP', true, null, null);
-        $this->addColumn('end_date', 'EndDate', 'TIMESTAMP', true, null, null);
-        $this->addColumn('is_working', 'IsWorking', 'BOOLEAN', false, 1, true);
+        $this->addForeignPrimaryKey('contact_id', 'ContactId', 'INTEGER' , 'tf_contacts', 'contact_id', true, null, null);
+        $this->addPrimaryKey('start_date', 'StartDate', 'TIMESTAMP', true, null, null);
+        $this->addPrimaryKey('end_date', 'EndDate', 'TIMESTAMP', true, null, null);
+        $this->addPrimaryKey('is_working', 'IsWorking', 'BOOLEAN', true, 1, true);
     } // initialize()
 
     /**
@@ -164,6 +163,59 @@ class UserWorkPlanTimeTableMap extends TableMap
     } // buildRelations()
 
     /**
+     * Adds an object to the instance pool.
+     *
+     * Propel keeps cached copies of objects in an instance pool when they are retrieved
+     * from the database. In some cases you may need to explicitly add objects
+     * to the cache in order to ensure that the same objects are always returned by find*()
+     * and findPk*() calls.
+     *
+     * @param \TheFarm\Models\UserWorkPlanTime $obj A \TheFarm\Models\UserWorkPlanTime object.
+     * @param string $key             (optional) key to use for instance map (for performance boost if key was already calculated externally).
+     */
+    public static function addInstanceToPool($obj, $key = null)
+    {
+        if (Propel::isInstancePoolingEnabled()) {
+            if (null === $key) {
+                $key = serialize([(null === $obj->getContactId() || is_scalar($obj->getContactId()) || is_callable([$obj->getContactId(), '__toString']) ? (string) $obj->getContactId() : $obj->getContactId()), (null === $obj->getStartDate() || is_scalar($obj->getStartDate()) || is_callable([$obj->getStartDate(), '__toString']) ? (string) $obj->getStartDate() : $obj->getStartDate()), (null === $obj->getEndDate() || is_scalar($obj->getEndDate()) || is_callable([$obj->getEndDate(), '__toString']) ? (string) $obj->getEndDate() : $obj->getEndDate()), (null === $obj->getIsWorking() || is_scalar($obj->getIsWorking()) || is_callable([$obj->getIsWorking(), '__toString']) ? (string) $obj->getIsWorking() : $obj->getIsWorking())]);
+            } // if key === null
+            self::$instances[$key] = $obj;
+        }
+    }
+
+    /**
+     * Removes an object from the instance pool.
+     *
+     * Propel keeps cached copies of objects in an instance pool when they are retrieved
+     * from the database.  In some cases -- especially when you override doDelete
+     * methods in your stub classes -- you may need to explicitly remove objects
+     * from the cache in order to prevent returning objects that no longer exist.
+     *
+     * @param mixed $value A \TheFarm\Models\UserWorkPlanTime object or a primary key value.
+     */
+    public static function removeInstanceFromPool($value)
+    {
+        if (Propel::isInstancePoolingEnabled() && null !== $value) {
+            if (is_object($value) && $value instanceof \TheFarm\Models\UserWorkPlanTime) {
+                $key = serialize([(null === $value->getContactId() || is_scalar($value->getContactId()) || is_callable([$value->getContactId(), '__toString']) ? (string) $value->getContactId() : $value->getContactId()), (null === $value->getStartDate() || is_scalar($value->getStartDate()) || is_callable([$value->getStartDate(), '__toString']) ? (string) $value->getStartDate() : $value->getStartDate()), (null === $value->getEndDate() || is_scalar($value->getEndDate()) || is_callable([$value->getEndDate(), '__toString']) ? (string) $value->getEndDate() : $value->getEndDate()), (null === $value->getIsWorking() || is_scalar($value->getIsWorking()) || is_callable([$value->getIsWorking(), '__toString']) ? (string) $value->getIsWorking() : $value->getIsWorking())]);
+
+            } elseif (is_array($value) && count($value) === 4) {
+                // assume we've been passed a primary key";
+                $key = serialize([(null === $value[0] || is_scalar($value[0]) || is_callable([$value[0], '__toString']) ? (string) $value[0] : $value[0]), (null === $value[1] || is_scalar($value[1]) || is_callable([$value[1], '__toString']) ? (string) $value[1] : $value[1]), (null === $value[2] || is_scalar($value[2]) || is_callable([$value[2], '__toString']) ? (string) $value[2] : $value[2]), (null === $value[3] || is_scalar($value[3]) || is_callable([$value[3], '__toString']) ? (string) $value[3] : $value[3])]);
+            } elseif ($value instanceof Criteria) {
+                self::$instances = [];
+
+                return;
+            } else {
+                $e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or \TheFarm\Models\UserWorkPlanTime object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value, true)));
+                throw $e;
+            }
+
+            unset(self::$instances[$key]);
+        }
+    }
+
+    /**
      * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
      *
      * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
@@ -178,7 +230,12 @@ class UserWorkPlanTimeTableMap extends TableMap
      */
     public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        return null;
+        // If the PK cannot be derived from the row, return NULL.
+        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('ContactId', TableMap::TYPE_PHPNAME, $indexType)] === null && $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('StartDate', TableMap::TYPE_PHPNAME, $indexType)] === null && $row[TableMap::TYPE_NUM == $indexType ? 2 + $offset : static::translateFieldName('EndDate', TableMap::TYPE_PHPNAME, $indexType)] === null && $row[TableMap::TYPE_NUM == $indexType ? 3 + $offset : static::translateFieldName('IsWorking', TableMap::TYPE_PHPNAME, $indexType)] === null) {
+            return null;
+        }
+
+        return serialize([(null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('ContactId', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('ContactId', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('ContactId', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('ContactId', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('ContactId', TableMap::TYPE_PHPNAME, $indexType)]), (null === $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('StartDate', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('StartDate', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('StartDate', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('StartDate', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('StartDate', TableMap::TYPE_PHPNAME, $indexType)]), (null === $row[TableMap::TYPE_NUM == $indexType ? 2 + $offset : static::translateFieldName('EndDate', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 2 + $offset : static::translateFieldName('EndDate', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 2 + $offset : static::translateFieldName('EndDate', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 2 + $offset : static::translateFieldName('EndDate', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 2 + $offset : static::translateFieldName('EndDate', TableMap::TYPE_PHPNAME, $indexType)]), (null === $row[TableMap::TYPE_NUM == $indexType ? 3 + $offset : static::translateFieldName('IsWorking', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 3 + $offset : static::translateFieldName('IsWorking', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 3 + $offset : static::translateFieldName('IsWorking', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 3 + $offset : static::translateFieldName('IsWorking', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 3 + $offset : static::translateFieldName('IsWorking', TableMap::TYPE_PHPNAME, $indexType)])]);
     }
 
     /**
@@ -195,7 +252,30 @@ class UserWorkPlanTimeTableMap extends TableMap
      */
     public static function getPrimaryKeyFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        return '';
+            $pks = [];
+
+        $pks[] = (int) $row[
+            $indexType == TableMap::TYPE_NUM
+                ? 0 + $offset
+                : self::translateFieldName('ContactId', TableMap::TYPE_PHPNAME, $indexType)
+        ];
+        $pks[] = (string) $row[
+            $indexType == TableMap::TYPE_NUM
+                ? 1 + $offset
+                : self::translateFieldName('StartDate', TableMap::TYPE_PHPNAME, $indexType)
+        ];
+        $pks[] = (string) $row[
+            $indexType == TableMap::TYPE_NUM
+                ? 2 + $offset
+                : self::translateFieldName('EndDate', TableMap::TYPE_PHPNAME, $indexType)
+        ];
+        $pks[] = (boolean) $row[
+            $indexType == TableMap::TYPE_NUM
+                ? 3 + $offset
+                : self::translateFieldName('IsWorking', TableMap::TYPE_PHPNAME, $indexType)
+        ];
+
+        return $pks;
     }
 
     /**
@@ -351,10 +431,23 @@ class UserWorkPlanTimeTableMap extends TableMap
             // rename for clarity
             $criteria = $values;
         } elseif ($values instanceof \TheFarm\Models\UserWorkPlanTime) { // it's a model object
-            // create criteria based on pk value
-            $criteria = $values->buildCriteria();
+            // create criteria based on pk values
+            $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            throw new LogicException('The UserWorkPlanTime object has no primary key');
+            $criteria = new Criteria(UserWorkPlanTimeTableMap::DATABASE_NAME);
+            // primary key is composite; we therefore, expect
+            // the primary key passed to be an array of pkey values
+            if (count($values) == count($values, COUNT_RECURSIVE)) {
+                // array is not multi-dimensional
+                $values = array($values);
+            }
+            foreach ($values as $value) {
+                $criterion = $criteria->getNewCriterion(UserWorkPlanTimeTableMap::COL_CONTACT_ID, $value[0]);
+                $criterion->addAnd($criteria->getNewCriterion(UserWorkPlanTimeTableMap::COL_START_DATE, $value[1]));
+                $criterion->addAnd($criteria->getNewCriterion(UserWorkPlanTimeTableMap::COL_END_DATE, $value[2]));
+                $criterion->addAnd($criteria->getNewCriterion(UserWorkPlanTimeTableMap::COL_IS_WORKING, $value[3]));
+                $criteria->addOr($criterion);
+            }
         }
 
         $query = UserWorkPlanTimeQuery::create()->mergeWith($criteria);

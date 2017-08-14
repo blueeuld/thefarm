@@ -812,10 +812,10 @@
     </vendor>
   </table>
   <table name="tf_user_work_plan_time" idMethod="native" phpName="UserWorkPlanTime" namespace="Models" isCrossRef="true">
-    <column name="contact_id" phpName="ContactId" type="INTEGER" required="true"/>
-    <column name="start_date" phpName="StartDate" type="TIMESTAMP" required="true"/>
-    <column name="end_date" phpName="EndDate" type="TIMESTAMP" required="true"/>
-    <column name="is_working" phpName="IsWorking" type="Boolean" defaultValue="1"/>
+    <column name="contact_id" phpName="ContactId" primaryKey="true" type="INTEGER" required="true"/>
+    <column name="start_date" phpName="StartDate" primaryKey="true" type="TIMESTAMP" required="true"/>
+    <column name="end_date" phpName="EndDate" primaryKey="true" type="TIMESTAMP" required="true"/>
+    <column name="is_working" phpName="IsWorking" primaryKey="true" type="Boolean" defaultValue="1"/>
 
     <foreign-key foreignTable="tf_contacts" phpName="Contact">
       <reference local="contact_id" foreign="contact_id"/>

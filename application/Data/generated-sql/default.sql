@@ -305,7 +305,7 @@ CREATE TABLE `tf_contacts`
     `is_approved` TINYINT(1) DEFAULT 0,
     `activation_code` INTEGER,
     PRIMARY KEY (`contact_id`),
-    INDEX `position_fk` (`position_cd`),
+    INDEX `fi_ition_fk` (`position_cd`),
     CONSTRAINT `position_fk`
         FOREIGN KEY (`position_cd`)
         REFERENCES `tf_position` (`position_cd`)
@@ -796,8 +796,8 @@ CREATE TABLE `tf_items_related_users`
 (
     `item_id` INTEGER NOT NULL,
     `contact_id` INTEGER NOT NULL,
+    PRIMARY KEY (`item_id`,`contact_id`),
     INDEX `tf_items_related_users_fi_6a6d09` (`contact_id`),
-    INDEX `tf_items_related_users_fi_b49f13` (`item_id`),
     CONSTRAINT `tf_items_related_users_fk_6a6d09`
         FOREIGN KEY (`contact_id`)
         REFERENCES `tf_contacts` (`contact_id`),
@@ -1033,8 +1033,8 @@ CREATE TABLE `tf_user_work_plan_time`
     `contact_id` INTEGER NOT NULL,
     `start_date` DATETIME NOT NULL,
     `end_date` DATETIME NOT NULL,
-    `is_working` TINYINT(1) DEFAULT 1,
-    INDEX `tf_user_work_plan_time_fi_6a6d09` (`contact_id`),
+    `is_working` TINYINT(1) DEFAULT 1 NOT NULL,
+    PRIMARY KEY (`contact_id`,`start_date`,`end_date`,`is_working`),
     CONSTRAINT `tf_user_work_plan_time_fk_6a6d09`
         FOREIGN KEY (`contact_id`)
         REFERENCES `tf_contacts` (`contact_id`)

@@ -45,6 +45,7 @@ class Providers extends TF_Controller {
 
         if ($contact_id) {
             $currentUser = $userApi->get_user($contact_id);
+
             $workPlanArr = [];
             foreach ($currentUser['UserWorkPlanTimes'] as $workPlan) {
                 $workPlanArr[date('Y-m-d', strtotime($workPlan['StartDate']))][] = date('H:i', strtotime($workPlan['StartDate']));

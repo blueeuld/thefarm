@@ -15,6 +15,8 @@ class Provider extends TF_Controller {
 
         $data['statuses'] = get_booking_statuses();
 
+        print_r($userData['UserWorkPlanTimes']);
+
 
 
         /*

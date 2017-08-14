@@ -6231,7 +6231,10 @@ abstract class Contact implements ActiveRecordInterface
         $userWorkPlanTimesToDelete = $this->getUserWorkPlanTimes(new Criteria(), $con)->diff($userWorkPlanTimes);
 
 
-        $this->userWorkPlanTimesScheduledForDeletion = $userWorkPlanTimesToDelete;
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->userWorkPlanTimesScheduledForDeletion = clone $userWorkPlanTimesToDelete;
 
         foreach ($userWorkPlanTimesToDelete as $userWorkPlanTimeRemoved) {
             $userWorkPlanTimeRemoved->setContact(null);
