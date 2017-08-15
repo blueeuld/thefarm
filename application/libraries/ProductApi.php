@@ -21,6 +21,7 @@ class ProductApi {
         $productArr = $product->toArray();
         $productArr['Users'] = $product->getItemsRelatedUsersJoinContact()->toArray();
         $productArr['Facilities'] = $product->getItemsRelatedFacilitiesJoinFacility()->toArray();
+        $productArr['Forms'] = $product->getItemFormsJoinForm()->toArray();
 
         return $productArr;
     }

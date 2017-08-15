@@ -29,6 +29,8 @@ use TheFarm\Models\FilesQuery as ChildFilesQuery;
 use TheFarm\Models\Item as ChildItem;
 use TheFarm\Models\ItemCategory as ChildItemCategory;
 use TheFarm\Models\ItemCategoryQuery as ChildItemCategoryQuery;
+use TheFarm\Models\ItemForm as ChildItemForm;
+use TheFarm\Models\ItemFormQuery as ChildItemFormQuery;
 use TheFarm\Models\ItemQuery as ChildItemQuery;
 use TheFarm\Models\ItemsRelatedFacility as ChildItemsRelatedFacility;
 use TheFarm\Models\ItemsRelatedFacilityQuery as ChildItemsRelatedFacilityQuery;
@@ -40,6 +42,7 @@ use TheFarm\Models\Map\BookingEventTableMap;
 use TheFarm\Models\Map\BookingItemTableMap;
 use TheFarm\Models\Map\BookingTableMap;
 use TheFarm\Models\Map\ItemCategoryTableMap;
+use TheFarm\Models\Map\ItemFormTableMap;
 use TheFarm\Models\Map\ItemTableMap;
 use TheFarm\Models\Map\ItemsRelatedFacilityTableMap;
 use TheFarm\Models\Map\ItemsRelatedUserTableMap;
@@ -224,6 +227,12 @@ abstract class Item implements ActiveRecordInterface
     protected $collItemsRelatedFacilitiesPartial;
 
     /**
+     * @var        ObjectCollection|ChildItemForm[] Collection to store aggregation of ChildItemForm objects.
+     */
+    protected $collItemForms;
+    protected $collItemFormsPartial;
+
+    /**
      * @var        ObjectCollection|ChildItemsRelatedUser[] Collection to store aggregation of ChildItemsRelatedUser objects.
      */
     protected $collItemsRelatedUsers;
@@ -288,6 +297,12 @@ abstract class Item implements ActiveRecordInterface
      * @var ObjectCollection|ChildItemsRelatedFacility[]
      */
     protected $itemsRelatedFacilitiesScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildItemForm[]
+     */
+    protected $itemFormsScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -1142,6 +1157,8 @@ abstract class Item implements ActiveRecordInterface
 
             $this->collItemsRelatedFacilities = null;
 
+            $this->collItemForms = null;
+
             $this->collItemsRelatedUsers = null;
 
             $this->collPackageItems = null;
@@ -1383,6 +1400,23 @@ abstract class Item implements ActiveRecordInterface
 
             if ($this->collItemsRelatedFacilities !== null) {
                 foreach ($this->collItemsRelatedFacilities as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->itemFormsScheduledForDeletion !== null) {
+                if (!$this->itemFormsScheduledForDeletion->isEmpty()) {
+                    \TheFarm\Models\ItemFormQuery::create()
+                        ->filterByPrimaryKeys($this->itemFormsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->itemFormsScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collItemForms !== null) {
+                foreach ($this->collItemForms as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -1789,6 +1823,21 @@ abstract class Item implements ActiveRecordInterface
 
                 $result[$key] = $this->collItemsRelatedFacilities->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
+            if (null !== $this->collItemForms) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'itemForms';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'tf_items_related_formss';
+                        break;
+                    default:
+                        $key = 'ItemForms';
+                }
+
+                $result[$key] = $this->collItemForms->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
             if (null !== $this->collItemsRelatedUsers) {
 
                 switch ($keyType) {
@@ -2181,6 +2230,12 @@ abstract class Item implements ActiveRecordInterface
                 }
             }
 
+            foreach ($this->getItemForms() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addItemForm($relObj->copy($deepCopy));
+                }
+            }
+
             foreach ($this->getItemsRelatedUsers() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addItemsRelatedUser($relObj->copy($deepCopy));
@@ -2303,6 +2358,10 @@ abstract class Item implements ActiveRecordInterface
         }
         if ('ItemsRelatedFacility' == $relationName) {
             $this->initItemsRelatedFacilities();
+            return;
+        }
+        if ('ItemForm' == $relationName) {
+            $this->initItemForms();
             return;
         }
         if ('ItemsRelatedUser' == $relationName) {
@@ -3797,6 +3856,259 @@ abstract class Item implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collItemForms collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addItemForms()
+     */
+    public function clearItemForms()
+    {
+        $this->collItemForms = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collItemForms collection loaded partially.
+     */
+    public function resetPartialItemForms($v = true)
+    {
+        $this->collItemFormsPartial = $v;
+    }
+
+    /**
+     * Initializes the collItemForms collection.
+     *
+     * By default this just sets the collItemForms collection to an empty array (like clearcollItemForms());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initItemForms($overrideExisting = true)
+    {
+        if (null !== $this->collItemForms && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = ItemFormTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collItemForms = new $collectionClassName;
+        $this->collItemForms->setModel('\TheFarm\Models\ItemForm');
+    }
+
+    /**
+     * Gets an array of ChildItemForm objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildItem is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildItemForm[] List of ChildItemForm objects
+     * @throws PropelException
+     */
+    public function getItemForms(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collItemFormsPartial && !$this->isNew();
+        if (null === $this->collItemForms || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collItemForms) {
+                // return empty collection
+                $this->initItemForms();
+            } else {
+                $collItemForms = ChildItemFormQuery::create(null, $criteria)
+                    ->filterByItem($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collItemFormsPartial && count($collItemForms)) {
+                        $this->initItemForms(false);
+
+                        foreach ($collItemForms as $obj) {
+                            if (false == $this->collItemForms->contains($obj)) {
+                                $this->collItemForms->append($obj);
+                            }
+                        }
+
+                        $this->collItemFormsPartial = true;
+                    }
+
+                    return $collItemForms;
+                }
+
+                if ($partial && $this->collItemForms) {
+                    foreach ($this->collItemForms as $obj) {
+                        if ($obj->isNew()) {
+                            $collItemForms[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collItemForms = $collItemForms;
+                $this->collItemFormsPartial = false;
+            }
+        }
+
+        return $this->collItemForms;
+    }
+
+    /**
+     * Sets a collection of ChildItemForm objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $itemForms A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildItem The current object (for fluent API support)
+     */
+    public function setItemForms(Collection $itemForms, ConnectionInterface $con = null)
+    {
+        /** @var ChildItemForm[] $itemFormsToDelete */
+        $itemFormsToDelete = $this->getItemForms(new Criteria(), $con)->diff($itemForms);
+
+
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->itemFormsScheduledForDeletion = clone $itemFormsToDelete;
+
+        foreach ($itemFormsToDelete as $itemFormRemoved) {
+            $itemFormRemoved->setItem(null);
+        }
+
+        $this->collItemForms = null;
+        foreach ($itemForms as $itemForm) {
+            $this->addItemForm($itemForm);
+        }
+
+        $this->collItemForms = $itemForms;
+        $this->collItemFormsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related ItemForm objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related ItemForm objects.
+     * @throws PropelException
+     */
+    public function countItemForms(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collItemFormsPartial && !$this->isNew();
+        if (null === $this->collItemForms || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collItemForms) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getItemForms());
+            }
+
+            $query = ChildItemFormQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByItem($this)
+                ->count($con);
+        }
+
+        return count($this->collItemForms);
+    }
+
+    /**
+     * Method called to associate a ChildItemForm object to this object
+     * through the ChildItemForm foreign key attribute.
+     *
+     * @param  ChildItemForm $l ChildItemForm
+     * @return $this|\TheFarm\Models\Item The current object (for fluent API support)
+     */
+    public function addItemForm(ChildItemForm $l)
+    {
+        if ($this->collItemForms === null) {
+            $this->initItemForms();
+            $this->collItemFormsPartial = true;
+        }
+
+        if (!$this->collItemForms->contains($l)) {
+            $this->doAddItemForm($l);
+
+            if ($this->itemFormsScheduledForDeletion and $this->itemFormsScheduledForDeletion->contains($l)) {
+                $this->itemFormsScheduledForDeletion->remove($this->itemFormsScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildItemForm $itemForm The ChildItemForm object to add.
+     */
+    protected function doAddItemForm(ChildItemForm $itemForm)
+    {
+        $this->collItemForms[]= $itemForm;
+        $itemForm->setItem($this);
+    }
+
+    /**
+     * @param  ChildItemForm $itemForm The ChildItemForm object to remove.
+     * @return $this|ChildItem The current object (for fluent API support)
+     */
+    public function removeItemForm(ChildItemForm $itemForm)
+    {
+        if ($this->getItemForms()->contains($itemForm)) {
+            $pos = $this->collItemForms->search($itemForm);
+            $this->collItemForms->remove($pos);
+            if (null === $this->itemFormsScheduledForDeletion) {
+                $this->itemFormsScheduledForDeletion = clone $this->collItemForms;
+                $this->itemFormsScheduledForDeletion->clear();
+            }
+            $this->itemFormsScheduledForDeletion[]= clone $itemForm;
+            $itemForm->setItem(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Item is new, it will return
+     * an empty collection; or if this Item has previously
+     * been saved, it will retrieve related ItemForms from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Item.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildItemForm[] List of ChildItemForm objects
+     */
+    public function getItemFormsJoinForm(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildItemFormQuery::create(null, $criteria);
+        $query->joinWith('Form', $joinBehavior);
+
+        return $this->getItemForms($query, $con);
+    }
+
+    /**
      * Clears out the collItemsRelatedUsers collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
@@ -4613,6 +4925,11 @@ abstract class Item implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collItemForms) {
+                foreach ($this->collItemForms as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->collItemsRelatedUsers) {
                 foreach ($this->collItemsRelatedUsers as $o) {
                     $o->clearAllReferences($deep);
@@ -4635,6 +4952,7 @@ abstract class Item implements ActiveRecordInterface
         $this->collBookings = null;
         $this->collItemCategories = null;
         $this->collItemsRelatedFacilities = null;
+        $this->collItemForms = null;
         $this->collItemsRelatedUsers = null;
         $this->collPackageItems = null;
         $this->collContacts = null;

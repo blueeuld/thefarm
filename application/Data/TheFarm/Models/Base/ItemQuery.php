@@ -118,6 +118,16 @@ use TheFarm\Models\Map\ItemTableMap;
  * @method     ChildItemQuery rightJoinWithItemsRelatedFacility() Adds a RIGHT JOIN clause and with to the query using the ItemsRelatedFacility relation
  * @method     ChildItemQuery innerJoinWithItemsRelatedFacility() Adds a INNER JOIN clause and with to the query using the ItemsRelatedFacility relation
  *
+ * @method     ChildItemQuery leftJoinItemForm($relationAlias = null) Adds a LEFT JOIN clause to the query using the ItemForm relation
+ * @method     ChildItemQuery rightJoinItemForm($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ItemForm relation
+ * @method     ChildItemQuery innerJoinItemForm($relationAlias = null) Adds a INNER JOIN clause to the query using the ItemForm relation
+ *
+ * @method     ChildItemQuery joinWithItemForm($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the ItemForm relation
+ *
+ * @method     ChildItemQuery leftJoinWithItemForm() Adds a LEFT JOIN clause and with to the query using the ItemForm relation
+ * @method     ChildItemQuery rightJoinWithItemForm() Adds a RIGHT JOIN clause and with to the query using the ItemForm relation
+ * @method     ChildItemQuery innerJoinWithItemForm() Adds a INNER JOIN clause and with to the query using the ItemForm relation
+ *
  * @method     ChildItemQuery leftJoinItemsRelatedUser($relationAlias = null) Adds a LEFT JOIN clause to the query using the ItemsRelatedUser relation
  * @method     ChildItemQuery rightJoinItemsRelatedUser($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ItemsRelatedUser relation
  * @method     ChildItemQuery innerJoinItemsRelatedUser($relationAlias = null) Adds a INNER JOIN clause to the query using the ItemsRelatedUser relation
@@ -138,7 +148,7 @@ use TheFarm\Models\Map\ItemTableMap;
  * @method     ChildItemQuery rightJoinWithPackageItem() Adds a RIGHT JOIN clause and with to the query using the PackageItem relation
  * @method     ChildItemQuery innerJoinWithPackageItem() Adds a INNER JOIN clause and with to the query using the PackageItem relation
  *
- * @method     \TheFarm\Models\FilesQuery|\TheFarm\Models\BookingEventQuery|\TheFarm\Models\BookingItemQuery|\TheFarm\Models\BookingQuery|\TheFarm\Models\ItemCategoryQuery|\TheFarm\Models\ItemsRelatedFacilityQuery|\TheFarm\Models\ItemsRelatedUserQuery|\TheFarm\Models\PackageItemQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \TheFarm\Models\FilesQuery|\TheFarm\Models\BookingEventQuery|\TheFarm\Models\BookingItemQuery|\TheFarm\Models\BookingQuery|\TheFarm\Models\ItemCategoryQuery|\TheFarm\Models\ItemsRelatedFacilityQuery|\TheFarm\Models\ItemFormQuery|\TheFarm\Models\ItemsRelatedUserQuery|\TheFarm\Models\PackageItemQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildItem findOne(ConnectionInterface $con = null) Return the first ChildItem matching the query
  * @method     ChildItem findOneOrCreate(ConnectionInterface $con = null) Return the first ChildItem matching the query, or a new ChildItem object populated from the query conditions when no match is found
@@ -1267,6 +1277,79 @@ abstract class ItemQuery extends ModelCriteria
         return $this
             ->joinItemsRelatedFacility($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'ItemsRelatedFacility', '\TheFarm\Models\ItemsRelatedFacilityQuery');
+    }
+
+    /**
+     * Filter the query by a related \TheFarm\Models\ItemForm object
+     *
+     * @param \TheFarm\Models\ItemForm|ObjectCollection $itemForm the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildItemQuery The current query, for fluid interface
+     */
+    public function filterByItemForm($itemForm, $comparison = null)
+    {
+        if ($itemForm instanceof \TheFarm\Models\ItemForm) {
+            return $this
+                ->addUsingAlias(ItemTableMap::COL_ITEM_ID, $itemForm->getItemId(), $comparison);
+        } elseif ($itemForm instanceof ObjectCollection) {
+            return $this
+                ->useItemFormQuery()
+                ->filterByPrimaryKeys($itemForm->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByItemForm() only accepts arguments of type \TheFarm\Models\ItemForm or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the ItemForm relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildItemQuery The current query, for fluid interface
+     */
+    public function joinItemForm($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('ItemForm');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'ItemForm');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the ItemForm relation ItemForm object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \TheFarm\Models\ItemFormQuery A secondary query class using the current class as primary query
+     */
+    public function useItemFormQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinItemForm($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'ItemForm', '\TheFarm\Models\ItemFormQuery');
     }
 
     /**

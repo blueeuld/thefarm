@@ -254,6 +254,13 @@ class ItemTableMap extends TableMap
     1 => ':item_id',
   ),
 ), null, null, 'ItemsRelatedFacilities', false);
+        $this->addRelation('ItemForm', '\\TheFarm\\Models\\ItemForm', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':item_id',
+    1 => ':item_id',
+  ),
+), null, null, 'ItemForms', false);
         $this->addRelation('ItemsRelatedUser', '\\TheFarm\\Models\\ItemsRelatedUser', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (

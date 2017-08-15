@@ -184,6 +184,13 @@ class FormTableMap extends TableMap
     1 => ':form_id',
   ),
 ), null, null, 'FormFields', false);
+        $this->addRelation('ItemForm', '\\TheFarm\\Models\\ItemForm', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':form_id',
+    1 => ':form_id',
+  ),
+), null, null, 'ItemForms', false);
     } // buildRelations()
 
     /**
