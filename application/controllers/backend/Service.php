@@ -153,7 +153,7 @@ class Service extends TF_Controller {
 		}
 	}
 	
-	public function edit() {
+	public function edit($item_id) {
 
 		$data = array(
 			'item_id' => $this->uri->segment(4),
@@ -253,6 +253,11 @@ class Service extends TF_Controller {
         }
 
         $data['day_time_settings'] = $day_time_settings;
+
+		$productApi = new ProductApi();
+		$product = $productApi->get_product($item_id);
+
+		$data['productData'] = $product;
 
 		$this->load->view('admin/service/form', $data);
 	}

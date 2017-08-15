@@ -192,10 +192,21 @@ $thumbnail = [
         </div>
     </div>
     <div role="tabpanel" class="tab-pane" id="providers">
-        <p>
-            <br/>
-            <?php echo form_multiselect('related_user_ids[]', $providers, $related_user_ids, 'class="multi-select" data-header="Select providers" data-live-search="true"'); ?>
-        </p>
+        <div class="clearfix">
+            <ul class="col-lg-4 list-group relatedUsers">
+                <?php foreach ($productData['Users'] as $provider) : ?>
+                <li class="list-group-item" id="relatedUser<?php echo $provider['ContactId'];?>">
+                    <?php echo $provider['Contact']['FirstName'] . $provider['Contact']['LastName']; ?>
+                    <input type="hidden" name="related_user_ids[]" value="<?php echo $provider['ContactId'];?>" />
+                    <span class="pull-right"><a href="#" class="deleteRelatedUser"><i class="glyphicon glyphicon-trash"></i> </a></span>
+                </li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+        <div class="form-group">
+            <?php echo form_dropdown('providers', $providers, '', 'class="form-control"'); ?>
+        </div>
+        <button class="btn btn-success addRelatedUser" type="button">Add</button>
     </div>
     <div role="tabpanel" class="tab-pane" id="forms">
 
@@ -214,6 +225,33 @@ $thumbnail = [
 <script>
     $(document).ready(function () {
         $('.selectpicker').selectpicker();
+
+        $('.deleteRelatedUser').each(function(){
+            $(this).on('click', function(evt){
+                evt.preventDefault();
+                $(this).parents('li.list-group-item').remove();
+            });
+        });
+        
+        $('.addRelatedUser').on('click', function (evt) {
+            evt.preventDefault();
+            var selected = $('[name="providers"]').find('option:selected');
+            if (selected) {
+                var o = $('#relatedUser'+selected.val());
+                if (o.length === 0) {
+                    var $li = $('<li class="list-group-item" id="relatedUser'+selected.val()+'">'+selected.text()+'</li>');
+                    $li.append('<input type="hidden" name="related_user_ids[]" value="'+selected.val()+'" /');
+                    $li.append('<span class="pull-right"><a href="#" class="deleteRelatedUser"><i class="glyphicon glyphicon-trash"></i> </a></span>');
+                    $li.find('.deleteRelatedUser').on('click', function(){
+                        $(this).parents('li.list-group-item').remove();
+                    });
+                    $('.relatedUsers').append($li);
+                }
+                else {
+                    alert('Already exists.');
+                }
+            }
+        });
     })
 </script>
 

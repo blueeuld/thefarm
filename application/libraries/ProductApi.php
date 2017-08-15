@@ -15,4 +15,13 @@ class ProductApi {
         return $products->toArray();
     }
 
+    public function get_product($item_id)
+    {
+        $product = \TheFarm\Models\ItemQuery::create()->findOneByItemId($item_id);
+        $productArr = $product->toArray();
+        $productArr['Users'] = $product->getItemsRelatedUsersJoinContact()->toArray();
+
+        return $productArr;
+    }
+
 }
