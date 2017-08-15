@@ -74,18 +74,12 @@ class UserApi {
             $search = $search->useItemsRelatedUserQuery()->filterByItemId($relatedItemId)->endUse();
         }
 
-        $users = $search->find();
-        $userArr = [];
-        if ($users) {
-
-            foreach ($users as $key => $user) {
-                $userArr[$key] = $user->toArray();
-//                if ($providersOnly) {
-//                    $userArr[$key]['UserWorkPlanTimes'] = $user->getUserWorkPlanTimes()->toArray();
-//                }
-            }
+        if ($availableProvidersOnly) {
+            $search = $search->distinct();
         }
 
+        $users = $search->find();
+        $userArr =$users->toArray();
         return $userArr;
     }
 

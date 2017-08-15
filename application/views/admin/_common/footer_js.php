@@ -110,7 +110,7 @@
 					 */
 										
 				}).always(function(){
-					setTimeout('get_unassigned_events(false)', 1000*6);
+					setTimeout('get_unassigned_events(false)', 1000*60);
 				});
 			}
 			

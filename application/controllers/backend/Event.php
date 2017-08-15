@@ -51,12 +51,12 @@ class Event extends TF_Controller {
             'Incl' => $included,
             'NotIncl' => $not_included,
             'Foc' => $foc,
-            'InclOsDoneNumber' => $this->input->get_post('incl_os_done_number'),
-            'InclOsDoneAmount' => $this->input->get_post('incl_os_done_amount'),
-            'FocOsDoneNumber' => $this->input->get_post('foc_os_done_number'),
-            'FocOsDoneAmount' => $this->input->get_post('foc_os_done_amount'),
-            'NotInclOsDoneNumber' => $this->input->get_post('not_incl_os_done_number'),
-            'NotInclOsDoneAmount' => $this->input->get_post('not_incl_os_done_amount'),
+            'InclOsDoneNumber' => $this->input->get_post('incl_os_done_number') ? $this->input->get_post('incl_os_done_number') : null,
+            'InclOsDoneAmount' => $this->input->get_post('incl_os_done_amount') ? $this->input->get_post('incl_os_done_amount') : null,
+            'FocOsDoneNumber' => $this->input->get_post('foc_os_done_number') ? $this->input->get_post('foc_os_done_number') : null,
+            'FocOsDoneAmount' => $this->input->get_post('foc_os_done_amount') ? $this->input->get_post('foc_os_done_amount') : null,
+            'NotInclOsDoneNumber' => $this->input->get_post('not_incl_os_done_number') ? $this->input->get_post('not_incl_os_done_number') : null,
+            'NotInclOsDoneAmount' => $this->input->get_post('not_incl_os_done_amount') ? $this->input->get_post('not_incl_os_done_amount') : null,
         ];
 
         $bookingEventUsers = [];
@@ -332,8 +332,15 @@ class Event extends TF_Controller {
         $endTime = date('Y-m-d H:i:s', strtotime($this->input->get_post('end_time')));
         if (is_null($itemId)) $itemId = $this->input->get_post('item_id');
 
+        if (get_current_user_location_id()) {
+            $locations = [0, get_current_user_location_id()];
+        }
+        else {
+            $locations = [];
+        }
+
         $userApi = new UserApi();
-        $availableProviders = $userApi->get_users(false, [0, get_current_user_location_id()], $itemId, true, $startTime, $endTime);
+        $availableProviders = $userApi->get_users(false, $locations, $itemId, true, $startTime, $endTime);
         $this->output->set_content_type('application/json')->set_output(json_encode($availableProviders));
 
 //        $availableProviders = [];

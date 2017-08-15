@@ -50,14 +50,14 @@ class Providers extends TF_Controller {
             foreach ($currentUser['UserWorkPlanTimes'] as $workPlan) {
                 $workPlanArr[date('Y-m-d', strtotime($workPlan['StartDate']))][] = date('H:i', strtotime($workPlan['StartDate']));
             }
+
+            $params['date'] = $week;
+            $params['base'] = 'backend/providers/update_schedule/'.$contact_id;
+            $params['schedule'] = $workPlanArr;
+            $params['schedule_code'] = $result['work_plan_code'] ? unserialize($result['work_plan_code']) : false;
+
+            $this->load->library('weeklycalendar', $params);
         }
-
-        $params['date'] = $week;
-        $params['base'] = 'backend/providers/schedule/'.$contact_id;
-        $params['schedule'] = $result['work_plan'] ? unserialize($result['work_plan']) : false;
-        $params['schedule_code'] = $result['work_plan_code'] ? unserialize($result['work_plan_code']) : false;
-
-        $this->load->library('weeklycalendar', $params);
 
         $this->load->view('admin/providers/schedule', $data);
     }
@@ -74,6 +74,68 @@ class Providers extends TF_Controller {
 	    }
 	    
 	    redirect('backend/providers');
-	    
+    }
+
+    public function update_schedule($contact_id = null) {
+
+        $schedule = array();
+        $schedule_code = array();
+        foreach ($_POST['schedule_day'] as $date => $code)
+        {
+            $schedule[$date] = isset($_POST['schedule'][$date]) ? $_POST['schedule'][$date] : array();
+
+            if ($code !== '') {
+                if (in_array($code, explode(',', '1,2,3,4,5,6,7,8,9,10,A,B,C,D'))) {
+                    if (isset($_POST['schedule'][$date])) {
+                        $schedule[$date] = $_POST['schedule'][$date];
+                    }
+                }
+                $schedule_code[$date] = $code;
+            }
+        }
+
+        $scheduleData = [];
+        foreach ($schedule as $dt => $tm) {
+            foreach ($tm as $item) {
+                $endDateTime = new DateTime($dt . ' ' . $item);
+                $endDateTime->add(new DateInterval('PT29M'));
+
+                $scheduleData[] = [
+                    'ContactId' => (int)$contact_id,
+                    'StartDate' => $dt . ' ' . $item,
+                    'EndDate' => $endDateTime->format('Y-m-d H:i'),
+                    'IsWorking' => true
+                ];
+            }
+        }
+
+        $contact_id = (int)$this->input->get_post('contact_id');
+        $week = $this->input->get_post('week');
+
+        $userApi = new UserApi();
+        $user = $userApi->get_user($contact_id);
+        $user['UserWorkPlanTimes'] = $scheduleData;
+
+        $savedUser = $userApi->save_user($user);
+//
+//
+//        foreach ($schedule_code as $date => $code) {
+//            $this->_insert_or_update_date($contact_id, $date, $code);
+//        }
+//
+//        foreach ($schedule as $date => $times) {
+//            $this->db->delete('user_work_plan_time', 'contact_id='.$contact_id.' AND start_date BETWEEN \''.$date.' 00:00:00\' AND \''.$date.' 23:59:59\'');
+//            foreach ($times as $time) {
+//                $this->_insert_or_update_time($contact_id, $date . ' ' . $time . ':00');
+//            }
+//        }
+//
+//
+//        $this->db->update('users', array(
+//            'work_plan' => serialize($schedule),
+//            'work_plan_code' => serialize($schedule_code)
+//        ), array('contact_id' => $contact_id));
+
+        redirect('backend/providers/schedule/'.$contact_id.'/'.$week);
     }
 }

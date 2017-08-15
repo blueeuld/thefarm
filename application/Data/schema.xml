@@ -57,11 +57,11 @@
     <column name="item_id" phpName="ItemId" type="INTEGER"/>
     <column name="is_kids" phpName="IsKids" type="BOOLEAN" defaultValue="0"/>
     <column name="incl_os_done_number" phpName="InclOsDoneNumber" type="VARCHAR" size="20"/>
-    <column name="incl_os_done_amount" phpName="InclOsDoneAmount" type="DECIMAL" size="10" scale="2" required="true" defaultValue="0.00"/>
+    <column name="incl_os_done_amount" phpName="InclOsDoneAmount" type="DECIMAL" size="10" scale="2" required="false" defaultValue="0.00"/>
     <column name="foc_os_done_number" phpName="FocOsDoneNumber" type="VARCHAR" size="20"/>
-    <column name="foc_os_done_amount" phpName="FocOsDoneAmount" type="DECIMAL" size="10" scale="2" required="true" defaultValue="0.00"/>
+    <column name="foc_os_done_amount" phpName="FocOsDoneAmount" type="DECIMAL" size="10" scale="2" required="false" defaultValue="0.00"/>
     <column name="not_incl_os_done_number" phpName="NotInclOsDoneNumber" type="VARCHAR" size="20"/>
-    <column name="not_incl_os_done_amount" phpName="NotInclOsDoneAmount" type="DECIMAL" size="10" scale="2" required="true" defaultValue="0.00"/>
+    <column name="not_incl_os_done_amount" phpName="NotInclOsDoneAmount" type="DECIMAL" size="10" scale="2" required="false" defaultValue="0.00"/>
     <column name="incl" phpName="Incl" type="INTEGER" size="1" required="true"/>
     <column name="not_incl" phpName="NotIncl" type="INTEGER" size="1" required="true"/>
     <column name="foc" phpName="Foc" type="INTEGER" size="1" required="true"/>
@@ -815,7 +815,7 @@
     <column name="contact_id" phpName="ContactId" primaryKey="true" type="INTEGER" required="true"/>
     <column name="start_date" phpName="StartDate" primaryKey="true" type="TIMESTAMP" required="true"/>
     <column name="end_date" phpName="EndDate" primaryKey="true" type="TIMESTAMP" required="true"/>
-    <column name="is_working" phpName="IsWorking" primaryKey="true" type="Boolean" defaultValue="1"/>
+    <column name="is_working" phpName="IsWorking" type="Boolean" defaultValue="1"/>
 
     <foreign-key foreignTable="tf_contacts" phpName="Contact">
       <reference local="contact_id" foreign="contact_id"/>

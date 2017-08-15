@@ -120,10 +120,10 @@ abstract class UserWorkPlanTimeQuery extends ModelCriteria
      * Go fast if the query is untouched.
      *
      * <code>
-     * $obj = $c->findPk(array(12, 34, 56, 78), $con);
+     * $obj = $c->findPk(array(12, 34, 56), $con);
      * </code>
      *
-     * @param array[$contact_id, $start_date, $end_date, $is_working] $key Primary key to use for the query
+     * @param array[$contact_id, $start_date, $end_date] $key Primary key to use for the query
      * @param ConnectionInterface $con an optional connection object
      *
      * @return ChildUserWorkPlanTime|array|mixed the result, formatted by the current formatter
@@ -148,7 +148,7 @@ abstract class UserWorkPlanTimeQuery extends ModelCriteria
             return $this->findPkComplex($key, $con);
         }
 
-        if ((null !== ($obj = UserWorkPlanTimeTableMap::getInstanceFromPool(serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1]), (null === $key[2] || is_scalar($key[2]) || is_callable([$key[2], '__toString']) ? (string) $key[2] : $key[2]), (null === $key[3] || is_scalar($key[3]) || is_callable([$key[3], '__toString']) ? (string) $key[3] : $key[3])]))))) {
+        if ((null !== ($obj = UserWorkPlanTimeTableMap::getInstanceFromPool(serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1]), (null === $key[2] || is_scalar($key[2]) || is_callable([$key[2], '__toString']) ? (string) $key[2] : $key[2])]))))) {
             // the object is already in the instance pool
             return $obj;
         }
@@ -169,13 +169,12 @@ abstract class UserWorkPlanTimeQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT contact_id, start_date, end_date, is_working FROM tf_user_work_plan_time WHERE contact_id = :p0 AND start_date = :p1 AND end_date = :p2 AND is_working = :p3';
+        $sql = 'SELECT contact_id, start_date, end_date, is_working FROM tf_user_work_plan_time WHERE contact_id = :p0 AND start_date = :p1 AND end_date = :p2';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key[0], PDO::PARAM_INT);
             $stmt->bindValue(':p1', $key[1] ? $key[1]->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
             $stmt->bindValue(':p2', $key[2] ? $key[2]->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
-            $stmt->bindValue(':p3', (int) $key[3], PDO::PARAM_INT);
             $stmt->execute();
         } catch (Exception $e) {
             Propel::log($e->getMessage(), Propel::LOG_ERR);
@@ -186,7 +185,7 @@ abstract class UserWorkPlanTimeQuery extends ModelCriteria
             /** @var ChildUserWorkPlanTime $obj */
             $obj = new ChildUserWorkPlanTime();
             $obj->hydrate($row);
-            UserWorkPlanTimeTableMap::addInstanceToPool($obj, serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1]), (null === $key[2] || is_scalar($key[2]) || is_callable([$key[2], '__toString']) ? (string) $key[2] : $key[2]), (null === $key[3] || is_scalar($key[3]) || is_callable([$key[3], '__toString']) ? (string) $key[3] : $key[3])]));
+            UserWorkPlanTimeTableMap::addInstanceToPool($obj, serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1]), (null === $key[2] || is_scalar($key[2]) || is_callable([$key[2], '__toString']) ? (string) $key[2] : $key[2])]));
         }
         $stmt->closeCursor();
 
@@ -248,7 +247,6 @@ abstract class UserWorkPlanTimeQuery extends ModelCriteria
         $this->addUsingAlias(UserWorkPlanTimeTableMap::COL_CONTACT_ID, $key[0], Criteria::EQUAL);
         $this->addUsingAlias(UserWorkPlanTimeTableMap::COL_START_DATE, $key[1], Criteria::EQUAL);
         $this->addUsingAlias(UserWorkPlanTimeTableMap::COL_END_DATE, $key[2], Criteria::EQUAL);
-        $this->addUsingAlias(UserWorkPlanTimeTableMap::COL_IS_WORKING, $key[3], Criteria::EQUAL);
 
         return $this;
     }
@@ -271,8 +269,6 @@ abstract class UserWorkPlanTimeQuery extends ModelCriteria
             $cton0->addAnd($cton1);
             $cton2 = $this->getNewCriterion(UserWorkPlanTimeTableMap::COL_END_DATE, $key[2], Criteria::EQUAL);
             $cton0->addAnd($cton2);
-            $cton3 = $this->getNewCriterion(UserWorkPlanTimeTableMap::COL_IS_WORKING, $key[3], Criteria::EQUAL);
-            $cton0->addAnd($cton3);
             $this->addOr($cton0);
         }
 
@@ -525,8 +521,7 @@ abstract class UserWorkPlanTimeQuery extends ModelCriteria
             $this->addCond('pruneCond0', $this->getAliasedColName(UserWorkPlanTimeTableMap::COL_CONTACT_ID), $userWorkPlanTime->getContactId(), Criteria::NOT_EQUAL);
             $this->addCond('pruneCond1', $this->getAliasedColName(UserWorkPlanTimeTableMap::COL_START_DATE), $userWorkPlanTime->getStartDate(), Criteria::NOT_EQUAL);
             $this->addCond('pruneCond2', $this->getAliasedColName(UserWorkPlanTimeTableMap::COL_END_DATE), $userWorkPlanTime->getEndDate(), Criteria::NOT_EQUAL);
-            $this->addCond('pruneCond3', $this->getAliasedColName(UserWorkPlanTimeTableMap::COL_IS_WORKING), $userWorkPlanTime->getIsWorking(), Criteria::NOT_EQUAL);
-            $this->combine(array('pruneCond0', 'pruneCond1', 'pruneCond2', 'pruneCond3'), Criteria::LOGICAL_OR);
+            $this->combine(array('pruneCond0', 'pruneCond1', 'pruneCond2'), Criteria::LOGICAL_OR);
         }
 
         return $this;

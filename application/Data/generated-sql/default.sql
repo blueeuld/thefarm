@@ -75,11 +75,11 @@ CREATE TABLE `tf_booking_events`
     `item_id` INTEGER,
     `is_kids` TINYINT(1) DEFAULT 0,
     `incl_os_done_number` VARCHAR(20),
-    `incl_os_done_amount` DECIMAL(10,2) DEFAULT 0.00 NOT NULL,
+    `incl_os_done_amount` DECIMAL(10,2) DEFAULT 0.00,
     `foc_os_done_number` VARCHAR(20),
-    `foc_os_done_amount` DECIMAL(10,2) DEFAULT 0.00 NOT NULL,
+    `foc_os_done_amount` DECIMAL(10,2) DEFAULT 0.00,
     `not_incl_os_done_number` VARCHAR(20),
-    `not_incl_os_done_amount` DECIMAL(10,2) DEFAULT 0.00 NOT NULL,
+    `not_incl_os_done_amount` DECIMAL(10,2) DEFAULT 0.00,
     `incl` INTEGER(1) NOT NULL,
     `not_incl` INTEGER(1) NOT NULL,
     `foc` INTEGER(1) NOT NULL,
@@ -1033,8 +1033,8 @@ CREATE TABLE `tf_user_work_plan_time`
     `contact_id` INTEGER NOT NULL,
     `start_date` DATETIME NOT NULL,
     `end_date` DATETIME NOT NULL,
-    `is_working` TINYINT(1) DEFAULT 1 NOT NULL,
-    PRIMARY KEY (`contact_id`,`start_date`,`end_date`,`is_working`),
+    `is_working` TINYINT(1) DEFAULT 1,
+    PRIMARY KEY (`contact_id`,`start_date`,`end_date`),
     CONSTRAINT `tf_user_work_plan_time_fk_6a6d09`
         FOREIGN KEY (`contact_id`)
         REFERENCES `tf_contacts` (`contact_id`)

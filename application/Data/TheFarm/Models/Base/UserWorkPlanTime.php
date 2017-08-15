@@ -1106,7 +1106,6 @@ abstract class UserWorkPlanTime implements ActiveRecordInterface
         $criteria->add(UserWorkPlanTimeTableMap::COL_CONTACT_ID, $this->contact_id);
         $criteria->add(UserWorkPlanTimeTableMap::COL_START_DATE, $this->start_date);
         $criteria->add(UserWorkPlanTimeTableMap::COL_END_DATE, $this->end_date);
-        $criteria->add(UserWorkPlanTimeTableMap::COL_IS_WORKING, $this->is_working);
 
         return $criteria;
     }
@@ -1121,8 +1120,7 @@ abstract class UserWorkPlanTime implements ActiveRecordInterface
     {
         $validPk = null !== $this->getContactId() &&
             null !== $this->getStartDate() &&
-            null !== $this->getEndDate() &&
-            null !== $this->getIsWorking();
+            null !== $this->getEndDate();
 
         $validPrimaryKeyFKs = 1;
         $primaryKeyFKs = [];
@@ -1154,7 +1152,6 @@ abstract class UserWorkPlanTime implements ActiveRecordInterface
         $pks[0] = $this->getContactId();
         $pks[1] = $this->getStartDate();
         $pks[2] = $this->getEndDate();
-        $pks[3] = $this->getIsWorking();
 
         return $pks;
     }
@@ -1170,7 +1167,6 @@ abstract class UserWorkPlanTime implements ActiveRecordInterface
         $this->setContactId($keys[0]);
         $this->setStartDate($keys[1]);
         $this->setEndDate($keys[2]);
-        $this->setIsWorking($keys[3]);
     }
 
     /**
@@ -1179,7 +1175,7 @@ abstract class UserWorkPlanTime implements ActiveRecordInterface
      */
     public function isPrimaryKeyNull()
     {
-        return (null === $this->getContactId()) && (null === $this->getStartDate()) && (null === $this->getEndDate()) && (null === $this->getIsWorking());
+        return (null === $this->getContactId()) && (null === $this->getStartDate()) && (null === $this->getEndDate());
     }
 
     /**

@@ -299,11 +299,11 @@ class BookingEventTableMap extends TableMap
         $this->addForeignKey('item_id', 'ItemId', 'INTEGER', 'tf_items', 'item_id', false, null, null);
         $this->addColumn('is_kids', 'IsKids', 'BOOLEAN', false, 1, false);
         $this->addColumn('incl_os_done_number', 'InclOsDoneNumber', 'VARCHAR', false, 20, null);
-        $this->addColumn('incl_os_done_amount', 'InclOsDoneAmount', 'DECIMAL', true, 10, 0);
+        $this->addColumn('incl_os_done_amount', 'InclOsDoneAmount', 'DECIMAL', false, 10, 0);
         $this->addColumn('foc_os_done_number', 'FocOsDoneNumber', 'VARCHAR', false, 20, null);
-        $this->addColumn('foc_os_done_amount', 'FocOsDoneAmount', 'DECIMAL', true, 10, 0);
+        $this->addColumn('foc_os_done_amount', 'FocOsDoneAmount', 'DECIMAL', false, 10, 0);
         $this->addColumn('not_incl_os_done_number', 'NotInclOsDoneNumber', 'VARCHAR', false, 20, null);
-        $this->addColumn('not_incl_os_done_amount', 'NotInclOsDoneAmount', 'DECIMAL', true, 10, 0);
+        $this->addColumn('not_incl_os_done_amount', 'NotInclOsDoneAmount', 'DECIMAL', false, 10, 0);
         $this->addColumn('incl', 'Incl', 'INTEGER', true, 1, null);
         $this->addColumn('not_incl', 'NotIncl', 'INTEGER', true, 1, null);
         $this->addColumn('foc', 'Foc', 'INTEGER', true, 1, null);
