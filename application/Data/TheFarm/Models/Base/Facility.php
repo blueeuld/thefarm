@@ -20,10 +20,13 @@ use TheFarm\Models\BookingEvent as ChildBookingEvent;
 use TheFarm\Models\BookingEventQuery as ChildBookingEventQuery;
 use TheFarm\Models\Facility as ChildFacility;
 use TheFarm\Models\FacilityQuery as ChildFacilityQuery;
+use TheFarm\Models\ItemsRelatedFacility as ChildItemsRelatedFacility;
+use TheFarm\Models\ItemsRelatedFacilityQuery as ChildItemsRelatedFacilityQuery;
 use TheFarm\Models\Location as ChildLocation;
 use TheFarm\Models\LocationQuery as ChildLocationQuery;
 use TheFarm\Models\Map\BookingEventTableMap;
 use TheFarm\Models\Map\FacilityTableMap;
+use TheFarm\Models\Map\ItemsRelatedFacilityTableMap;
 
 /**
  * Base class that represents a row from the 'tf_facilities' table.
@@ -129,6 +132,12 @@ abstract class Facility implements ActiveRecordInterface
     protected $collBookingEventsPartial;
 
     /**
+     * @var        ObjectCollection|ChildItemsRelatedFacility[] Collection to store aggregation of ChildItemsRelatedFacility objects.
+     */
+    protected $collItemsRelatedFacilities;
+    protected $collItemsRelatedFacilitiesPartial;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
@@ -141,6 +150,12 @@ abstract class Facility implements ActiveRecordInterface
      * @var ObjectCollection|ChildBookingEvent[]
      */
     protected $bookingEventsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildItemsRelatedFacility[]
+     */
+    protected $itemsRelatedFacilitiesScheduledForDeletion = null;
 
     /**
      * Applies default values to this object.
@@ -734,6 +749,8 @@ abstract class Facility implements ActiveRecordInterface
             $this->aLocation = null;
             $this->collBookingEvents = null;
 
+            $this->collItemsRelatedFacilities = null;
+
         } // if (deep)
     }
 
@@ -872,6 +889,23 @@ abstract class Facility implements ActiveRecordInterface
 
             if ($this->collBookingEvents !== null) {
                 foreach ($this->collBookingEvents as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->itemsRelatedFacilitiesScheduledForDeletion !== null) {
+                if (!$this->itemsRelatedFacilitiesScheduledForDeletion->isEmpty()) {
+                    \TheFarm\Models\ItemsRelatedFacilityQuery::create()
+                        ->filterByPrimaryKeys($this->itemsRelatedFacilitiesScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->itemsRelatedFacilitiesScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collItemsRelatedFacilities !== null) {
+                foreach ($this->collItemsRelatedFacilities as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -1113,6 +1147,21 @@ abstract class Facility implements ActiveRecordInterface
                 }
 
                 $result[$key] = $this->collBookingEvents->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collItemsRelatedFacilities) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'itemsRelatedFacilities';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'tf_items_related_facilitiess';
+                        break;
+                    default:
+                        $key = 'ItemsRelatedFacilities';
+                }
+
+                $result[$key] = $this->collItemsRelatedFacilities->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1382,6 +1431,12 @@ abstract class Facility implements ActiveRecordInterface
                 }
             }
 
+            foreach ($this->getItemsRelatedFacilities() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addItemsRelatedFacility($relObj->copy($deepCopy));
+                }
+            }
+
         } // if ($deepCopy)
 
         if ($makeNew) {
@@ -1476,6 +1531,10 @@ abstract class Facility implements ActiveRecordInterface
     {
         if ('BookingEvent' == $relationName) {
             $this->initBookingEvents();
+            return;
+        }
+        if ('ItemsRelatedFacility' == $relationName) {
+            $this->initItemsRelatedFacilities();
             return;
         }
     }
@@ -1881,6 +1940,259 @@ abstract class Facility implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collItemsRelatedFacilities collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addItemsRelatedFacilities()
+     */
+    public function clearItemsRelatedFacilities()
+    {
+        $this->collItemsRelatedFacilities = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collItemsRelatedFacilities collection loaded partially.
+     */
+    public function resetPartialItemsRelatedFacilities($v = true)
+    {
+        $this->collItemsRelatedFacilitiesPartial = $v;
+    }
+
+    /**
+     * Initializes the collItemsRelatedFacilities collection.
+     *
+     * By default this just sets the collItemsRelatedFacilities collection to an empty array (like clearcollItemsRelatedFacilities());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initItemsRelatedFacilities($overrideExisting = true)
+    {
+        if (null !== $this->collItemsRelatedFacilities && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = ItemsRelatedFacilityTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collItemsRelatedFacilities = new $collectionClassName;
+        $this->collItemsRelatedFacilities->setModel('\TheFarm\Models\ItemsRelatedFacility');
+    }
+
+    /**
+     * Gets an array of ChildItemsRelatedFacility objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildFacility is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildItemsRelatedFacility[] List of ChildItemsRelatedFacility objects
+     * @throws PropelException
+     */
+    public function getItemsRelatedFacilities(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collItemsRelatedFacilitiesPartial && !$this->isNew();
+        if (null === $this->collItemsRelatedFacilities || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collItemsRelatedFacilities) {
+                // return empty collection
+                $this->initItemsRelatedFacilities();
+            } else {
+                $collItemsRelatedFacilities = ChildItemsRelatedFacilityQuery::create(null, $criteria)
+                    ->filterByFacility($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collItemsRelatedFacilitiesPartial && count($collItemsRelatedFacilities)) {
+                        $this->initItemsRelatedFacilities(false);
+
+                        foreach ($collItemsRelatedFacilities as $obj) {
+                            if (false == $this->collItemsRelatedFacilities->contains($obj)) {
+                                $this->collItemsRelatedFacilities->append($obj);
+                            }
+                        }
+
+                        $this->collItemsRelatedFacilitiesPartial = true;
+                    }
+
+                    return $collItemsRelatedFacilities;
+                }
+
+                if ($partial && $this->collItemsRelatedFacilities) {
+                    foreach ($this->collItemsRelatedFacilities as $obj) {
+                        if ($obj->isNew()) {
+                            $collItemsRelatedFacilities[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collItemsRelatedFacilities = $collItemsRelatedFacilities;
+                $this->collItemsRelatedFacilitiesPartial = false;
+            }
+        }
+
+        return $this->collItemsRelatedFacilities;
+    }
+
+    /**
+     * Sets a collection of ChildItemsRelatedFacility objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $itemsRelatedFacilities A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildFacility The current object (for fluent API support)
+     */
+    public function setItemsRelatedFacilities(Collection $itemsRelatedFacilities, ConnectionInterface $con = null)
+    {
+        /** @var ChildItemsRelatedFacility[] $itemsRelatedFacilitiesToDelete */
+        $itemsRelatedFacilitiesToDelete = $this->getItemsRelatedFacilities(new Criteria(), $con)->diff($itemsRelatedFacilities);
+
+
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->itemsRelatedFacilitiesScheduledForDeletion = clone $itemsRelatedFacilitiesToDelete;
+
+        foreach ($itemsRelatedFacilitiesToDelete as $itemsRelatedFacilityRemoved) {
+            $itemsRelatedFacilityRemoved->setFacility(null);
+        }
+
+        $this->collItemsRelatedFacilities = null;
+        foreach ($itemsRelatedFacilities as $itemsRelatedFacility) {
+            $this->addItemsRelatedFacility($itemsRelatedFacility);
+        }
+
+        $this->collItemsRelatedFacilities = $itemsRelatedFacilities;
+        $this->collItemsRelatedFacilitiesPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related ItemsRelatedFacility objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related ItemsRelatedFacility objects.
+     * @throws PropelException
+     */
+    public function countItemsRelatedFacilities(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collItemsRelatedFacilitiesPartial && !$this->isNew();
+        if (null === $this->collItemsRelatedFacilities || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collItemsRelatedFacilities) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getItemsRelatedFacilities());
+            }
+
+            $query = ChildItemsRelatedFacilityQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByFacility($this)
+                ->count($con);
+        }
+
+        return count($this->collItemsRelatedFacilities);
+    }
+
+    /**
+     * Method called to associate a ChildItemsRelatedFacility object to this object
+     * through the ChildItemsRelatedFacility foreign key attribute.
+     *
+     * @param  ChildItemsRelatedFacility $l ChildItemsRelatedFacility
+     * @return $this|\TheFarm\Models\Facility The current object (for fluent API support)
+     */
+    public function addItemsRelatedFacility(ChildItemsRelatedFacility $l)
+    {
+        if ($this->collItemsRelatedFacilities === null) {
+            $this->initItemsRelatedFacilities();
+            $this->collItemsRelatedFacilitiesPartial = true;
+        }
+
+        if (!$this->collItemsRelatedFacilities->contains($l)) {
+            $this->doAddItemsRelatedFacility($l);
+
+            if ($this->itemsRelatedFacilitiesScheduledForDeletion and $this->itemsRelatedFacilitiesScheduledForDeletion->contains($l)) {
+                $this->itemsRelatedFacilitiesScheduledForDeletion->remove($this->itemsRelatedFacilitiesScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildItemsRelatedFacility $itemsRelatedFacility The ChildItemsRelatedFacility object to add.
+     */
+    protected function doAddItemsRelatedFacility(ChildItemsRelatedFacility $itemsRelatedFacility)
+    {
+        $this->collItemsRelatedFacilities[]= $itemsRelatedFacility;
+        $itemsRelatedFacility->setFacility($this);
+    }
+
+    /**
+     * @param  ChildItemsRelatedFacility $itemsRelatedFacility The ChildItemsRelatedFacility object to remove.
+     * @return $this|ChildFacility The current object (for fluent API support)
+     */
+    public function removeItemsRelatedFacility(ChildItemsRelatedFacility $itemsRelatedFacility)
+    {
+        if ($this->getItemsRelatedFacilities()->contains($itemsRelatedFacility)) {
+            $pos = $this->collItemsRelatedFacilities->search($itemsRelatedFacility);
+            $this->collItemsRelatedFacilities->remove($pos);
+            if (null === $this->itemsRelatedFacilitiesScheduledForDeletion) {
+                $this->itemsRelatedFacilitiesScheduledForDeletion = clone $this->collItemsRelatedFacilities;
+                $this->itemsRelatedFacilitiesScheduledForDeletion->clear();
+            }
+            $this->itemsRelatedFacilitiesScheduledForDeletion[]= clone $itemsRelatedFacility;
+            $itemsRelatedFacility->setFacility(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Facility is new, it will return
+     * an empty collection; or if this Facility has previously
+     * been saved, it will retrieve related ItemsRelatedFacilities from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Facility.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildItemsRelatedFacility[] List of ChildItemsRelatedFacility objects
+     */
+    public function getItemsRelatedFacilitiesJoinItem(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildItemsRelatedFacilityQuery::create(null, $criteria);
+        $query->joinWith('Item', $joinBehavior);
+
+        return $this->getItemsRelatedFacilities($query, $con);
+    }
+
+    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
@@ -1921,9 +2233,15 @@ abstract class Facility implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collItemsRelatedFacilities) {
+                foreach ($this->collItemsRelatedFacilities as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
 
         $this->collBookingEvents = null;
+        $this->collItemsRelatedFacilities = null;
         $this->aLocation = null;
     }
 

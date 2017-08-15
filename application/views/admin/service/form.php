@@ -198,12 +198,12 @@ $thumbnail = [
                 <li class="list-group-item" id="relatedUser<?php echo $provider['ContactId'];?>">
                     <?php echo $provider['Contact']['FirstName'] . $provider['Contact']['LastName']; ?>
                     <input type="hidden" name="related_user_ids[]" value="<?php echo $provider['ContactId'];?>" />
-                    <span class="pull-right"><a href="#" class="deleteRelatedUser"><i class="glyphicon glyphicon-trash"></i> </a></span>
+                    <span class="pull-right"><a href="#" class="deleteRelationship"><i class="glyphicon glyphicon-trash"></i> </a></span>
                 </li>
                 <?php endforeach; ?>
             </ul>
         </div>
-        <div class="form-group">
+        <div class="form-group col-lg-4">
             <?php echo form_dropdown('providers', $providers, '', 'class="form-control"'); ?>
         </div>
         <button class="btn btn-success addRelatedUser" type="button">Add</button>
@@ -216,17 +216,29 @@ $thumbnail = [
         </p>
     </div>
     <div role="tabpanel" class="tab-pane" id="facilities">
-        <p>
-            <br/>
-            <?php echo form_multiselect('related_facility_ids[]', $facilities, $related_facility_ids, 'class="multi-select" data-header="Select facilities" data-live-search="true"'); ?>
-        </p>
+
+        <div class="clearfix">
+            <ul class="col-lg-4 list-group relatedFacilities">
+                <?php foreach ($productData['Facilities'] as $facility) : ?>
+                    <li class="list-group-item" id="relatedUser<?php echo $facility['FacilityId'];?>">
+                        <?php echo $facility['Facility']['FacilityName'] ?>
+                        <input type="hidden" name="related_facility_ids[]" value="<?php echo $facility['FacilityId'];?>" />
+                        <span class="pull-right"><a href="#" class="deleteRelationship"><i class="glyphicon glyphicon-trash"></i> </a></span>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+        <div class="form-group col-lg-4">
+            <?php echo form_dropdown('facilities', $facilities, '', 'class="form-control"'); ?>
+        </div>
+        <button class="btn btn-success addRelatedFacility" type="button">Add</button>
     </div>
 </div>
 <script>
     $(document).ready(function () {
         $('.selectpicker').selectpicker();
 
-        $('.deleteRelatedUser').each(function(){
+        $('.deleteRelationship').each(function(){
             $(this).on('click', function(evt){
                 evt.preventDefault();
                 $(this).parents('li.list-group-item').remove();
@@ -240,12 +252,32 @@ $thumbnail = [
                 var o = $('#relatedUser'+selected.val());
                 if (o.length === 0) {
                     var $li = $('<li class="list-group-item" id="relatedUser'+selected.val()+'">'+selected.text()+'</li>');
-                    $li.append('<input type="hidden" name="related_user_ids[]" value="'+selected.val()+'" /');
-                    $li.append('<span class="pull-right"><a href="#" class="deleteRelatedUser"><i class="glyphicon glyphicon-trash"></i> </a></span>');
-                    $li.find('.deleteRelatedUser').on('click', function(){
+                    $li.append('<input type="hidden" name="related_user_ids[]" value="'+selected.val()+'" />');
+                    $li.append('<span class="pull-right"><a href="#" class="deleteRelationship"><i class="glyphicon glyphicon-trash"></i> </a></span>');
+                    $li.find('.deleteRelationship').on('click', function(){
                         $(this).parents('li.list-group-item').remove();
                     });
                     $('.relatedUsers').append($li);
+                }
+                else {
+                    alert('Already exists.');
+                }
+            }
+        });
+
+        $('.addRelatedFacility').on('click', function (evt) {
+            evt.preventDefault();
+            var selected = $('[name="facilities"]').find('option:selected');
+            if (selected) {
+                var o = $('#relatedFacility'+selected.val());
+                if (o.length === 0) {
+                    var $li = $('<li class="list-group-item" id="relatedFacility'+selected.val()+'">'+selected.text()+'</li>');
+                    $li.append('<input type="hidden" name="related_facility_ids[]" value="'+selected.val()+'" />');
+                    $li.append('<span class="pull-right"><a href="#" class="deleteRelationship"><i class="glyphicon glyphicon-trash"></i> </a></span>');
+                    $li.find('.deleteRelationship').on('click', function(){
+                        $(this).parents('li.list-group-item').remove();
+                    });
+                    $('.relatedFacilities').append($li);
                 }
                 else {
                     alert('Already exists.');

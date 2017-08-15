@@ -643,6 +643,12 @@
   <table name="tf_items_related_facilities" idMethod="native" phpName="ItemsRelatedFacility" namespace="Models">
     <column name="item_id" phpName="ItemId" type="INTEGER" primaryKey="true" required="true"/>
     <column name="facility_id" phpName="FacilityId" type="INTEGER" primaryKey="true" required="true"/>
+    <foreign-key foreignTable="tf_facilities" phpName="Facility">
+      <reference local="facility_id" foreign="facility_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="tf_items" phpName="Item">
+      <reference local="item_id" foreign="item_id"/>
+    </foreign-key>
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>

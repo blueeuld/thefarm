@@ -15,6 +15,10 @@ use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
+use TheFarm\Models\Facility as ChildFacility;
+use TheFarm\Models\FacilityQuery as ChildFacilityQuery;
+use TheFarm\Models\Item as ChildItem;
+use TheFarm\Models\ItemQuery as ChildItemQuery;
 use TheFarm\Models\ItemsRelatedFacilityQuery as ChildItemsRelatedFacilityQuery;
 use TheFarm\Models\Map\ItemsRelatedFacilityTableMap;
 
@@ -72,6 +76,16 @@ abstract class ItemsRelatedFacility implements ActiveRecordInterface
      * @var        int
      */
     protected $facility_id;
+
+    /**
+     * @var        ChildFacility
+     */
+    protected $aFacility;
+
+    /**
+     * @var        ChildItem
+     */
+    protected $aItem;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -343,6 +357,10 @@ abstract class ItemsRelatedFacility implements ActiveRecordInterface
             $this->modifiedColumns[ItemsRelatedFacilityTableMap::COL_ITEM_ID] = true;
         }
 
+        if ($this->aItem !== null && $this->aItem->getItemId() !== $v) {
+            $this->aItem = null;
+        }
+
         return $this;
     } // setItemId()
 
@@ -361,6 +379,10 @@ abstract class ItemsRelatedFacility implements ActiveRecordInterface
         if ($this->facility_id !== $v) {
             $this->facility_id = $v;
             $this->modifiedColumns[ItemsRelatedFacilityTableMap::COL_FACILITY_ID] = true;
+        }
+
+        if ($this->aFacility !== null && $this->aFacility->getFacilityId() !== $v) {
+            $this->aFacility = null;
         }
 
         return $this;
@@ -437,6 +459,12 @@ abstract class ItemsRelatedFacility implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
+        if ($this->aItem !== null && $this->item_id !== $this->aItem->getItemId()) {
+            $this->aItem = null;
+        }
+        if ($this->aFacility !== null && $this->facility_id !== $this->aFacility->getFacilityId()) {
+            $this->aFacility = null;
+        }
     } // ensureConsistency
 
     /**
@@ -476,6 +504,8 @@ abstract class ItemsRelatedFacility implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
+            $this->aFacility = null;
+            $this->aItem = null;
         } // if (deep)
     }
 
@@ -578,6 +608,25 @@ abstract class ItemsRelatedFacility implements ActiveRecordInterface
         $affectedRows = 0; // initialize var to track total num of affected rows
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
+
+            // We call the save method on the following object(s) if they
+            // were passed to this object by their corresponding set
+            // method.  This object relates to these object(s) by a
+            // foreign key reference.
+
+            if ($this->aFacility !== null) {
+                if ($this->aFacility->isModified() || $this->aFacility->isNew()) {
+                    $affectedRows += $this->aFacility->save($con);
+                }
+                $this->setFacility($this->aFacility);
+            }
+
+            if ($this->aItem !== null) {
+                if ($this->aItem->isModified() || $this->aItem->isNew()) {
+                    $affectedRows += $this->aItem->save($con);
+                }
+                $this->setItem($this->aItem);
+            }
 
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
@@ -713,10 +762,11 @@ abstract class ItemsRelatedFacility implements ActiveRecordInterface
      *                    Defaults to TableMap::TYPE_PHPNAME.
      * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
      * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
+     * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
      *
      * @return array an associative array containing the field names (as keys) and field values
      */
-    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array())
+    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
 
         if (isset($alreadyDumpedObjects['ItemsRelatedFacility'][$this->hashCode()])) {
@@ -733,6 +783,38 @@ abstract class ItemsRelatedFacility implements ActiveRecordInterface
             $result[$key] = $virtualColumn;
         }
 
+        if ($includeForeignObjects) {
+            if (null !== $this->aFacility) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'facility';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'tf_facilities';
+                        break;
+                    default:
+                        $key = 'Facility';
+                }
+
+                $result[$key] = $this->aFacility->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->aItem) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'item';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'tf_items';
+                        break;
+                    default:
+                        $key = 'Item';
+                }
+
+                $result[$key] = $this->aItem->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+        }
 
         return $result;
     }
@@ -885,8 +967,22 @@ abstract class ItemsRelatedFacility implements ActiveRecordInterface
         $validPk = null !== $this->getItemId() &&
             null !== $this->getFacilityId();
 
-        $validPrimaryKeyFKs = 0;
+        $validPrimaryKeyFKs = 2;
         $primaryKeyFKs = [];
+
+        //relation tf_items_related_facilities_fk_1eba8a to table tf_facilities
+        if ($this->aFacility && $hash = spl_object_hash($this->aFacility)) {
+            $primaryKeyFKs[] = $hash;
+        } else {
+            $validPrimaryKeyFKs = false;
+        }
+
+        //relation tf_items_related_facilities_fk_b49f13 to table tf_items
+        if ($this->aItem && $hash = spl_object_hash($this->aItem)) {
+            $primaryKeyFKs[] = $hash;
+        } else {
+            $validPrimaryKeyFKs = false;
+        }
 
         if ($validPk) {
             return crc32(json_encode($this->getPrimaryKey(), JSON_UNESCAPED_UNICODE));
@@ -975,12 +1071,120 @@ abstract class ItemsRelatedFacility implements ActiveRecordInterface
     }
 
     /**
+     * Declares an association between this object and a ChildFacility object.
+     *
+     * @param  ChildFacility $v
+     * @return $this|\TheFarm\Models\ItemsRelatedFacility The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setFacility(ChildFacility $v = null)
+    {
+        if ($v === null) {
+            $this->setFacilityId(NULL);
+        } else {
+            $this->setFacilityId($v->getFacilityId());
+        }
+
+        $this->aFacility = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildFacility object, it will not be re-added.
+        if ($v !== null) {
+            $v->addItemsRelatedFacility($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildFacility object
+     *
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildFacility The associated ChildFacility object.
+     * @throws PropelException
+     */
+    public function getFacility(ConnectionInterface $con = null)
+    {
+        if ($this->aFacility === null && ($this->facility_id !== null)) {
+            $this->aFacility = ChildFacilityQuery::create()->findPk($this->facility_id, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aFacility->addItemsRelatedFacilities($this);
+             */
+        }
+
+        return $this->aFacility;
+    }
+
+    /**
+     * Declares an association between this object and a ChildItem object.
+     *
+     * @param  ChildItem $v
+     * @return $this|\TheFarm\Models\ItemsRelatedFacility The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setItem(ChildItem $v = null)
+    {
+        if ($v === null) {
+            $this->setItemId(NULL);
+        } else {
+            $this->setItemId($v->getItemId());
+        }
+
+        $this->aItem = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildItem object, it will not be re-added.
+        if ($v !== null) {
+            $v->addItemsRelatedFacility($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildItem object
+     *
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildItem The associated ChildItem object.
+     * @throws PropelException
+     */
+    public function getItem(ConnectionInterface $con = null)
+    {
+        if ($this->aItem === null && ($this->item_id !== null)) {
+            $this->aItem = ChildItemQuery::create()->findPk($this->item_id, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aItem->addItemsRelatedFacilities($this);
+             */
+        }
+
+        return $this->aItem;
+    }
+
+    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
      */
     public function clear()
     {
+        if (null !== $this->aFacility) {
+            $this->aFacility->removeItemsRelatedFacility($this);
+        }
+        if (null !== $this->aItem) {
+            $this->aItem->removeItemsRelatedFacility($this);
+        }
         $this->item_id = null;
         $this->facility_id = null;
         $this->alreadyInSave = false;
@@ -1003,6 +1207,8 @@ abstract class ItemsRelatedFacility implements ActiveRecordInterface
         if ($deep) {
         } // if ($deep)
 
+        $this->aFacility = null;
+        $this->aItem = null;
     }
 
     /**

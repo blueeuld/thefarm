@@ -64,7 +64,17 @@ use TheFarm\Models\Map\FacilityTableMap;
  * @method     ChildFacilityQuery rightJoinWithBookingEvent() Adds a RIGHT JOIN clause and with to the query using the BookingEvent relation
  * @method     ChildFacilityQuery innerJoinWithBookingEvent() Adds a INNER JOIN clause and with to the query using the BookingEvent relation
  *
- * @method     \TheFarm\Models\LocationQuery|\TheFarm\Models\BookingEventQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     ChildFacilityQuery leftJoinItemsRelatedFacility($relationAlias = null) Adds a LEFT JOIN clause to the query using the ItemsRelatedFacility relation
+ * @method     ChildFacilityQuery rightJoinItemsRelatedFacility($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ItemsRelatedFacility relation
+ * @method     ChildFacilityQuery innerJoinItemsRelatedFacility($relationAlias = null) Adds a INNER JOIN clause to the query using the ItemsRelatedFacility relation
+ *
+ * @method     ChildFacilityQuery joinWithItemsRelatedFacility($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the ItemsRelatedFacility relation
+ *
+ * @method     ChildFacilityQuery leftJoinWithItemsRelatedFacility() Adds a LEFT JOIN clause and with to the query using the ItemsRelatedFacility relation
+ * @method     ChildFacilityQuery rightJoinWithItemsRelatedFacility() Adds a RIGHT JOIN clause and with to the query using the ItemsRelatedFacility relation
+ * @method     ChildFacilityQuery innerJoinWithItemsRelatedFacility() Adds a INNER JOIN clause and with to the query using the ItemsRelatedFacility relation
+ *
+ * @method     \TheFarm\Models\LocationQuery|\TheFarm\Models\BookingEventQuery|\TheFarm\Models\ItemsRelatedFacilityQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildFacility findOne(ConnectionInterface $con = null) Return the first ChildFacility matching the query
  * @method     ChildFacility findOneOrCreate(ConnectionInterface $con = null) Return the first ChildFacility matching the query, or a new ChildFacility object populated from the query conditions when no match is found
@@ -673,6 +683,79 @@ abstract class FacilityQuery extends ModelCriteria
         return $this
             ->joinBookingEvent($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'BookingEvent', '\TheFarm\Models\BookingEventQuery');
+    }
+
+    /**
+     * Filter the query by a related \TheFarm\Models\ItemsRelatedFacility object
+     *
+     * @param \TheFarm\Models\ItemsRelatedFacility|ObjectCollection $itemsRelatedFacility the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildFacilityQuery The current query, for fluid interface
+     */
+    public function filterByItemsRelatedFacility($itemsRelatedFacility, $comparison = null)
+    {
+        if ($itemsRelatedFacility instanceof \TheFarm\Models\ItemsRelatedFacility) {
+            return $this
+                ->addUsingAlias(FacilityTableMap::COL_FACILITY_ID, $itemsRelatedFacility->getFacilityId(), $comparison);
+        } elseif ($itemsRelatedFacility instanceof ObjectCollection) {
+            return $this
+                ->useItemsRelatedFacilityQuery()
+                ->filterByPrimaryKeys($itemsRelatedFacility->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByItemsRelatedFacility() only accepts arguments of type \TheFarm\Models\ItemsRelatedFacility or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the ItemsRelatedFacility relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildFacilityQuery The current query, for fluid interface
+     */
+    public function joinItemsRelatedFacility($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('ItemsRelatedFacility');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'ItemsRelatedFacility');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the ItemsRelatedFacility relation ItemsRelatedFacility object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \TheFarm\Models\ItemsRelatedFacilityQuery A secondary query class using the current class as primary query
+     */
+    public function useItemsRelatedFacilityQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinItemsRelatedFacility($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'ItemsRelatedFacility', '\TheFarm\Models\ItemsRelatedFacilityQuery');
     }
 
     /**

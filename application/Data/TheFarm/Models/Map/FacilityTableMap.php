@@ -184,6 +184,13 @@ class FacilityTableMap extends TableMap
     1 => ':facility_id',
   ),
 ), null, null, 'BookingEvents', false);
+        $this->addRelation('ItemsRelatedFacility', '\\TheFarm\\Models\\ItemsRelatedFacility', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':facility_id',
+    1 => ':facility_id',
+  ),
+), null, null, 'ItemsRelatedFacilities', false);
     } // buildRelations()
 
     /**

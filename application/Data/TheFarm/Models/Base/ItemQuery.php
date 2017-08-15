@@ -108,6 +108,16 @@ use TheFarm\Models\Map\ItemTableMap;
  * @method     ChildItemQuery rightJoinWithItemCategory() Adds a RIGHT JOIN clause and with to the query using the ItemCategory relation
  * @method     ChildItemQuery innerJoinWithItemCategory() Adds a INNER JOIN clause and with to the query using the ItemCategory relation
  *
+ * @method     ChildItemQuery leftJoinItemsRelatedFacility($relationAlias = null) Adds a LEFT JOIN clause to the query using the ItemsRelatedFacility relation
+ * @method     ChildItemQuery rightJoinItemsRelatedFacility($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ItemsRelatedFacility relation
+ * @method     ChildItemQuery innerJoinItemsRelatedFacility($relationAlias = null) Adds a INNER JOIN clause to the query using the ItemsRelatedFacility relation
+ *
+ * @method     ChildItemQuery joinWithItemsRelatedFacility($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the ItemsRelatedFacility relation
+ *
+ * @method     ChildItemQuery leftJoinWithItemsRelatedFacility() Adds a LEFT JOIN clause and with to the query using the ItemsRelatedFacility relation
+ * @method     ChildItemQuery rightJoinWithItemsRelatedFacility() Adds a RIGHT JOIN clause and with to the query using the ItemsRelatedFacility relation
+ * @method     ChildItemQuery innerJoinWithItemsRelatedFacility() Adds a INNER JOIN clause and with to the query using the ItemsRelatedFacility relation
+ *
  * @method     ChildItemQuery leftJoinItemsRelatedUser($relationAlias = null) Adds a LEFT JOIN clause to the query using the ItemsRelatedUser relation
  * @method     ChildItemQuery rightJoinItemsRelatedUser($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ItemsRelatedUser relation
  * @method     ChildItemQuery innerJoinItemsRelatedUser($relationAlias = null) Adds a INNER JOIN clause to the query using the ItemsRelatedUser relation
@@ -128,7 +138,7 @@ use TheFarm\Models\Map\ItemTableMap;
  * @method     ChildItemQuery rightJoinWithPackageItem() Adds a RIGHT JOIN clause and with to the query using the PackageItem relation
  * @method     ChildItemQuery innerJoinWithPackageItem() Adds a INNER JOIN clause and with to the query using the PackageItem relation
  *
- * @method     \TheFarm\Models\FilesQuery|\TheFarm\Models\BookingEventQuery|\TheFarm\Models\BookingItemQuery|\TheFarm\Models\BookingQuery|\TheFarm\Models\ItemCategoryQuery|\TheFarm\Models\ItemsRelatedUserQuery|\TheFarm\Models\PackageItemQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \TheFarm\Models\FilesQuery|\TheFarm\Models\BookingEventQuery|\TheFarm\Models\BookingItemQuery|\TheFarm\Models\BookingQuery|\TheFarm\Models\ItemCategoryQuery|\TheFarm\Models\ItemsRelatedFacilityQuery|\TheFarm\Models\ItemsRelatedUserQuery|\TheFarm\Models\PackageItemQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildItem findOne(ConnectionInterface $con = null) Return the first ChildItem matching the query
  * @method     ChildItem findOneOrCreate(ConnectionInterface $con = null) Return the first ChildItem matching the query, or a new ChildItem object populated from the query conditions when no match is found
@@ -1184,6 +1194,79 @@ abstract class ItemQuery extends ModelCriteria
         return $this
             ->joinItemCategory($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'ItemCategory', '\TheFarm\Models\ItemCategoryQuery');
+    }
+
+    /**
+     * Filter the query by a related \TheFarm\Models\ItemsRelatedFacility object
+     *
+     * @param \TheFarm\Models\ItemsRelatedFacility|ObjectCollection $itemsRelatedFacility the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildItemQuery The current query, for fluid interface
+     */
+    public function filterByItemsRelatedFacility($itemsRelatedFacility, $comparison = null)
+    {
+        if ($itemsRelatedFacility instanceof \TheFarm\Models\ItemsRelatedFacility) {
+            return $this
+                ->addUsingAlias(ItemTableMap::COL_ITEM_ID, $itemsRelatedFacility->getItemId(), $comparison);
+        } elseif ($itemsRelatedFacility instanceof ObjectCollection) {
+            return $this
+                ->useItemsRelatedFacilityQuery()
+                ->filterByPrimaryKeys($itemsRelatedFacility->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByItemsRelatedFacility() only accepts arguments of type \TheFarm\Models\ItemsRelatedFacility or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the ItemsRelatedFacility relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildItemQuery The current query, for fluid interface
+     */
+    public function joinItemsRelatedFacility($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('ItemsRelatedFacility');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'ItemsRelatedFacility');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the ItemsRelatedFacility relation ItemsRelatedFacility object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \TheFarm\Models\ItemsRelatedFacilityQuery A secondary query class using the current class as primary query
+     */
+    public function useItemsRelatedFacilityQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinItemsRelatedFacility($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'ItemsRelatedFacility', '\TheFarm\Models\ItemsRelatedFacilityQuery');
     }
 
     /**

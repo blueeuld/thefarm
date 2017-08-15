@@ -20,6 +20,7 @@ class ProductApi {
         $product = \TheFarm\Models\ItemQuery::create()->findOneByItemId($item_id);
         $productArr = $product->toArray();
         $productArr['Users'] = $product->getItemsRelatedUsersJoinContact()->toArray();
+        $productArr['Facilities'] = $product->getItemsRelatedFacilitiesJoinFacility()->toArray();
 
         return $productArr;
     }

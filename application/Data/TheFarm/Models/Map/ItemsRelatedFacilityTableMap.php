@@ -131,8 +131,8 @@ class ItemsRelatedFacilityTableMap extends TableMap
         $this->setPackage('TheFarm.Models');
         $this->setUseIdGenerator(false);
         // columns
-        $this->addPrimaryKey('item_id', 'ItemId', 'INTEGER', true, null, null);
-        $this->addPrimaryKey('facility_id', 'FacilityId', 'INTEGER', true, null, null);
+        $this->addForeignPrimaryKey('item_id', 'ItemId', 'INTEGER' , 'tf_items', 'item_id', true, null, null);
+        $this->addForeignPrimaryKey('facility_id', 'FacilityId', 'INTEGER' , 'tf_facilities', 'facility_id', true, null, null);
     } // initialize()
 
     /**
@@ -140,6 +140,20 @@ class ItemsRelatedFacilityTableMap extends TableMap
      */
     public function buildRelations()
     {
+        $this->addRelation('Facility', '\\TheFarm\\Models\\Facility', RelationMap::MANY_TO_ONE, array (
+  0 =>
+  array (
+    0 => ':facility_id',
+    1 => ':facility_id',
+  ),
+), null, null, null, false);
+        $this->addRelation('Item', '\\TheFarm\\Models\\Item', RelationMap::MANY_TO_ONE, array (
+  0 =>
+  array (
+    0 => ':item_id',
+    1 => ':item_id',
+  ),
+), null, null, null, false);
     } // buildRelations()
 
     /**
