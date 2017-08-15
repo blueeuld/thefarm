@@ -59,7 +59,7 @@ class FormEntryTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 7;
+    const NUM_COLUMNS = 5;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class FormEntryTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 7;
+    const NUM_HYDRATE_COLUMNS = 5;
 
     /**
      * the column name for the entry_id field
@@ -92,19 +92,9 @@ class FormEntryTableMap extends TableMap
     const COL_FIELD_ID = 'tf_form_entries.field_id';
 
     /**
-     * the column name for the field_text_value field
+     * the column name for the field_value field
      */
-    const COL_FIELD_TEXT_VALUE = 'tf_form_entries.field_text_value';
-
-    /**
-     * the column name for the field_dropdown_value field
-     */
-    const COL_FIELD_DROPDOWN_VALUE = 'tf_form_entries.field_dropdown_value';
-
-    /**
-     * the column name for the field_checkboxes_value field
-     */
-    const COL_FIELD_CHECKBOXES_VALUE = 'tf_form_entries.field_checkboxes_value';
+    const COL_FIELD_VALUE = 'tf_form_entries.field_value';
 
     /**
      * The default string format for model objects of the related table
@@ -118,11 +108,11 @@ class FormEntryTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('EntryId', 'BookingId', 'FormId', 'FieldId', 'FieldTextValue', 'FieldDropdownValue', 'FieldCheckboxesValue', ),
-        self::TYPE_CAMELNAME     => array('entryId', 'bookingId', 'formId', 'fieldId', 'fieldTextValue', 'fieldDropdownValue', 'fieldCheckboxesValue', ),
-        self::TYPE_COLNAME       => array(FormEntryTableMap::COL_ENTRY_ID, FormEntryTableMap::COL_BOOKING_ID, FormEntryTableMap::COL_FORM_ID, FormEntryTableMap::COL_FIELD_ID, FormEntryTableMap::COL_FIELD_TEXT_VALUE, FormEntryTableMap::COL_FIELD_DROPDOWN_VALUE, FormEntryTableMap::COL_FIELD_CHECKBOXES_VALUE, ),
-        self::TYPE_FIELDNAME     => array('entry_id', 'booking_id', 'form_id', 'field_id', 'field_text_value', 'field_dropdown_value', 'field_checkboxes_value', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
+        self::TYPE_PHPNAME       => array('EntryId', 'BookingId', 'FormId', 'FieldId', 'FieldValue', ),
+        self::TYPE_CAMELNAME     => array('entryId', 'bookingId', 'formId', 'fieldId', 'fieldValue', ),
+        self::TYPE_COLNAME       => array(FormEntryTableMap::COL_ENTRY_ID, FormEntryTableMap::COL_BOOKING_ID, FormEntryTableMap::COL_FORM_ID, FormEntryTableMap::COL_FIELD_ID, FormEntryTableMap::COL_FIELD_VALUE, ),
+        self::TYPE_FIELDNAME     => array('entry_id', 'booking_id', 'form_id', 'field_id', 'field_value', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
     );
 
     /**
@@ -132,11 +122,11 @@ class FormEntryTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('EntryId' => 0, 'BookingId' => 1, 'FormId' => 2, 'FieldId' => 3, 'FieldTextValue' => 4, 'FieldDropdownValue' => 5, 'FieldCheckboxesValue' => 6, ),
-        self::TYPE_CAMELNAME     => array('entryId' => 0, 'bookingId' => 1, 'formId' => 2, 'fieldId' => 3, 'fieldTextValue' => 4, 'fieldDropdownValue' => 5, 'fieldCheckboxesValue' => 6, ),
-        self::TYPE_COLNAME       => array(FormEntryTableMap::COL_ENTRY_ID => 0, FormEntryTableMap::COL_BOOKING_ID => 1, FormEntryTableMap::COL_FORM_ID => 2, FormEntryTableMap::COL_FIELD_ID => 3, FormEntryTableMap::COL_FIELD_TEXT_VALUE => 4, FormEntryTableMap::COL_FIELD_DROPDOWN_VALUE => 5, FormEntryTableMap::COL_FIELD_CHECKBOXES_VALUE => 6, ),
-        self::TYPE_FIELDNAME     => array('entry_id' => 0, 'booking_id' => 1, 'form_id' => 2, 'field_id' => 3, 'field_text_value' => 4, 'field_dropdown_value' => 5, 'field_checkboxes_value' => 6, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
+        self::TYPE_PHPNAME       => array('EntryId' => 0, 'BookingId' => 1, 'FormId' => 2, 'FieldId' => 3, 'FieldValue' => 4, ),
+        self::TYPE_CAMELNAME     => array('entryId' => 0, 'bookingId' => 1, 'formId' => 2, 'fieldId' => 3, 'fieldValue' => 4, ),
+        self::TYPE_COLNAME       => array(FormEntryTableMap::COL_ENTRY_ID => 0, FormEntryTableMap::COL_BOOKING_ID => 1, FormEntryTableMap::COL_FORM_ID => 2, FormEntryTableMap::COL_FIELD_ID => 3, FormEntryTableMap::COL_FIELD_VALUE => 4, ),
+        self::TYPE_FIELDNAME     => array('entry_id' => 0, 'booking_id' => 1, 'form_id' => 2, 'field_id' => 3, 'field_value' => 4, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
     );
 
     /**
@@ -160,9 +150,7 @@ class FormEntryTableMap extends TableMap
         $this->addForeignKey('booking_id', 'BookingId', 'INTEGER', 'tf_bookings', 'booking_id', false, null, null);
         $this->addForeignKey('form_id', 'FormId', 'INTEGER', 'tf_forms', 'form_id', true, null, null);
         $this->addForeignKey('field_id', 'FieldId', 'INTEGER', 'tf_fields', 'field_id', true, null, null);
-        $this->addColumn('field_text_value', 'FieldTextValue', 'VARCHAR', false, 100, null);
-        $this->addColumn('field_dropdown_value', 'FieldDropdownValue', 'VARCHAR', false, 100, null);
-        $this->addColumn('field_checkboxes_value', 'FieldCheckboxesValue', 'VARCHAR', false, 100, null);
+        $this->addColumn('field_value', 'FieldValue', 'VARCHAR', false, 200, null);
     } // initialize()
 
     /**
@@ -338,17 +326,13 @@ class FormEntryTableMap extends TableMap
             $criteria->addSelectColumn(FormEntryTableMap::COL_BOOKING_ID);
             $criteria->addSelectColumn(FormEntryTableMap::COL_FORM_ID);
             $criteria->addSelectColumn(FormEntryTableMap::COL_FIELD_ID);
-            $criteria->addSelectColumn(FormEntryTableMap::COL_FIELD_TEXT_VALUE);
-            $criteria->addSelectColumn(FormEntryTableMap::COL_FIELD_DROPDOWN_VALUE);
-            $criteria->addSelectColumn(FormEntryTableMap::COL_FIELD_CHECKBOXES_VALUE);
+            $criteria->addSelectColumn(FormEntryTableMap::COL_FIELD_VALUE);
         } else {
             $criteria->addSelectColumn($alias . '.entry_id');
             $criteria->addSelectColumn($alias . '.booking_id');
             $criteria->addSelectColumn($alias . '.form_id');
             $criteria->addSelectColumn($alias . '.field_id');
-            $criteria->addSelectColumn($alias . '.field_text_value');
-            $criteria->addSelectColumn($alias . '.field_dropdown_value');
-            $criteria->addSelectColumn($alias . '.field_checkboxes_value');
+            $criteria->addSelectColumn($alias . '.field_value');
         }
     }
 

@@ -19,8 +19,11 @@ use Propel\Runtime\Parser\AbstractParser;
 use TheFarm\Models\Form as ChildForm;
 use TheFarm\Models\FormEntry as ChildFormEntry;
 use TheFarm\Models\FormEntryQuery as ChildFormEntryQuery;
+use TheFarm\Models\FormField as ChildFormField;
+use TheFarm\Models\FormFieldQuery as ChildFormFieldQuery;
 use TheFarm\Models\FormQuery as ChildFormQuery;
 use TheFarm\Models\Map\FormEntryTableMap;
+use TheFarm\Models\Map\FormFieldTableMap;
 use TheFarm\Models\Map\FormTableMap;
 
 /**
@@ -120,6 +123,12 @@ abstract class Form implements ActiveRecordInterface
     protected $collFormEntriesPartial;
 
     /**
+     * @var        ObjectCollection|ChildFormField[] Collection to store aggregation of ChildFormField objects.
+     */
+    protected $collFormFields;
+    protected $collFormFieldsPartial;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
@@ -132,6 +141,12 @@ abstract class Form implements ActiveRecordInterface
      * @var ObjectCollection|ChildFormEntry[]
      */
     protected $formEntriesScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildFormField[]
+     */
+    protected $formFieldsScheduledForDeletion = null;
 
     /**
      * Initializes internal state of TheFarm\Models\Base\Form object.
@@ -695,6 +710,8 @@ abstract class Form implements ActiveRecordInterface
 
             $this->collFormEntries = null;
 
+            $this->collFormFields = null;
+
         } // if (deep)
     }
 
@@ -820,6 +837,23 @@ abstract class Form implements ActiveRecordInterface
 
             if ($this->collFormEntries !== null) {
                 foreach ($this->collFormEntries as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->formFieldsScheduledForDeletion !== null) {
+                if (!$this->formFieldsScheduledForDeletion->isEmpty()) {
+                    \TheFarm\Models\FormFieldQuery::create()
+                        ->filterByPrimaryKeys($this->formFieldsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->formFieldsScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collFormFields !== null) {
+                foreach ($this->collFormFields as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -1046,6 +1080,21 @@ abstract class Form implements ActiveRecordInterface
                 }
 
                 $result[$key] = $this->collFormEntries->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collFormFields) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'formFields';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'tf_form_fieldss';
+                        break;
+                    default:
+                        $key = 'FormFields';
+                }
+
+                $result[$key] = $this->collFormFields->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1315,6 +1364,12 @@ abstract class Form implements ActiveRecordInterface
                 }
             }
 
+            foreach ($this->getFormFields() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addFormField($relObj->copy($deepCopy));
+                }
+            }
+
         } // if ($deepCopy)
 
         if ($makeNew) {
@@ -1358,6 +1413,10 @@ abstract class Form implements ActiveRecordInterface
     {
         if ('FormEntry' == $relationName) {
             $this->initFormEntries();
+            return;
+        }
+        if ('FormField' == $relationName) {
+            $this->initFormFields();
             return;
         }
     }
@@ -1638,6 +1697,259 @@ abstract class Form implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collFormFields collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addFormFields()
+     */
+    public function clearFormFields()
+    {
+        $this->collFormFields = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collFormFields collection loaded partially.
+     */
+    public function resetPartialFormFields($v = true)
+    {
+        $this->collFormFieldsPartial = $v;
+    }
+
+    /**
+     * Initializes the collFormFields collection.
+     *
+     * By default this just sets the collFormFields collection to an empty array (like clearcollFormFields());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initFormFields($overrideExisting = true)
+    {
+        if (null !== $this->collFormFields && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = FormFieldTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collFormFields = new $collectionClassName;
+        $this->collFormFields->setModel('\TheFarm\Models\FormField');
+    }
+
+    /**
+     * Gets an array of ChildFormField objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildForm is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildFormField[] List of ChildFormField objects
+     * @throws PropelException
+     */
+    public function getFormFields(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collFormFieldsPartial && !$this->isNew();
+        if (null === $this->collFormFields || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collFormFields) {
+                // return empty collection
+                $this->initFormFields();
+            } else {
+                $collFormFields = ChildFormFieldQuery::create(null, $criteria)
+                    ->filterByForm($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collFormFieldsPartial && count($collFormFields)) {
+                        $this->initFormFields(false);
+
+                        foreach ($collFormFields as $obj) {
+                            if (false == $this->collFormFields->contains($obj)) {
+                                $this->collFormFields->append($obj);
+                            }
+                        }
+
+                        $this->collFormFieldsPartial = true;
+                    }
+
+                    return $collFormFields;
+                }
+
+                if ($partial && $this->collFormFields) {
+                    foreach ($this->collFormFields as $obj) {
+                        if ($obj->isNew()) {
+                            $collFormFields[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collFormFields = $collFormFields;
+                $this->collFormFieldsPartial = false;
+            }
+        }
+
+        return $this->collFormFields;
+    }
+
+    /**
+     * Sets a collection of ChildFormField objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $formFields A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildForm The current object (for fluent API support)
+     */
+    public function setFormFields(Collection $formFields, ConnectionInterface $con = null)
+    {
+        /** @var ChildFormField[] $formFieldsToDelete */
+        $formFieldsToDelete = $this->getFormFields(new Criteria(), $con)->diff($formFields);
+
+
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->formFieldsScheduledForDeletion = clone $formFieldsToDelete;
+
+        foreach ($formFieldsToDelete as $formFieldRemoved) {
+            $formFieldRemoved->setForm(null);
+        }
+
+        $this->collFormFields = null;
+        foreach ($formFields as $formField) {
+            $this->addFormField($formField);
+        }
+
+        $this->collFormFields = $formFields;
+        $this->collFormFieldsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related FormField objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related FormField objects.
+     * @throws PropelException
+     */
+    public function countFormFields(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collFormFieldsPartial && !$this->isNew();
+        if (null === $this->collFormFields || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collFormFields) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getFormFields());
+            }
+
+            $query = ChildFormFieldQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByForm($this)
+                ->count($con);
+        }
+
+        return count($this->collFormFields);
+    }
+
+    /**
+     * Method called to associate a ChildFormField object to this object
+     * through the ChildFormField foreign key attribute.
+     *
+     * @param  ChildFormField $l ChildFormField
+     * @return $this|\TheFarm\Models\Form The current object (for fluent API support)
+     */
+    public function addFormField(ChildFormField $l)
+    {
+        if ($this->collFormFields === null) {
+            $this->initFormFields();
+            $this->collFormFieldsPartial = true;
+        }
+
+        if (!$this->collFormFields->contains($l)) {
+            $this->doAddFormField($l);
+
+            if ($this->formFieldsScheduledForDeletion and $this->formFieldsScheduledForDeletion->contains($l)) {
+                $this->formFieldsScheduledForDeletion->remove($this->formFieldsScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildFormField $formField The ChildFormField object to add.
+     */
+    protected function doAddFormField(ChildFormField $formField)
+    {
+        $this->collFormFields[]= $formField;
+        $formField->setForm($this);
+    }
+
+    /**
+     * @param  ChildFormField $formField The ChildFormField object to remove.
+     * @return $this|ChildForm The current object (for fluent API support)
+     */
+    public function removeFormField(ChildFormField $formField)
+    {
+        if ($this->getFormFields()->contains($formField)) {
+            $pos = $this->collFormFields->search($formField);
+            $this->collFormFields->remove($pos);
+            if (null === $this->formFieldsScheduledForDeletion) {
+                $this->formFieldsScheduledForDeletion = clone $this->collFormFields;
+                $this->formFieldsScheduledForDeletion->clear();
+            }
+            $this->formFieldsScheduledForDeletion[]= clone $formField;
+            $formField->setForm(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Form is new, it will return
+     * an empty collection; or if this Form has previously
+     * been saved, it will retrieve related FormFields from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Form.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildFormField[] List of ChildFormField objects
+     */
+    public function getFormFieldsJoinField(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildFormFieldQuery::create(null, $criteria);
+        $query->joinWith('Field', $joinBehavior);
+
+        return $this->getFormFields($query, $con);
+    }
+
+    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
@@ -1674,9 +1986,15 @@ abstract class Form implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collFormFields) {
+                foreach ($this->collFormFields as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
 
         $this->collFormEntries = null;
+        $this->collFormFields = null;
     }
 
     /**

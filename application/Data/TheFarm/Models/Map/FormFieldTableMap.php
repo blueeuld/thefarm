@@ -136,8 +136,8 @@ class FormFieldTableMap extends TableMap
         $this->setPackage('TheFarm.Models');
         $this->setUseIdGenerator(false);
         // columns
-        $this->addPrimaryKey('field_id', 'FieldId', 'INTEGER', true, null, 0);
-        $this->addPrimaryKey('form_id', 'FormId', 'INTEGER', true, null, 0);
+        $this->addForeignPrimaryKey('field_id', 'FieldId', 'INTEGER' , 'tf_fields', 'field_id', true, null, 0);
+        $this->addForeignPrimaryKey('form_id', 'FormId', 'INTEGER' , 'tf_forms', 'form_id', true, null, 0);
         $this->addColumn('guest_only', 'GuestOnly', 'CHAR', true, null, null);
     } // initialize()
 
@@ -146,6 +146,20 @@ class FormFieldTableMap extends TableMap
      */
     public function buildRelations()
     {
+        $this->addRelation('Field', '\\TheFarm\\Models\\Field', RelationMap::MANY_TO_ONE, array (
+  0 =>
+  array (
+    0 => ':field_id',
+    1 => ':field_id',
+  ),
+), null, null, null, false);
+        $this->addRelation('Form', '\\TheFarm\\Models\\Form', RelationMap::MANY_TO_ONE, array (
+  0 =>
+  array (
+    0 => ':form_id',
+    1 => ':form_id',
+  ),
+), null, null, null, false);
     } // buildRelations()
 
     /**

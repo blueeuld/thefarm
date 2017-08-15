@@ -45,6 +45,8 @@ class PropelMigration_1502683471
 # It "suspends judgement" for fkey relationships until are tables are set.
 SET FOREIGN_KEY_CHECKS = 0;
 
+DELETE n1 FROM `tf_items_related_users` n1, `tf_items_related_users` n2 WHERE n1.item_id > n2.item_id AND n1.contact_id = n2.contact_id;
+
 ALTER TABLE `tf_items_related_users`
 
   ADD PRIMARY KEY (`item_id`,`contact_id`);

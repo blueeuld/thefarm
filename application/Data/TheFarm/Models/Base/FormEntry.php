@@ -94,25 +94,11 @@ abstract class FormEntry implements ActiveRecordInterface
     protected $field_id;
 
     /**
-     * The value for the field_text_value field.
+     * The value for the field_value field.
      *
      * @var        string
      */
-    protected $field_text_value;
-
-    /**
-     * The value for the field_dropdown_value field.
-     *
-     * @var        string
-     */
-    protected $field_dropdown_value;
-
-    /**
-     * The value for the field_checkboxes_value field.
-     *
-     * @var        string
-     */
-    protected $field_checkboxes_value;
+    protected $field_value;
 
     /**
      * @var        ChildBooking
@@ -403,33 +389,13 @@ abstract class FormEntry implements ActiveRecordInterface
     }
 
     /**
-     * Get the [field_text_value] column value.
+     * Get the [field_value] column value.
      *
      * @return string
      */
-    public function getFieldTextValue()
+    public function getFieldValue()
     {
-        return $this->field_text_value;
-    }
-
-    /**
-     * Get the [field_dropdown_value] column value.
-     *
-     * @return string
-     */
-    public function getFieldDropdownValue()
-    {
-        return $this->field_dropdown_value;
-    }
-
-    /**
-     * Get the [field_checkboxes_value] column value.
-     *
-     * @return string
-     */
-    public function getFieldCheckboxesValue()
-    {
-        return $this->field_checkboxes_value;
+        return $this->field_value;
     }
 
     /**
@@ -525,64 +491,24 @@ abstract class FormEntry implements ActiveRecordInterface
     } // setFieldId()
 
     /**
-     * Set the value of [field_text_value] column.
+     * Set the value of [field_value] column.
      *
      * @param string $v new value
      * @return $this|\TheFarm\Models\FormEntry The current object (for fluent API support)
      */
-    public function setFieldTextValue($v)
+    public function setFieldValue($v)
     {
         if ($v !== null) {
             $v = (string) $v;
         }
 
-        if ($this->field_text_value !== $v) {
-            $this->field_text_value = $v;
-            $this->modifiedColumns[FormEntryTableMap::COL_FIELD_TEXT_VALUE] = true;
+        if ($this->field_value !== $v) {
+            $this->field_value = $v;
+            $this->modifiedColumns[FormEntryTableMap::COL_FIELD_VALUE] = true;
         }
 
         return $this;
-    } // setFieldTextValue()
-
-    /**
-     * Set the value of [field_dropdown_value] column.
-     *
-     * @param string $v new value
-     * @return $this|\TheFarm\Models\FormEntry The current object (for fluent API support)
-     */
-    public function setFieldDropdownValue($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->field_dropdown_value !== $v) {
-            $this->field_dropdown_value = $v;
-            $this->modifiedColumns[FormEntryTableMap::COL_FIELD_DROPDOWN_VALUE] = true;
-        }
-
-        return $this;
-    } // setFieldDropdownValue()
-
-    /**
-     * Set the value of [field_checkboxes_value] column.
-     *
-     * @param string $v new value
-     * @return $this|\TheFarm\Models\FormEntry The current object (for fluent API support)
-     */
-    public function setFieldCheckboxesValue($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->field_checkboxes_value !== $v) {
-            $this->field_checkboxes_value = $v;
-            $this->modifiedColumns[FormEntryTableMap::COL_FIELD_CHECKBOXES_VALUE] = true;
-        }
-
-        return $this;
-    } // setFieldCheckboxesValue()
+    } // setFieldValue()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -632,14 +558,8 @@ abstract class FormEntry implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : FormEntryTableMap::translateFieldName('FieldId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->field_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : FormEntryTableMap::translateFieldName('FieldTextValue', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->field_text_value = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : FormEntryTableMap::translateFieldName('FieldDropdownValue', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->field_dropdown_value = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : FormEntryTableMap::translateFieldName('FieldCheckboxesValue', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->field_checkboxes_value = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : FormEntryTableMap::translateFieldName('FieldValue', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->field_value = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -648,7 +568,7 @@ abstract class FormEntry implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 7; // 7 = FormEntryTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 5; // 5 = FormEntryTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\TheFarm\\Models\\FormEntry'), 0, $e);
@@ -899,14 +819,8 @@ abstract class FormEntry implements ActiveRecordInterface
         if ($this->isColumnModified(FormEntryTableMap::COL_FIELD_ID)) {
             $modifiedColumns[':p' . $index++]  = 'field_id';
         }
-        if ($this->isColumnModified(FormEntryTableMap::COL_FIELD_TEXT_VALUE)) {
-            $modifiedColumns[':p' . $index++]  = 'field_text_value';
-        }
-        if ($this->isColumnModified(FormEntryTableMap::COL_FIELD_DROPDOWN_VALUE)) {
-            $modifiedColumns[':p' . $index++]  = 'field_dropdown_value';
-        }
-        if ($this->isColumnModified(FormEntryTableMap::COL_FIELD_CHECKBOXES_VALUE)) {
-            $modifiedColumns[':p' . $index++]  = 'field_checkboxes_value';
+        if ($this->isColumnModified(FormEntryTableMap::COL_FIELD_VALUE)) {
+            $modifiedColumns[':p' . $index++]  = 'field_value';
         }
 
         $sql = sprintf(
@@ -931,14 +845,8 @@ abstract class FormEntry implements ActiveRecordInterface
                     case 'field_id':
                         $stmt->bindValue($identifier, $this->field_id, PDO::PARAM_INT);
                         break;
-                    case 'field_text_value':
-                        $stmt->bindValue($identifier, $this->field_text_value, PDO::PARAM_STR);
-                        break;
-                    case 'field_dropdown_value':
-                        $stmt->bindValue($identifier, $this->field_dropdown_value, PDO::PARAM_STR);
-                        break;
-                    case 'field_checkboxes_value':
-                        $stmt->bindValue($identifier, $this->field_checkboxes_value, PDO::PARAM_STR);
+                    case 'field_value':
+                        $stmt->bindValue($identifier, $this->field_value, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -1015,13 +923,7 @@ abstract class FormEntry implements ActiveRecordInterface
                 return $this->getFieldId();
                 break;
             case 4:
-                return $this->getFieldTextValue();
-                break;
-            case 5:
-                return $this->getFieldDropdownValue();
-                break;
-            case 6:
-                return $this->getFieldCheckboxesValue();
+                return $this->getFieldValue();
                 break;
             default:
                 return null;
@@ -1057,9 +959,7 @@ abstract class FormEntry implements ActiveRecordInterface
             $keys[1] => $this->getBookingId(),
             $keys[2] => $this->getFormId(),
             $keys[3] => $this->getFieldId(),
-            $keys[4] => $this->getFieldTextValue(),
-            $keys[5] => $this->getFieldDropdownValue(),
-            $keys[6] => $this->getFieldCheckboxesValue(),
+            $keys[4] => $this->getFieldValue(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1159,13 +1059,7 @@ abstract class FormEntry implements ActiveRecordInterface
                 $this->setFieldId($value);
                 break;
             case 4:
-                $this->setFieldTextValue($value);
-                break;
-            case 5:
-                $this->setFieldDropdownValue($value);
-                break;
-            case 6:
-                $this->setFieldCheckboxesValue($value);
+                $this->setFieldValue($value);
                 break;
         } // switch()
 
@@ -1206,13 +1100,7 @@ abstract class FormEntry implements ActiveRecordInterface
             $this->setFieldId($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
-            $this->setFieldTextValue($arr[$keys[4]]);
-        }
-        if (array_key_exists($keys[5], $arr)) {
-            $this->setFieldDropdownValue($arr[$keys[5]]);
-        }
-        if (array_key_exists($keys[6], $arr)) {
-            $this->setFieldCheckboxesValue($arr[$keys[6]]);
+            $this->setFieldValue($arr[$keys[4]]);
         }
     }
 
@@ -1267,14 +1155,8 @@ abstract class FormEntry implements ActiveRecordInterface
         if ($this->isColumnModified(FormEntryTableMap::COL_FIELD_ID)) {
             $criteria->add(FormEntryTableMap::COL_FIELD_ID, $this->field_id);
         }
-        if ($this->isColumnModified(FormEntryTableMap::COL_FIELD_TEXT_VALUE)) {
-            $criteria->add(FormEntryTableMap::COL_FIELD_TEXT_VALUE, $this->field_text_value);
-        }
-        if ($this->isColumnModified(FormEntryTableMap::COL_FIELD_DROPDOWN_VALUE)) {
-            $criteria->add(FormEntryTableMap::COL_FIELD_DROPDOWN_VALUE, $this->field_dropdown_value);
-        }
-        if ($this->isColumnModified(FormEntryTableMap::COL_FIELD_CHECKBOXES_VALUE)) {
-            $criteria->add(FormEntryTableMap::COL_FIELD_CHECKBOXES_VALUE, $this->field_checkboxes_value);
+        if ($this->isColumnModified(FormEntryTableMap::COL_FIELD_VALUE)) {
+            $criteria->add(FormEntryTableMap::COL_FIELD_VALUE, $this->field_value);
         }
 
         return $criteria;
@@ -1365,9 +1247,7 @@ abstract class FormEntry implements ActiveRecordInterface
         $copyObj->setBookingId($this->getBookingId());
         $copyObj->setFormId($this->getFormId());
         $copyObj->setFieldId($this->getFieldId());
-        $copyObj->setFieldTextValue($this->getFieldTextValue());
-        $copyObj->setFieldDropdownValue($this->getFieldDropdownValue());
-        $copyObj->setFieldCheckboxesValue($this->getFieldCheckboxesValue());
+        $copyObj->setFieldValue($this->getFieldValue());
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setEntryId(NULL); // this is a auto-increment column, so set to default value
@@ -1569,9 +1449,7 @@ abstract class FormEntry implements ActiveRecordInterface
         $this->booking_id = null;
         $this->form_id = null;
         $this->field_id = null;
-        $this->field_text_value = null;
-        $this->field_dropdown_value = null;
-        $this->field_checkboxes_value = null;
+        $this->field_value = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->resetModified();

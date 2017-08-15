@@ -24,17 +24,13 @@ use TheFarm\Models\Map\FormEntryTableMap;
  * @method     ChildFormEntryQuery orderByBookingId($order = Criteria::ASC) Order by the booking_id column
  * @method     ChildFormEntryQuery orderByFormId($order = Criteria::ASC) Order by the form_id column
  * @method     ChildFormEntryQuery orderByFieldId($order = Criteria::ASC) Order by the field_id column
- * @method     ChildFormEntryQuery orderByFieldTextValue($order = Criteria::ASC) Order by the field_text_value column
- * @method     ChildFormEntryQuery orderByFieldDropdownValue($order = Criteria::ASC) Order by the field_dropdown_value column
- * @method     ChildFormEntryQuery orderByFieldCheckboxesValue($order = Criteria::ASC) Order by the field_checkboxes_value column
+ * @method     ChildFormEntryQuery orderByFieldValue($order = Criteria::ASC) Order by the field_value column
  *
  * @method     ChildFormEntryQuery groupByEntryId() Group by the entry_id column
  * @method     ChildFormEntryQuery groupByBookingId() Group by the booking_id column
  * @method     ChildFormEntryQuery groupByFormId() Group by the form_id column
  * @method     ChildFormEntryQuery groupByFieldId() Group by the field_id column
- * @method     ChildFormEntryQuery groupByFieldTextValue() Group by the field_text_value column
- * @method     ChildFormEntryQuery groupByFieldDropdownValue() Group by the field_dropdown_value column
- * @method     ChildFormEntryQuery groupByFieldCheckboxesValue() Group by the field_checkboxes_value column
+ * @method     ChildFormEntryQuery groupByFieldValue() Group by the field_value column
  *
  * @method     ChildFormEntryQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildFormEntryQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -83,9 +79,7 @@ use TheFarm\Models\Map\FormEntryTableMap;
  * @method     ChildFormEntry findOneByBookingId(int $booking_id) Return the first ChildFormEntry filtered by the booking_id column
  * @method     ChildFormEntry findOneByFormId(int $form_id) Return the first ChildFormEntry filtered by the form_id column
  * @method     ChildFormEntry findOneByFieldId(int $field_id) Return the first ChildFormEntry filtered by the field_id column
- * @method     ChildFormEntry findOneByFieldTextValue(string $field_text_value) Return the first ChildFormEntry filtered by the field_text_value column
- * @method     ChildFormEntry findOneByFieldDropdownValue(string $field_dropdown_value) Return the first ChildFormEntry filtered by the field_dropdown_value column
- * @method     ChildFormEntry findOneByFieldCheckboxesValue(string $field_checkboxes_value) Return the first ChildFormEntry filtered by the field_checkboxes_value column *
+ * @method     ChildFormEntry findOneByFieldValue(string $field_value) Return the first ChildFormEntry filtered by the field_value column *
 
  * @method     ChildFormEntry requirePk($key, ConnectionInterface $con = null) Return the ChildFormEntry by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildFormEntry requireOne(ConnectionInterface $con = null) Return the first ChildFormEntry matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -94,18 +88,14 @@ use TheFarm\Models\Map\FormEntryTableMap;
  * @method     ChildFormEntry requireOneByBookingId(int $booking_id) Return the first ChildFormEntry filtered by the booking_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildFormEntry requireOneByFormId(int $form_id) Return the first ChildFormEntry filtered by the form_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildFormEntry requireOneByFieldId(int $field_id) Return the first ChildFormEntry filtered by the field_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildFormEntry requireOneByFieldTextValue(string $field_text_value) Return the first ChildFormEntry filtered by the field_text_value column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildFormEntry requireOneByFieldDropdownValue(string $field_dropdown_value) Return the first ChildFormEntry filtered by the field_dropdown_value column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildFormEntry requireOneByFieldCheckboxesValue(string $field_checkboxes_value) Return the first ChildFormEntry filtered by the field_checkboxes_value column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildFormEntry requireOneByFieldValue(string $field_value) Return the first ChildFormEntry filtered by the field_value column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildFormEntry[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildFormEntry objects based on current ModelCriteria
  * @method     ChildFormEntry[]|ObjectCollection findByEntryId(int $entry_id) Return ChildFormEntry objects filtered by the entry_id column
  * @method     ChildFormEntry[]|ObjectCollection findByBookingId(int $booking_id) Return ChildFormEntry objects filtered by the booking_id column
  * @method     ChildFormEntry[]|ObjectCollection findByFormId(int $form_id) Return ChildFormEntry objects filtered by the form_id column
  * @method     ChildFormEntry[]|ObjectCollection findByFieldId(int $field_id) Return ChildFormEntry objects filtered by the field_id column
- * @method     ChildFormEntry[]|ObjectCollection findByFieldTextValue(string $field_text_value) Return ChildFormEntry objects filtered by the field_text_value column
- * @method     ChildFormEntry[]|ObjectCollection findByFieldDropdownValue(string $field_dropdown_value) Return ChildFormEntry objects filtered by the field_dropdown_value column
- * @method     ChildFormEntry[]|ObjectCollection findByFieldCheckboxesValue(string $field_checkboxes_value) Return ChildFormEntry objects filtered by the field_checkboxes_value column
+ * @method     ChildFormEntry[]|ObjectCollection findByFieldValue(string $field_value) Return ChildFormEntry objects filtered by the field_value column
  * @method     ChildFormEntry[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -204,7 +194,7 @@ abstract class FormEntryQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT entry_id, booking_id, form_id, field_id, field_text_value, field_dropdown_value, field_checkboxes_value FROM tf_form_entries WHERE entry_id = :p0';
+        $sql = 'SELECT entry_id, booking_id, form_id, field_id, field_value FROM tf_form_entries WHERE entry_id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -465,78 +455,28 @@ abstract class FormEntryQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the field_text_value column
+     * Filter the query on the field_value column
      *
      * Example usage:
      * <code>
-     * $query->filterByFieldTextValue('fooValue');   // WHERE field_text_value = 'fooValue'
-     * $query->filterByFieldTextValue('%fooValue%', Criteria::LIKE); // WHERE field_text_value LIKE '%fooValue%'
+     * $query->filterByFieldValue('fooValue');   // WHERE field_value = 'fooValue'
+     * $query->filterByFieldValue('%fooValue%', Criteria::LIKE); // WHERE field_value LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $fieldTextValue The value to use as filter.
+     * @param     string $fieldValue The value to use as filter.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildFormEntryQuery The current query, for fluid interface
      */
-    public function filterByFieldTextValue($fieldTextValue = null, $comparison = null)
+    public function filterByFieldValue($fieldValue = null, $comparison = null)
     {
         if (null === $comparison) {
-            if (is_array($fieldTextValue)) {
+            if (is_array($fieldValue)) {
                 $comparison = Criteria::IN;
             }
         }
 
-        return $this->addUsingAlias(FormEntryTableMap::COL_FIELD_TEXT_VALUE, $fieldTextValue, $comparison);
-    }
-
-    /**
-     * Filter the query on the field_dropdown_value column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByFieldDropdownValue('fooValue');   // WHERE field_dropdown_value = 'fooValue'
-     * $query->filterByFieldDropdownValue('%fooValue%', Criteria::LIKE); // WHERE field_dropdown_value LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $fieldDropdownValue The value to use as filter.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildFormEntryQuery The current query, for fluid interface
-     */
-    public function filterByFieldDropdownValue($fieldDropdownValue = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($fieldDropdownValue)) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(FormEntryTableMap::COL_FIELD_DROPDOWN_VALUE, $fieldDropdownValue, $comparison);
-    }
-
-    /**
-     * Filter the query on the field_checkboxes_value column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByFieldCheckboxesValue('fooValue');   // WHERE field_checkboxes_value = 'fooValue'
-     * $query->filterByFieldCheckboxesValue('%fooValue%', Criteria::LIKE); // WHERE field_checkboxes_value LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $fieldCheckboxesValue The value to use as filter.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildFormEntryQuery The current query, for fluid interface
-     */
-    public function filterByFieldCheckboxesValue($fieldCheckboxesValue = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($fieldCheckboxesValue)) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(FormEntryTableMap::COL_FIELD_CHECKBOXES_VALUE, $fieldCheckboxesValue, $comparison);
+        return $this->addUsingAlias(FormEntryTableMap::COL_FIELD_VALUE, $fieldValue, $comparison);
     }
 
     /**

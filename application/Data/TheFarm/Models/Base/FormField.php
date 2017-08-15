@@ -15,7 +15,11 @@ use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
+use TheFarm\Models\Field as ChildField;
+use TheFarm\Models\FieldQuery as ChildFieldQuery;
+use TheFarm\Models\Form as ChildForm;
 use TheFarm\Models\FormFieldQuery as ChildFormFieldQuery;
+use TheFarm\Models\FormQuery as ChildFormQuery;
 use TheFarm\Models\Map\FormFieldTableMap;
 
 /**
@@ -81,6 +85,16 @@ abstract class FormField implements ActiveRecordInterface
      * @var        string
      */
     protected $guest_only;
+
+    /**
+     * @var        ChildField
+     */
+    protected $aField;
+
+    /**
+     * @var        ChildForm
+     */
+    protected $aForm;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -376,6 +390,10 @@ abstract class FormField implements ActiveRecordInterface
             $this->modifiedColumns[FormFieldTableMap::COL_FIELD_ID] = true;
         }
 
+        if ($this->aField !== null && $this->aField->getFieldId() !== $v) {
+            $this->aField = null;
+        }
+
         return $this;
     } // setFieldId()
 
@@ -394,6 +412,10 @@ abstract class FormField implements ActiveRecordInterface
         if ($this->form_id !== $v) {
             $this->form_id = $v;
             $this->modifiedColumns[FormFieldTableMap::COL_FORM_ID] = true;
+        }
+
+        if ($this->aForm !== null && $this->aForm->getFormId() !== $v) {
+            $this->aForm = null;
         }
 
         return $this;
@@ -501,6 +523,12 @@ abstract class FormField implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
+        if ($this->aField !== null && $this->field_id !== $this->aField->getFieldId()) {
+            $this->aField = null;
+        }
+        if ($this->aForm !== null && $this->form_id !== $this->aForm->getFormId()) {
+            $this->aForm = null;
+        }
     } // ensureConsistency
 
     /**
@@ -540,6 +568,8 @@ abstract class FormField implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
+            $this->aField = null;
+            $this->aForm = null;
         } // if (deep)
     }
 
@@ -642,6 +672,25 @@ abstract class FormField implements ActiveRecordInterface
         $affectedRows = 0; // initialize var to track total num of affected rows
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
+
+            // We call the save method on the following object(s) if they
+            // were passed to this object by their corresponding set
+            // method.  This object relates to these object(s) by a
+            // foreign key reference.
+
+            if ($this->aField !== null) {
+                if ($this->aField->isModified() || $this->aField->isNew()) {
+                    $affectedRows += $this->aField->save($con);
+                }
+                $this->setField($this->aField);
+            }
+
+            if ($this->aForm !== null) {
+                if ($this->aForm->isModified() || $this->aForm->isNew()) {
+                    $affectedRows += $this->aForm->save($con);
+                }
+                $this->setForm($this->aForm);
+            }
 
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
@@ -786,10 +835,11 @@ abstract class FormField implements ActiveRecordInterface
      *                    Defaults to TableMap::TYPE_PHPNAME.
      * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
      * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
+     * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
      *
      * @return array an associative array containing the field names (as keys) and field values
      */
-    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array())
+    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
 
         if (isset($alreadyDumpedObjects['FormField'][$this->hashCode()])) {
@@ -807,6 +857,38 @@ abstract class FormField implements ActiveRecordInterface
             $result[$key] = $virtualColumn;
         }
 
+        if ($includeForeignObjects) {
+            if (null !== $this->aField) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'field';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'tf_fields';
+                        break;
+                    default:
+                        $key = 'Field';
+                }
+
+                $result[$key] = $this->aField->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->aForm) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'form';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'tf_forms';
+                        break;
+                    default:
+                        $key = 'Form';
+                }
+
+                $result[$key] = $this->aForm->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+        }
 
         return $result;
     }
@@ -968,8 +1050,22 @@ abstract class FormField implements ActiveRecordInterface
         $validPk = null !== $this->getFieldId() &&
             null !== $this->getFormId();
 
-        $validPrimaryKeyFKs = 0;
+        $validPrimaryKeyFKs = 2;
         $primaryKeyFKs = [];
+
+        //relation tf_form_fields_fk_56efb6 to table tf_fields
+        if ($this->aField && $hash = spl_object_hash($this->aField)) {
+            $primaryKeyFKs[] = $hash;
+        } else {
+            $validPrimaryKeyFKs = false;
+        }
+
+        //relation tf_form_fields_fk_8ba9c8 to table tf_forms
+        if ($this->aForm && $hash = spl_object_hash($this->aForm)) {
+            $primaryKeyFKs[] = $hash;
+        } else {
+            $validPrimaryKeyFKs = false;
+        }
 
         if ($validPk) {
             return crc32(json_encode($this->getPrimaryKey(), JSON_UNESCAPED_UNICODE));
@@ -1059,12 +1155,120 @@ abstract class FormField implements ActiveRecordInterface
     }
 
     /**
+     * Declares an association between this object and a ChildField object.
+     *
+     * @param  ChildField $v
+     * @return $this|\TheFarm\Models\FormField The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setField(ChildField $v = null)
+    {
+        if ($v === null) {
+            $this->setFieldId(0);
+        } else {
+            $this->setFieldId($v->getFieldId());
+        }
+
+        $this->aField = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildField object, it will not be re-added.
+        if ($v !== null) {
+            $v->addFormField($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildField object
+     *
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildField The associated ChildField object.
+     * @throws PropelException
+     */
+    public function getField(ConnectionInterface $con = null)
+    {
+        if ($this->aField === null && ($this->field_id !== null)) {
+            $this->aField = ChildFieldQuery::create()->findPk($this->field_id, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aField->addFormFields($this);
+             */
+        }
+
+        return $this->aField;
+    }
+
+    /**
+     * Declares an association between this object and a ChildForm object.
+     *
+     * @param  ChildForm $v
+     * @return $this|\TheFarm\Models\FormField The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setForm(ChildForm $v = null)
+    {
+        if ($v === null) {
+            $this->setFormId(0);
+        } else {
+            $this->setFormId($v->getFormId());
+        }
+
+        $this->aForm = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildForm object, it will not be re-added.
+        if ($v !== null) {
+            $v->addFormField($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildForm object
+     *
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildForm The associated ChildForm object.
+     * @throws PropelException
+     */
+    public function getForm(ConnectionInterface $con = null)
+    {
+        if ($this->aForm === null && ($this->form_id !== null)) {
+            $this->aForm = ChildFormQuery::create()->findPk($this->form_id, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aForm->addFormFields($this);
+             */
+        }
+
+        return $this->aForm;
+    }
+
+    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
      */
     public function clear()
     {
+        if (null !== $this->aField) {
+            $this->aField->removeFormField($this);
+        }
+        if (null !== $this->aForm) {
+            $this->aForm->removeFormField($this);
+        }
         $this->field_id = null;
         $this->form_id = null;
         $this->guest_only = null;
@@ -1089,6 +1293,8 @@ abstract class FormField implements ActiveRecordInterface
         if ($deep) {
         } // if ($deep)
 
+        $this->aField = null;
+        $this->aForm = null;
     }
 
     /**

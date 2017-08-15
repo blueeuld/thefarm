@@ -4,10 +4,10 @@ use Propel\Generator\Manager\MigrationManager;
 
 /**
  * Data object containing the SQL and PHP code to migrate the database
- * up to version 1502468601.
- * Generated on 2017-08-11 16:23:21 by marvin
+ * up to version 1502787119.
+ * Generated on 2017-08-15 08:51:59 by marvin
  */
-class PropelMigration_1502468601
+class PropelMigration_1502787119
 {
     public $comment = '';
 
@@ -45,11 +45,15 @@ class PropelMigration_1502468601
 # It "suspends judgement" for fkey relationships until are tables are set.
 SET FOREIGN_KEY_CHECKS = 0;
 
-CREATE INDEX `user_work_plan_time_contact_fk` ON `tf_user_work_plan_time` (`contact_id`);
+ALTER TABLE `tf_form_entries`
 
-ALTER TABLE `tf_user_work_plan_time` ADD CONSTRAINT `user_work_plan_time_contact_fk`
-    FOREIGN KEY (`contact_id`)
-    REFERENCES `tf_contacts` (`contact_id`);
+  ADD `field_value` VARCHAR(200) AFTER `field_id`,
+
+  DROP `field_text_value`,
+
+  DROP `field_dropdown_value`,
+
+  DROP `field_checkboxes_value`;
 
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;
@@ -71,11 +75,15 @@ SET FOREIGN_KEY_CHECKS = 1;
 # It "suspends judgement" for fkey relationships until are tables are set.
 SET FOREIGN_KEY_CHECKS = 0;
 
-ALTER TABLE `tf_user_work_plan_time` DROP FOREIGN KEY `user_work_plan_time_contact_fk`;
+ALTER TABLE `tf_form_entries`
 
-DROP INDEX `user_work_plan_time_contact_fk` ON `tf_user_work_plan_time`;
+  ADD `field_text_value` VARCHAR(100) AFTER `field_id`,
 
-CREATE INDEX `fi_tact_fk2` ON `tf_user_work_plan_time` (`contact_id`);
+  ADD `field_dropdown_value` VARCHAR(100) AFTER `field_text_value`,
+
+  ADD `field_checkboxes_value` VARCHAR(100) AFTER `field_dropdown_value`,
+
+  DROP `field_value`;
 
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;

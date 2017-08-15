@@ -54,7 +54,17 @@ use TheFarm\Models\Map\FormTableMap;
  * @method     ChildFormQuery rightJoinWithFormEntry() Adds a RIGHT JOIN clause and with to the query using the FormEntry relation
  * @method     ChildFormQuery innerJoinWithFormEntry() Adds a INNER JOIN clause and with to the query using the FormEntry relation
  *
- * @method     \TheFarm\Models\FormEntryQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     ChildFormQuery leftJoinFormField($relationAlias = null) Adds a LEFT JOIN clause to the query using the FormField relation
+ * @method     ChildFormQuery rightJoinFormField($relationAlias = null) Adds a RIGHT JOIN clause to the query using the FormField relation
+ * @method     ChildFormQuery innerJoinFormField($relationAlias = null) Adds a INNER JOIN clause to the query using the FormField relation
+ *
+ * @method     ChildFormQuery joinWithFormField($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the FormField relation
+ *
+ * @method     ChildFormQuery leftJoinWithFormField() Adds a LEFT JOIN clause and with to the query using the FormField relation
+ * @method     ChildFormQuery rightJoinWithFormField() Adds a RIGHT JOIN clause and with to the query using the FormField relation
+ * @method     ChildFormQuery innerJoinWithFormField() Adds a INNER JOIN clause and with to the query using the FormField relation
+ *
+ * @method     \TheFarm\Models\FormEntryQuery|\TheFarm\Models\FormFieldQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildForm findOne(ConnectionInterface $con = null) Return the first ChildForm matching the query
  * @method     ChildForm findOneOrCreate(ConnectionInterface $con = null) Return the first ChildForm matching the query, or a new ChildForm object populated from the query conditions when no match is found
@@ -584,6 +594,79 @@ abstract class FormQuery extends ModelCriteria
         return $this
             ->joinFormEntry($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'FormEntry', '\TheFarm\Models\FormEntryQuery');
+    }
+
+    /**
+     * Filter the query by a related \TheFarm\Models\FormField object
+     *
+     * @param \TheFarm\Models\FormField|ObjectCollection $formField the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildFormQuery The current query, for fluid interface
+     */
+    public function filterByFormField($formField, $comparison = null)
+    {
+        if ($formField instanceof \TheFarm\Models\FormField) {
+            return $this
+                ->addUsingAlias(FormTableMap::COL_FORM_ID, $formField->getFormId(), $comparison);
+        } elseif ($formField instanceof ObjectCollection) {
+            return $this
+                ->useFormFieldQuery()
+                ->filterByPrimaryKeys($formField->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByFormField() only accepts arguments of type \TheFarm\Models\FormField or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the FormField relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildFormQuery The current query, for fluid interface
+     */
+    public function joinFormField($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('FormField');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'FormField');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the FormField relation FormField object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \TheFarm\Models\FormFieldQuery A secondary query class using the current class as primary query
+     */
+    public function useFormFieldQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinFormField($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'FormField', '\TheFarm\Models\FormFieldQuery');
     }
 
     /**

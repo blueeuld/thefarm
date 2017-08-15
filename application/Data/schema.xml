@@ -361,9 +361,7 @@
     <column name="booking_id" phpName="BookingId" type="INTEGER"/>
     <column name="form_id" phpName="FormId" type="INTEGER" required="true"/>
     <column name="field_id" phpName="FieldId" type="INTEGER" required="true"/>
-    <column name="field_text_value" phpName="FieldTextValue" type="VARCHAR" size="100"/>
-    <column name="field_dropdown_value" phpName="FieldDropdownValue" type="VARCHAR" size="100"/>
-    <column name="field_checkboxes_value" phpName="FieldCheckboxesValue" type="VARCHAR" size="100"/>
+    <column name="field_value" phpName="FieldValue" type="VARCHAR" size="200"/>
     <foreign-key foreignTable="tf_bookings" name="form_entries_booking_fk">
       <reference local="booking_id" foreign="booking_id"/>
     </foreign-key>
@@ -517,6 +515,12 @@
     <column name="field_id" phpName="FieldId" type="INTEGER" primaryKey="true" required="true" defaultValue="0"/>
     <column name="form_id" phpName="FormId" type="INTEGER" primaryKey="true" required="true" defaultValue="0"/>
     <column name="guest_only" phpName="GuestOnly" type="CHAR" required="true"/>
+    <foreign-key foreignTable="tf_fields" phpName="Field">
+      <reference local="field_id" foreign="field_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="tf_forms" phpName="Form">
+      <reference local="form_id" foreign="form_id"/>
+    </foreign-key>
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
