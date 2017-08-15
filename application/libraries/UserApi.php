@@ -47,10 +47,6 @@ class UserApi {
         return $userArr;
     }
 
-    function get_available_providers($relatedItemId, $startDateTime, $endDateTime) {
-
-    }
-
     function get_users($providersOnly = false, $locations = [], $relatedItemId = null, $availableProvidersOnly = null, $startDateTime = null, $endDateTime = null, $auditUsersOnly = false) {
         $search = \TheFarm\Models\ContactQuery::create()
             ->filterByIsActive(true);
@@ -60,6 +56,9 @@ class UserApi {
         }
         elseif ($availableProvidersOnly && !is_null($startDateTime) && !is_null($endDateTime)) {
             $search = $search->useUserWorkPlanTimeQuery()->where("((start_date BETWEEN '".$startDateTime."' AND '".$endDateTime."') OR (end_date BETWEEN '".$startDateTime."' AND '".$endDateTime."') OR ('".$startDateTime."' BETWEEN start_date AND end_date))")->endUse();
+        }
+        elseif ($availableProvidersOnly && !is_null($startDateTime)) {
+            $search = $search->useUserWorkPlanDayQuery()->filterByWorkCodeCd(['OFF', 'VL', 'OS'])->filterByDate($startDateTime)->endUse();
         }
 
         if ($auditUsersOnly) {

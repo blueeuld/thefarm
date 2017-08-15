@@ -2,6 +2,136 @@
 
 class EventApi {
 
+    public function validate_event($eventData) {
+
+//        if (!$this->start && !$this->end && $this->status != 'confirmed') return TRUE;
+//
+//        if ($this->exclude_status && in_array($this->status, $this->exclude_status)) return TRUE;
+//
+//        if ($this->booking_id === 0) return TRUE;
+//
+//        if ($this->is_item_no_validate())
+//        {
+//            return TRUE;
+//        }
+
+//        print_r($eventData);
+
+        if (!$eventData['StartDate'] && !$eventData['EndDate'] && $eventData['Status'] !== 'confirmed') {
+            return true;
+        }
+        elseif (is_null($eventData['BookingId'])) {
+            return true;
+        }
+
+        try {
+
+            $search = \TheFarm\Models\BookingEventQuery::create()
+                ->filterByStatus(['cancelled', 'no-show'], \Propel\Runtime\ActiveQuery\Criteria::NOT_IN)
+                ->useBookingQuery()->filterByIsActive(true)->endUse()
+                ->useItemQuery()->useItemCategoryQuery()->filterByCategoryId([12, 3], \Propel\Runtime\ActiveQuery\Criteria::NOT_IN)->endUse()->endUse();
+
+            if ($eventData['EventId']) {
+                $search = $search->filterByEventId($eventData['EventId'], '!=');
+            }
+
+            $search = $search->filterByBookingId($eventData['BookingId']);
+
+            $start = new DateTime($eventData['StartDate']);
+            $start->add(new DateInterval('PT1M'));
+
+            $end = new DateTime($eventData['EndDate']);
+            $end->sub(new DateInterval('PT1M'));
+
+            $check_in = $start->format('Y-m-d H:i:s');
+            $check_out = $end->format('Y-m-d H:i:s');
+
+            $search = $search->where("((start_dt BETWEEN '$check_in' AND '$check_out') OR (end_dt BETWEEN '$check_in' AND '$check_out') OR ('$check_in' BETWEEN start_dt AND end_dt))");
+
+            $results = $search->find();
+
+            if ($results->count() > 0) {
+                throw new Exception('The guest selected has existing appointment on the date and time selected.');
+            }
+
+            // get provider working schedule.
+            if ($eventData['BookingEventUsers']) {
+
+                $date = date('Y-m-d', strtotime($eventData['StartDate']));
+
+                $userApi = new UserApi();
+                $availableProviders = $userApi->get_users(false, null, $eventData['ItemId'], true, $date);
+
+                if ($availableProviders) {
+
+                    foreach ($availableProviders as $row) {
+
+                        $search = \TheFarm\Models\BookingEventQuery::create()
+                            ->useEventUserQuery()->filterByUserId($row['ContactId'])->endUse();
+
+                        if ($eventData['EventId']) {
+                            $search = $search->filterByEventId($eventData['EventId'], '!=');
+                        }
+
+                        $search = $search->where("((start_dt BETWEEN '$check_in' AND '$check_out') OR (end_dt BETWEEN '$check_in' AND '$check_out') OR ('$check_in' BETWEEN start_dt AND end_dt))");
+
+                        if ($result = $search->findOne()) {
+                            throw new Exception(sprintf('Guest : <b>%s</b><br />Start : <b>%s</b><br />End : <b>%s</b>', $result['Booking']['Guest']['FirstName'] . ' ' . $result['Booking']['Guest']['LastName'], $result['StartDate'], $result['EndDate']));
+                        }
+                    }
+                }
+            }
+
+            // Validate room/facility.
+            if (isset($eventData['FacilityId']) && $eventData['FacilityId']) {
+
+                $search = \TheFarm\Models\BookingEventQuery::create()
+                    ->filterByFacilityId($eventData['FacilityId'])
+                    ->useFacilityQuery()->filterByStatus(true)->endUse()
+                    ->useBookingQuery()->filterByStatus('confirmed')->filterByIsActive(true)->endUse();
+
+                if ($eventData['EventId']) {
+                    $search = $search->filterByEventId($eventData['EventId'], '!=');
+                }
+
+                $search = $search->where(sprintf("'%s' <= DATE_SUB(end_dt, INTERVAL 1 MINUTE) AND '%s' >= start_dt", $eventData['StartDate'], $eventData['EndDate']));
+
+                $events = $search->find();
+
+                if ($events->count() > 0) {
+
+                    foreach ($events as $event) {
+
+//                        $max_accomodation = $event->get intval($row['max_accomodation']);
+//                        $facility_name = $row['facility_name'];
+//
+//                        $this->TF->db->select("COUNT(*) as existing_accomodation");
+//                        $this->TF->db->from('booking_events');
+//                        $this->TF->db->join('booking_items', 'booking_events.booking_item_id = booking_items.booking_item_id');
+//                        $this->TF->db->join('bookings', 'bookings.booking_id = booking_items.booking_id', 'left');
+//                        $this->TF->db->where_not_in('booking_events.status', array('cancelled', 'no-show'));
+//                        $this->TF->db->where('booking_events.facility_id', (int)$row['facility_id']);
+//                        if ($this->event) $this->TF->db->where('booking_events.event_id != ', $this->event);
+//                        $this->TF->db->where("'{$this->start}' <= DATE_ADD(end_dt, INTERVAL 1 MINUTE) AND '{$this->end}' >= start_dt");
+//                        $row1 = $this->TF->db->get()->row_array();
+//                        $existing_accomodation = intval($row1['existing_accomodation']);
+//
+//                        if ($existing_accomodation >= $max_accomodation) {
+//                            $this->exclude_facilities[] = (int)$row['facility_id'];
+//                            $this->errors[] = 'The room you selected is no longer available at booking time.';
+//                        }
+                    }
+
+                }
+            }
+
+            return true;
+        }
+        catch (Exception $exception) {
+            throw $exception;
+        }
+    }
+
     public function save_event($eventData) {
 
         try {

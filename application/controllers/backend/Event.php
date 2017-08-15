@@ -24,6 +24,9 @@ class Event extends TF_Controller {
     }
 
     public function save_event() {
+
+
+
         $this->load->helper('event');
         $booking_id = $this->input->get_post('booking_id') ? $this->input->get_post('booking_id') : NULL;
         $event_id = $this->input->get_post('event_id') ? $this->input->get_post('event_id') : NULL;
@@ -128,13 +131,26 @@ class Event extends TF_Controller {
 
         $eventData['ItemId'] = $item_id;
         $eventData['BookingId'] = $booking_id;
-        $eventData['BookingItemId'] = $booking_item_id;
 
         $eventApi = new EventApi();
-        $event = $eventApi->save_event($eventData);
 
-        echo json_encode(to_full_calendar_event($event));
-        exit ( 0 );
+        try {
+            $validate = $eventApi->validate_event($eventData);
+
+            if ($validate) {
+                $event = $eventApi->save_event($eventData);
+                echo json_encode(to_full_calendar_event($event));
+                exit (0);
+            }
+            else {
+                echo json_encode($validate);
+                exit (0);
+            }
+        }
+        catch (Exception $exception) {
+            echo json_encode($exception);
+            exit (0);
+        }
     }
 
     public function delete_event($eventId) {
