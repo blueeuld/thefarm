@@ -114,9 +114,7 @@ class Event extends TF_Controller {
         $eventData['EndDate'] = date('Y-m-d H:i:s', strtotime($end_date . ' ' . $end_time));
         /* Event Data End */
 
-        if ($facility = $this->input->get_post('facility_id')) {
-            $event['FacilityId'] = $facility;
-        }
+        $eventData['FacilityId'] = $this->input->get_post('facility_id') ? $this->input->get_post('facility_id') : null;
 
         $assignedTo = array();
         if ($assignedTo = $this->input->get_post('assigned_to')) {

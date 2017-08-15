@@ -94,7 +94,7 @@ class EventApi {
                     $search = $search->filterByEventId($eventData['EventId'], '!=');
                 }
 
-                $search = $search->where("? <= DATE_SUB(end_dt, INTERVAL 1 MINUTE) AND ? >= start_dt", $eventData['StartDate'], $eventData['EndDate']);
+                $search = $search->where(sprintf("'%s' <= DATE_SUB(end_dt, INTERVAL 1 MINUTE) AND '%s' >= start_dt", $eventData['StartDate'], $eventData['EndDate']));
 
                 $events = $search->find();
 
