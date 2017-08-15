@@ -148,7 +148,7 @@ class Event extends TF_Controller {
             }
         }
         catch (Exception $exception) {
-            echo json_encode($exception);
+            echo json_encode($exception->getMessage());
             exit (0);
         }
     }

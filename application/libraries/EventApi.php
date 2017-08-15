@@ -27,7 +27,7 @@ class EventApi {
         try {
 
             $search = \TheFarm\Models\BookingEventQuery::create()
-                ->filterByStatus(['cancelled', 'no-show'], \Propel\Runtime\ActiveQuery\Criteria::NOT_IN)
+                ->filterByStatus(['cancelled', 'no-show', 'completed'], \Propel\Runtime\ActiveQuery\Criteria::NOT_IN)
                 ->useBookingQuery()->filterByIsActive(true)->endUse()
                 ->useItemQuery()->useItemCategoryQuery()->filterByCategoryId([12, 3], \Propel\Runtime\ActiveQuery\Criteria::NOT_IN)->endUse()->endUse();
 
@@ -94,13 +94,14 @@ class EventApi {
                     $search = $search->filterByEventId($eventData['EventId'], '!=');
                 }
 
-                $search = $search->where(sprintf("'%s' <= DATE_SUB(end_dt, INTERVAL 1 MINUTE) AND '%s' >= start_dt", $eventData['StartDate'], $eventData['EndDate']));
+                $search = $search->where("? <= DATE_SUB(end_dt, INTERVAL 1 MINUTE) AND ? >= start_dt", $eventData['StartDate'], $eventData['EndDate']);
 
                 $events = $search->find();
 
                 if ($events->count() > 0) {
 
                     foreach ($events as $event) {
+
 
 //                        $max_accomodation = $event->get intval($row['max_accomodation']);
 //                        $facility_name = $row['facility_name'];
@@ -212,7 +213,7 @@ class EventApi {
 
     public function get_events($start = null, $end = null, $guestId = null, $categories = [], $locations = [], $eventStatus = null, $upcoming = false, $upcomingThreshold = 'P7D', $unAssignedEventOnly = false) {
 
-         $search = \TheFarm\Models\BookingEventQuery::create();
+         $search = \TheFarm\Models\BookingEventQuery::create()->filterByIsActive(true);
 
          if ($guestId) {
              $search = $search->useBookingQuery()
@@ -235,23 +236,18 @@ class EventApi {
             $end->add(new DateInterval($upcomingThreshold));
 
             $search = $search->filterByEndDate(['min' => $start->format('Y-m-d H:i:s'), 'max' => $end->format('Y-m-d H:i:s')]);
-//
-//            $this->start = $start->format('Y-m-d H:i:s');
-//            $this->end = $end->format('Y-m-d H:i:s');
-//            $this->TF->db->where("tf_booking_events.end_dt BETWEEN '{$this->start}' AND '{$this->end}'");
         }
         elseif ($start && $end) {
              $start = new DateTime($start);
              $end = new DateTime($end);
-             $search = $search->filterByEndDate(['min' => $start->format('Y-m-d H:i:s'), 'max' => $end->format('Y-m-d H:i:s')]);
+             $search = $search->filterByStartDate(['min' => $start->format('Y-m-d H:i:s'), 'max' => $end->format('Y-m-d H:i:s')]);
+        }
+        elseif ($start) {
+             $search = $search->filterByStartDate($start);
         }
 
 
-        $search = $search->useBookingQuery()->filterByStatus('confirmed')->endUse();
-
-         $search = $search->useBookingQuery()->filterByIsActive(true)->endUse();
-
-         $search = $search->filterByIsActive(true);
+        $search = $search->useBookingQuery()->filterByStatus('confirmed')->filterByIsActive(true)->endUse();
 
          $search->orderByStartDate();
 
@@ -264,6 +260,11 @@ class EventApi {
              $eventsArray[$key]['Item']['Categories'] = $event->getItem()->getItemCategoriesJoinCategory()->toArray();
              $eventsArray[$key]['Booking'] = $event->getBooking()->toArray();
              $eventsArray[$key]['Booking']['Guest'] = $event->getBooking()->getContactRelatedByGuestId()->toArray();
+
+             if ($event->getBooking()->getRoom()) {
+                 $eventsArray[$key]['Booking']['Room'] = $event->getBooking()->getRoom()->toArray();
+             }
+
 
              if ($event->getFacility()) {
                  $eventsArray[$key]['Facility'] = $event->getFacility()->toArray();
