@@ -23,6 +23,7 @@
 		<script type="text/javascript" src="/js/bootbox.min.js"></script>
 		<script type="text/javascript" src="/js/BootSideMenu.js"></script>
 		<script type="text/javascript" src="/js/jquery.playSound.js"></script>
+        <script type="text/javascript" src="/js/jquery.floatThead.js"></script>
 		<script type="text/javascript" src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
 		<script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
 		<script type="text/javascript" src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>

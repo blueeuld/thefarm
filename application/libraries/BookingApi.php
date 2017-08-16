@@ -28,6 +28,8 @@ class BookingApi {
 
         $search = $search->filterByGuestId(null, '<>');
 
+        $search = $search->useContactRelatedByGuestIdQuery()->filterByIsActive(true)->endUse();
+
         $search = $search->filterByIsActive(true);
 
         $bookings = $search->find();

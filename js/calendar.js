@@ -65,7 +65,7 @@
         }, function (data){
             $('#available-services').html(data);
             $('#available-services').find('select[name="item_id"]').on('change', function(){
-                getServiceInfo($(this).val());
+                getServiceInfo($(this).find('option:selected').val());
             });
         });
     }
@@ -377,6 +377,7 @@
             eventLimit: false,
             height: 'parent',
             contentHeight: 'auto',
+            fixedHeader: true,
             resourceLabelText: TF.resource_name,
             resources: function (callback) {
                 loadResources(callback);
@@ -735,33 +736,36 @@
                 modal.find('form#appointmentForm').validate({
                     submitHandler: function (form) {
                         $.post($(form).attr('action'), $(form).serialize(), function (output) {
-                            if (output.errors) {
-                                bootbox.alert(output.errors.join("\n"));
-                                return;
+
+                            if (typeof output === 'string') {
+                                bootbox.alert(output);
+                                return false;
                             }
-                            var event = modal.data('event');
-                            if (event.fromService) {
-                                var qty = parseInt($(event.parent).attr('data-qty'));
-                                if (qty === 1) {
-                                    $(event.parent).remove();
+                            else {
+                                var event = modal.data('event');
+                                if (event.fromService) {
+                                    var qty = parseInt($(event.parent).attr('data-qty'));
+                                    if (qty === 1) {
+                                        $(event.parent).remove();
+                                    }
+                                    else {
+                                        $(event.parent).attr('data-qty', qty - 1);
+                                        $(event.parent).html(event.title + ' x ' + (qty - 1) + ' ' + $(event.parent).attr('data-uom'));
+                                    }
+                                    updateInventory(event.bookingItemId, qty - 1);
                                 }
-                                else {
-                                    $(event.parent).attr('data-qty', qty - 1);
-                                    $(event.parent).html(event.title + ' x ' + (qty - 1) + ' ' + $(event.parent).attr('data-uom'));
-                                }
-                                updateInventory(event.bookingItemId, qty - 1);
-                            }
 
 
-                            if (event.id > 0) {
-                                event.id = parseInt(event.id);
-                                event.end = moment(output.end);
-                                event.start = moment(output.start);
-                                event.contact_id = output.contact_id;
-                                event.classNames = output.className;
+                                if (event.id > 0) {
+                                    event.id = parseInt(event.id);
+                                    event.end = moment(output.end);
+                                    event.start = moment(output.start);
+                                    event.contact_id = output.contact_id;
+                                    event.classNames = output.className;
+                                }
+                                $('#calendar').fullCalendar('refetchEvents');
+                                modal.modal('hide');
                             }
-                            $('#calendar').fullCalendar('refetchEvents');
-                            modal.modal('hide');
                         }, 'json');
                     }
                 });

@@ -251,7 +251,7 @@ class BookingTableMap extends TableMap
     1 => ':package_id',
   ),
 ), null, null, null, false);
-        $this->addRelation('Item', '\\TheFarm\\Models\\Item', RelationMap::MANY_TO_ONE, array (
+        $this->addRelation('Room', '\\TheFarm\\Models\\Item', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
     0 => ':room_id',

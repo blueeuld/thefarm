@@ -53,24 +53,28 @@
 	<?php $total_foc = 0; ?>
 	<?php $total_upsell = 0; ?>
     <?php $prev = 0; ?>
-    <?php foreach ($data as $row) : ?>
-    <?php if ($row['item_id'] !== NULL) : ?>
+    <?php foreach ($events as $event) : ?>
+    <?php if ($event['ItemId'] !== NULL) : ?>
             <?php
-            if ($prev === $row['booking_id']) {
-                $row['guest_name'] = '';
+            if ($prev === $event['BookingId']) {
+                $guestName = '';
             }
-            $prev = $row['booking_id'];
+            else {
+                $guestName = $event['Booking']['Guest']['FirstName'] . ' ' . $event['Booking']['Guest']['LastName'];
+            }
+
+            $prev = $event['BookingId'];
             ?>
     <tr>
-	    <td style="border-bottom: 1px solid #000; border-left:1px solid #000;"><?php echo $row['guest_name']; ?></td>
-	    <td style="border-bottom: 1px solid #000;" align="center"><?php echo $row['room_abbr'] ? $row['room_abbr'] : $row['room_name']; ?></td>
-        <td style="border-bottom: 1px solid #000;" align="center"><?php echo $row['incl_os_done_number']; ?></td>
-        <td style="border-bottom: 1px solid #000;" align="center"><?php echo $row['not_incl_os_done_number']; ?></td>
-        <td style="border-bottom: 1px solid #000;" align="center"><?php echo $row['item_name']; ?></td>
-        <td style="border-bottom: 1px solid #000;" align="center"><?php echo $row['notes']; ?></td>
-	    <td style="border-bottom: 1px solid #000;" align="right" width="10%"><?php if ($row['incl_os_done_amount'] > 0) : ?>&#8369; <?php $total_includes+= $row['incl_os_done_amount']; echo $row['incl_os_done_amount'];?><?php endif;?></td>
-	    <td style="border-bottom: 1px solid #000;" align="right" width="10%"><?php if ($row['not_incl_os_done_amount'] > 0) : ?>&#8369; <?php $total_upsell+= $row['not_incl_os_done_amount']; echo $row['not_incl_os_done_amount'];?><?php endif;?></td>
-	    <td style="border-bottom: 1px solid #000; border-right: 1px solid #000;" align="right" width="10%"><?php if ($row['foc_os_done_amount'] > 0) : ?>&#8369; <?php $total_foc+= $row['foc_os_done_amount']; echo $row['foc_os_done_amount'];?><?php endif;?></td>
+	    <td style="border-bottom: 1px solid #000; border-left:1px solid #000;"><?php echo $guestName; ?></td>
+	    <td style="border-bottom: 1px solid #000;" align="center"><?php if (isset($event['Room'])){ echo $event['Room']['Abbr'] ? $event['Room']['Abbr'] : $event['Room']['Title']; } ?></td>
+        <td style="border-bottom: 1px solid #000;" align="center"><?php echo $event['InclOsDoneNumber']; ?></td>
+        <td style="border-bottom: 1px solid #000;" align="center"><?php echo $event['NotInclOsDoneNumber']; ?></td>
+        <td style="border-bottom: 1px solid #000;" align="center"><?php echo $event['Item']['Title']; ?></td>
+        <td style="border-bottom: 1px solid #000;" align="center"><?php echo $event['Notes']; ?></td>
+	    <td style="border-bottom: 1px solid #000;" align="right" width="10%"><?php if ($event['InclOsDoneNumber'] > 0) : ?>&#8369; <?php $total_includes+= $event['InclOsDoneAmount']; echo $event['InclOsDoneAmount'];?><?php endif;?></td>
+	    <td style="border-bottom: 1px solid #000;" align="right" width="10%"><?php if ($event['NotInclOsDoneNumber'] > 0) : ?>&#8369; <?php $total_upsell+= $event['NotInclOsDoneAmount']; echo $event['NotInclOsDoneAmount'];?><?php endif;?></td>
+	    <td style="border-bottom: 1px solid #000; border-right: 1px solid #000;" align="right" width="10%"><?php if ($event['FocOsDoneNumber'] > 0) : ?>&#8369; <?php $total_foc+= $event['FocOsDoneAmount']; echo $event['FocOsDoneAmount'];?><?php endif;?></td>
     </tr>
     <?php endif ?>
     <?php endforeach; ?>

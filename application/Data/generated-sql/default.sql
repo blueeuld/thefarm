@@ -107,10 +107,10 @@ CREATE TABLE `tf_booking_events`
     CONSTRAINT `booking_event_deleted_by_fk`
         FOREIGN KEY (`deleted_by`)
         REFERENCES `tf_contacts` (`contact_id`),
-    CONSTRAINT `booking_event_facility_fk`
+    CONSTRAINT `tf_booking_events_fk_1eba8a`
         FOREIGN KEY (`facility_id`)
         REFERENCES `tf_facilities` (`facility_id`),
-    CONSTRAINT `booking_event_item_by_fk`
+    CONSTRAINT `tf_booking_events_fk_b49f13`
         FOREIGN KEY (`item_id`)
         REFERENCES `tf_items` (`item_id`),
     CONSTRAINT `booking_event_status_fk`
@@ -204,11 +204,11 @@ CREATE TABLE `tf_bookings`
     `package_type_id` INTEGER,
     `is_active` TINYINT(1) DEFAULT 1 NOT NULL,
     PRIMARY KEY (`booking_id`),
-    INDEX `booking_package_fk` (`package_id`),
-    INDEX `booking_guest_fk` (`guest_id`),
-    INDEX `booking_author_fk` (`author_id`),
-    INDEX `booking_room_fk` (`room_id`),
-    INDEX `booking_status_fk` (`status`),
+    INDEX `fi_king_author_fk` (`author_id`),
+    INDEX `fi_king_guest_fk` (`guest_id`),
+    INDEX `fi_king_package_fk` (`package_id`),
+    INDEX `tf_bookings_fi_30729d` (`room_id`),
+    INDEX `fi_king_status_fk` (`status`),
     CONSTRAINT `booking_author_fk`
         FOREIGN KEY (`author_id`)
         REFERENCES `tf_contacts` (`contact_id`),
@@ -218,7 +218,7 @@ CREATE TABLE `tf_bookings`
     CONSTRAINT `booking_package_fk`
         FOREIGN KEY (`package_id`)
         REFERENCES `tf_packages` (`package_id`),
-    CONSTRAINT `booking_room_fk`
+    CONSTRAINT `tf_bookings_fk_30729d`
         FOREIGN KEY (`room_id`)
         REFERENCES `tf_items` (`item_id`),
     CONSTRAINT `booking_status_fk`
@@ -775,7 +775,14 @@ CREATE TABLE `tf_items_related_facilities`
 (
     `item_id` INTEGER NOT NULL,
     `facility_id` INTEGER NOT NULL,
-    PRIMARY KEY (`item_id`,`facility_id`)
+    PRIMARY KEY (`item_id`,`facility_id`),
+    INDEX `tf_items_related_facilities_fi_1eba8a` (`facility_id`),
+    CONSTRAINT `tf_items_related_facilities_fk_1eba8a`
+        FOREIGN KEY (`facility_id`)
+        REFERENCES `tf_facilities` (`facility_id`),
+    CONSTRAINT `tf_items_related_facilities_fk_b49f13`
+        FOREIGN KEY (`item_id`)
+        REFERENCES `tf_items` (`item_id`)
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
@@ -786,9 +793,16 @@ DROP TABLE IF EXISTS `tf_items_related_forms`;
 
 CREATE TABLE `tf_items_related_forms`
 (
-    `form_id` INTEGER(5) NOT NULL AUTO_INCREMENT,
-    `item_id` VARCHAR(255) NOT NULL,
-    PRIMARY KEY (`form_id`,`item_id`)
+    `form_id` INTEGER NOT NULL,
+    `item_id` INTEGER NOT NULL,
+    PRIMARY KEY (`form_id`,`item_id`),
+    INDEX `tf_items_related_forms_fi_b49f13` (`item_id`),
+    CONSTRAINT `tf_items_related_forms_fk_8ba9c8`
+        FOREIGN KEY (`form_id`)
+        REFERENCES `tf_forms` (`form_id`),
+    CONSTRAINT `tf_items_related_forms_fk_b49f13`
+        FOREIGN KEY (`item_id`)
+        REFERENCES `tf_items` (`item_id`)
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------

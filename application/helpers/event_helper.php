@@ -260,7 +260,7 @@ function to_full_calendar_events ($events, $showGuestName = false, $showFacility
  * @param $eventData
  * @return array
  */
-function to_full_calendar_event($eventData, $showGuestName = false, $showFacility = false, $abbreviate = true)
+function to_full_calendar_event($eventData, $showGuestName = false, $showFacility = false, $abbreviate = true, $resourceFieldId = 'guest_id')
 {
     $itemData = $eventData['Item'];
     $guestData = $eventData['Booking']['Guest'];
@@ -304,35 +304,24 @@ function to_full_calendar_event($eventData, $showGuestName = false, $showFacilit
 
     $resourceIds = [];
 
-    if (isset($eventData['EventUsers']) && $eventData['EventUsers']) {
-        foreach ($eventData['EventUsers'] as $eventUser) {
-            if ($eventUser['IsGuest'] === false) {
-                $resourceIds[] = $eventUser['UserId'];
+    $event_users = get_event_users($event['event_id']);
+    $event['users'] = $event_users;
+    // Providers
+    if ($resourceFieldId === 'contact_id') {
+        if (isset($eventData['EventUsers']) && $eventData['EventUsers']) {
+            foreach ($eventData['EventUsers'] as $eventUser) {
+                if ($eventUser['IsGuest'] === false) {
+                    $resourceIds[] = $eventUser['UserId'];
+                }
             }
         }
+    } else if ($resourceFieldId === 'guest_id') {
+        $resourceIds[] = $eventData['Booking']['GuestId'];
+    } else if ($resourceFieldId === 'facility_id') {
+        $resourceIds[] = $eventData['FacilityId'];
     }
 
     $event['resourceIds'] = $resourceIds;
-
-//        $resource_names = array();
-//        $event_users = get_event_users($event['event_id']);
-//        $event['users'] = $event_users;
-//        if ($this->resource_fld_name === 'contact_id') {
-//            $resourceIds = array();
-//            if ($event_users) {
-//                foreach ($event_users as $user) {
-//                    $resourceIds[] = $user['contact_id'];
-//                    $resource_names[] = $user['first_name'];
-//                }
-//            }
-//
-//            $event['provider'] = implode(',', $resource_names);
-//            if ($resourceIds)
-//                $event['resourceIds'] = $resourceIds;
-//        } else {
-//            if (isset($event[$this->resource_fld_name]))
-//                $event['resourceId'] = $event[$this->resource_fld_name];
-//        }
 
     $status = url_title($eventData['Status'], 'underscore');
 

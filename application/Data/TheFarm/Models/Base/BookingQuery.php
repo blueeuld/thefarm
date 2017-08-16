@@ -94,15 +94,15 @@ use TheFarm\Models\Map\BookingTableMap;
  * @method     ChildBookingQuery rightJoinWithPackage() Adds a RIGHT JOIN clause and with to the query using the Package relation
  * @method     ChildBookingQuery innerJoinWithPackage() Adds a INNER JOIN clause and with to the query using the Package relation
  *
- * @method     ChildBookingQuery leftJoinItem($relationAlias = null) Adds a LEFT JOIN clause to the query using the Item relation
- * @method     ChildBookingQuery rightJoinItem($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Item relation
- * @method     ChildBookingQuery innerJoinItem($relationAlias = null) Adds a INNER JOIN clause to the query using the Item relation
+ * @method     ChildBookingQuery leftJoinRoom($relationAlias = null) Adds a LEFT JOIN clause to the query using the Room relation
+ * @method     ChildBookingQuery rightJoinRoom($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Room relation
+ * @method     ChildBookingQuery innerJoinRoom($relationAlias = null) Adds a INNER JOIN clause to the query using the Room relation
  *
- * @method     ChildBookingQuery joinWithItem($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Item relation
+ * @method     ChildBookingQuery joinWithRoom($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Room relation
  *
- * @method     ChildBookingQuery leftJoinWithItem() Adds a LEFT JOIN clause and with to the query using the Item relation
- * @method     ChildBookingQuery rightJoinWithItem() Adds a RIGHT JOIN clause and with to the query using the Item relation
- * @method     ChildBookingQuery innerJoinWithItem() Adds a INNER JOIN clause and with to the query using the Item relation
+ * @method     ChildBookingQuery leftJoinWithRoom() Adds a LEFT JOIN clause and with to the query using the Room relation
+ * @method     ChildBookingQuery rightJoinWithRoom() Adds a RIGHT JOIN clause and with to the query using the Room relation
+ * @method     ChildBookingQuery innerJoinWithRoom() Adds a INNER JOIN clause and with to the query using the Room relation
  *
  * @method     ChildBookingQuery leftJoinEventStatus($relationAlias = null) Adds a LEFT JOIN clause to the query using the EventStatus relation
  * @method     ChildBookingQuery rightJoinEventStatus($relationAlias = null) Adds a RIGHT JOIN clause to the query using the EventStatus relation
@@ -905,7 +905,7 @@ abstract class BookingQuery extends ModelCriteria
      * $query->filterByRoomId(array('min' => 12)); // WHERE room_id > 12
      * </code>
      *
-     * @see       filterByItem()
+     * @see       filterByRoom()
      *
      * @param     mixed $roomId The value to use as filter.
      *              Use scalar values for equality.
@@ -1272,7 +1272,7 @@ abstract class BookingQuery extends ModelCriteria
      *
      * @return ChildBookingQuery The current query, for fluid interface
      */
-    public function filterByItem($item, $comparison = null)
+    public function filterByRoom($item, $comparison = null)
     {
         if ($item instanceof \TheFarm\Models\Item) {
             return $this
@@ -1285,22 +1285,22 @@ abstract class BookingQuery extends ModelCriteria
             return $this
                 ->addUsingAlias(BookingTableMap::COL_ROOM_ID, $item->toKeyValue('PrimaryKey', 'ItemId'), $comparison);
         } else {
-            throw new PropelException('filterByItem() only accepts arguments of type \TheFarm\Models\Item or Collection');
+            throw new PropelException('filterByRoom() only accepts arguments of type \TheFarm\Models\Item or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the Item relation
+     * Adds a JOIN clause to the query using the Room relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildBookingQuery The current query, for fluid interface
      */
-    public function joinItem($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function joinRoom($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Item');
+        $relationMap = $tableMap->getRelation('Room');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -1315,14 +1315,14 @@ abstract class BookingQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'Item');
+            $this->addJoinObject($join, 'Room');
         }
 
         return $this;
     }
 
     /**
-     * Use the Item relation Item object
+     * Use the Room relation Item object
      *
      * @see useQuery()
      *
@@ -1332,11 +1332,11 @@ abstract class BookingQuery extends ModelCriteria
      *
      * @return \TheFarm\Models\ItemQuery A secondary query class using the current class as primary query
      */
-    public function useItemQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function useRoomQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         return $this
-            ->joinItem($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Item', '\TheFarm\Models\ItemQuery');
+            ->joinRoom($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Room', '\TheFarm\Models\ItemQuery');
     }
 
     /**

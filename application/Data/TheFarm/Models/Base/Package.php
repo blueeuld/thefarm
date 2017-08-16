@@ -1672,10 +1672,10 @@ abstract class Package implements ActiveRecordInterface
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return ObjectCollection|ChildBooking[] List of ChildBooking objects
      */
-    public function getBookingsJoinItem(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getBookingsJoinRoom(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ChildBookingQuery::create(null, $criteria);
-        $query->joinWith('Item', $joinBehavior);
+        $query->joinWith('Room', $joinBehavior);
 
         return $this->getBookings($query, $con);
     }

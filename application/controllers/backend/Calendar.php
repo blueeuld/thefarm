@@ -3,13 +3,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Calendar extends TF_Controller
 {
-
+    protected $secured = true;
 
     public function index()
     {
-        if (!$this->session->has_userdata('ContactId')) {
-            redirect('login');
-        }
 
         if ($_POST) {
             $this->load->helper('event');
@@ -588,17 +585,19 @@ class Calendar extends TF_Controller
     }
     public function get_resources_facility_id()
     {
-        $this->db->select('*');
-        $this->db->from('facilities');
-        $this->db->where_in('facilities.location_id', array(0, $_SESSION['User']['LocationId']));
-        $this->db->order_by('facility_name', 'asc');
-        $query = $this->db->get();
-
-        $facilities = $query->result_array();
+        $facilityApi = new FacilityApi();
+        $facilities = $facilityApi->search_facilities(get_current_user_locations());
+//        $this->db->select('*');
+//        $this->db->from('facilities');
+//        $this->db->where_in('facilities.location_id', array(0, $_SESSION['User']['LocationId']));
+//        $this->db->order_by('facility_name', 'asc');
+//        $query = $this->db->get();
+//
+//        $facilities = $query->result_array();
         $resources = array();
         foreach ($facilities as $row) {
 
-            $info = array('id' => (int)$row['facility_id'], 'title' => $row['facility_name']);
+            $info = array('id' => $row['FacilityId'], 'title' => $row['FacilityName']);
             $resources[] = $info;
         }
 
@@ -925,7 +924,7 @@ class Calendar extends TF_Controller
             $events = $eventApi->get_events($start, $end, null, $categories, $locations);
         }
 
-        $fcEvents = to_full_calendar_events($events, $show_guest_name, $show_facility, $abbreviate);
+        $fcEvents = to_full_calendar_events($events, $show_guest_name, $show_facility, $abbreviate, $this->input->get_post('resource_field_id'));
 
         $this->output->set_content_type('application/json')->set_output(json_encode($fcEvents));
 

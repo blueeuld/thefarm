@@ -48,8 +48,7 @@ function available_booking_items($booking_id = 0, $categories = false)
 {
     $TF =& get_instance();
 
-    //if (!$booking_id) return '';
-    $output = array(); //'' => '-Select-');
+    $output = array('' => '-Select-');
     $exclude_items = array();
     if ($booking_id)
 	{

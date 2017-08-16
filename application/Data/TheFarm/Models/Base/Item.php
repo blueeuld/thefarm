@@ -3093,7 +3093,7 @@ abstract class Item implements ActiveRecordInterface
                 $this->initBookings();
             } else {
                 $collBookings = ChildBookingQuery::create(null, $criteria)
-                    ->filterByItem($this)
+                    ->filterByRoom($this)
                     ->find($con);
 
                 if (null !== $criteria) {
@@ -3147,7 +3147,7 @@ abstract class Item implements ActiveRecordInterface
         $this->bookingsScheduledForDeletion = $bookingsToDelete;
 
         foreach ($bookingsToDelete as $bookingRemoved) {
-            $bookingRemoved->setItem(null);
+            $bookingRemoved->setRoom(null);
         }
 
         $this->collBookings = null;
@@ -3188,7 +3188,7 @@ abstract class Item implements ActiveRecordInterface
             }
 
             return $query
-                ->filterByItem($this)
+                ->filterByRoom($this)
                 ->count($con);
         }
 
@@ -3226,7 +3226,7 @@ abstract class Item implements ActiveRecordInterface
     protected function doAddBooking(ChildBooking $booking)
     {
         $this->collBookings[]= $booking;
-        $booking->setItem($this);
+        $booking->setRoom($this);
     }
 
     /**
@@ -3243,7 +3243,7 @@ abstract class Item implements ActiveRecordInterface
                 $this->bookingsScheduledForDeletion->clear();
             }
             $this->bookingsScheduledForDeletion[]= $booking;
-            $booking->setItem(null);
+            $booking->setRoom(null);
         }
 
         return $this;

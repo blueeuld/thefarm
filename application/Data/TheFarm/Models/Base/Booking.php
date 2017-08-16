@@ -224,7 +224,7 @@ abstract class Booking implements ActiveRecordInterface
     /**
      * @var        ChildItem
      */
-    protected $aItem;
+    protected $aRoom;
 
     /**
      * @var        ChildEventStatus
@@ -1003,8 +1003,8 @@ abstract class Booking implements ActiveRecordInterface
             $this->modifiedColumns[BookingTableMap::COL_ROOM_ID] = true;
         }
 
-        if ($this->aItem !== null && $this->aItem->getItemId() !== $v) {
-            $this->aItem = null;
+        if ($this->aRoom !== null && $this->aRoom->getItemId() !== $v) {
+            $this->aRoom = null;
         }
 
         return $this;
@@ -1230,8 +1230,8 @@ abstract class Booking implements ActiveRecordInterface
         if ($this->aContactRelatedByAuthorId !== null && $this->author_id !== $this->aContactRelatedByAuthorId->getContactId()) {
             $this->aContactRelatedByAuthorId = null;
         }
-        if ($this->aItem !== null && $this->room_id !== $this->aItem->getItemId()) {
-            $this->aItem = null;
+        if ($this->aRoom !== null && $this->room_id !== $this->aRoom->getItemId()) {
+            $this->aRoom = null;
         }
     } // ensureConsistency
 
@@ -1275,7 +1275,7 @@ abstract class Booking implements ActiveRecordInterface
             $this->aContactRelatedByAuthorId = null;
             $this->aContactRelatedByGuestId = null;
             $this->aPackage = null;
-            $this->aItem = null;
+            $this->aRoom = null;
             $this->aEventStatus = null;
             $this->collBookingAttachments = null;
 
@@ -1414,11 +1414,11 @@ abstract class Booking implements ActiveRecordInterface
                 $this->setPackage($this->aPackage);
             }
 
-            if ($this->aItem !== null) {
-                if ($this->aItem->isModified() || $this->aItem->isNew()) {
-                    $affectedRows += $this->aItem->save($con);
+            if ($this->aRoom !== null) {
+                if ($this->aRoom->isModified() || $this->aRoom->isNew()) {
+                    $affectedRows += $this->aRoom->save($con);
                 }
-                $this->setItem($this->aItem);
+                $this->setRoom($this->aRoom);
             }
 
             if ($this->aEventStatus !== null) {
@@ -1860,7 +1860,7 @@ abstract class Booking implements ActiveRecordInterface
 
                 $result[$key] = $this->aPackage->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
-            if (null !== $this->aItem) {
+            if (null !== $this->aRoom) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
@@ -1870,10 +1870,10 @@ abstract class Booking implements ActiveRecordInterface
                         $key = 'tf_items';
                         break;
                     default:
-                        $key = 'Item';
+                        $key = 'Room';
                 }
 
-                $result[$key] = $this->aItem->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+                $result[$key] = $this->aRoom->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
             if (null !== $this->aEventStatus) {
 
@@ -2526,7 +2526,7 @@ abstract class Booking implements ActiveRecordInterface
      * @return $this|\TheFarm\Models\Booking The current object (for fluent API support)
      * @throws PropelException
      */
-    public function setItem(ChildItem $v = null)
+    public function setRoom(ChildItem $v = null)
     {
         if ($v === null) {
             $this->setRoomId(NULL);
@@ -2534,7 +2534,7 @@ abstract class Booking implements ActiveRecordInterface
             $this->setRoomId($v->getItemId());
         }
 
-        $this->aItem = $v;
+        $this->aRoom = $v;
 
         // Add binding for other direction of this n:n relationship.
         // If this object has already been added to the ChildItem object, it will not be re-added.
@@ -2554,20 +2554,20 @@ abstract class Booking implements ActiveRecordInterface
      * @return ChildItem The associated ChildItem object.
      * @throws PropelException
      */
-    public function getItem(ConnectionInterface $con = null)
+    public function getRoom(ConnectionInterface $con = null)
     {
-        if ($this->aItem === null && ($this->room_id !== null)) {
-            $this->aItem = ChildItemQuery::create()->findPk($this->room_id, $con);
+        if ($this->aRoom === null && ($this->room_id !== null)) {
+            $this->aRoom = ChildItemQuery::create()->findPk($this->room_id, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aItem->addBookings($this);
+                $this->aRoom->addBookings($this);
              */
         }
 
-        return $this->aItem;
+        return $this->aRoom;
     }
 
     /**
@@ -3844,8 +3844,8 @@ abstract class Booking implements ActiveRecordInterface
         if (null !== $this->aPackage) {
             $this->aPackage->removeBooking($this);
         }
-        if (null !== $this->aItem) {
-            $this->aItem->removeBooking($this);
+        if (null !== $this->aRoom) {
+            $this->aRoom->removeBooking($this);
         }
         if (null !== $this->aEventStatus) {
             $this->aEventStatus->removeBooking($this);
@@ -3915,7 +3915,7 @@ abstract class Booking implements ActiveRecordInterface
         $this->aContactRelatedByAuthorId = null;
         $this->aContactRelatedByGuestId = null;
         $this->aPackage = null;
-        $this->aItem = null;
+        $this->aRoom = null;
         $this->aEventStatus = null;
     }
 

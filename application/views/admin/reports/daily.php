@@ -31,14 +31,14 @@
 									          
 									        </li>
 									      </ul>
-									      
+									      <!--
 									  		<?php echo form_open('backend/reports/daily', 'method="GET" class="navbar-form navbar-right form-inline filter"'); ?>
 											<div class="form-group">
 												<input type="text" placeholder="Date" id=""
 													   class="date-range form-control">
 											</div>
 											<div class="form-group">
-												<?php echo form_multiselect('locations[]', $locations, $selected_locations, 'class="multi-select form-control"'); ?>
+												<?php //echo form_multiselect('locations[]', $locations, $selected_locations, 'class="multi-select form-control"'); ?>
 											</div>
 											<input type="hidden" name="start" id="start"
 												   value="<?php echo $start; ?>"/>
@@ -46,6 +46,7 @@
 											<button class="btn btn-default-dark  pull-right" type="submit">Update
 											</button>
 											<?php echo form_close(); ?>
+											-->
 			                        </div>
 		                        </div>
 		                        

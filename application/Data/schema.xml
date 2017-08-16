@@ -80,10 +80,10 @@
     <foreign-key foreignTable="tf_contacts" name="booking_event_deleted_by_fk">
       <reference local="deleted_by" foreign="contact_id"/>
     </foreign-key>
-    <foreign-key foreignTable="tf_facilities" name="booking_event_facility_fk">
+    <foreign-key foreignTable="tf_facilities" phpName="Facility">
       <reference local="facility_id" foreign="facility_id"/>
     </foreign-key>
-    <foreign-key foreignTable="tf_items" name="booking_event_item_by_fk">
+    <foreign-key foreignTable="tf_items" phpName="Item">
       <reference local="item_id" foreign="item_id"/>
     </foreign-key>
     <foreign-key foreignTable="tf_event_status" name="booking_event_status_fk">
@@ -192,27 +192,13 @@
     <foreign-key foreignTable="tf_packages" name="booking_package_fk">
       <reference local="package_id" foreign="package_id"/>
     </foreign-key>
-    <foreign-key foreignTable="tf_items" name="booking_room_fk">
+    <foreign-key foreignTable="tf_items" phpName="Room">
       <reference local="room_id" foreign="item_id"/>
     </foreign-key>
     <foreign-key foreignTable="tf_event_status" name="booking_status_fk">
       <reference local="status" foreign="status_cd"/>
     </foreign-key>
-    <index name="booking_package_fk">
-      <index-column name="package_id"/>
-    </index>
-    <index name="booking_guest_fk">
-      <index-column name="guest_id"/>
-    </index>
-    <index name="booking_author_fk">
-      <index-column name="author_id"/>
-    </index>
-    <index name="booking_room_fk">
-      <index-column name="room_id"/>
-    </index>
-    <index name="booking_status_fk">
-      <index-column name="status"/>
-    </index>
+    
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>

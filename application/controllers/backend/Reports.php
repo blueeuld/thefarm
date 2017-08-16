@@ -100,41 +100,47 @@ class Reports extends TF_Controller {
 	
 	public function daily() {
 
-		$start =  $this->uri->segment(4) ? $this->uri->segment(4) : date('Y-m-d');
-		$end =  $this->uri->segment(4) ? $this->uri->segment(4) : date('Y-m-d');
-		$select_locations = $this->uri->segment(4);
-		if ($this->input->get_post('start')) $start = $this->input->get_post('start');
-		if ($this->input->get_post('end')) $end = $this->input->get_post('end');
-		if ($this->input->get_post('locations')) $select_locations = $this->input->get_post('locations');
-		
-		$params = array();
-		$params['start'] = $start;
-		$params['end'] = $end;
-		$params['order_by'] = 'start_dt';
-		$params['locations'] = $select_locations;
-		$this->load->library('Eventsbuilder', $params);
-		$this->eventsbuilder->build();
-		
-		$inline_js = array(
-			'start_date' => date('Y-m-d', strtotime($start)),
-			'end_date' => date('Y-m-d', strtotime($end))
-		);
-		
-		$locations = array();
-		$all_locations = get_all_locations();
-				
-		foreach ($all_locations as $loc) {
-			$locations[$loc['location_id']] = $loc['location'];
-		}
-		
-		$data['inline_js'] = $inline_js;
-		$data['locations'] = $locations;
-		$data['selected_locations'] = $select_locations;
-		$data['data'] = $this->eventsbuilder->get_events();
-		$data['date'] = $params['start'];
-		$data['start'] = $params['start'];
-		$data['end'] = $params['end'];
-		$data['location'] = $params['locations'];
+//		$start =  $this->uri->segment(4) ? $this->uri->segment(4) : date('Y-m-d');
+//		$end =  $this->uri->segment(4) ? $this->uri->segment(4) : date('Y-m-d');
+//		$select_locations = $this->uri->segment(4);
+//		if ($this->input->get_post('start')) $start = $this->input->get_post('start');
+//		if ($this->input->get_post('end')) $end = $this->input->get_post('end');
+//		if ($this->input->get_post('locations')) $select_locations = $this->input->get_post('locations');
+//
+//		$params = array();
+//		$params['start'] = $start;
+//		$params['end'] = $end;
+//		$params['order_by'] = 'start_dt';
+//		$params['locations'] = $select_locations;
+//		$this->load->library('Eventsbuilder', $params);
+//		$this->eventsbuilder->build();
+//
+//		$inline_js = array(
+//			'start_date' => date('Y-m-d', strtotime($start)),
+//			'end_date' => date('Y-m-d', strtotime($end))
+//		);
+//
+//		$locations = array();
+//		$all_locations = get_all_locations();
+//
+//		foreach ($all_locations as $loc) {
+//			$locations[$loc['location_id']] = $loc['location'];
+//		}
+//
+//		$data['inline_js'] = $inline_js;
+//		$data['locations'] = $locations;
+//		$data['selected_locations'] = $select_locations;
+//		$data['data'] = $this->eventsbuilder->get_events();
+//		$data['date'] = $params['start'];
+//		$data['start'] = $params['start'];
+//		$data['end'] = $params['end'];
+//		$data['location'] = $params['locations'];
+
+        $data = [
+            'locations' => [],
+            'start' => '',
+            'end' => '',
+        ];
 		
 				
 		$this->load->view('admin/reports/daily', $data);		
@@ -167,17 +173,26 @@ class Reports extends TF_Controller {
 		$params['start'] = date('Y-m-d', strtotime($_REQUEST['date']));
 		$params['locations'] = (int)$this->uri->segment(4);
 
-		$this->load->library('Eventsbuilder', $params);
-		$this->eventsbuilder->build();
-		
-		$query = $this->db->get_where('locations', 'location_id='.$params['locations']);
-		$location = $query->row_array();
+		$eventApi = new EventApi();
+		$events = $eventApi->get_events(date('Y-m-d 00:00:00', strtotime($_REQUEST['date'])), date('Y-m-d 23:59:59', strtotime($_REQUEST['date'])));
 
+//		$this->load->library('Eventsbuilder', $params);
+//		$this->eventsbuilder->build();
+//
+//		$query = $this->db->get_where('locations', 'location_id='.$params['locations']);
+//		$location = $query->row_array();
+//
+//
+//
+//		$data['data'] = $this->eventsbuilder->get_events();
+//		$data['location_name'] = $location['location'];
+//		$data['date'] = date('d-M-y', strtotime($_REQUEST['date']));
 
-		
-		$data['data'] = $this->eventsbuilder->get_events();
-		$data['location_name'] = $location['location'];
-		$data['date'] = date('d-M-y', strtotime($_REQUEST['date']));
+        $data = [
+            'events' => $events,
+            'location_name' => '',
+            'date' => date('d-M-y', strtotime($_REQUEST['date']))
+        ];
 
         $this->load->view('admin/reports/daily-sales', $data);
 	}
