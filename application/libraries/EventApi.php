@@ -28,7 +28,7 @@ class EventApi {
 
             $search = \TheFarm\Models\BookingEventQuery::create()
                 ->filterByStatus(['cancelled', 'no-show', 'completed'], \Propel\Runtime\ActiveQuery\Criteria::NOT_IN)
-                ->useBookingQuery()->filterByIsActive(true)->endUse()
+                ->useBookingQuery()->filterByIsActive(true)->useContactRelatedByGuestIdQuery()->filterByIsActive(true)->endUse()->endUse()
                 ->useItemQuery()->useItemCategoryQuery()->filterByCategoryId([12, 3], \Propel\Runtime\ActiveQuery\Criteria::NOT_IN)->endUse()->endUse();
 
             if ($eventData['EventId']) {
@@ -247,33 +247,42 @@ class EventApi {
         }
 
 
-        $search = $search->useBookingQuery()->filterByStatus('confirmed')->filterByIsActive(true)->endUse();
+        $search = $search
+            ->useBookingQuery()
+                ->filterByStatus('confirmed')
+                ->filterByIsActive(true)
+                    ->useContactRelatedByGuestIdQuery()
+                        ->filterByIsActive(true)
+                    ->endUse()
+            ->endUse();
 
          $search->orderByStartDate();
 
          $events = $search->find();
          $eventsArray = [];
 
-         foreach ($events as $key => $event) {
-             $eventsArray[$key] = $event->toArray();
-             $eventsArray[$key]['Item'] = $event->getItem()->toArray();
-             $eventsArray[$key]['Item']['Categories'] = $event->getItem()->getItemCategoriesJoinCategory()->toArray();
-             $eventsArray[$key]['Booking'] = $event->getBooking()->toArray();
-             $eventsArray[$key]['Booking']['Guest'] = $event->getBooking()->getContactRelatedByGuestId()->toArray();
+         if ($events) {
 
-             if ($event->getBooking()->getRoom()) {
-                 $eventsArray[$key]['Booking']['Room'] = $event->getBooking()->getRoom()->toArray();
+             foreach ($events as $key => $event) {
+                 $eventsArray[$key] = $event->toArray();
+                 $eventsArray[$key]['Item'] = $event->getItem()->toArray();
+                 $eventsArray[$key]['Item']['Categories'] = $event->getItem()->getItemCategoriesJoinCategory()->toArray();
+                 $eventsArray[$key]['Booking'] = $event->getBooking()->toArray();
+                 $eventsArray[$key]['Booking']['Guest'] = $event->getBooking()->getContactRelatedByGuestId()->toArray();
+
+                 if ($event->getBooking()->getRoom()) {
+                     $eventsArray[$key]['Booking']['Room'] = $event->getBooking()->getRoom()->toArray();
+                 }
+
+
+                 if ($event->getFacility()) {
+                     $eventsArray[$key]['Facility'] = $event->getFacility()->toArray();
+                 }
+
+                 if ($event->getEventUsers()->count() > 0) {
+                     $eventsArray[$key]['EventUsers'] = $event->getEventUsers()->toArray();
+                 }
              }
-
-
-             if ($event->getFacility()) {
-                 $eventsArray[$key]['Facility'] = $event->getFacility()->toArray();
-             }
-
-             if ($event->getEventUsers()->count() > 0) {
-                $eventsArray[$key]['EventUsers'] = $event->getEventUsers()->toArray();
-             }
-
          }
          return $eventsArray;
     }
