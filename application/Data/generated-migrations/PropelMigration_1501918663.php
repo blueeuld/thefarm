@@ -45,8 +45,6 @@ class PropelMigration_1501918663
 # It "suspends judgement" for fkey relationships until are tables are set.
 SET FOREIGN_KEY_CHECKS = 0;
 
-UPDATE `tf_contacts` SET `is_active`=IF(`active` = \'y\', \'1\', \'0\');
-
 ALTER TABLE `tf_contacts`
 
   DROP `active`;

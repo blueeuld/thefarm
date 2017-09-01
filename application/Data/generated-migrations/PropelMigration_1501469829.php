@@ -53,11 +53,11 @@ ALTER TABLE `tf_bookings`
 
   CHANGE `is_active` `is_active` TINYINT(1) DEFAULT 1 NOT NULL;
 
-UPDATE `tf_contacts` SET `deleted` = IF(deleted = 0, 1, 0);
-
 ALTER TABLE `tf_contacts`
 
     CHANGE `deleted` `is_active` TINYINT(1) DEFAULT 1 NOT NULL;
+
+UPDATE `tf_contacts` SET `is_active`=IF(`is_active`=0, 1, 0);
 
 
 # This restores the fkey checks, after having unset them earlier
