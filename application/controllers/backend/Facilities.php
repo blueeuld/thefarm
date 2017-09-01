@@ -3,13 +3,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Facilities extends TF_Controller {
 
+    protected $secured = true;
 
 	public function index()
 	{
-		if (!$this->session->has_userdata('ContactId'))
-		{
-			redirect('login');
-		}
 
 		$data = array();
 

@@ -3,11 +3,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Group extends TF_Controller {
 
+    protected $secured = true;
+
 	public function index() {
-		if (!$this->session->has_userdata('ContactId'))
-		{
-			redirect('login');
-		}
+
 
 		$group_id = (int)$this->input->get_post('group_id');
 		$dashboard_top = $this->input->get_post('dashboard_top');

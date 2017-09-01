@@ -4,10 +4,10 @@ use Propel\Generator\Manager\MigrationManager;
 
 /**
  * Data object containing the SQL and PHP code to migrate the database
- * up to version 1502797808.
- * Generated on 2017-08-15 11:50:08 by marvin
+ * up to version 1504251151.
+ * Generated on 2017-09-01 07:32:31 by marvin
  */
-class PropelMigration_1502797808
+class PropelMigration_1504251151
 {
     public $comment = '';
 
@@ -45,19 +45,15 @@ class PropelMigration_1502797808
 # It "suspends judgement" for fkey relationships until are tables are set.
 SET FOREIGN_KEY_CHECKS = 0;
 
+CREATE INDEX `tf_form_fields_fi_8ba9c8` ON `tf_form_fields` (`form_id`);
+
+ALTER TABLE `tf_form_fields` ADD CONSTRAINT `tf_form_fields_fk_56efb6`
+    FOREIGN KEY (`field_id`)
+    REFERENCES `tf_fields` (`field_id`);
+
 ALTER TABLE `tf_form_fields` ADD CONSTRAINT `tf_form_fields_fk_8ba9c8`
     FOREIGN KEY (`form_id`)
     REFERENCES `tf_forms` (`form_id`);
-
-CREATE INDEX `tf_items_related_facilities_fi_1eba8a` ON `tf_items_related_facilities` (`facility_id`);
-
-ALTER TABLE `tf_items_related_facilities` ADD CONSTRAINT `tf_items_related_facilities_fk_1eba8a`
-    FOREIGN KEY (`facility_id`)
-    REFERENCES `tf_facilities` (`facility_id`);
-
-ALTER TABLE `tf_items_related_facilities` ADD CONSTRAINT `tf_items_related_facilities_fk_b49f13`
-    FOREIGN KEY (`item_id`)
-    REFERENCES `tf_items` (`item_id`);
 
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;
@@ -79,13 +75,11 @@ SET FOREIGN_KEY_CHECKS = 1;
 # It "suspends judgement" for fkey relationships until are tables are set.
 SET FOREIGN_KEY_CHECKS = 0;
 
+ALTER TABLE `tf_form_fields` DROP FOREIGN KEY `tf_form_fields_fk_56efb6`;
+
 ALTER TABLE `tf_form_fields` DROP FOREIGN KEY `tf_form_fields_fk_8ba9c8`;
 
-ALTER TABLE `tf_items_related_facilities` DROP FOREIGN KEY `tf_items_related_facilities_fk_1eba8a`;
-
-ALTER TABLE `tf_items_related_facilities` DROP FOREIGN KEY `tf_items_related_facilities_fk_b49f13`;
-
-DROP INDEX `tf_items_related_facilities_fi_1eba8a` ON `tf_items_related_facilities`;
+DROP INDEX `tf_form_fields_fi_8ba9c8` ON `tf_form_fields`;
 
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;

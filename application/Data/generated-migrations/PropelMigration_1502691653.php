@@ -45,13 +45,6 @@ class PropelMigration_1502691653
 # It "suspends judgement" for fkey relationships until are tables are set.
 SET FOREIGN_KEY_CHECKS = 0;
 
-DELETE n1 FROM `tf_items_related_users` n1, `tf_items_related_users` n2 WHERE n1.item_id > n2.item_id AND n1.contact_id = n2.contact_id;
-
-
-ALTER TABLE `tf_items_related_users` ADD CONSTRAINT `tf_items_related_users_fk_6a6d09`
-    FOREIGN KEY (`contact_id`)
-    REFERENCES `tf_contacts` (`contact_id`);
-
 DROP INDEX `tf_user_work_plan_time_fi_6a6d09` ON `tf_user_work_plan_time`;
 
 ALTER TABLE `tf_user_work_plan_time`

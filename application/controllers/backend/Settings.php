@@ -2,12 +2,11 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Settings extends TF_Controller {
+
+    protected $secured = true;
+
 	public function index()
 	{
-		if (!$this->session->has_userdata('ContactId'))
-		{
-			redirect('login');
-		}
 		$this->load->view('admin/settings/index', ['setting' => '']);
 	}
 	

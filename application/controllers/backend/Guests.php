@@ -2,11 +2,10 @@
 
 class Guests extends TF_Controller {
 
+    protected $secured = true;
+
     public function index() {
-        if (!$this->session->has_userdata('ContactId'))
-        {
-            redirect('login');
-        }
+
 
         $search = \TheFarm\Models\ContactQuery::create();
         $search = $search->useUserQuery()->useGroupQuery()->filterByGroupCd('guest')->endUse()->endUse();

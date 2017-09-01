@@ -3,13 +3,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Account extends TF_Controller {
 
+    protected $secured = true;
+
     public function index()
     {
-        if (!$this->session->has_userdata('ContactId'))
-        {
-            redirect('login');
-        }
-
         if (!$_POST) return;
 
 		$return = $this->input->get_post('return');
