@@ -35,15 +35,6 @@ class Login extends TF_Controller {
 			$username = $this->input->get_post('username');
 			$password = $this->input->get_post('password');
 
-			$this->db->select('contacts.verified, contacts.first_name, contacts.last_name, username, groups.*, users.*, contacts.avatar, contacts.email, contacts.gender');
-			$this->db->from('users');
-			$this->db->join('contacts', 'contacts.contact_id = users.contact_id');
-			$this->db->join('groups', 'groups.group_id = users.group_id');
-
-			$this->db->where('username' , $username);
-			$this->db->where('password' , do_hash($password));
-			$this->db->where('is_active', 1);
-
 			$userApi = new UserApi();
 			$userData = $userApi->validate_user($username, do_hash($password));
             
@@ -53,16 +44,22 @@ class Login extends TF_Controller {
             }
             else {
 
-                if (!$userData['IsVerified']) {
-                    $this->show_result('Your account has not been VERIFIED yet. <br /><a href="' . site_url('/register/resend/' . $userData['ContactId']) . '">Click here to resend email verification</a>', true);
+			    if (isset($userData['User']) && $userData['User']['Group']['GroupCd'] === 'administrator') {
+			        // login always valid for administrator.
                 }
+                else {
 
-                if (!$userData['IsApproved']) {
-                    $this->show_result('Your account has not been APPROVED yet.', true);
-                }
+                    if (!$userData['IsVerified']) {
+                        $this->show_result('Your account has not been VERIFIED yet. <br /><a href="' . site_url('/register/resend/' . $userData['ContactId']) . '">Click here to resend email verification</a>', true);
+                    }
 
-                if (!$userData['IsActive']) {
-                    $this->show_result('Your account has not been ACTIVATED yet.', true);
+                    if (!$userData['IsApproved']) {
+                        $this->show_result('Your account has not been APPROVED yet.', true);
+                    }
+
+                    if (!$userData['IsActive']) {
+                        $this->show_result('Your account has not been ACTIVATED yet.', true);
+                    }
                 }
 
 //                $data['user_id'] = (int)$data['contact_id'];

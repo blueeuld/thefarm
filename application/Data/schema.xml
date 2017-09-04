@@ -815,14 +815,19 @@
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
   </table>
-  <table name="tf_user_work_plan_time" idMethod="native" phpName="UserWorkPlanTime" namespace="Models" isCrossRef="true">
+  <table name="tf_user_work_plan_time" idMethod="native" phpName="ProviderSchedule" namespace="Models" isCrossRef="true">
     <column name="contact_id" phpName="ContactId" primaryKey="true" type="INTEGER" required="true"/>
+    <column name="work_plan_cd" phpName="WorkPlanCd" type="VARCHAR" size="32" />
     <column name="start_date" phpName="StartDate" primaryKey="true" type="TIMESTAMP" required="true"/>
     <column name="end_date" phpName="EndDate" primaryKey="true" type="TIMESTAMP" required="true"/>
     <column name="is_working" phpName="IsWorking" type="Boolean" defaultValue="1"/>
 
     <foreign-key foreignTable="tf_contacts" phpName="Contact">
       <reference local="contact_id" foreign="contact_id"/>
+    </foreign-key>
+
+    <foreign-key foreignTable="tf_user_work_plan_code" phpName="WorkPlan">
+      <reference local="work_plan_cd" foreign="work_plan_cd"/>
     </foreign-key>
 
     <vendor type="mysql">

@@ -3,6 +3,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Dashboard extends TF_Controller {
 
+    protected $secured = true;
+
 	function index() {
 
 	    /*
@@ -23,7 +25,6 @@ class Dashboard extends TF_Controller {
 		$data['providers'] = get_available_providers(date('Y-m-d'), $_SESSION['User']['LocationId']); // get_provider_list(false, false, false, $_SESSION['User']['LocationId']);
 
 
-		
 		$this->db->select('contacts.first_name, contacts.last_name, bookings.booking_id, items.title as room_name, contacts.contact_id, package_types.package_type_name');
 		$this->db->from('contacts');
 		$this->db->join('bookings', 'bookings.guest_id = contacts.contact_id');

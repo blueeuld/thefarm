@@ -47,7 +47,7 @@ class Providers extends TF_Controller {
             $currentUser = $userApi->get_user($contact_id);
 
             $workPlanArr = [];
-            foreach ($currentUser['UserWorkPlanTimes'] as $workPlan) {
+            foreach ($currentUser['ProviderSchedules'] as $workPlan) {
                 $workPlanArr[date('Y-m-d', strtotime($workPlan['StartDate']))][] = date('H:i', strtotime($workPlan['StartDate']));
             }
 
@@ -76,7 +76,24 @@ class Providers extends TF_Controller {
 	    redirect('backend/providers');
     }
 
+    private function remove_date_in_schedule($schedules, $userWorkPlanTimes) {
+        foreach ($schedules as $date => $times) {
+            if (!$times) {
+                foreach ($userWorkPlanTimes as $key => $row) {
+                    $start = explode("T", $row['StartDate'])[0];
+                    if ($start === $date) {
+                        $userWorkPlanTimes[$key]['IsWorking'] = false;
+                    }
+                }
+            }
+        }
+        return $userWorkPlanTimes;
+    }
+
     public function update_schedule($contact_id = null) {
+        $contact_id = (int)$this->input->get_post('contact_id');
+        $userApi = new UserApi();
+        $user = $userApi->get_user($contact_id);
 
         $schedule = array();
         $schedule_code = array();
@@ -94,7 +111,8 @@ class Providers extends TF_Controller {
             }
         }
 
-        $scheduleData = [];
+        $scheduleData = $this->remove_date_in_schedule($schedule, $user['ProviderSchedules']);
+        var_dump($user['UserWorkPlanTimes']);
         foreach ($schedule as $dt => $tm) {
             foreach ($tm as $item) {
                 $endDateTime = new DateTime($dt . ' ' . $item);
@@ -104,16 +122,16 @@ class Providers extends TF_Controller {
                     'ContactId' => (int)$contact_id,
                     'StartDate' => $dt . ' ' . $item,
                     'EndDate' => $endDateTime->format('Y-m-d H:i'),
-                    'IsWorking' => true
+                    'IsWorking' => true,
+                    'WorkPlanCd' => $schedule_code[$dt]
                 ];
             }
         }
 
-        $contact_id = (int)$this->input->get_post('contact_id');
+
         $week = $this->input->get_post('week');
 
-        $userApi = new UserApi();
-        $user = $userApi->get_user($contact_id);
+
         $user['UserWorkPlanTimes'] = $scheduleData;
 
         $savedUser = $userApi->save_user($user);

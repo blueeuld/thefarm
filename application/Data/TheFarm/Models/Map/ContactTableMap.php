@@ -360,13 +360,13 @@ class ContactTableMap extends TableMap
     1 => ':contact_id',
   ),
 ), null, null, 'UserWorkPlanDays', false);
-        $this->addRelation('UserWorkPlanTime', '\\TheFarm\\Models\\UserWorkPlanTime', RelationMap::ONE_TO_MANY, array (
+        $this->addRelation('ProviderSchedule', '\\TheFarm\\Models\\ProviderSchedule', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
     0 => ':contact_id',
     1 => ':contact_id',
   ),
-), null, null, 'UserWorkPlanTimes', false);
+), null, null, 'ProviderSchedules', false);
         $this->addRelation('User', '\\TheFarm\\Models\\User', RelationMap::ONE_TO_ONE, array (
   0 =>
   array (

@@ -13,9 +13,36 @@ class UserApi {
             $user->fromArray($userData);
         }
 
+        if (isset($userData['UserWorkPlanTimes'])) {
+            $this->save_user_work_times($userData['UserWorkPlanTimes'], $user->getContactId());
+        }
+
         $user->save();
         return $user->toArray();
 
+    }
+
+    function save_user_work_times($timeData, $contactId) {
+        foreach ($timeData as $time) {
+            $userWorkPlanTime = \TheFarm\Models\ProviderScheduleQuery::create()
+                ->filterByContactId($time['ContactId'])
+                ->filterByStartDate($time['StartDate'])
+                ->findOne();
+            if ($userWorkPlanTime) {
+                $userWorkPlanTime->fromArray($time);
+            }
+            else {
+                $userWorkPlanTime = new \TheFarm\Models\UserWorkPlanTime();
+                $userWorkPlanTime->fromArray($time);
+            }
+            $userWorkPlanTime->save();
+        }
+
+        // Delete is_working = false;
+        \TheFarm\Models\ProviderScheduleQuery::create()
+            ->filterByContactId($contactId)
+            ->filterByIsWorking(false)
+            ->delete();
     }
 
     function get_user($userId) {
@@ -23,8 +50,8 @@ class UserApi {
         $user = \TheFarm\Models\ContactQuery::create()->findOneByContactId($userId);
 
         $userArr = $user->toArray();
-        if ($user->getUserWorkPlanTimes()) {
-            $userArr['UserWorkPlanTimes'] = $user->getUserWorkPlanTimes()->toArray();
+        if ($user->getProviderSchedules()) {
+            $userArr['ProviderSchedules'] = $user->getProviderSchedules()->toArray();
         }
         if ($user->getBookingsRelatedByGuestId()) {
             $bookings = $user->getBookingsRelatedByGuestId();
@@ -55,7 +82,7 @@ class UserApi {
             $search = $search->useUserQuery()->useGroupQuery()->filterByIncludeInProviderList('y')->endUse()->endUse();
         }
         elseif ($availableProvidersOnly && !is_null($startDateTime) && !is_null($endDateTime)) {
-            $search = $search->useUserWorkPlanTimeQuery()->where("((start_date BETWEEN '".$startDateTime."' AND '".$endDateTime."') OR (end_date BETWEEN '".$startDateTime."' AND '".$endDateTime."') OR ('".$startDateTime."' BETWEEN start_date AND end_date))")->endUse();
+            $search = $search->useProviderScheduleQuery()->where("((start_date BETWEEN '".$startDateTime."' AND '".$endDateTime."') OR (end_date BETWEEN '".$startDateTime."' AND '".$endDateTime."') OR ('".$startDateTime."' BETWEEN start_date AND end_date))")->endUse();
         }
         elseif ($availableProvidersOnly && !is_null($startDateTime)) {
             $search = $search->useUserWorkPlanDayQuery()->filterByWorkCodeCd(['OFF', 'VL', 'OS'])->filterByDate($startDateTime)->endUse();

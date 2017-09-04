@@ -1050,13 +1050,18 @@ DROP TABLE IF EXISTS `tf_user_work_plan_time`;
 CREATE TABLE `tf_user_work_plan_time`
 (
     `contact_id` INTEGER NOT NULL,
+    `work_plan_cd` VARCHAR(32),
     `start_date` DATETIME NOT NULL,
     `end_date` DATETIME NOT NULL,
     `is_working` TINYINT(1) DEFAULT 1,
     PRIMARY KEY (`contact_id`,`start_date`,`end_date`),
+    INDEX `tf_user_work_plan_time_fi_d436f3` (`work_plan_cd`),
     CONSTRAINT `tf_user_work_plan_time_fk_6a6d09`
         FOREIGN KEY (`contact_id`)
-        REFERENCES `tf_contacts` (`contact_id`)
+        REFERENCES `tf_contacts` (`contact_id`),
+    CONSTRAINT `tf_user_work_plan_time_fk_d436f3`
+        FOREIGN KEY (`work_plan_cd`)
+        REFERENCES `tf_user_work_plan_code` (`work_plan_cd`)
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
