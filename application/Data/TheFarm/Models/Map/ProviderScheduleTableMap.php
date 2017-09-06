@@ -148,7 +148,7 @@ class ProviderScheduleTableMap extends TableMap
         $this->setIsCrossRef(true);
         // columns
         $this->addForeignPrimaryKey('contact_id', 'ContactId', 'INTEGER' , 'tf_contacts', 'contact_id', true, null, null);
-        $this->addForeignKey('work_plan_cd', 'WorkPlanCd', 'VARCHAR', 'tf_user_work_plan_code', 'work_plan_cd', false, 32, null);
+        $this->addForeignKey('work_plan_cd', 'WorkPlanCd', 'VARCHAR', 'tf_work_plan', 'work_plan_cd', false, 32, null);
         $this->addPrimaryKey('start_date', 'StartDate', 'TIMESTAMP', true, null, null);
         $this->addPrimaryKey('end_date', 'EndDate', 'TIMESTAMP', true, null, null);
         $this->addColumn('is_working', 'IsWorking', 'BOOLEAN', false, 1, true);
@@ -166,7 +166,7 @@ class ProviderScheduleTableMap extends TableMap
     1 => ':contact_id',
   ),
 ), null, null, null, false);
-        $this->addRelation('WorkPlan', '\\TheFarm\\Models\\UserWorkPlanCode', RelationMap::MANY_TO_ONE, array (
+        $this->addRelation('WorkPlan', '\\TheFarm\\Models\\WorkPlan', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
     0 => ':work_plan_cd',

@@ -7,17 +7,16 @@ use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\DataFetcher\DataFetcherInterface;
-use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\RelationMap;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Map\TableMapTrait;
-use TheFarm\Models\UserWorkPlanDay;
-use TheFarm\Models\UserWorkPlanDayQuery;
+use TheFarm\Models\WorkPlan;
+use TheFarm\Models\WorkPlanQuery;
 
 
 /**
- * This class defines the structure of the 'tf_user_work_plan_day' table.
+ * This class defines the structure of the 'tf_work_plan' table.
  *
  *
  *
@@ -27,7 +26,7 @@ use TheFarm\Models\UserWorkPlanDayQuery;
  * (i.e. if it's a text column type).
  *
  */
-class UserWorkPlanDayTableMap extends TableMap
+class WorkPlanTableMap extends TableMap
 {
     use InstancePoolTrait;
     use TableMapTrait;
@@ -35,7 +34,7 @@ class UserWorkPlanDayTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = 'TheFarm.Models.Map.UserWorkPlanDayTableMap';
+    const CLASS_NAME = 'TheFarm.Models.Map.WorkPlanTableMap';
 
     /**
      * The default database name for this class
@@ -45,22 +44,22 @@ class UserWorkPlanDayTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = 'tf_user_work_plan_day';
+    const TABLE_NAME = 'tf_work_plan';
 
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\TheFarm\\Models\\UserWorkPlanDay';
+    const OM_CLASS = '\\TheFarm\\Models\\WorkPlan';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'TheFarm.Models.UserWorkPlanDay';
+    const CLASS_DEFAULT = 'TheFarm.Models.WorkPlan';
 
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 3;
+    const NUM_COLUMNS = 2;
 
     /**
      * The number of lazy-loaded columns
@@ -70,22 +69,17 @@ class UserWorkPlanDayTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 3;
-
-    /**
-     * the column name for the contact_id field
-     */
-    const COL_CONTACT_ID = 'tf_user_work_plan_day.contact_id';
-
-    /**
-     * the column name for the date field
-     */
-    const COL_DATE = 'tf_user_work_plan_day.date';
+    const NUM_HYDRATE_COLUMNS = 2;
 
     /**
      * the column name for the work_plan_cd field
      */
-    const COL_WORK_PLAN_CD = 'tf_user_work_plan_day.work_plan_cd';
+    const COL_WORK_PLAN_CD = 'tf_work_plan.work_plan_cd';
+
+    /**
+     * the column name for the work_plan_name field
+     */
+    const COL_WORK_PLAN_NAME = 'tf_work_plan.work_plan_name';
 
     /**
      * The default string format for model objects of the related table
@@ -99,11 +93,11 @@ class UserWorkPlanDayTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('ContactId', 'Date', 'WorkCodeCd', ),
-        self::TYPE_CAMELNAME     => array('contactId', 'date', 'workCodeCd', ),
-        self::TYPE_COLNAME       => array(UserWorkPlanDayTableMap::COL_CONTACT_ID, UserWorkPlanDayTableMap::COL_DATE, UserWorkPlanDayTableMap::COL_WORK_PLAN_CD, ),
-        self::TYPE_FIELDNAME     => array('contact_id', 'date', 'work_plan_cd', ),
-        self::TYPE_NUM           => array(0, 1, 2, )
+        self::TYPE_PHPNAME       => array('WorkPlanCd', 'WorkPlanName', ),
+        self::TYPE_CAMELNAME     => array('workPlanCd', 'workPlanName', ),
+        self::TYPE_COLNAME       => array(WorkPlanTableMap::COL_WORK_PLAN_CD, WorkPlanTableMap::COL_WORK_PLAN_NAME, ),
+        self::TYPE_FIELDNAME     => array('work_plan_cd', 'work_plan_name', ),
+        self::TYPE_NUM           => array(0, 1, )
     );
 
     /**
@@ -113,11 +107,11 @@ class UserWorkPlanDayTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('ContactId' => 0, 'Date' => 1, 'WorkCodeCd' => 2, ),
-        self::TYPE_CAMELNAME     => array('contactId' => 0, 'date' => 1, 'workCodeCd' => 2, ),
-        self::TYPE_COLNAME       => array(UserWorkPlanDayTableMap::COL_CONTACT_ID => 0, UserWorkPlanDayTableMap::COL_DATE => 1, UserWorkPlanDayTableMap::COL_WORK_PLAN_CD => 2, ),
-        self::TYPE_FIELDNAME     => array('contact_id' => 0, 'date' => 1, 'work_plan_cd' => 2, ),
-        self::TYPE_NUM           => array(0, 1, 2, )
+        self::TYPE_PHPNAME       => array('WorkPlanCd' => 0, 'WorkPlanName' => 1, ),
+        self::TYPE_CAMELNAME     => array('workPlanCd' => 0, 'workPlanName' => 1, ),
+        self::TYPE_COLNAME       => array(WorkPlanTableMap::COL_WORK_PLAN_CD => 0, WorkPlanTableMap::COL_WORK_PLAN_NAME => 1, ),
+        self::TYPE_FIELDNAME     => array('work_plan_cd' => 0, 'work_plan_name' => 1, ),
+        self::TYPE_NUM           => array(0, 1, )
     );
 
     /**
@@ -130,16 +124,15 @@ class UserWorkPlanDayTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('tf_user_work_plan_day');
-        $this->setPhpName('UserWorkPlanDay');
+        $this->setName('tf_work_plan');
+        $this->setPhpName('WorkPlan');
         $this->setIdentifierQuoting(false);
-        $this->setClassName('\\TheFarm\\Models\\UserWorkPlanDay');
+        $this->setClassName('\\TheFarm\\Models\\WorkPlan');
         $this->setPackage('TheFarm.Models');
         $this->setUseIdGenerator(false);
         // columns
-        $this->addForeignKey('contact_id', 'ContactId', 'INTEGER', 'tf_contacts', 'contact_id', true, null, null);
-        $this->addColumn('date', 'Date', 'DATE', true, null, null);
-        $this->addForeignKey('work_plan_cd', 'WorkCodeCd', 'VARCHAR', 'tf_work_plan', 'work_plan_cd', true, 32, null);
+        $this->addPrimaryKey('work_plan_cd', 'WorkPlanCd', 'VARCHAR', true, 32, null);
+        $this->addColumn('work_plan_name', 'WorkPlanName', 'VARCHAR', true, 100, null);
     } // initialize()
 
     /**
@@ -147,20 +140,21 @@ class UserWorkPlanDayTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('WorkPlan', '\\TheFarm\\Models\\WorkPlan', RelationMap::MANY_TO_ONE, array (
+        $this->addRelation('UserWorkPlanDay', '\\TheFarm\\Models\\UserWorkPlanDay', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
     0 => ':work_plan_cd',
     1 => ':work_plan_cd',
   ),
-), null, null, null, false);
-        $this->addRelation('Contact', '\\TheFarm\\Models\\Contact', RelationMap::MANY_TO_ONE, array (
+), null, null, 'UserWorkPlanDays', false);
+        $this->addRelation('ProviderSchedule', '\\TheFarm\\Models\\ProviderSchedule', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
-    0 => ':contact_id',
-    1 => ':contact_id',
+    0 => ':work_plan_cd',
+    1 => ':work_plan_cd',
   ),
-), null, null, null, false);
+), null, null, 'ProviderSchedules', false);
+        $this->addRelation('Contact', '\\TheFarm\\Models\\Contact', RelationMap::MANY_TO_MANY, array(), null, null, 'Contacts');
     } // buildRelations()
 
     /**
@@ -178,7 +172,12 @@ class UserWorkPlanDayTableMap extends TableMap
      */
     public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        return null;
+        // If the PK cannot be derived from the row, return NULL.
+        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('WorkPlanCd', TableMap::TYPE_PHPNAME, $indexType)] === null) {
+            return null;
+        }
+
+        return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('WorkPlanCd', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('WorkPlanCd', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('WorkPlanCd', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('WorkPlanCd', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('WorkPlanCd', TableMap::TYPE_PHPNAME, $indexType)];
     }
 
     /**
@@ -195,7 +194,11 @@ class UserWorkPlanDayTableMap extends TableMap
      */
     public static function getPrimaryKeyFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        return '';
+        return (string) $row[
+            $indexType == TableMap::TYPE_NUM
+                ? 0 + $offset
+                : self::translateFieldName('WorkPlanCd', TableMap::TYPE_PHPNAME, $indexType)
+        ];
     }
 
     /**
@@ -211,7 +214,7 @@ class UserWorkPlanDayTableMap extends TableMap
      */
     public static function getOMClass($withPrefix = true)
     {
-        return $withPrefix ? UserWorkPlanDayTableMap::CLASS_DEFAULT : UserWorkPlanDayTableMap::OM_CLASS;
+        return $withPrefix ? WorkPlanTableMap::CLASS_DEFAULT : WorkPlanTableMap::OM_CLASS;
     }
 
     /**
@@ -225,22 +228,22 @@ class UserWorkPlanDayTableMap extends TableMap
      *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
-     * @return array           (UserWorkPlanDay object, last column rank)
+     * @return array           (WorkPlan object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        $key = UserWorkPlanDayTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
-        if (null !== ($obj = UserWorkPlanDayTableMap::getInstanceFromPool($key))) {
+        $key = WorkPlanTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
+        if (null !== ($obj = WorkPlanTableMap::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $offset, true); // rehydrate
-            $col = $offset + UserWorkPlanDayTableMap::NUM_HYDRATE_COLUMNS;
+            $col = $offset + WorkPlanTableMap::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = UserWorkPlanDayTableMap::OM_CLASS;
-            /** @var UserWorkPlanDay $obj */
+            $cls = WorkPlanTableMap::OM_CLASS;
+            /** @var WorkPlan $obj */
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
-            UserWorkPlanDayTableMap::addInstanceToPool($obj, $key);
+            WorkPlanTableMap::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
@@ -263,18 +266,18 @@ class UserWorkPlanDayTableMap extends TableMap
         $cls = static::getOMClass(false);
         // populate the object(s)
         while ($row = $dataFetcher->fetch()) {
-            $key = UserWorkPlanDayTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
-            if (null !== ($obj = UserWorkPlanDayTableMap::getInstanceFromPool($key))) {
+            $key = WorkPlanTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
+            if (null !== ($obj = WorkPlanTableMap::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
                 $results[] = $obj;
             } else {
-                /** @var UserWorkPlanDay $obj */
+                /** @var WorkPlan $obj */
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                UserWorkPlanDayTableMap::addInstanceToPool($obj, $key);
+                WorkPlanTableMap::addInstanceToPool($obj, $key);
             } // if key exists
         }
 
@@ -295,13 +298,11 @@ class UserWorkPlanDayTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(UserWorkPlanDayTableMap::COL_CONTACT_ID);
-            $criteria->addSelectColumn(UserWorkPlanDayTableMap::COL_DATE);
-            $criteria->addSelectColumn(UserWorkPlanDayTableMap::COL_WORK_PLAN_CD);
+            $criteria->addSelectColumn(WorkPlanTableMap::COL_WORK_PLAN_CD);
+            $criteria->addSelectColumn(WorkPlanTableMap::COL_WORK_PLAN_NAME);
         } else {
-            $criteria->addSelectColumn($alias . '.contact_id');
-            $criteria->addSelectColumn($alias . '.date');
             $criteria->addSelectColumn($alias . '.work_plan_cd');
+            $criteria->addSelectColumn($alias . '.work_plan_name');
         }
     }
 
@@ -314,7 +315,7 @@ class UserWorkPlanDayTableMap extends TableMap
      */
     public static function getTableMap()
     {
-        return Propel::getServiceContainer()->getDatabaseMap(UserWorkPlanDayTableMap::DATABASE_NAME)->getTable(UserWorkPlanDayTableMap::TABLE_NAME);
+        return Propel::getServiceContainer()->getDatabaseMap(WorkPlanTableMap::DATABASE_NAME)->getTable(WorkPlanTableMap::TABLE_NAME);
     }
 
     /**
@@ -322,16 +323,16 @@ class UserWorkPlanDayTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-        $dbMap = Propel::getServiceContainer()->getDatabaseMap(UserWorkPlanDayTableMap::DATABASE_NAME);
-        if (!$dbMap->hasTable(UserWorkPlanDayTableMap::TABLE_NAME)) {
-            $dbMap->addTableObject(new UserWorkPlanDayTableMap());
+        $dbMap = Propel::getServiceContainer()->getDatabaseMap(WorkPlanTableMap::DATABASE_NAME);
+        if (!$dbMap->hasTable(WorkPlanTableMap::TABLE_NAME)) {
+            $dbMap->addTableObject(new WorkPlanTableMap());
         }
     }
 
     /**
-     * Performs a DELETE on the database, given a UserWorkPlanDay or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a WorkPlan or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or UserWorkPlanDay object or primary key or array of primary keys
+     * @param mixed               $values Criteria or WorkPlan object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param  ConnectionInterface $con the connection to use
      * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -342,26 +343,27 @@ class UserWorkPlanDayTableMap extends TableMap
      public static function doDelete($values, ConnectionInterface $con = null)
      {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(UserWorkPlanDayTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(WorkPlanTableMap::DATABASE_NAME);
         }
 
         if ($values instanceof Criteria) {
             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \TheFarm\Models\UserWorkPlanDay) { // it's a model object
-            // create criteria based on pk value
-            $criteria = $values->buildCriteria();
+        } elseif ($values instanceof \TheFarm\Models\WorkPlan) { // it's a model object
+            // create criteria based on pk values
+            $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            throw new LogicException('The UserWorkPlanDay object has no primary key');
+            $criteria = new Criteria(WorkPlanTableMap::DATABASE_NAME);
+            $criteria->add(WorkPlanTableMap::COL_WORK_PLAN_CD, (array) $values, Criteria::IN);
         }
 
-        $query = UserWorkPlanDayQuery::create()->mergeWith($criteria);
+        $query = WorkPlanQuery::create()->mergeWith($criteria);
 
         if ($values instanceof Criteria) {
-            UserWorkPlanDayTableMap::clearInstancePool();
+            WorkPlanTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
             foreach ((array) $values as $singleval) {
-                UserWorkPlanDayTableMap::removeInstanceFromPool($singleval);
+                WorkPlanTableMap::removeInstanceFromPool($singleval);
             }
         }
 
@@ -369,20 +371,20 @@ class UserWorkPlanDayTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the tf_user_work_plan_day table.
+     * Deletes all rows from the tf_work_plan table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public static function doDeleteAll(ConnectionInterface $con = null)
     {
-        return UserWorkPlanDayQuery::create()->doDeleteAll($con);
+        return WorkPlanQuery::create()->doDeleteAll($con);
     }
 
     /**
-     * Performs an INSERT on the database, given a UserWorkPlanDay or Criteria object.
+     * Performs an INSERT on the database, given a WorkPlan or Criteria object.
      *
-     * @param mixed               $criteria Criteria or UserWorkPlanDay object containing data that is used to create the INSERT statement.
+     * @param mixed               $criteria Criteria or WorkPlan object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
@@ -391,18 +393,18 @@ class UserWorkPlanDayTableMap extends TableMap
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(UserWorkPlanDayTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(WorkPlanTableMap::DATABASE_NAME);
         }
 
         if ($criteria instanceof Criteria) {
             $criteria = clone $criteria; // rename for clarity
         } else {
-            $criteria = $criteria->buildCriteria(); // build Criteria from UserWorkPlanDay object
+            $criteria = $criteria->buildCriteria(); // build Criteria from WorkPlan object
         }
 
 
         // Set the correct dbName
-        $query = UserWorkPlanDayQuery::create()->mergeWith($criteria);
+        $query = WorkPlanQuery::create()->mergeWith($criteria);
 
         // use transaction because $criteria could contain info
         // for more than one table (I guess, conceivably)
@@ -411,7 +413,7 @@ class UserWorkPlanDayTableMap extends TableMap
         });
     }
 
-} // UserWorkPlanDayTableMap
+} // WorkPlanTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-UserWorkPlanDayTableMap::buildTableMap();
+WorkPlanTableMap::buildTableMap();

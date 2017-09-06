@@ -60,7 +60,7 @@ use TheFarm\Models\Map\ProviderScheduleTableMap;
  * @method     ChildProviderScheduleQuery rightJoinWithWorkPlan() Adds a RIGHT JOIN clause and with to the query using the WorkPlan relation
  * @method     ChildProviderScheduleQuery innerJoinWithWorkPlan() Adds a INNER JOIN clause and with to the query using the WorkPlan relation
  *
- * @method     \TheFarm\Models\ContactQuery|\TheFarm\Models\UserWorkPlanCodeQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \TheFarm\Models\ContactQuery|\TheFarm\Models\WorkPlanQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildProviderSchedule findOne(ConnectionInterface $con = null) Return the first ChildProviderSchedule matching the query
  * @method     ChildProviderSchedule findOneOrCreate(ConnectionInterface $con = null) Return the first ChildProviderSchedule matching the query, or a new ChildProviderSchedule object populated from the query conditions when no match is found
@@ -549,29 +549,29 @@ abstract class ProviderScheduleQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \TheFarm\Models\UserWorkPlanCode object
+     * Filter the query by a related \TheFarm\Models\WorkPlan object
      *
-     * @param \TheFarm\Models\UserWorkPlanCode|ObjectCollection $userWorkPlanCode The related object(s) to use as filter
+     * @param \TheFarm\Models\WorkPlan|ObjectCollection $workPlan The related object(s) to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
      * @return ChildProviderScheduleQuery The current query, for fluid interface
      */
-    public function filterByWorkPlan($userWorkPlanCode, $comparison = null)
+    public function filterByWorkPlan($workPlan, $comparison = null)
     {
-        if ($userWorkPlanCode instanceof \TheFarm\Models\UserWorkPlanCode) {
+        if ($workPlan instanceof \TheFarm\Models\WorkPlan) {
             return $this
-                ->addUsingAlias(ProviderScheduleTableMap::COL_WORK_PLAN_CD, $userWorkPlanCode->getWorkPlanCd(), $comparison);
-        } elseif ($userWorkPlanCode instanceof ObjectCollection) {
+                ->addUsingAlias(ProviderScheduleTableMap::COL_WORK_PLAN_CD, $workPlan->getWorkPlanCd(), $comparison);
+        } elseif ($workPlan instanceof ObjectCollection) {
             if (null === $comparison) {
                 $comparison = Criteria::IN;
             }
 
             return $this
-                ->addUsingAlias(ProviderScheduleTableMap::COL_WORK_PLAN_CD, $userWorkPlanCode->toKeyValue('PrimaryKey', 'WorkPlanCd'), $comparison);
+                ->addUsingAlias(ProviderScheduleTableMap::COL_WORK_PLAN_CD, $workPlan->toKeyValue('PrimaryKey', 'WorkPlanCd'), $comparison);
         } else {
-            throw new PropelException('filterByWorkPlan() only accepts arguments of type \TheFarm\Models\UserWorkPlanCode or Collection');
+            throw new PropelException('filterByWorkPlan() only accepts arguments of type \TheFarm\Models\WorkPlan or Collection');
         }
     }
 
@@ -608,7 +608,7 @@ abstract class ProviderScheduleQuery extends ModelCriteria
     }
 
     /**
-     * Use the WorkPlan relation UserWorkPlanCode object
+     * Use the WorkPlan relation WorkPlan object
      *
      * @see useQuery()
      *
@@ -616,13 +616,13 @@ abstract class ProviderScheduleQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \TheFarm\Models\UserWorkPlanCodeQuery A secondary query class using the current class as primary query
+     * @return \TheFarm\Models\WorkPlanQuery A secondary query class using the current class as primary query
      */
     public function useWorkPlanQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         return $this
             ->joinWorkPlan($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'WorkPlan', '\TheFarm\Models\UserWorkPlanCodeQuery');
+            ->useQuery($relationAlias ? $relationAlias : 'WorkPlan', '\TheFarm\Models\WorkPlanQuery');
     }
 
     /**

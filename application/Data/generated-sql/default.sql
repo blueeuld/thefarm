@@ -1007,12 +1007,12 @@ CREATE TABLE `tf_upload_prefs`
 ) ENGINE=MyISAM;
 
 -- ---------------------------------------------------------------------
--- tf_user_work_plan_code
+-- tf_work_plan
 -- ---------------------------------------------------------------------
 
-DROP TABLE IF EXISTS `tf_user_work_plan_code`;
+DROP TABLE IF EXISTS `tf_work_plan`;
 
-CREATE TABLE `tf_user_work_plan_code`
+CREATE TABLE `tf_work_plan`
 (
     `work_plan_cd` VARCHAR(32) NOT NULL,
     `work_plan_name` VARCHAR(100) NOT NULL,
@@ -1029,14 +1029,14 @@ CREATE TABLE `tf_user_work_plan_day`
 (
     `contact_id` INTEGER NOT NULL,
     `date` DATE NOT NULL,
-    `work_code` VARCHAR(32) NOT NULL,
+    `work_plan_cd` VARCHAR(32) NOT NULL,
     UNIQUE INDEX `contact_id` (`contact_id`, `date`),
     INDEX `contact_fk1` (`contact_id`),
-    INDEX `fi_k_plan_cd_fk` (`work_code`),
-    CONSTRAINT `work_plan_cd_fk`
-        FOREIGN KEY (`work_code`)
-        REFERENCES `tf_user_work_plan_code` (`work_plan_cd`),
-    CONSTRAINT `contact_fk2`
+    INDEX `tf_user_work_plan_day_fi_a9b2fd` (`work_plan_cd`),
+    CONSTRAINT `tf_user_work_plan_day_fk_a9b2fd`
+        FOREIGN KEY (`work_plan_cd`)
+        REFERENCES `tf_work_plan` (`work_plan_cd`),
+    CONSTRAINT `tf_user_work_plan_day_fk_6a6d09`
         FOREIGN KEY (`contact_id`)
         REFERENCES `tf_contacts` (`contact_id`)
 ) ENGINE=InnoDB;
@@ -1055,13 +1055,13 @@ CREATE TABLE `tf_user_work_plan_time`
     `end_date` DATETIME NOT NULL,
     `is_working` TINYINT(1) DEFAULT 1,
     PRIMARY KEY (`contact_id`,`start_date`,`end_date`),
-    INDEX `tf_user_work_plan_time_fi_d436f3` (`work_plan_cd`),
+    INDEX `tf_user_work_plan_time_fi_a9b2fd` (`work_plan_cd`),
     CONSTRAINT `tf_user_work_plan_time_fk_6a6d09`
         FOREIGN KEY (`contact_id`)
         REFERENCES `tf_contacts` (`contact_id`),
-    CONSTRAINT `tf_user_work_plan_time_fk_d436f3`
+    CONSTRAINT `tf_user_work_plan_time_fk_a9b2fd`
         FOREIGN KEY (`work_plan_cd`)
-        REFERENCES `tf_user_work_plan_code` (`work_plan_cd`)
+        REFERENCES `tf_work_plan` (`work_plan_cd`)
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------

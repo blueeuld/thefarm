@@ -784,7 +784,7 @@
       <parameter name="Engine" value="MyISAM"/>
     </vendor>
   </table>
-  <table name="tf_user_work_plan_code" idMethod="native" phpName="UserWorkPlanCode" namespace="Models">
+  <table name="tf_work_plan" idMethod="native" phpName="WorkPlan" namespace="Models">
     <column name="work_plan_cd" phpName="WorkPlanCd" type="VARCHAR" size="32" primaryKey="true" required="true"/>
     <column name="work_plan_name" phpName="WorkPlanName" type="VARCHAR" size="100" required="true"/>
     <vendor type="mysql">
@@ -794,17 +794,17 @@
   <table name="tf_user_work_plan_day" idMethod="native" phpName="UserWorkPlanDay" namespace="Models">
     <column name="contact_id" phpName="ContactId" type="INTEGER" required="true"/>
     <column name="date" phpName="Date" type="DATE" required="true"/>
-    <column name="work_code" phpName="WorkCodeCd" type="VARCHAR" size="32" required="true"/>
+    <column name="work_plan_cd" phpName="WorkCodeCd" type="VARCHAR" size="32" required="true"/>
     <unique name="contact_id">
       <unique-column name="contact_id"/>
       <unique-column name="date"/>
     </unique>
 
-    <foreign-key foreignTable="tf_user_work_plan_code" name="work_plan_cd_fk">
-      <reference local="work_code" foreign="work_plan_cd"/>
+    <foreign-key foreignTable="tf_work_plan" phpName="WorkPlan">
+      <reference local="work_plan_cd" foreign="work_plan_cd"/>
     </foreign-key>
 
-    <foreign-key foreignTable="tf_contacts" name="contact_fk2">
+    <foreign-key foreignTable="tf_contacts" phpName="Contact">
       <reference local="contact_id" foreign="contact_id"/>
     </foreign-key>
     <index name="contact_fk1">
@@ -826,7 +826,7 @@
       <reference local="contact_id" foreign="contact_id"/>
     </foreign-key>
 
-    <foreign-key foreignTable="tf_user_work_plan_code" phpName="WorkPlan">
+    <foreign-key foreignTable="tf_work_plan" phpName="WorkPlan">
       <reference local="work_plan_cd" foreign="work_plan_cd"/>
     </foreign-key>
 

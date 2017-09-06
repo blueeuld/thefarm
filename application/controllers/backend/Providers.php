@@ -52,7 +52,7 @@ class Providers extends TF_Controller {
             }
 
             $params['date'] = $week;
-            $params['base'] = 'backend/providers/update_schedule/'.$contact_id;
+            $params['base'] = 'backend/providers/schedule/'.$contact_id;
             $params['schedule'] = $workPlanArr;
             $params['schedule_code'] = $result['work_plan_code'] ? unserialize($result['work_plan_code']) : false;
 

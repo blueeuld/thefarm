@@ -20,8 +20,8 @@ use Propel\Runtime\Util\PropelDateTime;
 use TheFarm\Models\Contact as ChildContact;
 use TheFarm\Models\ContactQuery as ChildContactQuery;
 use TheFarm\Models\ProviderScheduleQuery as ChildProviderScheduleQuery;
-use TheFarm\Models\UserWorkPlanCode as ChildUserWorkPlanCode;
-use TheFarm\Models\UserWorkPlanCodeQuery as ChildUserWorkPlanCodeQuery;
+use TheFarm\Models\WorkPlan as ChildWorkPlan;
+use TheFarm\Models\WorkPlanQuery as ChildWorkPlanQuery;
 use TheFarm\Models\Map\ProviderScheduleTableMap;
 
 /**
@@ -107,7 +107,7 @@ abstract class ProviderSchedule implements ActiveRecordInterface
     protected $aContact;
 
     /**
-     * @var        ChildUserWorkPlanCode
+     * @var        ChildWorkPlan
      */
     protected $aWorkPlan;
 
@@ -1025,10 +1025,10 @@ abstract class ProviderSchedule implements ActiveRecordInterface
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'userWorkPlanCode';
+                        $key = 'workPlan';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = 'tf_user_work_plan_code';
+                        $key = 'tf_work_plan';
                         break;
                     default:
                         $key = 'WorkPlan';
@@ -1371,13 +1371,13 @@ abstract class ProviderSchedule implements ActiveRecordInterface
     }
 
     /**
-     * Declares an association between this object and a ChildUserWorkPlanCode object.
+     * Declares an association between this object and a ChildWorkPlan object.
      *
-     * @param  ChildUserWorkPlanCode $v
+     * @param  ChildWorkPlan $v
      * @return $this|\TheFarm\Models\ProviderSchedule The current object (for fluent API support)
      * @throws PropelException
      */
-    public function setWorkPlan(ChildUserWorkPlanCode $v = null)
+    public function setWorkPlan(ChildWorkPlan $v = null)
     {
         if ($v === null) {
             $this->setWorkPlanCd(NULL);
@@ -1388,7 +1388,7 @@ abstract class ProviderSchedule implements ActiveRecordInterface
         $this->aWorkPlan = $v;
 
         // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildUserWorkPlanCode object, it will not be re-added.
+        // If this object has already been added to the ChildWorkPlan object, it will not be re-added.
         if ($v !== null) {
             $v->addProviderSchedule($this);
         }
@@ -1399,16 +1399,16 @@ abstract class ProviderSchedule implements ActiveRecordInterface
 
 
     /**
-     * Get the associated ChildUserWorkPlanCode object
+     * Get the associated ChildWorkPlan object
      *
      * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildUserWorkPlanCode The associated ChildUserWorkPlanCode object.
+     * @return ChildWorkPlan The associated ChildWorkPlan object.
      * @throws PropelException
      */
     public function getWorkPlan(ConnectionInterface $con = null)
     {
         if ($this->aWorkPlan === null && (($this->work_plan_cd !== "" && $this->work_plan_cd !== null))) {
-            $this->aWorkPlan = ChildUserWorkPlanCodeQuery::create()->findPk($this->work_plan_cd, $con);
+            $this->aWorkPlan = ChildWorkPlanQuery::create()->findPk($this->work_plan_cd, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
                 to this object.  This level of coupling may, however, be

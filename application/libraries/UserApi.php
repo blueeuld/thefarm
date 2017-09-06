@@ -13,8 +13,8 @@ class UserApi {
             $user->fromArray($userData);
         }
 
-        if (isset($userData['UserWorkPlanTimes'])) {
-            $this->save_user_work_times($userData['UserWorkPlanTimes'], $user->getContactId());
+        if (isset($userData['ProviderSchedules'])) {
+            $this->save_user_work_times($userData['ProviderSchedules'], $user->getContactId());
         }
 
         $user->save();

@@ -6103,10 +6103,10 @@ abstract class Contact implements ActiveRecordInterface
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return ObjectCollection|ChildUserWorkPlanDay[] List of ChildUserWorkPlanDay objects
      */
-    public function getUserWorkPlanDaysJoinUserWorkPlanCode(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getUserWorkPlanDaysJoinWorkPlan(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ChildUserWorkPlanDayQuery::create(null, $criteria);
-        $query->joinWith('UserWorkPlanCode', $joinBehavior);
+        $query->joinWith('WorkPlan', $joinBehavior);
 
         return $this->getUserWorkPlanDays($query, $con);
     }
