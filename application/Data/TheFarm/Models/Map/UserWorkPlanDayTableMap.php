@@ -73,9 +73,9 @@ class UserWorkPlanDayTableMap extends TableMap
     const NUM_HYDRATE_COLUMNS = 3;
 
     /**
-     * the column name for the contact_id field
+     * the column name for the user_id field
      */
-    const COL_CONTACT_ID = 'tf_user_work_plan_day.contact_id';
+    const COL_USER_ID = 'tf_user_work_plan_day.user_id';
 
     /**
      * the column name for the date field
@@ -99,10 +99,10 @@ class UserWorkPlanDayTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('ContactId', 'Date', 'WorkCodeCd', ),
-        self::TYPE_CAMELNAME     => array('contactId', 'date', 'workCodeCd', ),
-        self::TYPE_COLNAME       => array(UserWorkPlanDayTableMap::COL_CONTACT_ID, UserWorkPlanDayTableMap::COL_DATE, UserWorkPlanDayTableMap::COL_WORK_PLAN_CD, ),
-        self::TYPE_FIELDNAME     => array('contact_id', 'date', 'work_plan_cd', ),
+        self::TYPE_PHPNAME       => array('UserId', 'Date', 'WorkCodeCd', ),
+        self::TYPE_CAMELNAME     => array('userId', 'date', 'workCodeCd', ),
+        self::TYPE_COLNAME       => array(UserWorkPlanDayTableMap::COL_USER_ID, UserWorkPlanDayTableMap::COL_DATE, UserWorkPlanDayTableMap::COL_WORK_PLAN_CD, ),
+        self::TYPE_FIELDNAME     => array('user_id', 'date', 'work_plan_cd', ),
         self::TYPE_NUM           => array(0, 1, 2, )
     );
 
@@ -113,10 +113,10 @@ class UserWorkPlanDayTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('ContactId' => 0, 'Date' => 1, 'WorkCodeCd' => 2, ),
-        self::TYPE_CAMELNAME     => array('contactId' => 0, 'date' => 1, 'workCodeCd' => 2, ),
-        self::TYPE_COLNAME       => array(UserWorkPlanDayTableMap::COL_CONTACT_ID => 0, UserWorkPlanDayTableMap::COL_DATE => 1, UserWorkPlanDayTableMap::COL_WORK_PLAN_CD => 2, ),
-        self::TYPE_FIELDNAME     => array('contact_id' => 0, 'date' => 1, 'work_plan_cd' => 2, ),
+        self::TYPE_PHPNAME       => array('UserId' => 0, 'Date' => 1, 'WorkCodeCd' => 2, ),
+        self::TYPE_CAMELNAME     => array('userId' => 0, 'date' => 1, 'workCodeCd' => 2, ),
+        self::TYPE_COLNAME       => array(UserWorkPlanDayTableMap::COL_USER_ID => 0, UserWorkPlanDayTableMap::COL_DATE => 1, UserWorkPlanDayTableMap::COL_WORK_PLAN_CD => 2, ),
+        self::TYPE_FIELDNAME     => array('user_id' => 0, 'date' => 1, 'work_plan_cd' => 2, ),
         self::TYPE_NUM           => array(0, 1, 2, )
     );
 
@@ -137,7 +137,7 @@ class UserWorkPlanDayTableMap extends TableMap
         $this->setPackage('TheFarm.Models');
         $this->setUseIdGenerator(false);
         // columns
-        $this->addForeignKey('contact_id', 'ContactId', 'INTEGER', 'tf_users', 'user_id', true, null, null);
+        $this->addForeignKey('user_id', 'UserId', 'INTEGER', 'tf_user', 'user_id', true, null, null);
         $this->addColumn('date', 'Date', 'DATE', true, null, null);
         $this->addForeignKey('work_plan_cd', 'WorkCodeCd', 'VARCHAR', 'tf_work_plan', 'work_plan_cd', true, 32, null);
     } // initialize()
@@ -154,10 +154,10 @@ class UserWorkPlanDayTableMap extends TableMap
     1 => ':work_plan_cd',
   ),
 ), null, null, null, false);
-        $this->addRelation('Contact', '\\TheFarm\\Models\\User', RelationMap::MANY_TO_ONE, array (
+        $this->addRelation('User', '\\TheFarm\\Models\\User', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
-    0 => ':contact_id',
+    0 => ':user_id',
     1 => ':user_id',
   ),
 ), null, null, null, false);
@@ -295,11 +295,11 @@ class UserWorkPlanDayTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(UserWorkPlanDayTableMap::COL_CONTACT_ID);
+            $criteria->addSelectColumn(UserWorkPlanDayTableMap::COL_USER_ID);
             $criteria->addSelectColumn(UserWorkPlanDayTableMap::COL_DATE);
             $criteria->addSelectColumn(UserWorkPlanDayTableMap::COL_WORK_PLAN_CD);
         } else {
-            $criteria->addSelectColumn($alias . '.contact_id');
+            $criteria->addSelectColumn($alias . '.user_id');
             $criteria->addSelectColumn($alias . '.date');
             $criteria->addSelectColumn($alias . '.work_plan_cd');
         }

@@ -72,12 +72,12 @@ abstract class EventUser implements ActiveRecordInterface
     protected $event_id;
 
     /**
-     * The value for the staff_id field.
+     * The value for the user_id field.
      *
      * Note: this column has a database default value of: 0
      * @var        int
      */
-    protected $staff_id;
+    protected $user_id;
 
     /**
      * The value for the is_guest field.
@@ -114,7 +114,7 @@ abstract class EventUser implements ActiveRecordInterface
     public function applyDefaultValues()
     {
         $this->event_id = 0;
-        $this->staff_id = 0;
+        $this->user_id = 0;
         $this->is_guest = false;
     }
 
@@ -356,13 +356,13 @@ abstract class EventUser implements ActiveRecordInterface
     }
 
     /**
-     * Get the [staff_id] column value.
+     * Get the [user_id] column value.
      *
      * @return int
      */
     public function getUserId()
     {
-        return $this->staff_id;
+        return $this->user_id;
     }
 
     /**
@@ -410,7 +410,7 @@ abstract class EventUser implements ActiveRecordInterface
     } // setEventId()
 
     /**
-     * Set the value of [staff_id] column.
+     * Set the value of [user_id] column.
      *
      * @param int $v new value
      * @return $this|\TheFarm\Models\EventUser The current object (for fluent API support)
@@ -421,9 +421,9 @@ abstract class EventUser implements ActiveRecordInterface
             $v = (int) $v;
         }
 
-        if ($this->staff_id !== $v) {
-            $this->staff_id = $v;
-            $this->modifiedColumns[EventUserTableMap::COL_STAFF_ID] = true;
+        if ($this->user_id !== $v) {
+            $this->user_id = $v;
+            $this->modifiedColumns[EventUserTableMap::COL_USER_ID] = true;
         }
 
         if ($this->aUser !== null && $this->aUser->getUserId() !== $v) {
@@ -475,7 +475,7 @@ abstract class EventUser implements ActiveRecordInterface
                 return false;
             }
 
-            if ($this->staff_id !== 0) {
+            if ($this->user_id !== 0) {
                 return false;
             }
 
@@ -513,7 +513,7 @@ abstract class EventUser implements ActiveRecordInterface
             $this->event_id = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : EventUserTableMap::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->staff_id = (null !== $col) ? (int) $col : null;
+            $this->user_id = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : EventUserTableMap::translateFieldName('IsGuest', TableMap::TYPE_PHPNAME, $indexType)];
             $this->is_guest = (null !== $col) ? (boolean) $col : null;
@@ -550,7 +550,7 @@ abstract class EventUser implements ActiveRecordInterface
         if ($this->aBookingEvent !== null && $this->event_id !== $this->aBookingEvent->getEventId()) {
             $this->aBookingEvent = null;
         }
-        if ($this->aUser !== null && $this->staff_id !== $this->aUser->getUserId()) {
+        if ($this->aUser !== null && $this->user_id !== $this->aUser->getUserId()) {
             $this->aUser = null;
         }
     } // ensureConsistency
@@ -752,8 +752,8 @@ abstract class EventUser implements ActiveRecordInterface
         if ($this->isColumnModified(EventUserTableMap::COL_EVENT_ID)) {
             $modifiedColumns[':p' . $index++]  = 'event_id';
         }
-        if ($this->isColumnModified(EventUserTableMap::COL_STAFF_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'staff_id';
+        if ($this->isColumnModified(EventUserTableMap::COL_USER_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'user_id';
         }
         if ($this->isColumnModified(EventUserTableMap::COL_IS_GUEST)) {
             $modifiedColumns[':p' . $index++]  = 'is_guest';
@@ -772,8 +772,8 @@ abstract class EventUser implements ActiveRecordInterface
                     case 'event_id':
                         $stmt->bindValue($identifier, $this->event_id, PDO::PARAM_INT);
                         break;
-                    case 'staff_id':
-                        $stmt->bindValue($identifier, $this->staff_id, PDO::PARAM_INT);
+                    case 'user_id':
+                        $stmt->bindValue($identifier, $this->user_id, PDO::PARAM_INT);
                         break;
                     case 'is_guest':
                         $stmt->bindValue($identifier, (int) $this->is_guest, PDO::PARAM_INT);
@@ -904,7 +904,7 @@ abstract class EventUser implements ActiveRecordInterface
                         $key = 'user';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = 'tf_users';
+                        $key = 'tf_user';
                         break;
                     default:
                         $key = 'User';
@@ -1034,8 +1034,8 @@ abstract class EventUser implements ActiveRecordInterface
         if ($this->isColumnModified(EventUserTableMap::COL_EVENT_ID)) {
             $criteria->add(EventUserTableMap::COL_EVENT_ID, $this->event_id);
         }
-        if ($this->isColumnModified(EventUserTableMap::COL_STAFF_ID)) {
-            $criteria->add(EventUserTableMap::COL_STAFF_ID, $this->staff_id);
+        if ($this->isColumnModified(EventUserTableMap::COL_USER_ID)) {
+            $criteria->add(EventUserTableMap::COL_USER_ID, $this->user_id);
         }
         if ($this->isColumnModified(EventUserTableMap::COL_IS_GUEST)) {
             $criteria->add(EventUserTableMap::COL_IS_GUEST, $this->is_guest);
@@ -1058,7 +1058,7 @@ abstract class EventUser implements ActiveRecordInterface
     {
         $criteria = ChildEventUserQuery::create();
         $criteria->add(EventUserTableMap::COL_EVENT_ID, $this->event_id);
-        $criteria->add(EventUserTableMap::COL_STAFF_ID, $this->staff_id);
+        $criteria->add(EventUserTableMap::COL_USER_ID, $this->user_id);
 
         return $criteria;
     }
@@ -1077,14 +1077,14 @@ abstract class EventUser implements ActiveRecordInterface
         $validPrimaryKeyFKs = 2;
         $primaryKeyFKs = [];
 
-        //relation booking_event_user_event_fk to table tf_booking_events
+        //relation tf_booking_event_users_fk_0f1f34 to table tf_booking_events
         if ($this->aBookingEvent && $hash = spl_object_hash($this->aBookingEvent)) {
             $primaryKeyFKs[] = $hash;
         } else {
             $validPrimaryKeyFKs = false;
         }
 
-        //relation booking_event_user_user_fk to table tf_users
+        //relation tf_booking_event_users_fk_e09fae to table tf_user
         if ($this->aUser && $hash = spl_object_hash($this->aUser)) {
             $primaryKeyFKs[] = $hash;
         } else {
@@ -1266,8 +1266,8 @@ abstract class EventUser implements ActiveRecordInterface
      */
     public function getUser(ConnectionInterface $con = null)
     {
-        if ($this->aUser === null && ($this->staff_id !== null)) {
-            $this->aUser = ChildUserQuery::create()->findPk($this->staff_id, $con);
+        if ($this->aUser === null && ($this->user_id !== null)) {
+            $this->aUser = ChildUserQuery::create()->findPk($this->user_id, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
                 to this object.  This level of coupling may, however, be
@@ -1294,7 +1294,7 @@ abstract class EventUser implements ActiveRecordInterface
             $this->aUser->removeEventUser($this);
         }
         $this->event_id = null;
-        $this->staff_id = null;
+        $this->user_id = null;
         $this->is_guest = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();

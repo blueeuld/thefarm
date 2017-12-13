@@ -1293,10 +1293,10 @@ abstract class WorkPlan implements ActiveRecordInterface
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return ObjectCollection|ChildUserWorkPlanDay[] List of ChildUserWorkPlanDay objects
      */
-    public function getUserWorkPlanDaysJoinContact(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getUserWorkPlanDaysJoinUser(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ChildUserWorkPlanDayQuery::create(null, $criteria);
-        $query->joinWith('Contact', $joinBehavior);
+        $query->joinWith('User', $joinBehavior);
 
         return $this->getUserWorkPlanDays($query, $con);
     }

@@ -20,11 +20,11 @@ use TheFarm\Models\Map\UserWorkPlanDayTableMap;
  *
  *
  *
- * @method     ChildUserWorkPlanDayQuery orderByContactId($order = Criteria::ASC) Order by the contact_id column
+ * @method     ChildUserWorkPlanDayQuery orderByUserId($order = Criteria::ASC) Order by the user_id column
  * @method     ChildUserWorkPlanDayQuery orderByDate($order = Criteria::ASC) Order by the date column
  * @method     ChildUserWorkPlanDayQuery orderByWorkCodeCd($order = Criteria::ASC) Order by the work_plan_cd column
  *
- * @method     ChildUserWorkPlanDayQuery groupByContactId() Group by the contact_id column
+ * @method     ChildUserWorkPlanDayQuery groupByUserId() Group by the user_id column
  * @method     ChildUserWorkPlanDayQuery groupByDate() Group by the date column
  * @method     ChildUserWorkPlanDayQuery groupByWorkCodeCd() Group by the work_plan_cd column
  *
@@ -46,34 +46,34 @@ use TheFarm\Models\Map\UserWorkPlanDayTableMap;
  * @method     ChildUserWorkPlanDayQuery rightJoinWithWorkPlan() Adds a RIGHT JOIN clause and with to the query using the WorkPlan relation
  * @method     ChildUserWorkPlanDayQuery innerJoinWithWorkPlan() Adds a INNER JOIN clause and with to the query using the WorkPlan relation
  *
- * @method     ChildUserWorkPlanDayQuery leftJoinContact($relationAlias = null) Adds a LEFT JOIN clause to the query using the Contact relation
- * @method     ChildUserWorkPlanDayQuery rightJoinContact($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Contact relation
- * @method     ChildUserWorkPlanDayQuery innerJoinContact($relationAlias = null) Adds a INNER JOIN clause to the query using the Contact relation
+ * @method     ChildUserWorkPlanDayQuery leftJoinUser($relationAlias = null) Adds a LEFT JOIN clause to the query using the User relation
+ * @method     ChildUserWorkPlanDayQuery rightJoinUser($relationAlias = null) Adds a RIGHT JOIN clause to the query using the User relation
+ * @method     ChildUserWorkPlanDayQuery innerJoinUser($relationAlias = null) Adds a INNER JOIN clause to the query using the User relation
  *
- * @method     ChildUserWorkPlanDayQuery joinWithContact($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Contact relation
+ * @method     ChildUserWorkPlanDayQuery joinWithUser($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the User relation
  *
- * @method     ChildUserWorkPlanDayQuery leftJoinWithContact() Adds a LEFT JOIN clause and with to the query using the Contact relation
- * @method     ChildUserWorkPlanDayQuery rightJoinWithContact() Adds a RIGHT JOIN clause and with to the query using the Contact relation
- * @method     ChildUserWorkPlanDayQuery innerJoinWithContact() Adds a INNER JOIN clause and with to the query using the Contact relation
+ * @method     ChildUserWorkPlanDayQuery leftJoinWithUser() Adds a LEFT JOIN clause and with to the query using the User relation
+ * @method     ChildUserWorkPlanDayQuery rightJoinWithUser() Adds a RIGHT JOIN clause and with to the query using the User relation
+ * @method     ChildUserWorkPlanDayQuery innerJoinWithUser() Adds a INNER JOIN clause and with to the query using the User relation
  *
  * @method     \TheFarm\Models\WorkPlanQuery|\TheFarm\Models\UserQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildUserWorkPlanDay findOne(ConnectionInterface $con = null) Return the first ChildUserWorkPlanDay matching the query
  * @method     ChildUserWorkPlanDay findOneOrCreate(ConnectionInterface $con = null) Return the first ChildUserWorkPlanDay matching the query, or a new ChildUserWorkPlanDay object populated from the query conditions when no match is found
  *
- * @method     ChildUserWorkPlanDay findOneByContactId(int $contact_id) Return the first ChildUserWorkPlanDay filtered by the contact_id column
+ * @method     ChildUserWorkPlanDay findOneByUserId(int $user_id) Return the first ChildUserWorkPlanDay filtered by the user_id column
  * @method     ChildUserWorkPlanDay findOneByDate(string $date) Return the first ChildUserWorkPlanDay filtered by the date column
  * @method     ChildUserWorkPlanDay findOneByWorkCodeCd(string $work_plan_cd) Return the first ChildUserWorkPlanDay filtered by the work_plan_cd column *
 
  * @method     ChildUserWorkPlanDay requirePk($key, ConnectionInterface $con = null) Return the ChildUserWorkPlanDay by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUserWorkPlanDay requireOne(ConnectionInterface $con = null) Return the first ChildUserWorkPlanDay matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
- * @method     ChildUserWorkPlanDay requireOneByContactId(int $contact_id) Return the first ChildUserWorkPlanDay filtered by the contact_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUserWorkPlanDay requireOneByUserId(int $user_id) Return the first ChildUserWorkPlanDay filtered by the user_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUserWorkPlanDay requireOneByDate(string $date) Return the first ChildUserWorkPlanDay filtered by the date column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUserWorkPlanDay requireOneByWorkCodeCd(string $work_plan_cd) Return the first ChildUserWorkPlanDay filtered by the work_plan_cd column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildUserWorkPlanDay[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildUserWorkPlanDay objects based on current ModelCriteria
- * @method     ChildUserWorkPlanDay[]|ObjectCollection findByContactId(int $contact_id) Return ChildUserWorkPlanDay objects filtered by the contact_id column
+ * @method     ChildUserWorkPlanDay[]|ObjectCollection findByUserId(int $user_id) Return ChildUserWorkPlanDay objects filtered by the user_id column
  * @method     ChildUserWorkPlanDay[]|ObjectCollection findByDate(string $date) Return ChildUserWorkPlanDay objects filtered by the date column
  * @method     ChildUserWorkPlanDay[]|ObjectCollection findByWorkCodeCd(string $work_plan_cd) Return ChildUserWorkPlanDay objects filtered by the work_plan_cd column
  * @method     ChildUserWorkPlanDay[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -178,18 +178,18 @@ abstract class UserWorkPlanDayQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the contact_id column
+     * Filter the query on the user_id column
      *
      * Example usage:
      * <code>
-     * $query->filterByContactId(1234); // WHERE contact_id = 1234
-     * $query->filterByContactId(array(12, 34)); // WHERE contact_id IN (12, 34)
-     * $query->filterByContactId(array('min' => 12)); // WHERE contact_id > 12
+     * $query->filterByUserId(1234); // WHERE user_id = 1234
+     * $query->filterByUserId(array(12, 34)); // WHERE user_id IN (12, 34)
+     * $query->filterByUserId(array('min' => 12)); // WHERE user_id > 12
      * </code>
      *
-     * @see       filterByContact()
+     * @see       filterByUser()
      *
-     * @param     mixed $contactId The value to use as filter.
+     * @param     mixed $userId The value to use as filter.
      *              Use scalar values for equality.
      *              Use array values for in_array() equivalent.
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
@@ -197,16 +197,16 @@ abstract class UserWorkPlanDayQuery extends ModelCriteria
      *
      * @return $this|ChildUserWorkPlanDayQuery The current query, for fluid interface
      */
-    public function filterByContactId($contactId = null, $comparison = null)
+    public function filterByUserId($userId = null, $comparison = null)
     {
-        if (is_array($contactId)) {
+        if (is_array($userId)) {
             $useMinMax = false;
-            if (isset($contactId['min'])) {
-                $this->addUsingAlias(UserWorkPlanDayTableMap::COL_CONTACT_ID, $contactId['min'], Criteria::GREATER_EQUAL);
+            if (isset($userId['min'])) {
+                $this->addUsingAlias(UserWorkPlanDayTableMap::COL_USER_ID, $userId['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($contactId['max'])) {
-                $this->addUsingAlias(UserWorkPlanDayTableMap::COL_CONTACT_ID, $contactId['max'], Criteria::LESS_EQUAL);
+            if (isset($userId['max'])) {
+                $this->addUsingAlias(UserWorkPlanDayTableMap::COL_USER_ID, $userId['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -217,7 +217,7 @@ abstract class UserWorkPlanDayQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(UserWorkPlanDayTableMap::COL_CONTACT_ID, $contactId, $comparison);
+        return $this->addUsingAlias(UserWorkPlanDayTableMap::COL_USER_ID, $userId, $comparison);
     }
 
     /**
@@ -375,35 +375,35 @@ abstract class UserWorkPlanDayQuery extends ModelCriteria
      *
      * @return ChildUserWorkPlanDayQuery The current query, for fluid interface
      */
-    public function filterByContact($user, $comparison = null)
+    public function filterByUser($user, $comparison = null)
     {
         if ($user instanceof \TheFarm\Models\User) {
             return $this
-                ->addUsingAlias(UserWorkPlanDayTableMap::COL_CONTACT_ID, $user->getUserId(), $comparison);
+                ->addUsingAlias(UserWorkPlanDayTableMap::COL_USER_ID, $user->getUserId(), $comparison);
         } elseif ($user instanceof ObjectCollection) {
             if (null === $comparison) {
                 $comparison = Criteria::IN;
             }
 
             return $this
-                ->addUsingAlias(UserWorkPlanDayTableMap::COL_CONTACT_ID, $user->toKeyValue('PrimaryKey', 'UserId'), $comparison);
+                ->addUsingAlias(UserWorkPlanDayTableMap::COL_USER_ID, $user->toKeyValue('PrimaryKey', 'UserId'), $comparison);
         } else {
-            throw new PropelException('filterByContact() only accepts arguments of type \TheFarm\Models\User or Collection');
+            throw new PropelException('filterByUser() only accepts arguments of type \TheFarm\Models\User or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the Contact relation
+     * Adds a JOIN clause to the query using the User relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildUserWorkPlanDayQuery The current query, for fluid interface
      */
-    public function joinContact($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinUser($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Contact');
+        $relationMap = $tableMap->getRelation('User');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -418,14 +418,14 @@ abstract class UserWorkPlanDayQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'Contact');
+            $this->addJoinObject($join, 'User');
         }
 
         return $this;
     }
 
     /**
-     * Use the Contact relation User object
+     * Use the User relation User object
      *
      * @see useQuery()
      *
@@ -435,11 +435,11 @@ abstract class UserWorkPlanDayQuery extends ModelCriteria
      *
      * @return \TheFarm\Models\UserQuery A secondary query class using the current class as primary query
      */
-    public function useContactQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useUserQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinContact($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Contact', '\TheFarm\Models\UserQuery');
+            ->joinUser($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'User', '\TheFarm\Models\UserQuery');
     }
 
     /**

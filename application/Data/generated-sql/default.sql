@@ -32,16 +32,16 @@ DROP TABLE IF EXISTS `tf_booking_event_users`;
 CREATE TABLE `tf_booking_event_users`
 (
     `event_id` INTEGER DEFAULT 0 NOT NULL,
-    `staff_id` INTEGER DEFAULT 0 NOT NULL,
+    `user_id` INTEGER DEFAULT 0 NOT NULL,
     `is_guest` TINYINT(1) DEFAULT 0,
-    PRIMARY KEY (`event_id`,`staff_id`),
-    INDEX `booking_event_user_user_fk` (`staff_id`),
-    CONSTRAINT `booking_event_user_event_fk`
+    PRIMARY KEY (`event_id`,`user_id`),
+    INDEX `tf_booking_event_users_i_6ca017` (`user_id`),
+    CONSTRAINT `tf_booking_event_users_fk_0f1f34`
         FOREIGN KEY (`event_id`)
         REFERENCES `tf_booking_events` (`event_id`),
-    CONSTRAINT `booking_event_user_user_fk`
-        FOREIGN KEY (`staff_id`)
-        REFERENCES `tf_contacts` (`contact_id`)
+    CONSTRAINT `tf_booking_event_users_fk_e09fae`
+        FOREIGN KEY (`user_id`)
+        REFERENCES `tf_user` (`user_id`)
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
@@ -94,19 +94,19 @@ CREATE TABLE `tf_booking_events`
     INDEX `fi_king_fk` (`booking_id`),
     CONSTRAINT `booking_event_author_fk`
         FOREIGN KEY (`author_id`)
-        REFERENCES `tf_contacts` (`contact_id`),
+        REFERENCES `tf_user` (`user_id`),
     CONSTRAINT `booking_fk`
         FOREIGN KEY (`booking_id`)
         REFERENCES `tf_bookings` (`booking_id`),
     CONSTRAINT `booking_event_called_by_fk`
         FOREIGN KEY (`called_by`)
-        REFERENCES `tf_contacts` (`contact_id`),
+        REFERENCES `tf_user` (`user_id`),
     CONSTRAINT `booking_event_cancelled_by_fk`
         FOREIGN KEY (`cancelled_by`)
-        REFERENCES `tf_contacts` (`contact_id`),
+        REFERENCES `tf_user` (`user_id`),
     CONSTRAINT `booking_event_deleted_by_fk`
         FOREIGN KEY (`deleted_by`)
-        REFERENCES `tf_contacts` (`contact_id`),
+        REFERENCES `tf_user` (`user_id`),
     CONSTRAINT `tf_booking_events_fk_1eba8a`
         FOREIGN KEY (`facility_id`)
         REFERENCES `tf_facilities` (`facility_id`),
@@ -211,7 +211,7 @@ CREATE TABLE `tf_bookings`
     INDEX `fi_king_status_fk` (`status`),
     CONSTRAINT `booking_author_fk`
         FOREIGN KEY (`author_id`)
-        REFERENCES `tf_contacts` (`contact_id`),
+        REFERENCES `tf_user` (`user_id`),
     CONSTRAINT `booking_guest_fk`
         FOREIGN KEY (`guest_id`)
         REFERENCES `tf_contacts` (`contact_id`),
@@ -814,12 +814,12 @@ DROP TABLE IF EXISTS `tf_items_related_users`;
 CREATE TABLE `tf_items_related_users`
 (
     `item_id` INTEGER NOT NULL,
-    `contact_id` INTEGER NOT NULL,
-    PRIMARY KEY (`item_id`,`contact_id`),
-    INDEX `tf_items_related_users_fi_6a6d09` (`contact_id`),
-    CONSTRAINT `tf_items_related_users_fk_6a6d09`
-        FOREIGN KEY (`contact_id`)
-        REFERENCES `tf_contacts` (`contact_id`),
+    `user_id` INTEGER NOT NULL,
+    PRIMARY KEY (`item_id`,`user_id`),
+    INDEX `tf_items_related_users_fi_e09fae` (`user_id`),
+    CONSTRAINT `tf_items_related_users_fk_e09fae`
+        FOREIGN KEY (`user_id`)
+        REFERENCES `tf_user` (`user_id`),
     CONSTRAINT `tf_items_related_users_fk_b49f13`
         FOREIGN KEY (`item_id`)
         REFERENCES `tf_items` (`item_id`)
@@ -1027,18 +1027,18 @@ DROP TABLE IF EXISTS `tf_user_work_plan_day`;
 
 CREATE TABLE `tf_user_work_plan_day`
 (
-    `contact_id` INTEGER NOT NULL,
+    `user_id` INTEGER NOT NULL,
     `date` DATE NOT NULL,
     `work_plan_cd` VARCHAR(32) NOT NULL,
-    UNIQUE INDEX `contact_id` (`contact_id`, `date`),
-    INDEX `contact_fk1` (`contact_id`),
+    UNIQUE INDEX `user_id` (`user_id`, `date`),
+    INDEX `user_fk1` (`user_id`),
     INDEX `tf_user_work_plan_day_fi_a9b2fd` (`work_plan_cd`),
     CONSTRAINT `tf_user_work_plan_day_fk_a9b2fd`
         FOREIGN KEY (`work_plan_cd`)
         REFERENCES `tf_work_plan` (`work_plan_cd`),
-    CONSTRAINT `tf_user_work_plan_day_fk_6a6d09`
-        FOREIGN KEY (`contact_id`)
-        REFERENCES `tf_contacts` (`contact_id`)
+    CONSTRAINT `tf_user_work_plan_day_fk_e09fae`
+        FOREIGN KEY (`user_id`)
+        REFERENCES `tf_user` (`user_id`)
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
@@ -1049,25 +1049,25 @@ DROP TABLE IF EXISTS `tf_user_work_plan_time`;
 
 CREATE TABLE `tf_user_work_plan_time`
 (
-    `contact_id` INTEGER NOT NULL,
+    `user_id` INTEGER NOT NULL,
     `start_date` DATETIME NOT NULL,
     `end_date` DATETIME NOT NULL,
     `is_working` TINYINT(1) DEFAULT 1,
-    PRIMARY KEY (`contact_id`,`start_date`,`end_date`),
-    CONSTRAINT `tf_user_work_plan_time_fk_6a6d09`
-        FOREIGN KEY (`contact_id`)
-        REFERENCES `tf_contacts` (`contact_id`)
+    PRIMARY KEY (`user_id`,`start_date`,`end_date`),
+    CONSTRAINT `tf_user_work_plan_time_fk_e09fae`
+        FOREIGN KEY (`user_id`)
+        REFERENCES `tf_user` (`user_id`)
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
--- tf_users
+-- tf_user
 -- ---------------------------------------------------------------------
 
-DROP TABLE IF EXISTS `tf_users`;
+DROP TABLE IF EXISTS `tf_user`;
 
-CREATE TABLE `tf_users`
+CREATE TABLE `tf_user`
 (
-    `contact_id` INTEGER NOT NULL,
+    `user_id` INTEGER NOT NULL AUTO_INCREMENT,
     `username` VARCHAR(100) NOT NULL,
     `group_id` INTEGER,
     `last_login` INTEGER(10) NOT NULL,
@@ -1083,12 +1083,9 @@ CREATE TABLE `tf_users`
     `calendar_view_locations` VARCHAR(100) DEFAULT '',
     `preferences` TEXT,
     `calendar_show_no_schedule` VARCHAR(1) DEFAULT 'y',
-    PRIMARY KEY (`contact_id`),
+    PRIMARY KEY (`user_id`),
     INDEX `location_fk` (`location_id`),
     INDEX `group_fk` (`group_id`),
-    CONSTRAINT `contact_fk`
-        FOREIGN KEY (`contact_id`)
-        REFERENCES `tf_contacts` (`contact_id`),
     CONSTRAINT `group_fk`
         FOREIGN KEY (`group_id`)
         REFERENCES `tf_groups` (`group_id`),

@@ -71,11 +71,11 @@ abstract class ItemsRelatedUser implements ActiveRecordInterface
     protected $item_id;
 
     /**
-     * The value for the contact_id field.
+     * The value for the user_id field.
      *
      * @var        int
      */
-    protected $contact_id;
+    protected $user_id;
 
     /**
      * @var        ChildUser
@@ -331,13 +331,13 @@ abstract class ItemsRelatedUser implements ActiveRecordInterface
     }
 
     /**
-     * Get the [contact_id] column value.
+     * Get the [user_id] column value.
      *
      * @return int
      */
     public function getContactId()
     {
-        return $this->contact_id;
+        return $this->user_id;
     }
 
     /**
@@ -365,7 +365,7 @@ abstract class ItemsRelatedUser implements ActiveRecordInterface
     } // setItemId()
 
     /**
-     * Set the value of [contact_id] column.
+     * Set the value of [user_id] column.
      *
      * @param int $v new value
      * @return $this|\TheFarm\Models\ItemsRelatedUser The current object (for fluent API support)
@@ -376,9 +376,9 @@ abstract class ItemsRelatedUser implements ActiveRecordInterface
             $v = (int) $v;
         }
 
-        if ($this->contact_id !== $v) {
-            $this->contact_id = $v;
-            $this->modifiedColumns[ItemsRelatedUserTableMap::COL_CONTACT_ID] = true;
+        if ($this->user_id !== $v) {
+            $this->user_id = $v;
+            $this->modifiedColumns[ItemsRelatedUserTableMap::COL_USER_ID] = true;
         }
 
         if ($this->aContact !== null && $this->aContact->getUserId() !== $v) {
@@ -428,7 +428,7 @@ abstract class ItemsRelatedUser implements ActiveRecordInterface
             $this->item_id = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : ItemsRelatedUserTableMap::translateFieldName('ContactId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->contact_id = (null !== $col) ? (int) $col : null;
+            $this->user_id = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -462,7 +462,7 @@ abstract class ItemsRelatedUser implements ActiveRecordInterface
         if ($this->aItem !== null && $this->item_id !== $this->aItem->getItemId()) {
             $this->aItem = null;
         }
-        if ($this->aContact !== null && $this->contact_id !== $this->aContact->getUserId()) {
+        if ($this->aContact !== null && $this->user_id !== $this->aContact->getUserId()) {
             $this->aContact = null;
         }
     } // ensureConsistency
@@ -664,8 +664,8 @@ abstract class ItemsRelatedUser implements ActiveRecordInterface
         if ($this->isColumnModified(ItemsRelatedUserTableMap::COL_ITEM_ID)) {
             $modifiedColumns[':p' . $index++]  = 'item_id';
         }
-        if ($this->isColumnModified(ItemsRelatedUserTableMap::COL_CONTACT_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'contact_id';
+        if ($this->isColumnModified(ItemsRelatedUserTableMap::COL_USER_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'user_id';
         }
 
         $sql = sprintf(
@@ -681,8 +681,8 @@ abstract class ItemsRelatedUser implements ActiveRecordInterface
                     case 'item_id':
                         $stmt->bindValue($identifier, $this->item_id, PDO::PARAM_INT);
                         break;
-                    case 'contact_id':
-                        $stmt->bindValue($identifier, $this->contact_id, PDO::PARAM_INT);
+                    case 'user_id':
+                        $stmt->bindValue($identifier, $this->user_id, PDO::PARAM_INT);
                         break;
                 }
             }
@@ -791,7 +791,7 @@ abstract class ItemsRelatedUser implements ActiveRecordInterface
                         $key = 'user';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = 'tf_users';
+                        $key = 'tf_user';
                         break;
                     default:
                         $key = 'Contact';
@@ -930,8 +930,8 @@ abstract class ItemsRelatedUser implements ActiveRecordInterface
         if ($this->isColumnModified(ItemsRelatedUserTableMap::COL_ITEM_ID)) {
             $criteria->add(ItemsRelatedUserTableMap::COL_ITEM_ID, $this->item_id);
         }
-        if ($this->isColumnModified(ItemsRelatedUserTableMap::COL_CONTACT_ID)) {
-            $criteria->add(ItemsRelatedUserTableMap::COL_CONTACT_ID, $this->contact_id);
+        if ($this->isColumnModified(ItemsRelatedUserTableMap::COL_USER_ID)) {
+            $criteria->add(ItemsRelatedUserTableMap::COL_USER_ID, $this->user_id);
         }
 
         return $criteria;
@@ -951,7 +951,7 @@ abstract class ItemsRelatedUser implements ActiveRecordInterface
     {
         $criteria = ChildItemsRelatedUserQuery::create();
         $criteria->add(ItemsRelatedUserTableMap::COL_ITEM_ID, $this->item_id);
-        $criteria->add(ItemsRelatedUserTableMap::COL_CONTACT_ID, $this->contact_id);
+        $criteria->add(ItemsRelatedUserTableMap::COL_USER_ID, $this->user_id);
 
         return $criteria;
     }
@@ -970,7 +970,7 @@ abstract class ItemsRelatedUser implements ActiveRecordInterface
         $validPrimaryKeyFKs = 2;
         $primaryKeyFKs = [];
 
-        //relation tf_items_related_users_fk_26b271 to table tf_users
+        //relation tf_items_related_users_fk_e09fae to table tf_user
         if ($this->aContact && $hash = spl_object_hash($this->aContact)) {
             $primaryKeyFKs[] = $hash;
         } else {
@@ -1107,8 +1107,8 @@ abstract class ItemsRelatedUser implements ActiveRecordInterface
      */
     public function getContact(ConnectionInterface $con = null)
     {
-        if ($this->aContact === null && ($this->contact_id !== null)) {
-            $this->aContact = ChildUserQuery::create()->findPk($this->contact_id, $con);
+        if ($this->aContact === null && ($this->user_id !== null)) {
+            $this->aContact = ChildUserQuery::create()->findPk($this->user_id, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
                 to this object.  This level of coupling may, however, be
@@ -1186,7 +1186,7 @@ abstract class ItemsRelatedUser implements ActiveRecordInterface
             $this->aItem->removeItemsRelatedUser($this);
         }
         $this->item_id = null;
-        $this->contact_id = null;
+        $this->user_id = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->resetModified();

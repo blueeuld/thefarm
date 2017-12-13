@@ -215,7 +215,7 @@ class BookingTableMap extends TableMap
         $this->addForeignKey('status', 'Status', 'VARCHAR', 'tf_event_status', 'status_cd', false, 16, null);
         $this->addForeignKey('guest_id', 'GuestId', 'INTEGER', 'tf_contacts', 'contact_id', false, null, null);
         $this->addColumn('fax', 'Fax', 'SMALLINT', false, 3, 0);
-        $this->addForeignKey('author_id', 'AuthorId', 'INTEGER', 'tf_users', 'user_id', false, 5, 1);
+        $this->addForeignKey('author_id', 'AuthorId', 'INTEGER', 'tf_user', 'user_id', false, 5, 1);
         $this->addColumn('entry_date', 'EntryDate', 'INTEGER', false, 10, 0);
         $this->addColumn('edit_date', 'EditDate', 'INTEGER', false, 10, 0);
         $this->addColumn('personalized', 'Personalized', 'SMALLINT', false, 1, 0);

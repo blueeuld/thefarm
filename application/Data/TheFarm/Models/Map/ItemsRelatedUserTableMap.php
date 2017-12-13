@@ -77,9 +77,9 @@ class ItemsRelatedUserTableMap extends TableMap
     const COL_ITEM_ID = 'tf_items_related_users.item_id';
 
     /**
-     * the column name for the contact_id field
+     * the column name for the user_id field
      */
-    const COL_CONTACT_ID = 'tf_items_related_users.contact_id';
+    const COL_USER_ID = 'tf_items_related_users.user_id';
 
     /**
      * The default string format for model objects of the related table
@@ -95,8 +95,8 @@ class ItemsRelatedUserTableMap extends TableMap
     protected static $fieldNames = array (
         self::TYPE_PHPNAME       => array('ItemId', 'ContactId', ),
         self::TYPE_CAMELNAME     => array('itemId', 'contactId', ),
-        self::TYPE_COLNAME       => array(ItemsRelatedUserTableMap::COL_ITEM_ID, ItemsRelatedUserTableMap::COL_CONTACT_ID, ),
-        self::TYPE_FIELDNAME     => array('item_id', 'contact_id', ),
+        self::TYPE_COLNAME       => array(ItemsRelatedUserTableMap::COL_ITEM_ID, ItemsRelatedUserTableMap::COL_USER_ID, ),
+        self::TYPE_FIELDNAME     => array('item_id', 'user_id', ),
         self::TYPE_NUM           => array(0, 1, )
     );
 
@@ -109,8 +109,8 @@ class ItemsRelatedUserTableMap extends TableMap
     protected static $fieldKeys = array (
         self::TYPE_PHPNAME       => array('ItemId' => 0, 'ContactId' => 1, ),
         self::TYPE_CAMELNAME     => array('itemId' => 0, 'contactId' => 1, ),
-        self::TYPE_COLNAME       => array(ItemsRelatedUserTableMap::COL_ITEM_ID => 0, ItemsRelatedUserTableMap::COL_CONTACT_ID => 1, ),
-        self::TYPE_FIELDNAME     => array('item_id' => 0, 'contact_id' => 1, ),
+        self::TYPE_COLNAME       => array(ItemsRelatedUserTableMap::COL_ITEM_ID => 0, ItemsRelatedUserTableMap::COL_USER_ID => 1, ),
+        self::TYPE_FIELDNAME     => array('item_id' => 0, 'user_id' => 1, ),
         self::TYPE_NUM           => array(0, 1, )
     );
 
@@ -133,7 +133,7 @@ class ItemsRelatedUserTableMap extends TableMap
         $this->setIsCrossRef(true);
         // columns
         $this->addForeignPrimaryKey('item_id', 'ItemId', 'INTEGER' , 'tf_items', 'item_id', true, null, null);
-        $this->addForeignPrimaryKey('contact_id', 'ContactId', 'INTEGER' , 'tf_users', 'user_id', true, null, null);
+        $this->addForeignPrimaryKey('user_id', 'ContactId', 'INTEGER' , 'tf_user', 'user_id', true, null, null);
     } // initialize()
 
     /**
@@ -144,7 +144,7 @@ class ItemsRelatedUserTableMap extends TableMap
         $this->addRelation('Contact', '\\TheFarm\\Models\\User', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
-    0 => ':contact_id',
+    0 => ':user_id',
     1 => ':user_id',
   ),
 ), null, null, null, false);
@@ -361,10 +361,10 @@ class ItemsRelatedUserTableMap extends TableMap
     {
         if (null === $alias) {
             $criteria->addSelectColumn(ItemsRelatedUserTableMap::COL_ITEM_ID);
-            $criteria->addSelectColumn(ItemsRelatedUserTableMap::COL_CONTACT_ID);
+            $criteria->addSelectColumn(ItemsRelatedUserTableMap::COL_USER_ID);
         } else {
             $criteria->addSelectColumn($alias . '.item_id');
-            $criteria->addSelectColumn($alias . '.contact_id');
+            $criteria->addSelectColumn($alias . '.user_id');
         }
     }
 
@@ -424,7 +424,7 @@ class ItemsRelatedUserTableMap extends TableMap
             }
             foreach ($values as $value) {
                 $criterion = $criteria->getNewCriterion(ItemsRelatedUserTableMap::COL_ITEM_ID, $value[0]);
-                $criterion->addAnd($criteria->getNewCriterion(ItemsRelatedUserTableMap::COL_CONTACT_ID, $value[1]));
+                $criterion->addAnd($criteria->getNewCriterion(ItemsRelatedUserTableMap::COL_USER_ID, $value[1]));
                 $criteria->addOr($criterion);
             }
         }

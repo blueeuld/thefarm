@@ -64,11 +64,11 @@ abstract class ProviderSchedule implements ActiveRecordInterface
     protected $virtualColumns = array();
 
     /**
-     * The value for the contact_id field.
+     * The value for the user_id field.
      *
      * @var        int
      */
-    protected $contact_id;
+    protected $user_id;
 
     /**
      * The value for the start_date field.
@@ -95,7 +95,7 @@ abstract class ProviderSchedule implements ActiveRecordInterface
     /**
      * @var        ChildUser
      */
-    protected $aContact;
+    protected $aUser;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -344,13 +344,13 @@ abstract class ProviderSchedule implements ActiveRecordInterface
     }
 
     /**
-     * Get the [contact_id] column value.
+     * Get the [user_id] column value.
      *
      * @return int
      */
-    public function getContactId()
+    public function getUserId()
     {
-        return $this->contact_id;
+        return $this->user_id;
     }
 
     /**
@@ -414,28 +414,28 @@ abstract class ProviderSchedule implements ActiveRecordInterface
     }
 
     /**
-     * Set the value of [contact_id] column.
+     * Set the value of [user_id] column.
      *
      * @param int $v new value
      * @return $this|\TheFarm\Models\ProviderSchedule The current object (for fluent API support)
      */
-    public function setContactId($v)
+    public function setUserId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
         }
 
-        if ($this->contact_id !== $v) {
-            $this->contact_id = $v;
-            $this->modifiedColumns[ProviderScheduleTableMap::COL_CONTACT_ID] = true;
+        if ($this->user_id !== $v) {
+            $this->user_id = $v;
+            $this->modifiedColumns[ProviderScheduleTableMap::COL_USER_ID] = true;
         }
 
-        if ($this->aContact !== null && $this->aContact->getUserId() !== $v) {
-            $this->aContact = null;
+        if ($this->aUser !== null && $this->aUser->getUserId() !== $v) {
+            $this->aUser = null;
         }
 
         return $this;
-    } // setContactId()
+    } // setUserId()
 
     /**
      * Sets the value of [start_date] column to a normalized version of the date/time value specified.
@@ -545,8 +545,8 @@ abstract class ProviderSchedule implements ActiveRecordInterface
     {
         try {
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : ProviderScheduleTableMap::translateFieldName('ContactId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->contact_id = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : ProviderScheduleTableMap::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->user_id = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : ProviderScheduleTableMap::translateFieldName('StartDate', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
@@ -592,8 +592,8 @@ abstract class ProviderSchedule implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-        if ($this->aContact !== null && $this->contact_id !== $this->aContact->getUserId()) {
-            $this->aContact = null;
+        if ($this->aUser !== null && $this->user_id !== $this->aUser->getUserId()) {
+            $this->aUser = null;
         }
     } // ensureConsistency
 
@@ -634,7 +634,7 @@ abstract class ProviderSchedule implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->aContact = null;
+            $this->aUser = null;
         } // if (deep)
     }
 
@@ -743,11 +743,11 @@ abstract class ProviderSchedule implements ActiveRecordInterface
             // method.  This object relates to these object(s) by a
             // foreign key reference.
 
-            if ($this->aContact !== null) {
-                if ($this->aContact->isModified() || $this->aContact->isNew()) {
-                    $affectedRows += $this->aContact->save($con);
+            if ($this->aUser !== null) {
+                if ($this->aUser->isModified() || $this->aUser->isNew()) {
+                    $affectedRows += $this->aUser->save($con);
                 }
-                $this->setContact($this->aContact);
+                $this->setUser($this->aUser);
             }
 
             if ($this->isNew() || $this->isModified()) {
@@ -783,8 +783,8 @@ abstract class ProviderSchedule implements ActiveRecordInterface
 
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(ProviderScheduleTableMap::COL_CONTACT_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'contact_id';
+        if ($this->isColumnModified(ProviderScheduleTableMap::COL_USER_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'user_id';
         }
         if ($this->isColumnModified(ProviderScheduleTableMap::COL_START_DATE)) {
             $modifiedColumns[':p' . $index++]  = 'start_date';
@@ -806,8 +806,8 @@ abstract class ProviderSchedule implements ActiveRecordInterface
             $stmt = $con->prepare($sql);
             foreach ($modifiedColumns as $identifier => $columnName) {
                 switch ($columnName) {
-                    case 'contact_id':
-                        $stmt->bindValue($identifier, $this->contact_id, PDO::PARAM_INT);
+                    case 'user_id':
+                        $stmt->bindValue($identifier, $this->user_id, PDO::PARAM_INT);
                         break;
                     case 'start_date':
                         $stmt->bindValue($identifier, $this->start_date ? $this->start_date->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
@@ -874,7 +874,7 @@ abstract class ProviderSchedule implements ActiveRecordInterface
     {
         switch ($pos) {
             case 0:
-                return $this->getContactId();
+                return $this->getUserId();
                 break;
             case 1:
                 return $this->getStartDate();
@@ -915,7 +915,7 @@ abstract class ProviderSchedule implements ActiveRecordInterface
         $alreadyDumpedObjects['ProviderSchedule'][$this->hashCode()] = true;
         $keys = ProviderScheduleTableMap::getFieldNames($keyType);
         $result = array(
-            $keys[0] => $this->getContactId(),
+            $keys[0] => $this->getUserId(),
             $keys[1] => $this->getStartDate(),
             $keys[2] => $this->getEndDate(),
             $keys[3] => $this->getIsWorking(),
@@ -934,20 +934,20 @@ abstract class ProviderSchedule implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->aContact) {
+            if (null !== $this->aUser) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
                         $key = 'user';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = 'tf_users';
+                        $key = 'tf_user';
                         break;
                     default:
-                        $key = 'Contact';
+                        $key = 'User';
                 }
 
-                $result[$key] = $this->aContact->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+                $result[$key] = $this->aUser->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
         }
 
@@ -984,7 +984,7 @@ abstract class ProviderSchedule implements ActiveRecordInterface
     {
         switch ($pos) {
             case 0:
-                $this->setContactId($value);
+                $this->setUserId($value);
                 break;
             case 1:
                 $this->setStartDate($value);
@@ -1022,7 +1022,7 @@ abstract class ProviderSchedule implements ActiveRecordInterface
         $keys = ProviderScheduleTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) {
-            $this->setContactId($arr[$keys[0]]);
+            $this->setUserId($arr[$keys[0]]);
         }
         if (array_key_exists($keys[1], $arr)) {
             $this->setStartDate($arr[$keys[1]]);
@@ -1074,8 +1074,8 @@ abstract class ProviderSchedule implements ActiveRecordInterface
     {
         $criteria = new Criteria(ProviderScheduleTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(ProviderScheduleTableMap::COL_CONTACT_ID)) {
-            $criteria->add(ProviderScheduleTableMap::COL_CONTACT_ID, $this->contact_id);
+        if ($this->isColumnModified(ProviderScheduleTableMap::COL_USER_ID)) {
+            $criteria->add(ProviderScheduleTableMap::COL_USER_ID, $this->user_id);
         }
         if ($this->isColumnModified(ProviderScheduleTableMap::COL_START_DATE)) {
             $criteria->add(ProviderScheduleTableMap::COL_START_DATE, $this->start_date);
@@ -1103,7 +1103,7 @@ abstract class ProviderSchedule implements ActiveRecordInterface
     public function buildPkeyCriteria()
     {
         $criteria = ChildProviderScheduleQuery::create();
-        $criteria->add(ProviderScheduleTableMap::COL_CONTACT_ID, $this->contact_id);
+        $criteria->add(ProviderScheduleTableMap::COL_USER_ID, $this->user_id);
         $criteria->add(ProviderScheduleTableMap::COL_START_DATE, $this->start_date);
         $criteria->add(ProviderScheduleTableMap::COL_END_DATE, $this->end_date);
 
@@ -1118,15 +1118,15 @@ abstract class ProviderSchedule implements ActiveRecordInterface
      */
     public function hashCode()
     {
-        $validPk = null !== $this->getContactId() &&
+        $validPk = null !== $this->getUserId() &&
             null !== $this->getStartDate() &&
             null !== $this->getEndDate();
 
         $validPrimaryKeyFKs = 1;
         $primaryKeyFKs = [];
 
-        //relation tf_user_work_plan_time_fk_26b271 to table tf_users
-        if ($this->aContact && $hash = spl_object_hash($this->aContact)) {
+        //relation tf_user_work_plan_time_fk_e09fae to table tf_user
+        if ($this->aUser && $hash = spl_object_hash($this->aUser)) {
             $primaryKeyFKs[] = $hash;
         } else {
             $validPrimaryKeyFKs = false;
@@ -1149,7 +1149,7 @@ abstract class ProviderSchedule implements ActiveRecordInterface
     public function getPrimaryKey()
     {
         $pks = array();
-        $pks[0] = $this->getContactId();
+        $pks[0] = $this->getUserId();
         $pks[1] = $this->getStartDate();
         $pks[2] = $this->getEndDate();
 
@@ -1164,7 +1164,7 @@ abstract class ProviderSchedule implements ActiveRecordInterface
      */
     public function setPrimaryKey($keys)
     {
-        $this->setContactId($keys[0]);
+        $this->setUserId($keys[0]);
         $this->setStartDate($keys[1]);
         $this->setEndDate($keys[2]);
     }
@@ -1175,7 +1175,7 @@ abstract class ProviderSchedule implements ActiveRecordInterface
      */
     public function isPrimaryKeyNull()
     {
-        return (null === $this->getContactId()) && (null === $this->getStartDate()) && (null === $this->getEndDate());
+        return (null === $this->getUserId()) && (null === $this->getStartDate()) && (null === $this->getEndDate());
     }
 
     /**
@@ -1191,7 +1191,7 @@ abstract class ProviderSchedule implements ActiveRecordInterface
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setContactId($this->getContactId());
+        $copyObj->setUserId($this->getUserId());
         $copyObj->setStartDate($this->getStartDate());
         $copyObj->setEndDate($this->getEndDate());
         $copyObj->setIsWorking($this->getIsWorking());
@@ -1229,15 +1229,15 @@ abstract class ProviderSchedule implements ActiveRecordInterface
      * @return $this|\TheFarm\Models\ProviderSchedule The current object (for fluent API support)
      * @throws PropelException
      */
-    public function setContact(ChildUser $v = null)
+    public function setUser(ChildUser $v = null)
     {
         if ($v === null) {
-            $this->setContactId(NULL);
+            $this->setUserId(NULL);
         } else {
-            $this->setContactId($v->getUserId());
+            $this->setUserId($v->getUserId());
         }
 
-        $this->aContact = $v;
+        $this->aUser = $v;
 
         // Add binding for other direction of this n:n relationship.
         // If this object has already been added to the ChildUser object, it will not be re-added.
@@ -1257,20 +1257,20 @@ abstract class ProviderSchedule implements ActiveRecordInterface
      * @return ChildUser The associated ChildUser object.
      * @throws PropelException
      */
-    public function getContact(ConnectionInterface $con = null)
+    public function getUser(ConnectionInterface $con = null)
     {
-        if ($this->aContact === null && ($this->contact_id !== null)) {
-            $this->aContact = ChildUserQuery::create()->findPk($this->contact_id, $con);
+        if ($this->aUser === null && ($this->user_id !== null)) {
+            $this->aUser = ChildUserQuery::create()->findPk($this->user_id, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aContact->addProviderSchedules($this);
+                $this->aUser->addProviderSchedules($this);
              */
         }
 
-        return $this->aContact;
+        return $this->aUser;
     }
 
     /**
@@ -1280,10 +1280,10 @@ abstract class ProviderSchedule implements ActiveRecordInterface
      */
     public function clear()
     {
-        if (null !== $this->aContact) {
-            $this->aContact->removeProviderSchedule($this);
+        if (null !== $this->aUser) {
+            $this->aUser->removeProviderSchedule($this);
         }
-        $this->contact_id = null;
+        $this->user_id = null;
         $this->start_date = null;
         $this->end_date = null;
         $this->is_working = null;
@@ -1308,7 +1308,7 @@ abstract class ProviderSchedule implements ActiveRecordInterface
         if ($deep) {
         } // if ($deep)
 
-        $this->aContact = null;
+        $this->aUser = null;
     }
 
     /**

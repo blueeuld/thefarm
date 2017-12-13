@@ -889,7 +889,7 @@ abstract class Location implements ActiveRecordInterface
                         $key = 'users';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = 'tf_userss';
+                        $key = 'tf_users';
                         break;
                     default:
                         $key = 'Users';

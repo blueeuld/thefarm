@@ -21,11 +21,11 @@ use TheFarm\Models\Map\EventUserTableMap;
  *
  *
  * @method     ChildEventUserQuery orderByEventId($order = Criteria::ASC) Order by the event_id column
- * @method     ChildEventUserQuery orderByUserId($order = Criteria::ASC) Order by the staff_id column
+ * @method     ChildEventUserQuery orderByUserId($order = Criteria::ASC) Order by the user_id column
  * @method     ChildEventUserQuery orderByIsGuest($order = Criteria::ASC) Order by the is_guest column
  *
  * @method     ChildEventUserQuery groupByEventId() Group by the event_id column
- * @method     ChildEventUserQuery groupByUserId() Group by the staff_id column
+ * @method     ChildEventUserQuery groupByUserId() Group by the user_id column
  * @method     ChildEventUserQuery groupByIsGuest() Group by the is_guest column
  *
  * @method     ChildEventUserQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
@@ -62,19 +62,19 @@ use TheFarm\Models\Map\EventUserTableMap;
  * @method     ChildEventUser findOneOrCreate(ConnectionInterface $con = null) Return the first ChildEventUser matching the query, or a new ChildEventUser object populated from the query conditions when no match is found
  *
  * @method     ChildEventUser findOneByEventId(int $event_id) Return the first ChildEventUser filtered by the event_id column
- * @method     ChildEventUser findOneByUserId(int $staff_id) Return the first ChildEventUser filtered by the staff_id column
+ * @method     ChildEventUser findOneByUserId(int $user_id) Return the first ChildEventUser filtered by the user_id column
  * @method     ChildEventUser findOneByIsGuest(boolean $is_guest) Return the first ChildEventUser filtered by the is_guest column *
 
  * @method     ChildEventUser requirePk($key, ConnectionInterface $con = null) Return the ChildEventUser by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildEventUser requireOne(ConnectionInterface $con = null) Return the first ChildEventUser matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildEventUser requireOneByEventId(int $event_id) Return the first ChildEventUser filtered by the event_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildEventUser requireOneByUserId(int $staff_id) Return the first ChildEventUser filtered by the staff_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildEventUser requireOneByUserId(int $user_id) Return the first ChildEventUser filtered by the user_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildEventUser requireOneByIsGuest(boolean $is_guest) Return the first ChildEventUser filtered by the is_guest column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildEventUser[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildEventUser objects based on current ModelCriteria
  * @method     ChildEventUser[]|ObjectCollection findByEventId(int $event_id) Return ChildEventUser objects filtered by the event_id column
- * @method     ChildEventUser[]|ObjectCollection findByUserId(int $staff_id) Return ChildEventUser objects filtered by the staff_id column
+ * @method     ChildEventUser[]|ObjectCollection findByUserId(int $user_id) Return ChildEventUser objects filtered by the user_id column
  * @method     ChildEventUser[]|ObjectCollection findByIsGuest(boolean $is_guest) Return ChildEventUser objects filtered by the is_guest column
  * @method     ChildEventUser[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
@@ -128,7 +128,7 @@ abstract class EventUserQuery extends ModelCriteria
      * $obj = $c->findPk(array(12, 34), $con);
      * </code>
      *
-     * @param array[$event_id, $staff_id] $key Primary key to use for the query
+     * @param array[$event_id, $user_id] $key Primary key to use for the query
      * @param ConnectionInterface $con an optional connection object
      *
      * @return ChildEventUser|array|mixed the result, formatted by the current formatter
@@ -174,7 +174,7 @@ abstract class EventUserQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT event_id, staff_id, is_guest FROM tf_booking_event_users WHERE event_id = :p0 AND staff_id = :p1';
+        $sql = 'SELECT event_id, user_id, is_guest FROM tf_booking_event_users WHERE event_id = :p0 AND user_id = :p1';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key[0], PDO::PARAM_INT);
@@ -249,7 +249,7 @@ abstract class EventUserQuery extends ModelCriteria
     public function filterByPrimaryKey($key)
     {
         $this->addUsingAlias(EventUserTableMap::COL_EVENT_ID, $key[0], Criteria::EQUAL);
-        $this->addUsingAlias(EventUserTableMap::COL_STAFF_ID, $key[1], Criteria::EQUAL);
+        $this->addUsingAlias(EventUserTableMap::COL_USER_ID, $key[1], Criteria::EQUAL);
 
         return $this;
     }
@@ -268,7 +268,7 @@ abstract class EventUserQuery extends ModelCriteria
         }
         foreach ($keys as $key) {
             $cton0 = $this->getNewCriterion(EventUserTableMap::COL_EVENT_ID, $key[0], Criteria::EQUAL);
-            $cton1 = $this->getNewCriterion(EventUserTableMap::COL_STAFF_ID, $key[1], Criteria::EQUAL);
+            $cton1 = $this->getNewCriterion(EventUserTableMap::COL_USER_ID, $key[1], Criteria::EQUAL);
             $cton0->addAnd($cton1);
             $this->addOr($cton0);
         }
@@ -320,13 +320,13 @@ abstract class EventUserQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the staff_id column
+     * Filter the query on the user_id column
      *
      * Example usage:
      * <code>
-     * $query->filterByUserId(1234); // WHERE staff_id = 1234
-     * $query->filterByUserId(array(12, 34)); // WHERE staff_id IN (12, 34)
-     * $query->filterByUserId(array('min' => 12)); // WHERE staff_id > 12
+     * $query->filterByUserId(1234); // WHERE user_id = 1234
+     * $query->filterByUserId(array(12, 34)); // WHERE user_id IN (12, 34)
+     * $query->filterByUserId(array('min' => 12)); // WHERE user_id > 12
      * </code>
      *
      * @see       filterByUser()
@@ -344,11 +344,11 @@ abstract class EventUserQuery extends ModelCriteria
         if (is_array($userId)) {
             $useMinMax = false;
             if (isset($userId['min'])) {
-                $this->addUsingAlias(EventUserTableMap::COL_STAFF_ID, $userId['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(EventUserTableMap::COL_USER_ID, $userId['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($userId['max'])) {
-                $this->addUsingAlias(EventUserTableMap::COL_STAFF_ID, $userId['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(EventUserTableMap::COL_USER_ID, $userId['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -359,7 +359,7 @@ abstract class EventUserQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(EventUserTableMap::COL_STAFF_ID, $userId, $comparison);
+        return $this->addUsingAlias(EventUserTableMap::COL_USER_ID, $userId, $comparison);
     }
 
     /**
@@ -480,14 +480,14 @@ abstract class EventUserQuery extends ModelCriteria
     {
         if ($user instanceof \TheFarm\Models\User) {
             return $this
-                ->addUsingAlias(EventUserTableMap::COL_STAFF_ID, $user->getUserId(), $comparison);
+                ->addUsingAlias(EventUserTableMap::COL_USER_ID, $user->getUserId(), $comparison);
         } elseif ($user instanceof ObjectCollection) {
             if (null === $comparison) {
                 $comparison = Criteria::IN;
             }
 
             return $this
-                ->addUsingAlias(EventUserTableMap::COL_STAFF_ID, $user->toKeyValue('PrimaryKey', 'UserId'), $comparison);
+                ->addUsingAlias(EventUserTableMap::COL_USER_ID, $user->toKeyValue('PrimaryKey', 'UserId'), $comparison);
         } else {
             throw new PropelException('filterByUser() only accepts arguments of type \TheFarm\Models\User or Collection');
         }
@@ -554,7 +554,7 @@ abstract class EventUserQuery extends ModelCriteria
     {
         if ($eventUser) {
             $this->addCond('pruneCond0', $this->getAliasedColName(EventUserTableMap::COL_EVENT_ID), $eventUser->getEventId(), Criteria::NOT_EQUAL);
-            $this->addCond('pruneCond1', $this->getAliasedColName(EventUserTableMap::COL_STAFF_ID), $eventUser->getUserId(), Criteria::NOT_EQUAL);
+            $this->addCond('pruneCond1', $this->getAliasedColName(EventUserTableMap::COL_USER_ID), $eventUser->getUserId(), Criteria::NOT_EQUAL);
             $this->combine(array('pruneCond0', 'pruneCond1'), Criteria::LOGICAL_OR);
         }
 

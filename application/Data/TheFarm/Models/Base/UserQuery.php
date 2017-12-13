@@ -16,7 +16,7 @@ use TheFarm\Models\UserQuery as ChildUserQuery;
 use TheFarm\Models\Map\UserTableMap;
 
 /**
- * Base class that represents a query for the 'tf_users' table.
+ * Base class that represents a query for the 'tf_user' table.
  *
  *
  *
@@ -329,7 +329,7 @@ abstract class UserQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT user_id, username, group_id, last_login, password, work_plan, work_plan_code, location_id, facebook_id, user_order, calendar_view_positions, calendar_view_status, calendar_show_my_schedule_only, calendar_view_locations, preferences, calendar_show_no_schedule FROM tf_users WHERE user_id = :p0';
+        $sql = 'SELECT user_id, username, group_id, last_login, password, work_plan, work_plan_code, location_id, facebook_id, user_order, calendar_view_positions, calendar_view_status, calendar_show_my_schedule_only, calendar_view_locations, preferences, calendar_show_no_schedule FROM tf_user WHERE user_id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -1580,7 +1580,7 @@ abstract class UserQuery extends ModelCriteria
     {
         if ($userWorkPlanDay instanceof \TheFarm\Models\UserWorkPlanDay) {
             return $this
-                ->addUsingAlias(UserTableMap::COL_USER_ID, $userWorkPlanDay->getContactId(), $comparison);
+                ->addUsingAlias(UserTableMap::COL_USER_ID, $userWorkPlanDay->getUserId(), $comparison);
         } elseif ($userWorkPlanDay instanceof ObjectCollection) {
             return $this
                 ->useUserWorkPlanDayQuery()
@@ -1653,7 +1653,7 @@ abstract class UserQuery extends ModelCriteria
     {
         if ($providerSchedule instanceof \TheFarm\Models\ProviderSchedule) {
             return $this
-                ->addUsingAlias(UserTableMap::COL_USER_ID, $providerSchedule->getContactId(), $comparison);
+                ->addUsingAlias(UserTableMap::COL_USER_ID, $providerSchedule->getUserId(), $comparison);
         } elseif ($providerSchedule instanceof ObjectCollection) {
             return $this
                 ->useProviderScheduleQuery()
@@ -1748,7 +1748,7 @@ abstract class UserQuery extends ModelCriteria
     }
 
     /**
-     * Deletes all rows from the tf_users table.
+     * Deletes all rows from the tf_user table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).

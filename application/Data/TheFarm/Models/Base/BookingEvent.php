@@ -2570,7 +2570,7 @@ abstract class BookingEvent implements ActiveRecordInterface
                         $key = 'user';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = 'tf_users';
+                        $key = 'tf_user';
                         break;
                     default:
                         $key = 'User';
@@ -2600,7 +2600,7 @@ abstract class BookingEvent implements ActiveRecordInterface
                         $key = 'user';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = 'tf_users';
+                        $key = 'tf_user';
                         break;
                     default:
                         $key = 'User';
@@ -2615,7 +2615,7 @@ abstract class BookingEvent implements ActiveRecordInterface
                         $key = 'user';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = 'tf_users';
+                        $key = 'tf_user';
                         break;
                     default:
                         $key = 'User';
@@ -2630,7 +2630,7 @@ abstract class BookingEvent implements ActiveRecordInterface
                         $key = 'user';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = 'tf_users';
+                        $key = 'tf_user';
                         break;
                     default:
                         $key = 'User';

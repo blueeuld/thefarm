@@ -21,10 +21,10 @@ use TheFarm\Models\Map\ItemsRelatedUserTableMap;
  *
  *
  * @method     ChildItemsRelatedUserQuery orderByItemId($order = Criteria::ASC) Order by the item_id column
- * @method     ChildItemsRelatedUserQuery orderByContactId($order = Criteria::ASC) Order by the contact_id column
+ * @method     ChildItemsRelatedUserQuery orderByContactId($order = Criteria::ASC) Order by the user_id column
  *
  * @method     ChildItemsRelatedUserQuery groupByItemId() Group by the item_id column
- * @method     ChildItemsRelatedUserQuery groupByContactId() Group by the contact_id column
+ * @method     ChildItemsRelatedUserQuery groupByContactId() Group by the user_id column
  *
  * @method     ChildItemsRelatedUserQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildItemsRelatedUserQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -60,17 +60,17 @@ use TheFarm\Models\Map\ItemsRelatedUserTableMap;
  * @method     ChildItemsRelatedUser findOneOrCreate(ConnectionInterface $con = null) Return the first ChildItemsRelatedUser matching the query, or a new ChildItemsRelatedUser object populated from the query conditions when no match is found
  *
  * @method     ChildItemsRelatedUser findOneByItemId(int $item_id) Return the first ChildItemsRelatedUser filtered by the item_id column
- * @method     ChildItemsRelatedUser findOneByContactId(int $contact_id) Return the first ChildItemsRelatedUser filtered by the contact_id column *
+ * @method     ChildItemsRelatedUser findOneByContactId(int $user_id) Return the first ChildItemsRelatedUser filtered by the user_id column *
 
  * @method     ChildItemsRelatedUser requirePk($key, ConnectionInterface $con = null) Return the ChildItemsRelatedUser by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildItemsRelatedUser requireOne(ConnectionInterface $con = null) Return the first ChildItemsRelatedUser matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildItemsRelatedUser requireOneByItemId(int $item_id) Return the first ChildItemsRelatedUser filtered by the item_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildItemsRelatedUser requireOneByContactId(int $contact_id) Return the first ChildItemsRelatedUser filtered by the contact_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildItemsRelatedUser requireOneByContactId(int $user_id) Return the first ChildItemsRelatedUser filtered by the user_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildItemsRelatedUser[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildItemsRelatedUser objects based on current ModelCriteria
  * @method     ChildItemsRelatedUser[]|ObjectCollection findByItemId(int $item_id) Return ChildItemsRelatedUser objects filtered by the item_id column
- * @method     ChildItemsRelatedUser[]|ObjectCollection findByContactId(int $contact_id) Return ChildItemsRelatedUser objects filtered by the contact_id column
+ * @method     ChildItemsRelatedUser[]|ObjectCollection findByContactId(int $user_id) Return ChildItemsRelatedUser objects filtered by the user_id column
  * @method     ChildItemsRelatedUser[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -123,7 +123,7 @@ abstract class ItemsRelatedUserQuery extends ModelCriteria
      * $obj = $c->findPk(array(12, 34), $con);
      * </code>
      *
-     * @param array[$item_id, $contact_id] $key Primary key to use for the query
+     * @param array[$item_id, $user_id] $key Primary key to use for the query
      * @param ConnectionInterface $con an optional connection object
      *
      * @return ChildItemsRelatedUser|array|mixed the result, formatted by the current formatter
@@ -169,7 +169,7 @@ abstract class ItemsRelatedUserQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT item_id, contact_id FROM tf_items_related_users WHERE item_id = :p0 AND contact_id = :p1';
+        $sql = 'SELECT item_id, user_id FROM tf_items_related_users WHERE item_id = :p0 AND user_id = :p1';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key[0], PDO::PARAM_INT);
@@ -244,7 +244,7 @@ abstract class ItemsRelatedUserQuery extends ModelCriteria
     public function filterByPrimaryKey($key)
     {
         $this->addUsingAlias(ItemsRelatedUserTableMap::COL_ITEM_ID, $key[0], Criteria::EQUAL);
-        $this->addUsingAlias(ItemsRelatedUserTableMap::COL_CONTACT_ID, $key[1], Criteria::EQUAL);
+        $this->addUsingAlias(ItemsRelatedUserTableMap::COL_USER_ID, $key[1], Criteria::EQUAL);
 
         return $this;
     }
@@ -263,7 +263,7 @@ abstract class ItemsRelatedUserQuery extends ModelCriteria
         }
         foreach ($keys as $key) {
             $cton0 = $this->getNewCriterion(ItemsRelatedUserTableMap::COL_ITEM_ID, $key[0], Criteria::EQUAL);
-            $cton1 = $this->getNewCriterion(ItemsRelatedUserTableMap::COL_CONTACT_ID, $key[1], Criteria::EQUAL);
+            $cton1 = $this->getNewCriterion(ItemsRelatedUserTableMap::COL_USER_ID, $key[1], Criteria::EQUAL);
             $cton0->addAnd($cton1);
             $this->addOr($cton0);
         }
@@ -315,13 +315,13 @@ abstract class ItemsRelatedUserQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the contact_id column
+     * Filter the query on the user_id column
      *
      * Example usage:
      * <code>
-     * $query->filterByContactId(1234); // WHERE contact_id = 1234
-     * $query->filterByContactId(array(12, 34)); // WHERE contact_id IN (12, 34)
-     * $query->filterByContactId(array('min' => 12)); // WHERE contact_id > 12
+     * $query->filterByContactId(1234); // WHERE user_id = 1234
+     * $query->filterByContactId(array(12, 34)); // WHERE user_id IN (12, 34)
+     * $query->filterByContactId(array('min' => 12)); // WHERE user_id > 12
      * </code>
      *
      * @see       filterByContact()
@@ -339,11 +339,11 @@ abstract class ItemsRelatedUserQuery extends ModelCriteria
         if (is_array($contactId)) {
             $useMinMax = false;
             if (isset($contactId['min'])) {
-                $this->addUsingAlias(ItemsRelatedUserTableMap::COL_CONTACT_ID, $contactId['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(ItemsRelatedUserTableMap::COL_USER_ID, $contactId['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($contactId['max'])) {
-                $this->addUsingAlias(ItemsRelatedUserTableMap::COL_CONTACT_ID, $contactId['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(ItemsRelatedUserTableMap::COL_USER_ID, $contactId['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -354,7 +354,7 @@ abstract class ItemsRelatedUserQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(ItemsRelatedUserTableMap::COL_CONTACT_ID, $contactId, $comparison);
+        return $this->addUsingAlias(ItemsRelatedUserTableMap::COL_USER_ID, $contactId, $comparison);
     }
 
     /**
@@ -371,14 +371,14 @@ abstract class ItemsRelatedUserQuery extends ModelCriteria
     {
         if ($user instanceof \TheFarm\Models\User) {
             return $this
-                ->addUsingAlias(ItemsRelatedUserTableMap::COL_CONTACT_ID, $user->getUserId(), $comparison);
+                ->addUsingAlias(ItemsRelatedUserTableMap::COL_USER_ID, $user->getUserId(), $comparison);
         } elseif ($user instanceof ObjectCollection) {
             if (null === $comparison) {
                 $comparison = Criteria::IN;
             }
 
             return $this
-                ->addUsingAlias(ItemsRelatedUserTableMap::COL_CONTACT_ID, $user->toKeyValue('PrimaryKey', 'UserId'), $comparison);
+                ->addUsingAlias(ItemsRelatedUserTableMap::COL_USER_ID, $user->toKeyValue('PrimaryKey', 'UserId'), $comparison);
         } else {
             throw new PropelException('filterByContact() only accepts arguments of type \TheFarm\Models\User or Collection');
         }
@@ -522,7 +522,7 @@ abstract class ItemsRelatedUserQuery extends ModelCriteria
     {
         if ($itemsRelatedUser) {
             $this->addCond('pruneCond0', $this->getAliasedColName(ItemsRelatedUserTableMap::COL_ITEM_ID), $itemsRelatedUser->getItemId(), Criteria::NOT_EQUAL);
-            $this->addCond('pruneCond1', $this->getAliasedColName(ItemsRelatedUserTableMap::COL_CONTACT_ID), $itemsRelatedUser->getContactId(), Criteria::NOT_EQUAL);
+            $this->addCond('pruneCond1', $this->getAliasedColName(ItemsRelatedUserTableMap::COL_USER_ID), $itemsRelatedUser->getContactId(), Criteria::NOT_EQUAL);
             $this->combine(array('pruneCond0', 'pruneCond1'), Criteria::LOGICAL_OR);
         }
 

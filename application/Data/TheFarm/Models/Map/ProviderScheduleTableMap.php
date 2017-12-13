@@ -72,9 +72,9 @@ class ProviderScheduleTableMap extends TableMap
     const NUM_HYDRATE_COLUMNS = 4;
 
     /**
-     * the column name for the contact_id field
+     * the column name for the user_id field
      */
-    const COL_CONTACT_ID = 'tf_user_work_plan_time.contact_id';
+    const COL_USER_ID = 'tf_user_work_plan_time.user_id';
 
     /**
      * the column name for the start_date field
@@ -103,10 +103,10 @@ class ProviderScheduleTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('ContactId', 'StartDate', 'EndDate', 'IsWorking', ),
-        self::TYPE_CAMELNAME     => array('contactId', 'startDate', 'endDate', 'isWorking', ),
-        self::TYPE_COLNAME       => array(ProviderScheduleTableMap::COL_CONTACT_ID, ProviderScheduleTableMap::COL_START_DATE, ProviderScheduleTableMap::COL_END_DATE, ProviderScheduleTableMap::COL_IS_WORKING, ),
-        self::TYPE_FIELDNAME     => array('contact_id', 'start_date', 'end_date', 'is_working', ),
+        self::TYPE_PHPNAME       => array('UserId', 'StartDate', 'EndDate', 'IsWorking', ),
+        self::TYPE_CAMELNAME     => array('userId', 'startDate', 'endDate', 'isWorking', ),
+        self::TYPE_COLNAME       => array(ProviderScheduleTableMap::COL_USER_ID, ProviderScheduleTableMap::COL_START_DATE, ProviderScheduleTableMap::COL_END_DATE, ProviderScheduleTableMap::COL_IS_WORKING, ),
+        self::TYPE_FIELDNAME     => array('user_id', 'start_date', 'end_date', 'is_working', ),
         self::TYPE_NUM           => array(0, 1, 2, 3, )
     );
 
@@ -117,10 +117,10 @@ class ProviderScheduleTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('ContactId' => 0, 'StartDate' => 1, 'EndDate' => 2, 'IsWorking' => 3, ),
-        self::TYPE_CAMELNAME     => array('contactId' => 0, 'startDate' => 1, 'endDate' => 2, 'isWorking' => 3, ),
-        self::TYPE_COLNAME       => array(ProviderScheduleTableMap::COL_CONTACT_ID => 0, ProviderScheduleTableMap::COL_START_DATE => 1, ProviderScheduleTableMap::COL_END_DATE => 2, ProviderScheduleTableMap::COL_IS_WORKING => 3, ),
-        self::TYPE_FIELDNAME     => array('contact_id' => 0, 'start_date' => 1, 'end_date' => 2, 'is_working' => 3, ),
+        self::TYPE_PHPNAME       => array('UserId' => 0, 'StartDate' => 1, 'EndDate' => 2, 'IsWorking' => 3, ),
+        self::TYPE_CAMELNAME     => array('userId' => 0, 'startDate' => 1, 'endDate' => 2, 'isWorking' => 3, ),
+        self::TYPE_COLNAME       => array(ProviderScheduleTableMap::COL_USER_ID => 0, ProviderScheduleTableMap::COL_START_DATE => 1, ProviderScheduleTableMap::COL_END_DATE => 2, ProviderScheduleTableMap::COL_IS_WORKING => 3, ),
+        self::TYPE_FIELDNAME     => array('user_id' => 0, 'start_date' => 1, 'end_date' => 2, 'is_working' => 3, ),
         self::TYPE_NUM           => array(0, 1, 2, 3, )
     );
 
@@ -142,7 +142,7 @@ class ProviderScheduleTableMap extends TableMap
         $this->setUseIdGenerator(false);
         $this->setIsCrossRef(true);
         // columns
-        $this->addForeignPrimaryKey('contact_id', 'ContactId', 'INTEGER' , 'tf_users', 'user_id', true, null, null);
+        $this->addForeignPrimaryKey('user_id', 'UserId', 'INTEGER' , 'tf_user', 'user_id', true, null, null);
         $this->addPrimaryKey('start_date', 'StartDate', 'TIMESTAMP', true, null, null);
         $this->addPrimaryKey('end_date', 'EndDate', 'TIMESTAMP', true, null, null);
         $this->addColumn('is_working', 'IsWorking', 'BOOLEAN', false, 1, true);
@@ -153,10 +153,10 @@ class ProviderScheduleTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('Contact', '\\TheFarm\\Models\\User', RelationMap::MANY_TO_ONE, array (
+        $this->addRelation('User', '\\TheFarm\\Models\\User', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
-    0 => ':contact_id',
+    0 => ':user_id',
     1 => ':user_id',
   ),
 ), null, null, null, false);
@@ -177,7 +177,7 @@ class ProviderScheduleTableMap extends TableMap
     {
         if (Propel::isInstancePoolingEnabled()) {
             if (null === $key) {
-                $key = serialize([(null === $obj->getContactId() || is_scalar($obj->getContactId()) || is_callable([$obj->getContactId(), '__toString']) ? (string) $obj->getContactId() : $obj->getContactId()), (null === $obj->getStartDate() || is_scalar($obj->getStartDate()) || is_callable([$obj->getStartDate(), '__toString']) ? (string) $obj->getStartDate() : $obj->getStartDate()), (null === $obj->getEndDate() || is_scalar($obj->getEndDate()) || is_callable([$obj->getEndDate(), '__toString']) ? (string) $obj->getEndDate() : $obj->getEndDate())]);
+                $key = serialize([(null === $obj->getUserId() || is_scalar($obj->getUserId()) || is_callable([$obj->getUserId(), '__toString']) ? (string) $obj->getUserId() : $obj->getUserId()), (null === $obj->getStartDate() || is_scalar($obj->getStartDate()) || is_callable([$obj->getStartDate(), '__toString']) ? (string) $obj->getStartDate() : $obj->getStartDate()), (null === $obj->getEndDate() || is_scalar($obj->getEndDate()) || is_callable([$obj->getEndDate(), '__toString']) ? (string) $obj->getEndDate() : $obj->getEndDate())]);
             } // if key === null
             self::$instances[$key] = $obj;
         }
@@ -197,7 +197,7 @@ class ProviderScheduleTableMap extends TableMap
     {
         if (Propel::isInstancePoolingEnabled() && null !== $value) {
             if (is_object($value) && $value instanceof \TheFarm\Models\ProviderSchedule) {
-                $key = serialize([(null === $value->getContactId() || is_scalar($value->getContactId()) || is_callable([$value->getContactId(), '__toString']) ? (string) $value->getContactId() : $value->getContactId()), (null === $value->getStartDate() || is_scalar($value->getStartDate()) || is_callable([$value->getStartDate(), '__toString']) ? (string) $value->getStartDate() : $value->getStartDate()), (null === $value->getEndDate() || is_scalar($value->getEndDate()) || is_callable([$value->getEndDate(), '__toString']) ? (string) $value->getEndDate() : $value->getEndDate())]);
+                $key = serialize([(null === $value->getUserId() || is_scalar($value->getUserId()) || is_callable([$value->getUserId(), '__toString']) ? (string) $value->getUserId() : $value->getUserId()), (null === $value->getStartDate() || is_scalar($value->getStartDate()) || is_callable([$value->getStartDate(), '__toString']) ? (string) $value->getStartDate() : $value->getStartDate()), (null === $value->getEndDate() || is_scalar($value->getEndDate()) || is_callable([$value->getEndDate(), '__toString']) ? (string) $value->getEndDate() : $value->getEndDate())]);
 
             } elseif (is_array($value) && count($value) === 3) {
                 // assume we've been passed a primary key";
@@ -231,11 +231,11 @@ class ProviderScheduleTableMap extends TableMap
     public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
         // If the PK cannot be derived from the row, return NULL.
-        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('ContactId', TableMap::TYPE_PHPNAME, $indexType)] === null && $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('StartDate', TableMap::TYPE_PHPNAME, $indexType)] === null && $row[TableMap::TYPE_NUM == $indexType ? 2 + $offset : static::translateFieldName('EndDate', TableMap::TYPE_PHPNAME, $indexType)] === null) {
+        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)] === null && $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('StartDate', TableMap::TYPE_PHPNAME, $indexType)] === null && $row[TableMap::TYPE_NUM == $indexType ? 2 + $offset : static::translateFieldName('EndDate', TableMap::TYPE_PHPNAME, $indexType)] === null) {
             return null;
         }
 
-        return serialize([(null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('ContactId', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('ContactId', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('ContactId', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('ContactId', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('ContactId', TableMap::TYPE_PHPNAME, $indexType)]), (null === $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('StartDate', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('StartDate', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('StartDate', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('StartDate', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('StartDate', TableMap::TYPE_PHPNAME, $indexType)]), (null === $row[TableMap::TYPE_NUM == $indexType ? 2 + $offset : static::translateFieldName('EndDate', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 2 + $offset : static::translateFieldName('EndDate', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 2 + $offset : static::translateFieldName('EndDate', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 2 + $offset : static::translateFieldName('EndDate', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 2 + $offset : static::translateFieldName('EndDate', TableMap::TYPE_PHPNAME, $indexType)])]);
+        return serialize([(null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)]), (null === $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('StartDate', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('StartDate', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('StartDate', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('StartDate', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('StartDate', TableMap::TYPE_PHPNAME, $indexType)]), (null === $row[TableMap::TYPE_NUM == $indexType ? 2 + $offset : static::translateFieldName('EndDate', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 2 + $offset : static::translateFieldName('EndDate', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 2 + $offset : static::translateFieldName('EndDate', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 2 + $offset : static::translateFieldName('EndDate', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 2 + $offset : static::translateFieldName('EndDate', TableMap::TYPE_PHPNAME, $indexType)])]);
     }
 
     /**
@@ -257,7 +257,7 @@ class ProviderScheduleTableMap extends TableMap
         $pks[] = (int) $row[
             $indexType == TableMap::TYPE_NUM
                 ? 0 + $offset
-                : self::translateFieldName('ContactId', TableMap::TYPE_PHPNAME, $indexType)
+                : self::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)
         ];
         $pks[] = (string) $row[
             $indexType == TableMap::TYPE_NUM
@@ -370,12 +370,12 @@ class ProviderScheduleTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(ProviderScheduleTableMap::COL_CONTACT_ID);
+            $criteria->addSelectColumn(ProviderScheduleTableMap::COL_USER_ID);
             $criteria->addSelectColumn(ProviderScheduleTableMap::COL_START_DATE);
             $criteria->addSelectColumn(ProviderScheduleTableMap::COL_END_DATE);
             $criteria->addSelectColumn(ProviderScheduleTableMap::COL_IS_WORKING);
         } else {
-            $criteria->addSelectColumn($alias . '.contact_id');
+            $criteria->addSelectColumn($alias . '.user_id');
             $criteria->addSelectColumn($alias . '.start_date');
             $criteria->addSelectColumn($alias . '.end_date');
             $criteria->addSelectColumn($alias . '.is_working');
@@ -437,7 +437,7 @@ class ProviderScheduleTableMap extends TableMap
                 $values = array($values);
             }
             foreach ($values as $value) {
-                $criterion = $criteria->getNewCriterion(ProviderScheduleTableMap::COL_CONTACT_ID, $value[0]);
+                $criterion = $criteria->getNewCriterion(ProviderScheduleTableMap::COL_USER_ID, $value[0]);
                 $criterion->addAnd($criteria->getNewCriterion(ProviderScheduleTableMap::COL_START_DATE, $value[1]));
                 $criterion->addAnd($criteria->getNewCriterion(ProviderScheduleTableMap::COL_END_DATE, $value[2]));
                 $criteria->addOr($criterion);

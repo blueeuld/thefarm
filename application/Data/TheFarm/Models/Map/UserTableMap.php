@@ -16,7 +16,7 @@ use TheFarm\Models\UserQuery;
 
 
 /**
- * This class defines the structure of the 'tf_users' table.
+ * This class defines the structure of the 'tf_user' table.
  *
  *
  *
@@ -44,7 +44,7 @@ class UserTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = 'tf_users';
+    const TABLE_NAME = 'tf_user';
 
     /**
      * The related Propel class for this table
@@ -74,82 +74,82 @@ class UserTableMap extends TableMap
     /**
      * the column name for the user_id field
      */
-    const COL_USER_ID = 'tf_users.user_id';
+    const COL_USER_ID = 'tf_user.user_id';
 
     /**
      * the column name for the username field
      */
-    const COL_USERNAME = 'tf_users.username';
+    const COL_USERNAME = 'tf_user.username';
 
     /**
      * the column name for the group_id field
      */
-    const COL_GROUP_ID = 'tf_users.group_id';
+    const COL_GROUP_ID = 'tf_user.group_id';
 
     /**
      * the column name for the last_login field
      */
-    const COL_LAST_LOGIN = 'tf_users.last_login';
+    const COL_LAST_LOGIN = 'tf_user.last_login';
 
     /**
      * the column name for the password field
      */
-    const COL_PASSWORD = 'tf_users.password';
+    const COL_PASSWORD = 'tf_user.password';
 
     /**
      * the column name for the work_plan field
      */
-    const COL_WORK_PLAN = 'tf_users.work_plan';
+    const COL_WORK_PLAN = 'tf_user.work_plan';
 
     /**
      * the column name for the work_plan_code field
      */
-    const COL_WORK_PLAN_CODE = 'tf_users.work_plan_code';
+    const COL_WORK_PLAN_CODE = 'tf_user.work_plan_code';
 
     /**
      * the column name for the location_id field
      */
-    const COL_LOCATION_ID = 'tf_users.location_id';
+    const COL_LOCATION_ID = 'tf_user.location_id';
 
     /**
      * the column name for the facebook_id field
      */
-    const COL_FACEBOOK_ID = 'tf_users.facebook_id';
+    const COL_FACEBOOK_ID = 'tf_user.facebook_id';
 
     /**
      * the column name for the user_order field
      */
-    const COL_USER_ORDER = 'tf_users.user_order';
+    const COL_USER_ORDER = 'tf_user.user_order';
 
     /**
      * the column name for the calendar_view_positions field
      */
-    const COL_CALENDAR_VIEW_POSITIONS = 'tf_users.calendar_view_positions';
+    const COL_CALENDAR_VIEW_POSITIONS = 'tf_user.calendar_view_positions';
 
     /**
      * the column name for the calendar_view_status field
      */
-    const COL_CALENDAR_VIEW_STATUS = 'tf_users.calendar_view_status';
+    const COL_CALENDAR_VIEW_STATUS = 'tf_user.calendar_view_status';
 
     /**
      * the column name for the calendar_show_my_schedule_only field
      */
-    const COL_CALENDAR_SHOW_MY_SCHEDULE_ONLY = 'tf_users.calendar_show_my_schedule_only';
+    const COL_CALENDAR_SHOW_MY_SCHEDULE_ONLY = 'tf_user.calendar_show_my_schedule_only';
 
     /**
      * the column name for the calendar_view_locations field
      */
-    const COL_CALENDAR_VIEW_LOCATIONS = 'tf_users.calendar_view_locations';
+    const COL_CALENDAR_VIEW_LOCATIONS = 'tf_user.calendar_view_locations';
 
     /**
      * the column name for the preferences field
      */
-    const COL_PREFERENCES = 'tf_users.preferences';
+    const COL_PREFERENCES = 'tf_user.preferences';
 
     /**
      * the column name for the calendar_show_no_schedule field
      */
-    const COL_CALENDAR_SHOW_NO_SCHEDULE = 'tf_users.calendar_show_no_schedule';
+    const COL_CALENDAR_SHOW_NO_SCHEDULE = 'tf_user.calendar_show_no_schedule';
 
     /**
      * The default string format for model objects of the related table
@@ -194,7 +194,7 @@ class UserTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('tf_users');
+        $this->setName('tf_user');
         $this->setPhpName('User');
         $this->setIdentifierQuoting(false);
         $this->setClassName('\\TheFarm\\Models\\User');
@@ -241,7 +241,7 @@ class UserTableMap extends TableMap
         $this->addRelation('EventUser', '\\TheFarm\\Models\\EventUser', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
-    0 => ':staff_id',
+    0 => ':user_id',
     1 => ':user_id',
   ),
 ), null, null, 'EventUsers', false);
@@ -283,21 +283,21 @@ class UserTableMap extends TableMap
         $this->addRelation('ItemsRelatedUser', '\\TheFarm\\Models\\ItemsRelatedUser', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
-    0 => ':contact_id',
+    0 => ':user_id',
     1 => ':user_id',
   ),
 ), null, null, 'ItemsRelatedUsers', false);
         $this->addRelation('UserWorkPlanDay', '\\TheFarm\\Models\\UserWorkPlanDay', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
-    0 => ':contact_id',
+    0 => ':user_id',
     1 => ':user_id',
   ),
 ), null, null, 'UserWorkPlanDays', false);
         $this->addRelation('ProviderSchedule', '\\TheFarm\\Models\\ProviderSchedule', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
-    0 => ':contact_id',
+    0 => ':user_id',
     1 => ':user_id',
   ),
 ), null, null, 'ProviderSchedules', false);
@@ -546,7 +546,7 @@ class UserTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the tf_users table.
+     * Deletes all rows from the tf_user table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).

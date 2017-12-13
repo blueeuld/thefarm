@@ -5,7 +5,7 @@
                 "default": {
                     "adapter": "mysql",
                     "classname": "Propel\\Runtime\\Connection\\DebugPDO",
-                    "dsn": "mysql:host=localhost;port=3306;dbname=scheduledb",
+                    "dsn": "mysql:host=localhost;port=3306;dbname=schedule",
                     "user": "marvin",
                     "password": "marvin",
                     "settings": {

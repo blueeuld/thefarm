@@ -45,7 +45,7 @@ use TheFarm\Models\Map\UserTableMap;
 use TheFarm\Models\Map\UserWorkPlanDayTableMap;
 
 /**
- * Base class that represents a row from the 'tf_users' table.
+ * Base class that represents a row from the 'tf_user' table.
  *
  *
  *
@@ -1669,7 +1669,7 @@ abstract class User implements ActiveRecordInterface
         }
 
         $sql = sprintf(
-            'INSERT INTO tf_users (%s) VALUES (%s)',
+            'INSERT INTO tf_user (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -4841,7 +4841,7 @@ abstract class User implements ActiveRecordInterface
                 $this->initUserWorkPlanDays();
             } else {
                 $collUserWorkPlanDays = ChildUserWorkPlanDayQuery::create(null, $criteria)
-                    ->filterByContact($this)
+                    ->filterByUser($this)
                     ->find($con);
 
                 if (null !== $criteria) {
@@ -4895,7 +4895,7 @@ abstract class User implements ActiveRecordInterface
         $this->userWorkPlanDaysScheduledForDeletion = $userWorkPlanDaysToDelete;
 
         foreach ($userWorkPlanDaysToDelete as $userWorkPlanDayRemoved) {
-            $userWorkPlanDayRemoved->setContact(null);
+            $userWorkPlanDayRemoved->setUser(null);
         }
 
         $this->collUserWorkPlanDays = null;
@@ -4936,7 +4936,7 @@ abstract class User implements ActiveRecordInterface
             }
 
             return $query
-                ->filterByContact($this)
+                ->filterByUser($this)
                 ->count($con);
         }
 
@@ -4974,7 +4974,7 @@ abstract class User implements ActiveRecordInterface
     protected function doAddUserWorkPlanDay(ChildUserWorkPlanDay $userWorkPlanDay)
     {
         $this->collUserWorkPlanDays[]= $userWorkPlanDay;
-        $userWorkPlanDay->setContact($this);
+        $userWorkPlanDay->setUser($this);
     }
 
     /**
@@ -4991,7 +4991,7 @@ abstract class User implements ActiveRecordInterface
                 $this->userWorkPlanDaysScheduledForDeletion->clear();
             }
             $this->userWorkPlanDaysScheduledForDeletion[]= clone $userWorkPlanDay;
-            $userWorkPlanDay->setContact(null);
+            $userWorkPlanDay->setUser(null);
         }
 
         return $this;
@@ -5091,7 +5091,7 @@ abstract class User implements ActiveRecordInterface
                 $this->initProviderSchedules();
             } else {
                 $collProviderSchedules = ChildProviderScheduleQuery::create(null, $criteria)
-                    ->filterByContact($this)
+                    ->filterByUser($this)
                     ->find($con);
 
                 if (null !== $criteria) {
@@ -5148,7 +5148,7 @@ abstract class User implements ActiveRecordInterface
         $this->providerSchedulesScheduledForDeletion = clone $providerSchedulesToDelete;
 
         foreach ($providerSchedulesToDelete as $providerScheduleRemoved) {
-            $providerScheduleRemoved->setContact(null);
+            $providerScheduleRemoved->setUser(null);
         }
 
         $this->collProviderSchedules = null;
@@ -5189,7 +5189,7 @@ abstract class User implements ActiveRecordInterface
             }
 
             return $query
-                ->filterByContact($this)
+                ->filterByUser($this)
                 ->count($con);
         }
 
@@ -5227,7 +5227,7 @@ abstract class User implements ActiveRecordInterface
     protected function doAddProviderSchedule(ChildProviderSchedule $providerSchedule)
     {
         $this->collProviderSchedules[]= $providerSchedule;
-        $providerSchedule->setContact($this);
+        $providerSchedule->setUser($this);
     }
 
     /**
@@ -5244,7 +5244,7 @@ abstract class User implements ActiveRecordInterface
                 $this->providerSchedulesScheduledForDeletion->clear();
             }
             $this->providerSchedulesScheduledForDeletion[]= clone $providerSchedule;
-            $providerSchedule->setContact(null);
+            $providerSchedule->setUser(null);
         }
 
         return $this;

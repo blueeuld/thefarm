@@ -77,9 +77,9 @@ class EventUserTableMap extends TableMap
     const COL_EVENT_ID = 'tf_booking_event_users.event_id';
 
     /**
-     * the column name for the staff_id field
+     * the column name for the user_id field
      */
-    const COL_STAFF_ID = 'tf_booking_event_users.staff_id';
+    const COL_USER_ID = 'tf_booking_event_users.user_id';
 
     /**
      * the column name for the is_guest field
@@ -100,8 +100,8 @@ class EventUserTableMap extends TableMap
     protected static $fieldNames = array (
         self::TYPE_PHPNAME       => array('EventId', 'UserId', 'IsGuest', ),
         self::TYPE_CAMELNAME     => array('eventId', 'userId', 'isGuest', ),
-        self::TYPE_COLNAME       => array(EventUserTableMap::COL_EVENT_ID, EventUserTableMap::COL_STAFF_ID, EventUserTableMap::COL_IS_GUEST, ),
-        self::TYPE_FIELDNAME     => array('event_id', 'staff_id', 'is_guest', ),
+        self::TYPE_COLNAME       => array(EventUserTableMap::COL_EVENT_ID, EventUserTableMap::COL_USER_ID, EventUserTableMap::COL_IS_GUEST, ),
+        self::TYPE_FIELDNAME     => array('event_id', 'user_id', 'is_guest', ),
         self::TYPE_NUM           => array(0, 1, 2, )
     );
 
@@ -114,8 +114,8 @@ class EventUserTableMap extends TableMap
     protected static $fieldKeys = array (
         self::TYPE_PHPNAME       => array('EventId' => 0, 'UserId' => 1, 'IsGuest' => 2, ),
         self::TYPE_CAMELNAME     => array('eventId' => 0, 'userId' => 1, 'isGuest' => 2, ),
-        self::TYPE_COLNAME       => array(EventUserTableMap::COL_EVENT_ID => 0, EventUserTableMap::COL_STAFF_ID => 1, EventUserTableMap::COL_IS_GUEST => 2, ),
-        self::TYPE_FIELDNAME     => array('event_id' => 0, 'staff_id' => 1, 'is_guest' => 2, ),
+        self::TYPE_COLNAME       => array(EventUserTableMap::COL_EVENT_ID => 0, EventUserTableMap::COL_USER_ID => 1, EventUserTableMap::COL_IS_GUEST => 2, ),
+        self::TYPE_FIELDNAME     => array('event_id' => 0, 'user_id' => 1, 'is_guest' => 2, ),
         self::TYPE_NUM           => array(0, 1, 2, )
     );
 
@@ -137,7 +137,7 @@ class EventUserTableMap extends TableMap
         $this->setUseIdGenerator(false);
         // columns
         $this->addForeignPrimaryKey('event_id', 'EventId', 'INTEGER' , 'tf_booking_events', 'event_id', true, null, 0);
-        $this->addForeignPrimaryKey('staff_id', 'UserId', 'INTEGER' , 'tf_users', 'user_id', true, null, 0);
+        $this->addForeignPrimaryKey('user_id', 'UserId', 'INTEGER' , 'tf_user', 'user_id', true, null, 0);
         $this->addColumn('is_guest', 'IsGuest', 'BOOLEAN', false, 1, false);
     } // initialize()
 
@@ -156,7 +156,7 @@ class EventUserTableMap extends TableMap
         $this->addRelation('User', '\\TheFarm\\Models\\User', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
-    0 => ':staff_id',
+    0 => ':user_id',
     1 => ':user_id',
   ),
 ), null, null, null, false);
@@ -366,11 +366,11 @@ class EventUserTableMap extends TableMap
     {
         if (null === $alias) {
             $criteria->addSelectColumn(EventUserTableMap::COL_EVENT_ID);
-            $criteria->addSelectColumn(EventUserTableMap::COL_STAFF_ID);
+            $criteria->addSelectColumn(EventUserTableMap::COL_USER_ID);
             $criteria->addSelectColumn(EventUserTableMap::COL_IS_GUEST);
         } else {
             $criteria->addSelectColumn($alias . '.event_id');
-            $criteria->addSelectColumn($alias . '.staff_id');
+            $criteria->addSelectColumn($alias . '.user_id');
             $criteria->addSelectColumn($alias . '.is_guest');
         }
     }
@@ -431,7 +431,7 @@ class EventUserTableMap extends TableMap
             }
             foreach ($values as $value) {
                 $criterion = $criteria->getNewCriterion(EventUserTableMap::COL_EVENT_ID, $value[0]);
-                $criterion->addAnd($criteria->getNewCriterion(EventUserTableMap::COL_STAFF_ID, $value[1]));
+                $criterion->addAnd($criteria->getNewCriterion(EventUserTableMap::COL_USER_ID, $value[1]));
                 $criteria->addOr($criterion);
             }
         }
