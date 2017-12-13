@@ -133,7 +133,7 @@ class ItemsRelatedUserTableMap extends TableMap
         $this->setIsCrossRef(true);
         // columns
         $this->addForeignPrimaryKey('item_id', 'ItemId', 'INTEGER' , 'tf_items', 'item_id', true, null, null);
-        $this->addForeignPrimaryKey('contact_id', 'ContactId', 'INTEGER' , 'tf_contacts', 'contact_id', true, null, null);
+        $this->addForeignPrimaryKey('contact_id', 'ContactId', 'INTEGER' , 'tf_users', 'user_id', true, null, null);
     } // initialize()
 
     /**
@@ -141,11 +141,11 @@ class ItemsRelatedUserTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('Contact', '\\TheFarm\\Models\\Contact', RelationMap::MANY_TO_ONE, array (
+        $this->addRelation('Contact', '\\TheFarm\\Models\\User', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
     0 => ':contact_id',
-    1 => ':contact_id',
+    1 => ':user_id',
   ),
 ), null, null, null, false);
         $this->addRelation('Item', '\\TheFarm\\Models\\Item', RelationMap::MANY_TO_ONE, array (

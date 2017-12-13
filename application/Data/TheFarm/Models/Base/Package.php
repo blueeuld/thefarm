@@ -1622,10 +1622,10 @@ abstract class Package implements ActiveRecordInterface
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return ObjectCollection|ChildBooking[] List of ChildBooking objects
      */
-    public function getBookingsJoinContactRelatedByAuthorId(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getBookingsJoinUser(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ChildBookingQuery::create(null, $criteria);
-        $query->joinWith('ContactRelatedByAuthorId', $joinBehavior);
+        $query->joinWith('User', $joinBehavior);
 
         return $this->getBookings($query, $con);
     }
@@ -1647,10 +1647,10 @@ abstract class Package implements ActiveRecordInterface
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return ObjectCollection|ChildBooking[] List of ChildBooking objects
      */
-    public function getBookingsJoinContactRelatedByGuestId(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getBookingsJoinContact(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ChildBookingQuery::create(null, $criteria);
-        $query->joinWith('ContactRelatedByGuestId', $joinBehavior);
+        $query->joinWith('Contact', $joinBehavior);
 
         return $this->getBookings($query, $con);
     }

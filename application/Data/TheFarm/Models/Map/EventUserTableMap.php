@@ -137,7 +137,7 @@ class EventUserTableMap extends TableMap
         $this->setUseIdGenerator(false);
         // columns
         $this->addForeignPrimaryKey('event_id', 'EventId', 'INTEGER' , 'tf_booking_events', 'event_id', true, null, 0);
-        $this->addForeignPrimaryKey('staff_id', 'UserId', 'INTEGER' , 'tf_contacts', 'contact_id', true, null, 0);
+        $this->addForeignPrimaryKey('staff_id', 'UserId', 'INTEGER' , 'tf_users', 'user_id', true, null, 0);
         $this->addColumn('is_guest', 'IsGuest', 'BOOLEAN', false, 1, false);
     } // initialize()
 
@@ -153,11 +153,11 @@ class EventUserTableMap extends TableMap
     1 => ':event_id',
   ),
 ), null, null, null, false);
-        $this->addRelation('Contact', '\\TheFarm\\Models\\Contact', RelationMap::MANY_TO_ONE, array (
+        $this->addRelation('User', '\\TheFarm\\Models\\User', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
     0 => ':staff_id',
-    1 => ':contact_id',
+    1 => ':user_id',
   ),
 ), null, null, null, false);
     } // buildRelations()

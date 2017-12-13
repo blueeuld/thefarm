@@ -297,84 +297,13 @@ class ContactTableMap extends TableMap
     1 => ':position_cd',
   ),
 ), null, null, null, false);
-        $this->addRelation('EventUser', '\\TheFarm\\Models\\EventUser', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':staff_id',
-    1 => ':contact_id',
-  ),
-), null, null, 'EventUsers', false);
-        $this->addRelation('BookingEventRelatedByAuthorId', '\\TheFarm\\Models\\BookingEvent', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':author_id',
-    1 => ':contact_id',
-  ),
-), null, null, 'BookingEventsRelatedByAuthorId', false);
-        $this->addRelation('BookingEventRelatedByCalledBy', '\\TheFarm\\Models\\BookingEvent', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':called_by',
-    1 => ':contact_id',
-  ),
-), null, null, 'BookingEventsRelatedByCalledBy', false);
-        $this->addRelation('BookingEventRelatedByCancelledBy', '\\TheFarm\\Models\\BookingEvent', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':cancelled_by',
-    1 => ':contact_id',
-  ),
-), null, null, 'BookingEventsRelatedByCancelledBy', false);
-        $this->addRelation('BookingEventRelatedByDeletedBy', '\\TheFarm\\Models\\BookingEvent', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':deleted_by',
-    1 => ':contact_id',
-  ),
-), null, null, 'BookingEventsRelatedByDeletedBy', false);
-        $this->addRelation('BookingRelatedByAuthorId', '\\TheFarm\\Models\\Booking', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':author_id',
-    1 => ':contact_id',
-  ),
-), null, null, 'BookingsRelatedByAuthorId', false);
-        $this->addRelation('BookingRelatedByGuestId', '\\TheFarm\\Models\\Booking', RelationMap::ONE_TO_MANY, array (
+        $this->addRelation('Booking', '\\TheFarm\\Models\\Booking', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
     0 => ':guest_id',
     1 => ':contact_id',
   ),
-), null, null, 'BookingsRelatedByGuestId', false);
-        $this->addRelation('ItemsRelatedUser', '\\TheFarm\\Models\\ItemsRelatedUser', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':contact_id',
-    1 => ':contact_id',
-  ),
-), null, null, 'ItemsRelatedUsers', false);
-        $this->addRelation('UserWorkPlanDay', '\\TheFarm\\Models\\UserWorkPlanDay', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':contact_id',
-    1 => ':contact_id',
-  ),
-), null, null, 'UserWorkPlanDays', false);
-        $this->addRelation('ProviderSchedule', '\\TheFarm\\Models\\ProviderSchedule', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':contact_id',
-    1 => ':contact_id',
-  ),
-), null, null, 'ProviderSchedules', false);
-        $this->addRelation('User', '\\TheFarm\\Models\\User', RelationMap::ONE_TO_ONE, array (
-  0 =>
-  array (
-    0 => ':contact_id',
-    1 => ':contact_id',
-  ),
-), null, null, null, false);
-        $this->addRelation('Item', '\\TheFarm\\Models\\Item', RelationMap::MANY_TO_MANY, array(), null, null, 'Items');
+), null, null, 'Bookings', false);
     } // buildRelations()
 
     /**

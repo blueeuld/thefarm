@@ -10,22 +10,16 @@ use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
 use Propel\Runtime\Collection\Collection;
 use Propel\Runtime\Collection\ObjectCollection;
-use Propel\Runtime\Collection\ObjectCombinationCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
-use TheFarm\Models\Contact as ChildContact;
-use TheFarm\Models\ContactQuery as ChildContactQuery;
-use TheFarm\Models\ProviderSchedule as ChildProviderSchedule;
-use TheFarm\Models\ProviderScheduleQuery as ChildProviderScheduleQuery;
 use TheFarm\Models\UserWorkPlanDay as ChildUserWorkPlanDay;
 use TheFarm\Models\UserWorkPlanDayQuery as ChildUserWorkPlanDayQuery;
 use TheFarm\Models\WorkPlan as ChildWorkPlan;
 use TheFarm\Models\WorkPlanQuery as ChildWorkPlanQuery;
-use TheFarm\Models\Map\ProviderScheduleTableMap;
 use TheFarm\Models\Map\UserWorkPlanDayTableMap;
 use TheFarm\Models\Map\WorkPlanTableMap;
 
@@ -91,32 +85,6 @@ abstract class WorkPlan implements ActiveRecordInterface
     protected $collUserWorkPlanDaysPartial;
 
     /**
-     * @var        ObjectCollection|ChildProviderSchedule[] Collection to store aggregation of ChildProviderSchedule objects.
-     */
-    protected $collProviderSchedules;
-    protected $collProviderSchedulesPartial;
-
-    /**
-     * @var ObjectCombinationCollection Cross CombinationCollection to store aggregation of ChildContact combinations.
-     */
-    protected $combinationCollContactStartDateEndDates;
-
-    /**
-     * @var bool
-     */
-    protected $combinationCollContactStartDateEndDatesPartial;
-
-    /**
-     * @var        ObjectCollection|ChildContact[] Cross Collection to store aggregation of ChildContact objects.
-     */
-    protected $collContacts;
-
-    /**
-     * @var bool
-     */
-    protected $collContactsPartial;
-
-    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
@@ -125,21 +93,10 @@ abstract class WorkPlan implements ActiveRecordInterface
     protected $alreadyInSave = false;
 
     /**
-     * @var ObjectCombinationCollection Cross CombinationCollection to store aggregation of ChildContact combinations.
-     */
-    protected $combinationCollContactStartDateEndDatesScheduledForDeletion = null;
-
-    /**
      * An array of objects scheduled for deletion.
      * @var ObjectCollection|ChildUserWorkPlanDay[]
      */
     protected $userWorkPlanDaysScheduledForDeletion = null;
-
-    /**
-     * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildProviderSchedule[]
-     */
-    protected $providerSchedulesScheduledForDeletion = null;
 
     /**
      * Initializes internal state of TheFarm\Models\Base\WorkPlan object.
@@ -538,9 +495,6 @@ abstract class WorkPlan implements ActiveRecordInterface
 
             $this->collUserWorkPlanDays = null;
 
-            $this->collProviderSchedules = null;
-
-            $this->collContactStartDateEndDates = null;
         } // if (deep)
     }
 
@@ -655,45 +609,6 @@ abstract class WorkPlan implements ActiveRecordInterface
                 $this->resetModified();
             }
 
-            if ($this->combinationCollContactStartDateEndDatesScheduledForDeletion !== null) {
-                if (!$this->combinationCollContactStartDateEndDatesScheduledForDeletion->isEmpty()) {
-                    $pks = array();
-                    foreach ($this->combinationCollContactStartDateEndDatesScheduledForDeletion as $combination) {
-                        $entryPk = [];
-
-                        $entryPk[] = $this->getWorkPlanCd();
-                        $entryPk[0] = $combination[0]->getContactId();
-                        //$combination[1] = StartDate;
-                        $entryPk[1] = $combination[1];
-                        //$combination[2] = EndDate;
-                        $entryPk[2] = $combination[2];
-
-                        $pks[] = $entryPk;
-                    }
-
-                    \TheFarm\Models\ProviderScheduleQuery::create()
-                        ->filterByPrimaryKeys($pks)
-                        ->delete($con);
-
-                    $this->combinationCollContactStartDateEndDatesScheduledForDeletion = null;
-                }
-
-            }
-
-            if (null !== $this->combinationCollContactStartDateEndDates) {
-                foreach ($this->combinationCollContactStartDateEndDates as $combination) {
-
-                    //$combination[0] = Contact (tf_user_work_plan_time_fk_6a6d09)
-                    if (!$combination[0]->isDeleted() && ($combination[0]->isNew() || $combination[0]->isModified())) {
-                        $combination[0]->save($con);
-                    }
-
-                    //$combination[1] = StartDate; Nothing to save.
-                    //$combination[2] = EndDate; Nothing to save.
-                }
-            }
-
-
             if ($this->userWorkPlanDaysScheduledForDeletion !== null) {
                 if (!$this->userWorkPlanDaysScheduledForDeletion->isEmpty()) {
                     \TheFarm\Models\UserWorkPlanDayQuery::create()
@@ -705,24 +620,6 @@ abstract class WorkPlan implements ActiveRecordInterface
 
             if ($this->collUserWorkPlanDays !== null) {
                 foreach ($this->collUserWorkPlanDays as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
-            }
-
-            if ($this->providerSchedulesScheduledForDeletion !== null) {
-                if (!$this->providerSchedulesScheduledForDeletion->isEmpty()) {
-                    foreach ($this->providerSchedulesScheduledForDeletion as $providerSchedule) {
-                        // need to save related object because we set the relation to null
-                        $providerSchedule->save($con);
-                    }
-                    $this->providerSchedulesScheduledForDeletion = null;
-                }
-            }
-
-            if ($this->collProviderSchedules !== null) {
-                foreach ($this->collProviderSchedules as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -888,21 +785,6 @@ abstract class WorkPlan implements ActiveRecordInterface
                 }
 
                 $result[$key] = $this->collUserWorkPlanDays->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
-            }
-            if (null !== $this->collProviderSchedules) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_CAMELNAME:
-                        $key = 'providerSchedules';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'tf_user_work_plan_times';
-                        break;
-                    default:
-                        $key = 'ProviderSchedules';
-                }
-
-                $result[$key] = $this->collProviderSchedules->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1123,12 +1005,6 @@ abstract class WorkPlan implements ActiveRecordInterface
                 }
             }
 
-            foreach ($this->getProviderSchedules() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addProviderSchedule($relObj->copy($deepCopy));
-                }
-            }
-
         } // if ($deepCopy)
 
         if ($makeNew) {
@@ -1171,10 +1047,6 @@ abstract class WorkPlan implements ActiveRecordInterface
     {
         if ('UserWorkPlanDay' == $relationName) {
             $this->initUserWorkPlanDays();
-            return;
-        }
-        if ('ProviderSchedule' == $relationName) {
-            $this->initProviderSchedules();
             return;
         }
     }
@@ -1430,584 +1302,6 @@ abstract class WorkPlan implements ActiveRecordInterface
     }
 
     /**
-     * Clears out the collProviderSchedules collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addProviderSchedules()
-     */
-    public function clearProviderSchedules()
-    {
-        $this->collProviderSchedules = null; // important to set this to NULL since that means it is uninitialized
-    }
-
-    /**
-     * Reset is the collProviderSchedules collection loaded partially.
-     */
-    public function resetPartialProviderSchedules($v = true)
-    {
-        $this->collProviderSchedulesPartial = $v;
-    }
-
-    /**
-     * Initializes the collProviderSchedules collection.
-     *
-     * By default this just sets the collProviderSchedules collection to an empty array (like clearcollProviderSchedules());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param      boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initProviderSchedules($overrideExisting = true)
-    {
-        if (null !== $this->collProviderSchedules && !$overrideExisting) {
-            return;
-        }
-
-        $collectionClassName = ProviderScheduleTableMap::getTableMap()->getCollectionClassName();
-
-        $this->collProviderSchedules = new $collectionClassName;
-        $this->collProviderSchedules->setModel('\TheFarm\Models\ProviderSchedule');
-    }
-
-    /**
-     * Gets an array of ChildProviderSchedule objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildWorkPlan is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildProviderSchedule[] List of ChildProviderSchedule objects
-     * @throws PropelException
-     */
-    public function getProviderSchedules(Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        $partial = $this->collProviderSchedulesPartial && !$this->isNew();
-        if (null === $this->collProviderSchedules || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collProviderSchedules) {
-                // return empty collection
-                $this->initProviderSchedules();
-            } else {
-                $collProviderSchedules = ChildProviderScheduleQuery::create(null, $criteria)
-                    ->filterByWorkPlan($this)
-                    ->find($con);
-
-                if (null !== $criteria) {
-                    if (false !== $this->collProviderSchedulesPartial && count($collProviderSchedules)) {
-                        $this->initProviderSchedules(false);
-
-                        foreach ($collProviderSchedules as $obj) {
-                            if (false == $this->collProviderSchedules->contains($obj)) {
-                                $this->collProviderSchedules->append($obj);
-                            }
-                        }
-
-                        $this->collProviderSchedulesPartial = true;
-                    }
-
-                    return $collProviderSchedules;
-                }
-
-                if ($partial && $this->collProviderSchedules) {
-                    foreach ($this->collProviderSchedules as $obj) {
-                        if ($obj->isNew()) {
-                            $collProviderSchedules[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collProviderSchedules = $collProviderSchedules;
-                $this->collProviderSchedulesPartial = false;
-            }
-        }
-
-        return $this->collProviderSchedules;
-    }
-
-    /**
-     * Sets a collection of ChildProviderSchedule objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param      Collection $providerSchedules A Propel collection.
-     * @param      ConnectionInterface $con Optional connection object
-     * @return $this|ChildWorkPlan The current object (for fluent API support)
-     */
-    public function setProviderSchedules(Collection $providerSchedules, ConnectionInterface $con = null)
-    {
-        /** @var ChildProviderSchedule[] $providerSchedulesToDelete */
-        $providerSchedulesToDelete = $this->getProviderSchedules(new Criteria(), $con)->diff($providerSchedules);
-
-
-        $this->providerSchedulesScheduledForDeletion = $providerSchedulesToDelete;
-
-        foreach ($providerSchedulesToDelete as $providerScheduleRemoved) {
-            $providerScheduleRemoved->setWorkPlan(null);
-        }
-
-        $this->collProviderSchedules = null;
-        foreach ($providerSchedules as $providerSchedule) {
-            $this->addProviderSchedule($providerSchedule);
-        }
-
-        $this->collProviderSchedules = $providerSchedules;
-        $this->collProviderSchedulesPartial = false;
-
-        return $this;
-    }
-
-    /**
-     * Returns the number of related ProviderSchedule objects.
-     *
-     * @param      Criteria $criteria
-     * @param      boolean $distinct
-     * @param      ConnectionInterface $con
-     * @return int             Count of related ProviderSchedule objects.
-     * @throws PropelException
-     */
-    public function countProviderSchedules(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
-    {
-        $partial = $this->collProviderSchedulesPartial && !$this->isNew();
-        if (null === $this->collProviderSchedules || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collProviderSchedules) {
-                return 0;
-            }
-
-            if ($partial && !$criteria) {
-                return count($this->getProviderSchedules());
-            }
-
-            $query = ChildProviderScheduleQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByWorkPlan($this)
-                ->count($con);
-        }
-
-        return count($this->collProviderSchedules);
-    }
-
-    /**
-     * Method called to associate a ChildProviderSchedule object to this object
-     * through the ChildProviderSchedule foreign key attribute.
-     *
-     * @param  ChildProviderSchedule $l ChildProviderSchedule
-     * @return $this|\TheFarm\Models\WorkPlan The current object (for fluent API support)
-     */
-    public function addProviderSchedule(ChildProviderSchedule $l)
-    {
-        if ($this->collProviderSchedules === null) {
-            $this->initProviderSchedules();
-            $this->collProviderSchedulesPartial = true;
-        }
-
-        if (!$this->collProviderSchedules->contains($l)) {
-            $this->doAddProviderSchedule($l);
-
-            if ($this->providerSchedulesScheduledForDeletion and $this->providerSchedulesScheduledForDeletion->contains($l)) {
-                $this->providerSchedulesScheduledForDeletion->remove($this->providerSchedulesScheduledForDeletion->search($l));
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param ChildProviderSchedule $providerSchedule The ChildProviderSchedule object to add.
-     */
-    protected function doAddProviderSchedule(ChildProviderSchedule $providerSchedule)
-    {
-        $this->collProviderSchedules[]= $providerSchedule;
-        $providerSchedule->setWorkPlan($this);
-    }
-
-    /**
-     * @param  ChildProviderSchedule $providerSchedule The ChildProviderSchedule object to remove.
-     * @return $this|ChildWorkPlan The current object (for fluent API support)
-     */
-    public function removeProviderSchedule(ChildProviderSchedule $providerSchedule)
-    {
-        if ($this->getProviderSchedules()->contains($providerSchedule)) {
-            $pos = $this->collProviderSchedules->search($providerSchedule);
-            $this->collProviderSchedules->remove($pos);
-            if (null === $this->providerSchedulesScheduledForDeletion) {
-                $this->providerSchedulesScheduledForDeletion = clone $this->collProviderSchedules;
-                $this->providerSchedulesScheduledForDeletion->clear();
-            }
-            $this->providerSchedulesScheduledForDeletion[]= $providerSchedule;
-            $providerSchedule->setWorkPlan(null);
-        }
-
-        return $this;
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this WorkPlan is new, it will return
-     * an empty collection; or if this WorkPlan has previously
-     * been saved, it will retrieve related ProviderSchedules from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in WorkPlan.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildProviderSchedule[] List of ChildProviderSchedule objects
-     */
-    public function getProviderSchedulesJoinContact(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
-    {
-        $query = ChildProviderScheduleQuery::create(null, $criteria);
-        $query->joinWith('Contact', $joinBehavior);
-
-        return $this->getProviderSchedules($query, $con);
-    }
-
-    /**
-     * Clears out the collContactStartDateEndDates collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addContactStartDateEndDates()
-     */
-    public function clearContactStartDateEndDates()
-    {
-        $this->collContactStartDateEndDates = null; // important to set this to NULL since that means it is uninitialized
-    }
-
-    /**
-     * Initializes the combinationCollContactStartDateEndDates crossRef collection.
-     *
-     * By default this just sets the combinationCollContactStartDateEndDates collection to an empty collection (like clearContactStartDateEndDates());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @return void
-     */
-    public function initContactStartDateEndDates()
-    {
-        $this->combinationCollContactStartDateEndDates = new ObjectCombinationCollection;
-        $this->combinationCollContactStartDateEndDatesPartial = true;
-    }
-
-    /**
-     * Checks if the combinationCollContactStartDateEndDates collection is loaded.
-     *
-     * @return bool
-     */
-    public function isContactStartDateEndDatesLoaded()
-    {
-        return null !== $this->combinationCollContactStartDateEndDates;
-    }
-
-    /**
-     * Returns a new query object pre configured with filters from current object and given arguments to query the database.
-     *
-     * @param string $startDate,
-     * @param string $endDate
-     * @param Criteria $criteria
-     *
-     * @return ChildContactQuery
-     */
-    public function createContactsQuery($startDate = null, $endDate = null, Criteria $criteria = null)
-    {
-        $criteria = ChildContactQuery::create($criteria)
-            ->filterByWorkPlan($this);
-
-        $providerScheduleQuery = $criteria->useProviderScheduleQuery();
-
-        if (null !== $startDate) {
-            $providerScheduleQuery->filterByStartDate($startDate);
-        }
-
-        if (null !== $endDate) {
-            $providerScheduleQuery->filterByEndDate($endDate);
-        }
-
-        $providerScheduleQuery->endUse();
-
-        return $criteria;
-    }
-
-    /**
-     * Gets a combined collection of ChildContact objects related by a many-to-many relationship
-     * to the current object by way of the tf_user_work_plan_time cross-reference table.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildWorkPlan is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param      Criteria $criteria Optional query object to filter the query
-     * @param      ConnectionInterface $con Optional connection object
-     *
-     * @return ObjectCombinationCollection Combination list of ChildContact objects
-     */
-    public function getContactStartDateEndDates($criteria = null, ConnectionInterface $con = null)
-    {
-        $partial = $this->combinationCollContactStartDateEndDatesPartial && !$this->isNew();
-        if (null === $this->combinationCollContactStartDateEndDates || null !== $criteria || $partial) {
-            if ($this->isNew()) {
-                // return empty collection
-                if (null === $this->combinationCollContactStartDateEndDates) {
-                    $this->initContactStartDateEndDates();
-                }
-            } else {
-
-                $query = ChildProviderScheduleQuery::create(null, $criteria)
-                    ->filterByWorkPlan($this)
-                    ->joinContact()
-                ;
-
-                $items = $query->find($con);
-                $combinationCollContactStartDateEndDates = new ObjectCombinationCollection();
-                foreach ($items as $item) {
-                    $combination = [];
-
-                    $combination[] = $item->getContact();
-                    $combination[] = $item->getStartDate();
-                    $combination[] = $item->getEndDate();
-                    $combinationCollContactStartDateEndDates[] = $combination;
-                }
-
-                if (null !== $criteria) {
-                    return $combinationCollContactStartDateEndDates;
-                }
-
-                if ($partial && $this->combinationCollContactStartDateEndDates) {
-                    //make sure that already added objects gets added to the list of the database.
-                    foreach ($this->combinationCollContactStartDateEndDates as $obj) {
-                        if (!call_user_func_array([$combinationCollContactStartDateEndDates, 'contains'], $obj)) {
-                            $combinationCollContactStartDateEndDates[] = $obj;
-                        }
-                    }
-                }
-
-                $this->combinationCollContactStartDateEndDates = $combinationCollContactStartDateEndDates;
-                $this->combinationCollContactStartDateEndDatesPartial = false;
-            }
-        }
-
-        return $this->combinationCollContactStartDateEndDates;
-    }
-
-    /**
-     * Returns a not cached ObjectCollection of ChildContact objects. This will hit always the databases.
-     * If you have attached new ChildContact object to this object you need to call `save` first to get
-     * the correct return value. Use getContactStartDateEndDates() to get the current internal state.
-     *
-     * @param string $startDate,
-     * @param string $endDate
-     * @param Criteria $criteria
-     * @param ConnectionInterface $con
-     *
-     * @return ChildContact[]|ObjectCollection
-     */
-    public function getContacts($startDate = null, $endDate = null, Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        return $this->createContactsQuery($startDate, $endDate, $criteria)->find($con);
-    }
-
-    /**
-     * Sets a collection of ChildContact objects related by a many-to-many relationship
-     * to the current object by way of the tf_user_work_plan_time cross-reference table.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param  Collection $contactStartDateEndDates A Propel collection.
-     * @param  ConnectionInterface $con Optional connection object
-     * @return $this|ChildWorkPlan The current object (for fluent API support)
-     */
-    public function setContactStartDateEndDates(Collection $contactStartDateEndDates, ConnectionInterface $con = null)
-    {
-        $this->clearContactStartDateEndDates();
-        $currentContactStartDateEndDates = $this->getContactStartDateEndDates();
-
-        $combinationCollContactStartDateEndDatesScheduledForDeletion = $currentContactStartDateEndDates->diff($contactStartDateEndDates);
-
-        foreach ($combinationCollContactStartDateEndDatesScheduledForDeletion as $toDelete) {
-            call_user_func_array([$this, 'removeContactStartDateEndDate'], $toDelete);
-        }
-
-        foreach ($contactStartDateEndDates as $contactStartDateEndDate) {
-            if (!call_user_func_array([$currentContactStartDateEndDates, 'contains'], $contactStartDateEndDate)) {
-                call_user_func_array([$this, 'doAddContactStartDateEndDate'], $contactStartDateEndDate);
-            }
-        }
-
-        $this->combinationCollContactStartDateEndDatesPartial = false;
-        $this->combinationCollContactStartDateEndDates = $contactStartDateEndDates;
-
-        return $this;
-    }
-
-    /**
-     * Gets the number of ChildContact objects related by a many-to-many relationship
-     * to the current object by way of the tf_user_work_plan_time cross-reference table.
-     *
-     * @param      Criteria $criteria Optional query object to filter the query
-     * @param      boolean $distinct Set to true to force count distinct
-     * @param      ConnectionInterface $con Optional connection object
-     *
-     * @return int the number of related ChildContact objects
-     */
-    public function countContactStartDateEndDates(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
-    {
-        $partial = $this->combinationCollContactStartDateEndDatesPartial && !$this->isNew();
-        if (null === $this->combinationCollContactStartDateEndDates || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->combinationCollContactStartDateEndDates) {
-                return 0;
-            } else {
-
-                if ($partial && !$criteria) {
-                    return count($this->getContactStartDateEndDates());
-                }
-
-                $query = ChildProviderScheduleQuery::create(null, $criteria);
-                if ($distinct) {
-                    $query->distinct();
-                }
-
-                return $query
-                    ->filterByWorkPlan($this)
-                    ->count($con);
-            }
-        } else {
-            return count($this->combinationCollContactStartDateEndDates);
-        }
-    }
-
-    /**
-     * Returns the not cached count of ChildContact objects. This will hit always the databases.
-     * If you have attached new ChildContact object to this object you need to call `save` first to get
-     * the correct return value. Use getContactStartDateEndDates() to get the current internal state.
-     *
-     * @param string $startDate,
-     * @param string $endDate
-     * @param Criteria $criteria
-     * @param ConnectionInterface $con
-     *
-     * @return integer
-     */
-    public function countContacts($startDate = null, $endDate = null, Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        return $this->createContactsQuery($startDate, $endDate, $criteria)->count($con);
-    }
-
-    /**
-     * Associate a ChildContact to this object
-     * through the tf_user_work_plan_time cross reference table.
-     *
-     * @param ChildContact $contact,
-     * @param string $startDate,
-     * @param string $endDate
-     * @return ChildWorkPlan The current object (for fluent API support)
-     */
-    public function addContact(ChildContact $contact, $startDate, $endDate)
-    {
-        if ($this->combinationCollContactStartDateEndDates === null) {
-            $this->initContactStartDateEndDates();
-        }
-
-        if (!$this->getContactStartDateEndDates()->contains($contact, $startDate, $endDate)) {
-            // only add it if the **same** object is not already associated
-            $this->combinationCollContactStartDateEndDates->push($contact, $startDate, $endDate);
-            $this->doAddContactStartDateEndDate($contact, $startDate, $endDate);
-        }
-
-        return $this;
-    }
-
-    /**
-     *
-     * @param ChildContact $contact,
-     * @param string $startDate,
-     * @param string $endDate
-     */
-    protected function doAddContactStartDateEndDate(ChildContact $contact, $startDate, $endDate)
-    {
-        $providerSchedule = new ChildProviderSchedule();
-
-        $providerSchedule->setContact($contact);
-        $providerSchedule->setStartDate($startDate);
-
-        $providerSchedule->setEndDate($endDate);
-
-
-        $providerSchedule->setWorkPlan($this);
-
-        $this->addProviderSchedule($providerSchedule);
-
-        // set the back reference to this object directly as using provided method either results
-        // in endless loop or in multiple relations
-        if ($contact->isWorkPlanStartDateEndDatesLoaded()) {
-            $contact->initWorkPlanStartDateEndDates();
-            $contact->getWorkPlanStartDateEndDates()->push($this, $startDate, $endDate);
-        } elseif (!$contact->getWorkPlanStartDateEndDates()->contains($this, $startDate, $endDate)) {
-            $contact->getWorkPlanStartDateEndDates()->push($this, $startDate, $endDate);
-        }
-
-    }
-
-    /**
-     * Remove contact, startDate, endDate of this object
-     * through the tf_user_work_plan_time cross reference table.
-     *
-     * @param ChildContact $contact,
-     * @param string $startDate,
-     * @param string $endDate
-     * @return ChildWorkPlan The current object (for fluent API support)
-     */
-    public function removeContactStartDateEndDate(ChildContact $contact, $startDate, $endDate)
-    {
-        if ($this->getContactStartDateEndDates()->contains($contact, $startDate, $endDate)) {
-            $providerSchedule = new ChildProviderSchedule();
-            $providerSchedule->setContact($contact);
-            if ($contact->isWorkPlanStartDateEndDatesLoaded()) {
-                //remove the back reference if available
-                $contact->getWorkPlanStartDateEndDates()->removeObject($this, $startDate, $endDate);
-            }
-
-            $providerSchedule->setStartDate($startDate);
-            $providerSchedule->setEndDate($endDate);
-            $providerSchedule->setWorkPlan($this);
-            $this->removeProviderSchedule(clone $providerSchedule);
-            $providerSchedule->clear();
-
-            $this->combinationCollContactStartDateEndDates->remove($this->combinationCollContactStartDateEndDates->search($contact, $startDate, $endDate));
-
-            if (null === $this->combinationCollContactStartDateEndDatesScheduledForDeletion) {
-                $this->combinationCollContactStartDateEndDatesScheduledForDeletion = clone $this->combinationCollContactStartDateEndDates;
-                $this->combinationCollContactStartDateEndDatesScheduledForDeletion->clear();
-            }
-
-            $this->combinationCollContactStartDateEndDatesScheduledForDeletion->push($contact, $startDate, $endDate);
-        }
-
-
-        return $this;
-    }
-
-    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
@@ -2039,21 +1333,9 @@ abstract class WorkPlan implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
-            if ($this->collProviderSchedules) {
-                foreach ($this->collProviderSchedules as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
-            if ($this->combinationCollContactStartDateEndDates) {
-                foreach ($this->combinationCollContactStartDateEndDates as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
         } // if ($deep)
 
         $this->collUserWorkPlanDays = null;
-        $this->collProviderSchedules = null;
-        $this->combinationCollContactStartDateEndDates = null;
     }
 
     /**

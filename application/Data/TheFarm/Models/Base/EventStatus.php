@@ -1594,10 +1594,10 @@ abstract class EventStatus implements ActiveRecordInterface
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return ObjectCollection|ChildBookingEvent[] List of ChildBookingEvent objects
      */
-    public function getBookingEventsJoinContactRelatedByAuthorId(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getBookingEventsJoinUserRelatedByAuthorId(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ChildBookingEventQuery::create(null, $criteria);
-        $query->joinWith('ContactRelatedByAuthorId', $joinBehavior);
+        $query->joinWith('UserRelatedByAuthorId', $joinBehavior);
 
         return $this->getBookingEvents($query, $con);
     }
@@ -1644,10 +1644,10 @@ abstract class EventStatus implements ActiveRecordInterface
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return ObjectCollection|ChildBookingEvent[] List of ChildBookingEvent objects
      */
-    public function getBookingEventsJoinContactRelatedByCalledBy(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getBookingEventsJoinUserRelatedByCalledBy(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ChildBookingEventQuery::create(null, $criteria);
-        $query->joinWith('ContactRelatedByCalledBy', $joinBehavior);
+        $query->joinWith('UserRelatedByCalledBy', $joinBehavior);
 
         return $this->getBookingEvents($query, $con);
     }
@@ -1669,10 +1669,10 @@ abstract class EventStatus implements ActiveRecordInterface
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return ObjectCollection|ChildBookingEvent[] List of ChildBookingEvent objects
      */
-    public function getBookingEventsJoinContactRelatedByCancelledBy(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getBookingEventsJoinUserRelatedByCancelledBy(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ChildBookingEventQuery::create(null, $criteria);
-        $query->joinWith('ContactRelatedByCancelledBy', $joinBehavior);
+        $query->joinWith('UserRelatedByCancelledBy', $joinBehavior);
 
         return $this->getBookingEvents($query, $con);
     }
@@ -1694,10 +1694,10 @@ abstract class EventStatus implements ActiveRecordInterface
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return ObjectCollection|ChildBookingEvent[] List of ChildBookingEvent objects
      */
-    public function getBookingEventsJoinContactRelatedByDeletedBy(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getBookingEventsJoinUserRelatedByDeletedBy(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ChildBookingEventQuery::create(null, $criteria);
-        $query->joinWith('ContactRelatedByDeletedBy', $joinBehavior);
+        $query->joinWith('UserRelatedByDeletedBy', $joinBehavior);
 
         return $this->getBookingEvents($query, $con);
     }
@@ -1994,10 +1994,10 @@ abstract class EventStatus implements ActiveRecordInterface
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return ObjectCollection|ChildBooking[] List of ChildBooking objects
      */
-    public function getBookingsJoinContactRelatedByAuthorId(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getBookingsJoinUser(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ChildBookingQuery::create(null, $criteria);
-        $query->joinWith('ContactRelatedByAuthorId', $joinBehavior);
+        $query->joinWith('User', $joinBehavior);
 
         return $this->getBookings($query, $con);
     }
@@ -2019,10 +2019,10 @@ abstract class EventStatus implements ActiveRecordInterface
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return ObjectCollection|ChildBooking[] List of ChildBooking objects
      */
-    public function getBookingsJoinContactRelatedByGuestId(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getBookingsJoinContact(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ChildBookingQuery::create(null, $criteria);
-        $query->joinWith('ContactRelatedByGuestId', $joinBehavior);
+        $query->joinWith('Contact', $joinBehavior);
 
         return $this->getBookings($query, $con);
     }

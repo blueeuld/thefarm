@@ -46,17 +46,17 @@ use TheFarm\Models\Map\EventUserTableMap;
  * @method     ChildEventUserQuery rightJoinWithBookingEvent() Adds a RIGHT JOIN clause and with to the query using the BookingEvent relation
  * @method     ChildEventUserQuery innerJoinWithBookingEvent() Adds a INNER JOIN clause and with to the query using the BookingEvent relation
  *
- * @method     ChildEventUserQuery leftJoinContact($relationAlias = null) Adds a LEFT JOIN clause to the query using the Contact relation
- * @method     ChildEventUserQuery rightJoinContact($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Contact relation
- * @method     ChildEventUserQuery innerJoinContact($relationAlias = null) Adds a INNER JOIN clause to the query using the Contact relation
+ * @method     ChildEventUserQuery leftJoinUser($relationAlias = null) Adds a LEFT JOIN clause to the query using the User relation
+ * @method     ChildEventUserQuery rightJoinUser($relationAlias = null) Adds a RIGHT JOIN clause to the query using the User relation
+ * @method     ChildEventUserQuery innerJoinUser($relationAlias = null) Adds a INNER JOIN clause to the query using the User relation
  *
- * @method     ChildEventUserQuery joinWithContact($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Contact relation
+ * @method     ChildEventUserQuery joinWithUser($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the User relation
  *
- * @method     ChildEventUserQuery leftJoinWithContact() Adds a LEFT JOIN clause and with to the query using the Contact relation
- * @method     ChildEventUserQuery rightJoinWithContact() Adds a RIGHT JOIN clause and with to the query using the Contact relation
- * @method     ChildEventUserQuery innerJoinWithContact() Adds a INNER JOIN clause and with to the query using the Contact relation
+ * @method     ChildEventUserQuery leftJoinWithUser() Adds a LEFT JOIN clause and with to the query using the User relation
+ * @method     ChildEventUserQuery rightJoinWithUser() Adds a RIGHT JOIN clause and with to the query using the User relation
+ * @method     ChildEventUserQuery innerJoinWithUser() Adds a INNER JOIN clause and with to the query using the User relation
  *
- * @method     \TheFarm\Models\BookingEventQuery|\TheFarm\Models\ContactQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \TheFarm\Models\BookingEventQuery|\TheFarm\Models\UserQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildEventUser findOne(ConnectionInterface $con = null) Return the first ChildEventUser matching the query
  * @method     ChildEventUser findOneOrCreate(ConnectionInterface $con = null) Return the first ChildEventUser matching the query, or a new ChildEventUser object populated from the query conditions when no match is found
@@ -329,7 +329,7 @@ abstract class EventUserQuery extends ModelCriteria
      * $query->filterByUserId(array('min' => 12)); // WHERE staff_id > 12
      * </code>
      *
-     * @see       filterByContact()
+     * @see       filterByUser()
      *
      * @param     mixed $userId The value to use as filter.
      *              Use scalar values for equality.
@@ -467,44 +467,44 @@ abstract class EventUserQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \TheFarm\Models\Contact object
+     * Filter the query by a related \TheFarm\Models\User object
      *
-     * @param \TheFarm\Models\Contact|ObjectCollection $contact The related object(s) to use as filter
+     * @param \TheFarm\Models\User|ObjectCollection $user The related object(s) to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
      * @return ChildEventUserQuery The current query, for fluid interface
      */
-    public function filterByContact($contact, $comparison = null)
+    public function filterByUser($user, $comparison = null)
     {
-        if ($contact instanceof \TheFarm\Models\Contact) {
+        if ($user instanceof \TheFarm\Models\User) {
             return $this
-                ->addUsingAlias(EventUserTableMap::COL_STAFF_ID, $contact->getContactId(), $comparison);
-        } elseif ($contact instanceof ObjectCollection) {
+                ->addUsingAlias(EventUserTableMap::COL_STAFF_ID, $user->getUserId(), $comparison);
+        } elseif ($user instanceof ObjectCollection) {
             if (null === $comparison) {
                 $comparison = Criteria::IN;
             }
 
             return $this
-                ->addUsingAlias(EventUserTableMap::COL_STAFF_ID, $contact->toKeyValue('PrimaryKey', 'ContactId'), $comparison);
+                ->addUsingAlias(EventUserTableMap::COL_STAFF_ID, $user->toKeyValue('PrimaryKey', 'UserId'), $comparison);
         } else {
-            throw new PropelException('filterByContact() only accepts arguments of type \TheFarm\Models\Contact or Collection');
+            throw new PropelException('filterByUser() only accepts arguments of type \TheFarm\Models\User or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the Contact relation
+     * Adds a JOIN clause to the query using the User relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildEventUserQuery The current query, for fluid interface
      */
-    public function joinContact($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinUser($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Contact');
+        $relationMap = $tableMap->getRelation('User');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -519,14 +519,14 @@ abstract class EventUserQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'Contact');
+            $this->addJoinObject($join, 'User');
         }
 
         return $this;
     }
 
     /**
-     * Use the Contact relation Contact object
+     * Use the User relation User object
      *
      * @see useQuery()
      *
@@ -534,13 +534,13 @@ abstract class EventUserQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \TheFarm\Models\ContactQuery A secondary query class using the current class as primary query
+     * @return \TheFarm\Models\UserQuery A secondary query class using the current class as primary query
      */
-    public function useContactQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useUserQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinContact($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Contact', '\TheFarm\Models\ContactQuery');
+            ->joinUser($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'User', '\TheFarm\Models\UserQuery');
     }
 
     /**

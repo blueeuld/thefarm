@@ -275,7 +275,7 @@ class ItemTableMap extends TableMap
     1 => ':item_id',
   ),
 ), null, null, 'PackageItems', false);
-        $this->addRelation('Contact', '\\TheFarm\\Models\\Contact', RelationMap::MANY_TO_MANY, array(), null, null, 'Contacts');
+        $this->addRelation('Contact', '\\TheFarm\\Models\\User', RelationMap::MANY_TO_MANY, array(), null, null, 'Contacts');
     } // buildRelations()
 
     /**

@@ -17,8 +17,8 @@ use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
 use Propel\Runtime\Util\PropelDateTime;
-use TheFarm\Models\Contact as ChildContact;
-use TheFarm\Models\ContactQuery as ChildContactQuery;
+use TheFarm\Models\User as ChildUser;
+use TheFarm\Models\UserQuery as ChildUserQuery;
 use TheFarm\Models\UserWorkPlanDayQuery as ChildUserWorkPlanDayQuery;
 use TheFarm\Models\WorkPlan as ChildWorkPlan;
 use TheFarm\Models\WorkPlanQuery as ChildWorkPlanQuery;
@@ -92,7 +92,7 @@ abstract class UserWorkPlanDay implements ActiveRecordInterface
     protected $aWorkPlan;
 
     /**
-     * @var        ChildContact
+     * @var        ChildUser
      */
     protected $aContact;
 
@@ -386,7 +386,7 @@ abstract class UserWorkPlanDay implements ActiveRecordInterface
             $this->modifiedColumns[UserWorkPlanDayTableMap::COL_CONTACT_ID] = true;
         }
 
-        if ($this->aContact !== null && $this->aContact->getContactId() !== $v) {
+        if ($this->aContact !== null && $this->aContact->getUserId() !== $v) {
             $this->aContact = null;
         }
 
@@ -514,7 +514,7 @@ abstract class UserWorkPlanDay implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-        if ($this->aContact !== null && $this->contact_id !== $this->aContact->getContactId()) {
+        if ($this->aContact !== null && $this->contact_id !== $this->aContact->getUserId()) {
             $this->aContact = null;
         }
         if ($this->aWorkPlan !== null && $this->work_plan_cd !== $this->aWorkPlan->getWorkPlanCd()) {
@@ -872,10 +872,10 @@ abstract class UserWorkPlanDay implements ActiveRecordInterface
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'contact';
+                        $key = 'user';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = 'tf_contacts';
+                        $key = 'tf_users';
                         break;
                     default:
                         $key = 'Contact';
@@ -1182,24 +1182,24 @@ abstract class UserWorkPlanDay implements ActiveRecordInterface
     }
 
     /**
-     * Declares an association between this object and a ChildContact object.
+     * Declares an association between this object and a ChildUser object.
      *
-     * @param  ChildContact $v
+     * @param  ChildUser $v
      * @return $this|\TheFarm\Models\UserWorkPlanDay The current object (for fluent API support)
      * @throws PropelException
      */
-    public function setContact(ChildContact $v = null)
+    public function setContact(ChildUser $v = null)
     {
         if ($v === null) {
             $this->setContactId(NULL);
         } else {
-            $this->setContactId($v->getContactId());
+            $this->setContactId($v->getUserId());
         }
 
         $this->aContact = $v;
 
         // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildContact object, it will not be re-added.
+        // If this object has already been added to the ChildUser object, it will not be re-added.
         if ($v !== null) {
             $v->addUserWorkPlanDay($this);
         }
@@ -1210,16 +1210,16 @@ abstract class UserWorkPlanDay implements ActiveRecordInterface
 
 
     /**
-     * Get the associated ChildContact object
+     * Get the associated ChildUser object
      *
      * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildContact The associated ChildContact object.
+     * @return ChildUser The associated ChildUser object.
      * @throws PropelException
      */
     public function getContact(ConnectionInterface $con = null)
     {
         if ($this->aContact === null && ($this->contact_id !== null)) {
-            $this->aContact = ChildContactQuery::create()->findPk($this->contact_id, $con);
+            $this->aContact = ChildUserQuery::create()->findPk($this->contact_id, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
                 to this object.  This level of coupling may, however, be

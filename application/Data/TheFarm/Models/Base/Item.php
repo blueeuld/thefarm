@@ -22,8 +22,6 @@ use TheFarm\Models\BookingEventQuery as ChildBookingEventQuery;
 use TheFarm\Models\BookingItem as ChildBookingItem;
 use TheFarm\Models\BookingItemQuery as ChildBookingItemQuery;
 use TheFarm\Models\BookingQuery as ChildBookingQuery;
-use TheFarm\Models\Contact as ChildContact;
-use TheFarm\Models\ContactQuery as ChildContactQuery;
 use TheFarm\Models\Files as ChildFiles;
 use TheFarm\Models\FilesQuery as ChildFilesQuery;
 use TheFarm\Models\Item as ChildItem;
@@ -38,6 +36,8 @@ use TheFarm\Models\ItemsRelatedUser as ChildItemsRelatedUser;
 use TheFarm\Models\ItemsRelatedUserQuery as ChildItemsRelatedUserQuery;
 use TheFarm\Models\PackageItem as ChildPackageItem;
 use TheFarm\Models\PackageItemQuery as ChildPackageItemQuery;
+use TheFarm\Models\User as ChildUser;
+use TheFarm\Models\UserQuery as ChildUserQuery;
 use TheFarm\Models\Map\BookingEventTableMap;
 use TheFarm\Models\Map\BookingItemTableMap;
 use TheFarm\Models\Map\BookingTableMap;
@@ -245,7 +245,7 @@ abstract class Item implements ActiveRecordInterface
     protected $collPackageItemsPartial;
 
     /**
-     * @var        ObjectCollection|ChildContact[] Cross Collection to store aggregation of ChildContact objects.
+     * @var        ObjectCollection|ChildUser[] Cross Collection to store aggregation of ChildUser objects.
      */
     protected $collContacts;
 
@@ -264,7 +264,7 @@ abstract class Item implements ActiveRecordInterface
 
     /**
      * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildContact[]
+     * @var ObjectCollection|ChildUser[]
      */
     protected $contactsScheduledForDeletion = null;
 
@@ -1297,7 +1297,7 @@ abstract class Item implements ActiveRecordInterface
                         $entryPk = [];
 
                         $entryPk[0] = $this->getItemId();
-                        $entryPk[1] = $entry->getContactId();
+                        $entryPk[1] = $entry->getUserId();
                         $pks[] = $entryPk;
                     }
 
@@ -2616,10 +2616,10 @@ abstract class Item implements ActiveRecordInterface
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return ObjectCollection|ChildBookingEvent[] List of ChildBookingEvent objects
      */
-    public function getBookingEventsJoinContactRelatedByAuthorId(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getBookingEventsJoinUserRelatedByAuthorId(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ChildBookingEventQuery::create(null, $criteria);
-        $query->joinWith('ContactRelatedByAuthorId', $joinBehavior);
+        $query->joinWith('UserRelatedByAuthorId', $joinBehavior);
 
         return $this->getBookingEvents($query, $con);
     }
@@ -2666,10 +2666,10 @@ abstract class Item implements ActiveRecordInterface
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return ObjectCollection|ChildBookingEvent[] List of ChildBookingEvent objects
      */
-    public function getBookingEventsJoinContactRelatedByCalledBy(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getBookingEventsJoinUserRelatedByCalledBy(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ChildBookingEventQuery::create(null, $criteria);
-        $query->joinWith('ContactRelatedByCalledBy', $joinBehavior);
+        $query->joinWith('UserRelatedByCalledBy', $joinBehavior);
 
         return $this->getBookingEvents($query, $con);
     }
@@ -2691,10 +2691,10 @@ abstract class Item implements ActiveRecordInterface
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return ObjectCollection|ChildBookingEvent[] List of ChildBookingEvent objects
      */
-    public function getBookingEventsJoinContactRelatedByCancelledBy(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getBookingEventsJoinUserRelatedByCancelledBy(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ChildBookingEventQuery::create(null, $criteria);
-        $query->joinWith('ContactRelatedByCancelledBy', $joinBehavior);
+        $query->joinWith('UserRelatedByCancelledBy', $joinBehavior);
 
         return $this->getBookingEvents($query, $con);
     }
@@ -2716,10 +2716,10 @@ abstract class Item implements ActiveRecordInterface
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return ObjectCollection|ChildBookingEvent[] List of ChildBookingEvent objects
      */
-    public function getBookingEventsJoinContactRelatedByDeletedBy(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getBookingEventsJoinUserRelatedByDeletedBy(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ChildBookingEventQuery::create(null, $criteria);
-        $query->joinWith('ContactRelatedByDeletedBy', $joinBehavior);
+        $query->joinWith('UserRelatedByDeletedBy', $joinBehavior);
 
         return $this->getBookingEvents($query, $con);
     }
@@ -3266,10 +3266,10 @@ abstract class Item implements ActiveRecordInterface
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return ObjectCollection|ChildBooking[] List of ChildBooking objects
      */
-    public function getBookingsJoinContactRelatedByAuthorId(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getBookingsJoinUser(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ChildBookingQuery::create(null, $criteria);
-        $query->joinWith('ContactRelatedByAuthorId', $joinBehavior);
+        $query->joinWith('User', $joinBehavior);
 
         return $this->getBookings($query, $con);
     }
@@ -3291,10 +3291,10 @@ abstract class Item implements ActiveRecordInterface
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return ObjectCollection|ChildBooking[] List of ChildBooking objects
      */
-    public function getBookingsJoinContactRelatedByGuestId(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getBookingsJoinContact(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ChildBookingQuery::create(null, $criteria);
-        $query->joinWith('ContactRelatedByGuestId', $joinBehavior);
+        $query->joinWith('Contact', $joinBehavior);
 
         return $this->getBookings($query, $con);
     }
@@ -4643,7 +4643,7 @@ abstract class Item implements ActiveRecordInterface
 
         $this->collContacts = new $collectionClassName;
         $this->collContactsPartial = true;
-        $this->collContacts->setModel('\TheFarm\Models\Contact');
+        $this->collContacts->setModel('\TheFarm\Models\User');
     }
 
     /**
@@ -4657,7 +4657,7 @@ abstract class Item implements ActiveRecordInterface
     }
 
     /**
-     * Gets a collection of ChildContact objects related by a many-to-many relationship
+     * Gets a collection of ChildUser objects related by a many-to-many relationship
      * to the current object by way of the tf_items_related_users cross-reference table.
      *
      * If the $criteria is not null, it is used to always fetch the results from the database.
@@ -4669,7 +4669,7 @@ abstract class Item implements ActiveRecordInterface
      * @param      Criteria $criteria Optional query object to filter the query
      * @param      ConnectionInterface $con Optional connection object
      *
-     * @return ObjectCollection|ChildContact[] List of ChildContact objects
+     * @return ObjectCollection|ChildUser[] List of ChildUser objects
      */
     public function getContacts(Criteria $criteria = null, ConnectionInterface $con = null)
     {
@@ -4682,7 +4682,7 @@ abstract class Item implements ActiveRecordInterface
                 }
             } else {
 
-                $query = ChildContactQuery::create(null, $criteria)
+                $query = ChildUserQuery::create(null, $criteria)
                     ->filterByItem($this);
                 $collContacts = $query->find($con);
                 if (null !== $criteria) {
@@ -4707,7 +4707,7 @@ abstract class Item implements ActiveRecordInterface
     }
 
     /**
-     * Sets a collection of Contact objects related by a many-to-many relationship
+     * Sets a collection of User objects related by a many-to-many relationship
      * to the current object by way of the tf_items_related_users cross-reference table.
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
@@ -4740,14 +4740,14 @@ abstract class Item implements ActiveRecordInterface
     }
 
     /**
-     * Gets the number of Contact objects related by a many-to-many relationship
+     * Gets the number of User objects related by a many-to-many relationship
      * to the current object by way of the tf_items_related_users cross-reference table.
      *
      * @param      Criteria $criteria Optional query object to filter the query
      * @param      boolean $distinct Set to true to force count distinct
      * @param      ConnectionInterface $con Optional connection object
      *
-     * @return int the number of related Contact objects
+     * @return int the number of related User objects
      */
     public function countContacts(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
     {
@@ -4761,7 +4761,7 @@ abstract class Item implements ActiveRecordInterface
                     return count($this->getContacts());
                 }
 
-                $query = ChildContactQuery::create(null, $criteria);
+                $query = ChildUserQuery::create(null, $criteria);
                 if ($distinct) {
                     $query->distinct();
                 }
@@ -4776,13 +4776,13 @@ abstract class Item implements ActiveRecordInterface
     }
 
     /**
-     * Associate a ChildContact to this object
+     * Associate a ChildUser to this object
      * through the tf_items_related_users cross reference table.
      *
-     * @param ChildContact $contact
+     * @param ChildUser $contact
      * @return ChildItem The current object (for fluent API support)
      */
-    public function addContact(ChildContact $contact)
+    public function addContact(ChildUser $contact)
     {
         if ($this->collContacts === null) {
             $this->initContacts();
@@ -4799,9 +4799,9 @@ abstract class Item implements ActiveRecordInterface
 
     /**
      *
-     * @param ChildContact $contact
+     * @param ChildUser $contact
      */
-    protected function doAddContact(ChildContact $contact)
+    protected function doAddContact(ChildUser $contact)
     {
         $itemsRelatedUser = new ChildItemsRelatedUser();
 
@@ -4826,10 +4826,10 @@ abstract class Item implements ActiveRecordInterface
      * Remove contact of this object
      * through the tf_items_related_users cross reference table.
      *
-     * @param ChildContact $contact
+     * @param ChildUser $contact
      * @return ChildItem The current object (for fluent API support)
      */
-    public function removeContact(ChildContact $contact)
+    public function removeContact(ChildUser $contact)
     {
         if ($this->getContacts()->contains($contact)) {
             $itemsRelatedUser = new ChildItemsRelatedUser();

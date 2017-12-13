@@ -147,14 +147,6 @@ class WorkPlanTableMap extends TableMap
     1 => ':work_plan_cd',
   ),
 ), null, null, 'UserWorkPlanDays', false);
-        $this->addRelation('ProviderSchedule', '\\TheFarm\\Models\\ProviderSchedule', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':work_plan_cd',
-    1 => ':work_plan_cd',
-  ),
-), null, null, 'ProviderSchedules', false);
-        $this->addRelation('Contact', '\\TheFarm\\Models\\Contact', RelationMap::MANY_TO_MANY, array(), null, null, 'Contacts');
     } // buildRelations()
 
     /**

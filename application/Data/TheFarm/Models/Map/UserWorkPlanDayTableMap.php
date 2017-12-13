@@ -137,7 +137,7 @@ class UserWorkPlanDayTableMap extends TableMap
         $this->setPackage('TheFarm.Models');
         $this->setUseIdGenerator(false);
         // columns
-        $this->addForeignKey('contact_id', 'ContactId', 'INTEGER', 'tf_contacts', 'contact_id', true, null, null);
+        $this->addForeignKey('contact_id', 'ContactId', 'INTEGER', 'tf_users', 'user_id', true, null, null);
         $this->addColumn('date', 'Date', 'DATE', true, null, null);
         $this->addForeignKey('work_plan_cd', 'WorkCodeCd', 'VARCHAR', 'tf_work_plan', 'work_plan_cd', true, 32, null);
     } // initialize()
@@ -154,11 +154,11 @@ class UserWorkPlanDayTableMap extends TableMap
     1 => ':work_plan_cd',
   ),
 ), null, null, null, false);
-        $this->addRelation('Contact', '\\TheFarm\\Models\\Contact', RelationMap::MANY_TO_ONE, array (
+        $this->addRelation('Contact', '\\TheFarm\\Models\\User', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
     0 => ':contact_id',
-    1 => ':contact_id',
+    1 => ':user_id',
   ),
 ), null, null, null, false);
     } // buildRelations()

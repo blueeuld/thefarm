@@ -34,6 +34,8 @@ use TheFarm\Models\Item as ChildItem;
 use TheFarm\Models\ItemQuery as ChildItemQuery;
 use TheFarm\Models\Package as ChildPackage;
 use TheFarm\Models\PackageQuery as ChildPackageQuery;
+use TheFarm\Models\User as ChildUser;
+use TheFarm\Models\UserQuery as ChildUserQuery;
 use TheFarm\Models\Map\BookingAttachmentTableMap;
 use TheFarm\Models\Map\BookingEventTableMap;
 use TheFarm\Models\Map\BookingItemTableMap;
@@ -207,14 +209,14 @@ abstract class Booking implements ActiveRecordInterface
     protected $is_active;
 
     /**
-     * @var        ChildContact
+     * @var        ChildUser
      */
-    protected $aContactRelatedByAuthorId;
+    protected $aUser;
 
     /**
      * @var        ChildContact
      */
-    protected $aContactRelatedByGuestId;
+    protected $aContact;
 
     /**
      * @var        ChildPackage
@@ -875,8 +877,8 @@ abstract class Booking implements ActiveRecordInterface
             $this->modifiedColumns[BookingTableMap::COL_GUEST_ID] = true;
         }
 
-        if ($this->aContactRelatedByGuestId !== null && $this->aContactRelatedByGuestId->getContactId() !== $v) {
-            $this->aContactRelatedByGuestId = null;
+        if ($this->aContact !== null && $this->aContact->getContactId() !== $v) {
+            $this->aContact = null;
         }
 
         return $this;
@@ -919,8 +921,8 @@ abstract class Booking implements ActiveRecordInterface
             $this->modifiedColumns[BookingTableMap::COL_AUTHOR_ID] = true;
         }
 
-        if ($this->aContactRelatedByAuthorId !== null && $this->aContactRelatedByAuthorId->getContactId() !== $v) {
-            $this->aContactRelatedByAuthorId = null;
+        if ($this->aUser !== null && $this->aUser->getUserId() !== $v) {
+            $this->aUser = null;
         }
 
         return $this;
@@ -1224,11 +1226,11 @@ abstract class Booking implements ActiveRecordInterface
         if ($this->aEventStatus !== null && $this->status !== $this->aEventStatus->getStatusCd()) {
             $this->aEventStatus = null;
         }
-        if ($this->aContactRelatedByGuestId !== null && $this->guest_id !== $this->aContactRelatedByGuestId->getContactId()) {
-            $this->aContactRelatedByGuestId = null;
+        if ($this->aContact !== null && $this->guest_id !== $this->aContact->getContactId()) {
+            $this->aContact = null;
         }
-        if ($this->aContactRelatedByAuthorId !== null && $this->author_id !== $this->aContactRelatedByAuthorId->getContactId()) {
-            $this->aContactRelatedByAuthorId = null;
+        if ($this->aUser !== null && $this->author_id !== $this->aUser->getUserId()) {
+            $this->aUser = null;
         }
         if ($this->aRoom !== null && $this->room_id !== $this->aRoom->getItemId()) {
             $this->aRoom = null;
@@ -1272,8 +1274,8 @@ abstract class Booking implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->aContactRelatedByAuthorId = null;
-            $this->aContactRelatedByGuestId = null;
+            $this->aUser = null;
+            $this->aContact = null;
             $this->aPackage = null;
             $this->aRoom = null;
             $this->aEventStatus = null;
@@ -1393,18 +1395,18 @@ abstract class Booking implements ActiveRecordInterface
             // method.  This object relates to these object(s) by a
             // foreign key reference.
 
-            if ($this->aContactRelatedByAuthorId !== null) {
-                if ($this->aContactRelatedByAuthorId->isModified() || $this->aContactRelatedByAuthorId->isNew()) {
-                    $affectedRows += $this->aContactRelatedByAuthorId->save($con);
+            if ($this->aUser !== null) {
+                if ($this->aUser->isModified() || $this->aUser->isNew()) {
+                    $affectedRows += $this->aUser->save($con);
                 }
-                $this->setContactRelatedByAuthorId($this->aContactRelatedByAuthorId);
+                $this->setUser($this->aUser);
             }
 
-            if ($this->aContactRelatedByGuestId !== null) {
-                if ($this->aContactRelatedByGuestId->isModified() || $this->aContactRelatedByGuestId->isNew()) {
-                    $affectedRows += $this->aContactRelatedByGuestId->save($con);
+            if ($this->aContact !== null) {
+                if ($this->aContact->isModified() || $this->aContact->isNew()) {
+                    $affectedRows += $this->aContact->save($con);
                 }
-                $this->setContactRelatedByGuestId($this->aContactRelatedByGuestId);
+                $this->setContact($this->aContact);
             }
 
             if ($this->aPackage !== null) {
@@ -1815,22 +1817,22 @@ abstract class Booking implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->aContactRelatedByAuthorId) {
+            if (null !== $this->aUser) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'contact';
+                        $key = 'user';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = 'tf_contacts';
+                        $key = 'tf_users';
                         break;
                     default:
-                        $key = 'Contact';
+                        $key = 'User';
                 }
 
-                $result[$key] = $this->aContactRelatedByAuthorId->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+                $result[$key] = $this->aUser->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
-            if (null !== $this->aContactRelatedByGuestId) {
+            if (null !== $this->aContact) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
@@ -1843,7 +1845,7 @@ abstract class Booking implements ActiveRecordInterface
                         $key = 'Contact';
                 }
 
-                $result[$key] = $this->aContactRelatedByGuestId->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+                $result[$key] = $this->aContact->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
             if (null !== $this->aPackage) {
 
@@ -2367,26 +2369,26 @@ abstract class Booking implements ActiveRecordInterface
     }
 
     /**
-     * Declares an association between this object and a ChildContact object.
+     * Declares an association between this object and a ChildUser object.
      *
-     * @param  ChildContact $v
+     * @param  ChildUser $v
      * @return $this|\TheFarm\Models\Booking The current object (for fluent API support)
      * @throws PropelException
      */
-    public function setContactRelatedByAuthorId(ChildContact $v = null)
+    public function setUser(ChildUser $v = null)
     {
         if ($v === null) {
             $this->setAuthorId(1);
         } else {
-            $this->setAuthorId($v->getContactId());
+            $this->setAuthorId($v->getUserId());
         }
 
-        $this->aContactRelatedByAuthorId = $v;
+        $this->aUser = $v;
 
         // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildContact object, it will not be re-added.
+        // If this object has already been added to the ChildUser object, it will not be re-added.
         if ($v !== null) {
-            $v->addBookingRelatedByAuthorId($this);
+            $v->addBooking($this);
         }
 
 
@@ -2395,26 +2397,26 @@ abstract class Booking implements ActiveRecordInterface
 
 
     /**
-     * Get the associated ChildContact object
+     * Get the associated ChildUser object
      *
      * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildContact The associated ChildContact object.
+     * @return ChildUser The associated ChildUser object.
      * @throws PropelException
      */
-    public function getContactRelatedByAuthorId(ConnectionInterface $con = null)
+    public function getUser(ConnectionInterface $con = null)
     {
-        if ($this->aContactRelatedByAuthorId === null && ($this->author_id !== null)) {
-            $this->aContactRelatedByAuthorId = ChildContactQuery::create()->findPk($this->author_id, $con);
+        if ($this->aUser === null && ($this->author_id !== null)) {
+            $this->aUser = ChildUserQuery::create()->findPk($this->author_id, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aContactRelatedByAuthorId->addBookingsRelatedByAuthorId($this);
+                $this->aUser->addBookings($this);
              */
         }
 
-        return $this->aContactRelatedByAuthorId;
+        return $this->aUser;
     }
 
     /**
@@ -2424,7 +2426,7 @@ abstract class Booking implements ActiveRecordInterface
      * @return $this|\TheFarm\Models\Booking The current object (for fluent API support)
      * @throws PropelException
      */
-    public function setContactRelatedByGuestId(ChildContact $v = null)
+    public function setContact(ChildContact $v = null)
     {
         if ($v === null) {
             $this->setGuestId(NULL);
@@ -2432,12 +2434,12 @@ abstract class Booking implements ActiveRecordInterface
             $this->setGuestId($v->getContactId());
         }
 
-        $this->aContactRelatedByGuestId = $v;
+        $this->aContact = $v;
 
         // Add binding for other direction of this n:n relationship.
         // If this object has already been added to the ChildContact object, it will not be re-added.
         if ($v !== null) {
-            $v->addBookingRelatedByGuestId($this);
+            $v->addBooking($this);
         }
 
 
@@ -2452,20 +2454,20 @@ abstract class Booking implements ActiveRecordInterface
      * @return ChildContact The associated ChildContact object.
      * @throws PropelException
      */
-    public function getContactRelatedByGuestId(ConnectionInterface $con = null)
+    public function getContact(ConnectionInterface $con = null)
     {
-        if ($this->aContactRelatedByGuestId === null && ($this->guest_id !== null)) {
-            $this->aContactRelatedByGuestId = ChildContactQuery::create()->findPk($this->guest_id, $con);
+        if ($this->aContact === null && ($this->guest_id !== null)) {
+            $this->aContact = ChildContactQuery::create()->findPk($this->guest_id, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aContactRelatedByGuestId->addBookingsRelatedByGuestId($this);
+                $this->aContact->addBookings($this);
              */
         }
 
-        return $this->aContactRelatedByGuestId;
+        return $this->aContact;
     }
 
     /**
@@ -3145,10 +3147,10 @@ abstract class Booking implements ActiveRecordInterface
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return ObjectCollection|ChildBookingEvent[] List of ChildBookingEvent objects
      */
-    public function getBookingEventsJoinContactRelatedByAuthorId(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getBookingEventsJoinUserRelatedByAuthorId(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ChildBookingEventQuery::create(null, $criteria);
-        $query->joinWith('ContactRelatedByAuthorId', $joinBehavior);
+        $query->joinWith('UserRelatedByAuthorId', $joinBehavior);
 
         return $this->getBookingEvents($query, $con);
     }
@@ -3170,10 +3172,10 @@ abstract class Booking implements ActiveRecordInterface
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return ObjectCollection|ChildBookingEvent[] List of ChildBookingEvent objects
      */
-    public function getBookingEventsJoinContactRelatedByCalledBy(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getBookingEventsJoinUserRelatedByCalledBy(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ChildBookingEventQuery::create(null, $criteria);
-        $query->joinWith('ContactRelatedByCalledBy', $joinBehavior);
+        $query->joinWith('UserRelatedByCalledBy', $joinBehavior);
 
         return $this->getBookingEvents($query, $con);
     }
@@ -3195,10 +3197,10 @@ abstract class Booking implements ActiveRecordInterface
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return ObjectCollection|ChildBookingEvent[] List of ChildBookingEvent objects
      */
-    public function getBookingEventsJoinContactRelatedByCancelledBy(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getBookingEventsJoinUserRelatedByCancelledBy(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ChildBookingEventQuery::create(null, $criteria);
-        $query->joinWith('ContactRelatedByCancelledBy', $joinBehavior);
+        $query->joinWith('UserRelatedByCancelledBy', $joinBehavior);
 
         return $this->getBookingEvents($query, $con);
     }
@@ -3220,10 +3222,10 @@ abstract class Booking implements ActiveRecordInterface
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return ObjectCollection|ChildBookingEvent[] List of ChildBookingEvent objects
      */
-    public function getBookingEventsJoinContactRelatedByDeletedBy(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getBookingEventsJoinUserRelatedByDeletedBy(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ChildBookingEventQuery::create(null, $criteria);
-        $query->joinWith('ContactRelatedByDeletedBy', $joinBehavior);
+        $query->joinWith('UserRelatedByDeletedBy', $joinBehavior);
 
         return $this->getBookingEvents($query, $con);
     }
@@ -3835,11 +3837,11 @@ abstract class Booking implements ActiveRecordInterface
      */
     public function clear()
     {
-        if (null !== $this->aContactRelatedByAuthorId) {
-            $this->aContactRelatedByAuthorId->removeBookingRelatedByAuthorId($this);
+        if (null !== $this->aUser) {
+            $this->aUser->removeBooking($this);
         }
-        if (null !== $this->aContactRelatedByGuestId) {
-            $this->aContactRelatedByGuestId->removeBookingRelatedByGuestId($this);
+        if (null !== $this->aContact) {
+            $this->aContact->removeBooking($this);
         }
         if (null !== $this->aPackage) {
             $this->aPackage->removeBooking($this);
@@ -3912,8 +3914,8 @@ abstract class Booking implements ActiveRecordInterface
         $this->collBookingEvents = null;
         $this->collBookingItems = null;
         $this->collFormEntries = null;
-        $this->aContactRelatedByAuthorId = null;
-        $this->aContactRelatedByGuestId = null;
+        $this->aUser = null;
+        $this->aContact = null;
         $this->aPackage = null;
         $this->aRoom = null;
         $this->aEventStatus = null;

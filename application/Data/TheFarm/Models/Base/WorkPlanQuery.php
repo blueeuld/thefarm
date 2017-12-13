@@ -44,17 +44,7 @@ use TheFarm\Models\Map\WorkPlanTableMap;
  * @method     ChildWorkPlanQuery rightJoinWithUserWorkPlanDay() Adds a RIGHT JOIN clause and with to the query using the UserWorkPlanDay relation
  * @method     ChildWorkPlanQuery innerJoinWithUserWorkPlanDay() Adds a INNER JOIN clause and with to the query using the UserWorkPlanDay relation
  *
- * @method     ChildWorkPlanQuery leftJoinProviderSchedule($relationAlias = null) Adds a LEFT JOIN clause to the query using the ProviderSchedule relation
- * @method     ChildWorkPlanQuery rightJoinProviderSchedule($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ProviderSchedule relation
- * @method     ChildWorkPlanQuery innerJoinProviderSchedule($relationAlias = null) Adds a INNER JOIN clause to the query using the ProviderSchedule relation
- *
- * @method     ChildWorkPlanQuery joinWithProviderSchedule($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the ProviderSchedule relation
- *
- * @method     ChildWorkPlanQuery leftJoinWithProviderSchedule() Adds a LEFT JOIN clause and with to the query using the ProviderSchedule relation
- * @method     ChildWorkPlanQuery rightJoinWithProviderSchedule() Adds a RIGHT JOIN clause and with to the query using the ProviderSchedule relation
- * @method     ChildWorkPlanQuery innerJoinWithProviderSchedule() Adds a INNER JOIN clause and with to the query using the ProviderSchedule relation
- *
- * @method     \TheFarm\Models\UserWorkPlanDayQuery|\TheFarm\Models\ProviderScheduleQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \TheFarm\Models\UserWorkPlanDayQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildWorkPlan findOne(ConnectionInterface $con = null) Return the first ChildWorkPlan matching the query
  * @method     ChildWorkPlan findOneOrCreate(ConnectionInterface $con = null) Return the first ChildWorkPlan matching the query, or a new ChildWorkPlan object populated from the query conditions when no match is found
@@ -380,96 +370,6 @@ abstract class WorkPlanQuery extends ModelCriteria
         return $this
             ->joinUserWorkPlanDay($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'UserWorkPlanDay', '\TheFarm\Models\UserWorkPlanDayQuery');
-    }
-
-    /**
-     * Filter the query by a related \TheFarm\Models\ProviderSchedule object
-     *
-     * @param \TheFarm\Models\ProviderSchedule|ObjectCollection $providerSchedule the related object to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return ChildWorkPlanQuery The current query, for fluid interface
-     */
-    public function filterByProviderSchedule($providerSchedule, $comparison = null)
-    {
-        if ($providerSchedule instanceof \TheFarm\Models\ProviderSchedule) {
-            return $this
-                ->addUsingAlias(WorkPlanTableMap::COL_WORK_PLAN_CD, $providerSchedule->getWorkPlanCd(), $comparison);
-        } elseif ($providerSchedule instanceof ObjectCollection) {
-            return $this
-                ->useProviderScheduleQuery()
-                ->filterByPrimaryKeys($providerSchedule->getPrimaryKeys())
-                ->endUse();
-        } else {
-            throw new PropelException('filterByProviderSchedule() only accepts arguments of type \TheFarm\Models\ProviderSchedule or Collection');
-        }
-    }
-
-    /**
-     * Adds a JOIN clause to the query using the ProviderSchedule relation
-     *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return $this|ChildWorkPlanQuery The current query, for fluid interface
-     */
-    public function joinProviderSchedule($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
-    {
-        $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('ProviderSchedule');
-
-        // create a ModelJoin object for this join
-        $join = new ModelJoin();
-        $join->setJoinType($joinType);
-        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
-        if ($previousJoin = $this->getPreviousJoin()) {
-            $join->setPreviousJoin($previousJoin);
-        }
-
-        // add the ModelJoin to the current object
-        if ($relationAlias) {
-            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
-            $this->addJoinObject($join, $relationAlias);
-        } else {
-            $this->addJoinObject($join, 'ProviderSchedule');
-        }
-
-        return $this;
-    }
-
-    /**
-     * Use the ProviderSchedule relation ProviderSchedule object
-     *
-     * @see useQuery()
-     *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return \TheFarm\Models\ProviderScheduleQuery A secondary query class using the current class as primary query
-     */
-    public function useProviderScheduleQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
-    {
-        return $this
-            ->joinProviderSchedule($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'ProviderSchedule', '\TheFarm\Models\ProviderScheduleQuery');
-    }
-
-    /**
-     * Filter the query by a related Contact object
-     * using the tf_user_work_plan_time table as cross reference
-     *
-     * @param Contact $contact the related object to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return ChildWorkPlanQuery The current query, for fluid interface
-     */
-    public function filterByContact($contact, $comparison = Criteria::EQUAL)
-    {
-        return $this
-            ->useProviderScheduleQuery()
-            ->filterByContact($contact, $comparison)
-            ->endUse();
     }
 
     /**

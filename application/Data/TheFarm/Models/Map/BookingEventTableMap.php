@@ -284,18 +284,18 @@ class BookingEventTableMap extends TableMap
         $this->addForeignKey('facility_id', 'FacilityId', 'INTEGER', 'tf_facilities', 'facility_id', false, null, null);
         $this->addColumn('all_day', 'AllDay', 'INTEGER', true, 1, null);
         $this->addForeignKey('status', 'Status', 'VARCHAR', 'tf_event_status', 'status_cd', false, 16, null);
-        $this->addForeignKey('author_id', 'AuthorId', 'INTEGER', 'tf_contacts', 'contact_id', false, null, null);
+        $this->addForeignKey('author_id', 'AuthorId', 'INTEGER', 'tf_users', 'user_id', false, null, null);
         $this->addColumn('entry_date', 'EntryDate', 'INTEGER', false, 10, 0);
         $this->addColumn('edit_date', 'EditDate', 'INTEGER', false, 10, 0);
         $this->addColumn('notes', 'Notes', 'VARCHAR', false, 255, '');
-        $this->addForeignKey('called_by', 'CalledBy', 'INTEGER', 'tf_contacts', 'contact_id', false, null, null);
-        $this->addForeignKey('cancelled_by', 'CancelledBy', 'INTEGER', 'tf_contacts', 'contact_id', false, null, null);
+        $this->addForeignKey('called_by', 'CalledBy', 'INTEGER', 'tf_users', 'user_id', false, null, null);
+        $this->addForeignKey('cancelled_by', 'CancelledBy', 'INTEGER', 'tf_users', 'user_id', false, null, null);
         $this->addColumn('cancelled_reason', 'CancelledReason', 'VARCHAR', false, 50, '');
         $this->addColumn('date_cancelled', 'DateCancelled', 'INTEGER', false, 10, 0);
         $this->addColumn('personalized', 'Personalized', 'VARCHAR', false, 100, '');
         $this->addColumn('is_active', 'IsActive', 'BOOLEAN', false, 1, true);
         $this->addColumn('deleted_date', 'DeletedDate', 'INTEGER', false, 10, 0);
-        $this->addForeignKey('deleted_by', 'DeletedBy', 'INTEGER', 'tf_contacts', 'contact_id', false, null, null);
+        $this->addForeignKey('deleted_by', 'DeletedBy', 'INTEGER', 'tf_users', 'user_id', false, null, null);
         $this->addForeignKey('item_id', 'ItemId', 'INTEGER', 'tf_items', 'item_id', false, null, null);
         $this->addColumn('is_kids', 'IsKids', 'BOOLEAN', false, 1, false);
         $this->addColumn('incl_os_done_number', 'InclOsDoneNumber', 'VARCHAR', false, 20, null);
@@ -314,11 +314,11 @@ class BookingEventTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('ContactRelatedByAuthorId', '\\TheFarm\\Models\\Contact', RelationMap::MANY_TO_ONE, array (
+        $this->addRelation('UserRelatedByAuthorId', '\\TheFarm\\Models\\User', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
     0 => ':author_id',
-    1 => ':contact_id',
+    1 => ':user_id',
   ),
 ), null, null, null, false);
         $this->addRelation('Booking', '\\TheFarm\\Models\\Booking', RelationMap::MANY_TO_ONE, array (
@@ -328,25 +328,25 @@ class BookingEventTableMap extends TableMap
     1 => ':booking_id',
   ),
 ), null, null, null, false);
-        $this->addRelation('ContactRelatedByCalledBy', '\\TheFarm\\Models\\Contact', RelationMap::MANY_TO_ONE, array (
+        $this->addRelation('UserRelatedByCalledBy', '\\TheFarm\\Models\\User', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
     0 => ':called_by',
-    1 => ':contact_id',
+    1 => ':user_id',
   ),
 ), null, null, null, false);
-        $this->addRelation('ContactRelatedByCancelledBy', '\\TheFarm\\Models\\Contact', RelationMap::MANY_TO_ONE, array (
+        $this->addRelation('UserRelatedByCancelledBy', '\\TheFarm\\Models\\User', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
     0 => ':cancelled_by',
-    1 => ':contact_id',
+    1 => ':user_id',
   ),
 ), null, null, null, false);
-        $this->addRelation('ContactRelatedByDeletedBy', '\\TheFarm\\Models\\Contact', RelationMap::MANY_TO_ONE, array (
+        $this->addRelation('UserRelatedByDeletedBy', '\\TheFarm\\Models\\User', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
     0 => ':deleted_by',
-    1 => ':contact_id',
+    1 => ':user_id',
   ),
 ), null, null, null, false);
         $this->addRelation('Facility', '\\TheFarm\\Models\\Facility', RelationMap::MANY_TO_ONE, array (

@@ -1499,19 +1499,19 @@ abstract class ItemQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related Contact object
+     * Filter the query by a related User object
      * using the tf_items_related_users table as cross reference
      *
-     * @param Contact $contact the related object to use as filter
+     * @param User $user the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildItemQuery The current query, for fluid interface
      */
-    public function filterByContact($contact, $comparison = Criteria::EQUAL)
+    public function filterByContact($user, $comparison = Criteria::EQUAL)
     {
         return $this
             ->useItemsRelatedUserQuery()
-            ->filterByContact($contact, $comparison)
+            ->filterByContact($user, $comparison)
             ->endUse();
     }
 

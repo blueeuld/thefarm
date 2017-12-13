@@ -54,7 +54,7 @@ use TheFarm\Models\Map\ItemsRelatedUserTableMap;
  * @method     ChildItemsRelatedUserQuery rightJoinWithItem() Adds a RIGHT JOIN clause and with to the query using the Item relation
  * @method     ChildItemsRelatedUserQuery innerJoinWithItem() Adds a INNER JOIN clause and with to the query using the Item relation
  *
- * @method     \TheFarm\Models\ContactQuery|\TheFarm\Models\ItemQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \TheFarm\Models\UserQuery|\TheFarm\Models\ItemQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildItemsRelatedUser findOne(ConnectionInterface $con = null) Return the first ChildItemsRelatedUser matching the query
  * @method     ChildItemsRelatedUser findOneOrCreate(ConnectionInterface $con = null) Return the first ChildItemsRelatedUser matching the query, or a new ChildItemsRelatedUser object populated from the query conditions when no match is found
@@ -358,29 +358,29 @@ abstract class ItemsRelatedUserQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \TheFarm\Models\Contact object
+     * Filter the query by a related \TheFarm\Models\User object
      *
-     * @param \TheFarm\Models\Contact|ObjectCollection $contact The related object(s) to use as filter
+     * @param \TheFarm\Models\User|ObjectCollection $user The related object(s) to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
      * @return ChildItemsRelatedUserQuery The current query, for fluid interface
      */
-    public function filterByContact($contact, $comparison = null)
+    public function filterByContact($user, $comparison = null)
     {
-        if ($contact instanceof \TheFarm\Models\Contact) {
+        if ($user instanceof \TheFarm\Models\User) {
             return $this
-                ->addUsingAlias(ItemsRelatedUserTableMap::COL_CONTACT_ID, $contact->getContactId(), $comparison);
-        } elseif ($contact instanceof ObjectCollection) {
+                ->addUsingAlias(ItemsRelatedUserTableMap::COL_CONTACT_ID, $user->getUserId(), $comparison);
+        } elseif ($user instanceof ObjectCollection) {
             if (null === $comparison) {
                 $comparison = Criteria::IN;
             }
 
             return $this
-                ->addUsingAlias(ItemsRelatedUserTableMap::COL_CONTACT_ID, $contact->toKeyValue('PrimaryKey', 'ContactId'), $comparison);
+                ->addUsingAlias(ItemsRelatedUserTableMap::COL_CONTACT_ID, $user->toKeyValue('PrimaryKey', 'UserId'), $comparison);
         } else {
-            throw new PropelException('filterByContact() only accepts arguments of type \TheFarm\Models\Contact or Collection');
+            throw new PropelException('filterByContact() only accepts arguments of type \TheFarm\Models\User or Collection');
         }
     }
 
@@ -417,7 +417,7 @@ abstract class ItemsRelatedUserQuery extends ModelCriteria
     }
 
     /**
-     * Use the Contact relation Contact object
+     * Use the Contact relation User object
      *
      * @see useQuery()
      *
@@ -425,13 +425,13 @@ abstract class ItemsRelatedUserQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \TheFarm\Models\ContactQuery A secondary query class using the current class as primary query
+     * @return \TheFarm\Models\UserQuery A secondary query class using the current class as primary query
      */
     public function useContactQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
             ->joinContact($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Contact', '\TheFarm\Models\ContactQuery');
+            ->useQuery($relationAlias ? $relationAlias : 'Contact', '\TheFarm\Models\UserQuery');
     }
 
     /**

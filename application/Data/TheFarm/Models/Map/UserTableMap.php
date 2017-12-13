@@ -72,9 +72,9 @@ class UserTableMap extends TableMap
     const NUM_HYDRATE_COLUMNS = 16;
 
     /**
-     * the column name for the contact_id field
+     * the column name for the user_id field
      */
-    const COL_CONTACT_ID = 'tf_users.contact_id';
+    const COL_USER_ID = 'tf_users.user_id';
 
     /**
      * the column name for the username field
@@ -163,10 +163,10 @@ class UserTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('ContactId', 'Username', 'GroupId', 'LastLogin', 'Password', 'WorkPlan', 'WorkPlanCode', 'LocationId', 'FacebookId', 'UserOrder', 'CalendarViewPositions', 'CalendarViewStatus', 'CalendarShowMyScheduleOnly', 'CalendarViewLocations', 'Preferences', 'CalendarShowNoSchedule', ),
-        self::TYPE_CAMELNAME     => array('contactId', 'username', 'groupId', 'lastLogin', 'password', 'workPlan', 'workPlanCode', 'locationId', 'facebookId', 'userOrder', 'calendarViewPositions', 'calendarViewStatus', 'calendarShowMyScheduleOnly', 'calendarViewLocations', 'preferences', 'calendarShowNoSchedule', ),
-        self::TYPE_COLNAME       => array(UserTableMap::COL_CONTACT_ID, UserTableMap::COL_USERNAME, UserTableMap::COL_GROUP_ID, UserTableMap::COL_LAST_LOGIN, UserTableMap::COL_PASSWORD, UserTableMap::COL_WORK_PLAN, UserTableMap::COL_WORK_PLAN_CODE, UserTableMap::COL_LOCATION_ID, UserTableMap::COL_FACEBOOK_ID, UserTableMap::COL_USER_ORDER, UserTableMap::COL_CALENDAR_VIEW_POSITIONS, UserTableMap::COL_CALENDAR_VIEW_STATUS, UserTableMap::COL_CALENDAR_SHOW_MY_SCHEDULE_ONLY, UserTableMap::COL_CALENDAR_VIEW_LOCATIONS, UserTableMap::COL_PREFERENCES, UserTableMap::COL_CALENDAR_SHOW_NO_SCHEDULE, ),
-        self::TYPE_FIELDNAME     => array('contact_id', 'username', 'group_id', 'last_login', 'password', 'work_plan', 'work_plan_code', 'location_id', 'facebook_id', 'user_order', 'calendar_view_positions', 'calendar_view_status', 'calendar_show_my_schedule_only', 'calendar_view_locations', 'preferences', 'calendar_show_no_schedule', ),
+        self::TYPE_PHPNAME       => array('UserId', 'Username', 'GroupId', 'LastLogin', 'Password', 'WorkPlan', 'WorkPlanCode', 'LocationId', 'FacebookId', 'UserOrder', 'CalendarViewPositions', 'CalendarViewStatus', 'CalendarShowMyScheduleOnly', 'CalendarViewLocations', 'Preferences', 'CalendarShowNoSchedule', ),
+        self::TYPE_CAMELNAME     => array('userId', 'username', 'groupId', 'lastLogin', 'password', 'workPlan', 'workPlanCode', 'locationId', 'facebookId', 'userOrder', 'calendarViewPositions', 'calendarViewStatus', 'calendarShowMyScheduleOnly', 'calendarViewLocations', 'preferences', 'calendarShowNoSchedule', ),
+        self::TYPE_COLNAME       => array(UserTableMap::COL_USER_ID, UserTableMap::COL_USERNAME, UserTableMap::COL_GROUP_ID, UserTableMap::COL_LAST_LOGIN, UserTableMap::COL_PASSWORD, UserTableMap::COL_WORK_PLAN, UserTableMap::COL_WORK_PLAN_CODE, UserTableMap::COL_LOCATION_ID, UserTableMap::COL_FACEBOOK_ID, UserTableMap::COL_USER_ORDER, UserTableMap::COL_CALENDAR_VIEW_POSITIONS, UserTableMap::COL_CALENDAR_VIEW_STATUS, UserTableMap::COL_CALENDAR_SHOW_MY_SCHEDULE_ONLY, UserTableMap::COL_CALENDAR_VIEW_LOCATIONS, UserTableMap::COL_PREFERENCES, UserTableMap::COL_CALENDAR_SHOW_NO_SCHEDULE, ),
+        self::TYPE_FIELDNAME     => array('user_id', 'username', 'group_id', 'last_login', 'password', 'work_plan', 'work_plan_code', 'location_id', 'facebook_id', 'user_order', 'calendar_view_positions', 'calendar_view_status', 'calendar_show_my_schedule_only', 'calendar_view_locations', 'preferences', 'calendar_show_no_schedule', ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, )
     );
 
@@ -177,10 +177,10 @@ class UserTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('ContactId' => 0, 'Username' => 1, 'GroupId' => 2, 'LastLogin' => 3, 'Password' => 4, 'WorkPlan' => 5, 'WorkPlanCode' => 6, 'LocationId' => 7, 'FacebookId' => 8, 'UserOrder' => 9, 'CalendarViewPositions' => 10, 'CalendarViewStatus' => 11, 'CalendarShowMyScheduleOnly' => 12, 'CalendarViewLocations' => 13, 'Preferences' => 14, 'CalendarShowNoSchedule' => 15, ),
-        self::TYPE_CAMELNAME     => array('contactId' => 0, 'username' => 1, 'groupId' => 2, 'lastLogin' => 3, 'password' => 4, 'workPlan' => 5, 'workPlanCode' => 6, 'locationId' => 7, 'facebookId' => 8, 'userOrder' => 9, 'calendarViewPositions' => 10, 'calendarViewStatus' => 11, 'calendarShowMyScheduleOnly' => 12, 'calendarViewLocations' => 13, 'preferences' => 14, 'calendarShowNoSchedule' => 15, ),
-        self::TYPE_COLNAME       => array(UserTableMap::COL_CONTACT_ID => 0, UserTableMap::COL_USERNAME => 1, UserTableMap::COL_GROUP_ID => 2, UserTableMap::COL_LAST_LOGIN => 3, UserTableMap::COL_PASSWORD => 4, UserTableMap::COL_WORK_PLAN => 5, UserTableMap::COL_WORK_PLAN_CODE => 6, UserTableMap::COL_LOCATION_ID => 7, UserTableMap::COL_FACEBOOK_ID => 8, UserTableMap::COL_USER_ORDER => 9, UserTableMap::COL_CALENDAR_VIEW_POSITIONS => 10, UserTableMap::COL_CALENDAR_VIEW_STATUS => 11, UserTableMap::COL_CALENDAR_SHOW_MY_SCHEDULE_ONLY => 12, UserTableMap::COL_CALENDAR_VIEW_LOCATIONS => 13, UserTableMap::COL_PREFERENCES => 14, UserTableMap::COL_CALENDAR_SHOW_NO_SCHEDULE => 15, ),
-        self::TYPE_FIELDNAME     => array('contact_id' => 0, 'username' => 1, 'group_id' => 2, 'last_login' => 3, 'password' => 4, 'work_plan' => 5, 'work_plan_code' => 6, 'location_id' => 7, 'facebook_id' => 8, 'user_order' => 9, 'calendar_view_positions' => 10, 'calendar_view_status' => 11, 'calendar_show_my_schedule_only' => 12, 'calendar_view_locations' => 13, 'preferences' => 14, 'calendar_show_no_schedule' => 15, ),
+        self::TYPE_PHPNAME       => array('UserId' => 0, 'Username' => 1, 'GroupId' => 2, 'LastLogin' => 3, 'Password' => 4, 'WorkPlan' => 5, 'WorkPlanCode' => 6, 'LocationId' => 7, 'FacebookId' => 8, 'UserOrder' => 9, 'CalendarViewPositions' => 10, 'CalendarViewStatus' => 11, 'CalendarShowMyScheduleOnly' => 12, 'CalendarViewLocations' => 13, 'Preferences' => 14, 'CalendarShowNoSchedule' => 15, ),
+        self::TYPE_CAMELNAME     => array('userId' => 0, 'username' => 1, 'groupId' => 2, 'lastLogin' => 3, 'password' => 4, 'workPlan' => 5, 'workPlanCode' => 6, 'locationId' => 7, 'facebookId' => 8, 'userOrder' => 9, 'calendarViewPositions' => 10, 'calendarViewStatus' => 11, 'calendarShowMyScheduleOnly' => 12, 'calendarViewLocations' => 13, 'preferences' => 14, 'calendarShowNoSchedule' => 15, ),
+        self::TYPE_COLNAME       => array(UserTableMap::COL_USER_ID => 0, UserTableMap::COL_USERNAME => 1, UserTableMap::COL_GROUP_ID => 2, UserTableMap::COL_LAST_LOGIN => 3, UserTableMap::COL_PASSWORD => 4, UserTableMap::COL_WORK_PLAN => 5, UserTableMap::COL_WORK_PLAN_CODE => 6, UserTableMap::COL_LOCATION_ID => 7, UserTableMap::COL_FACEBOOK_ID => 8, UserTableMap::COL_USER_ORDER => 9, UserTableMap::COL_CALENDAR_VIEW_POSITIONS => 10, UserTableMap::COL_CALENDAR_VIEW_STATUS => 11, UserTableMap::COL_CALENDAR_SHOW_MY_SCHEDULE_ONLY => 12, UserTableMap::COL_CALENDAR_VIEW_LOCATIONS => 13, UserTableMap::COL_PREFERENCES => 14, UserTableMap::COL_CALENDAR_SHOW_NO_SCHEDULE => 15, ),
+        self::TYPE_FIELDNAME     => array('user_id' => 0, 'username' => 1, 'group_id' => 2, 'last_login' => 3, 'password' => 4, 'work_plan' => 5, 'work_plan_code' => 6, 'location_id' => 7, 'facebook_id' => 8, 'user_order' => 9, 'calendar_view_positions' => 10, 'calendar_view_status' => 11, 'calendar_show_my_schedule_only' => 12, 'calendar_view_locations' => 13, 'preferences' => 14, 'calendar_show_no_schedule' => 15, ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, )
     );
 
@@ -199,9 +199,9 @@ class UserTableMap extends TableMap
         $this->setIdentifierQuoting(false);
         $this->setClassName('\\TheFarm\\Models\\User');
         $this->setPackage('TheFarm.Models');
-        $this->setUseIdGenerator(false);
+        $this->setUseIdGenerator(true);
         // columns
-        $this->addForeignPrimaryKey('contact_id', 'ContactId', 'INTEGER' , 'tf_contacts', 'contact_id', true, null, null);
+        $this->addPrimaryKey('user_id', 'UserId', 'INTEGER', true, null, null);
         $this->addColumn('username', 'Username', 'VARCHAR', true, 100, null);
         $this->addForeignKey('group_id', 'GroupId', 'INTEGER', 'tf_groups', 'group_id', false, null, null);
         $this->addColumn('last_login', 'LastLogin', 'INTEGER', true, 10, null);
@@ -224,13 +224,6 @@ class UserTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('Contact', '\\TheFarm\\Models\\Contact', RelationMap::MANY_TO_ONE, array (
-  0 =>
-  array (
-    0 => ':contact_id',
-    1 => ':contact_id',
-  ),
-), null, null, null, false);
         $this->addRelation('Group', '\\TheFarm\\Models\\Group', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
@@ -245,6 +238,70 @@ class UserTableMap extends TableMap
     1 => ':location_id',
   ),
 ), null, null, null, false);
+        $this->addRelation('EventUser', '\\TheFarm\\Models\\EventUser', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':staff_id',
+    1 => ':user_id',
+  ),
+), null, null, 'EventUsers', false);
+        $this->addRelation('BookingEventRelatedByAuthorId', '\\TheFarm\\Models\\BookingEvent', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':author_id',
+    1 => ':user_id',
+  ),
+), null, null, 'BookingEventsRelatedByAuthorId', false);
+        $this->addRelation('BookingEventRelatedByCalledBy', '\\TheFarm\\Models\\BookingEvent', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':called_by',
+    1 => ':user_id',
+  ),
+), null, null, 'BookingEventsRelatedByCalledBy', false);
+        $this->addRelation('BookingEventRelatedByCancelledBy', '\\TheFarm\\Models\\BookingEvent', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':cancelled_by',
+    1 => ':user_id',
+  ),
+), null, null, 'BookingEventsRelatedByCancelledBy', false);
+        $this->addRelation('BookingEventRelatedByDeletedBy', '\\TheFarm\\Models\\BookingEvent', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':deleted_by',
+    1 => ':user_id',
+  ),
+), null, null, 'BookingEventsRelatedByDeletedBy', false);
+        $this->addRelation('Booking', '\\TheFarm\\Models\\Booking', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':author_id',
+    1 => ':user_id',
+  ),
+), null, null, 'Bookings', false);
+        $this->addRelation('ItemsRelatedUser', '\\TheFarm\\Models\\ItemsRelatedUser', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':contact_id',
+    1 => ':user_id',
+  ),
+), null, null, 'ItemsRelatedUsers', false);
+        $this->addRelation('UserWorkPlanDay', '\\TheFarm\\Models\\UserWorkPlanDay', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':contact_id',
+    1 => ':user_id',
+  ),
+), null, null, 'UserWorkPlanDays', false);
+        $this->addRelation('ProviderSchedule', '\\TheFarm\\Models\\ProviderSchedule', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':contact_id',
+    1 => ':user_id',
+  ),
+), null, null, 'ProviderSchedules', false);
+        $this->addRelation('Item', '\\TheFarm\\Models\\Item', RelationMap::MANY_TO_MANY, array(), null, null, 'Items');
     } // buildRelations()
 
     /**
@@ -263,11 +320,11 @@ class UserTableMap extends TableMap
     public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
         // If the PK cannot be derived from the row, return NULL.
-        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('ContactId', TableMap::TYPE_PHPNAME, $indexType)] === null) {
+        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)] === null) {
             return null;
         }
 
-        return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('ContactId', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('ContactId', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('ContactId', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('ContactId', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('ContactId', TableMap::TYPE_PHPNAME, $indexType)];
+        return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)];
     }
 
     /**
@@ -287,7 +344,7 @@ class UserTableMap extends TableMap
         return (int) $row[
             $indexType == TableMap::TYPE_NUM
                 ? 0 + $offset
-                : self::translateFieldName('ContactId', TableMap::TYPE_PHPNAME, $indexType)
+                : self::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)
         ];
     }
 
@@ -388,7 +445,7 @@ class UserTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(UserTableMap::COL_CONTACT_ID);
+            $criteria->addSelectColumn(UserTableMap::COL_USER_ID);
             $criteria->addSelectColumn(UserTableMap::COL_USERNAME);
             $criteria->addSelectColumn(UserTableMap::COL_GROUP_ID);
             $criteria->addSelectColumn(UserTableMap::COL_LAST_LOGIN);
@@ -405,7 +462,7 @@ class UserTableMap extends TableMap
             $criteria->addSelectColumn(UserTableMap::COL_PREFERENCES);
             $criteria->addSelectColumn(UserTableMap::COL_CALENDAR_SHOW_NO_SCHEDULE);
         } else {
-            $criteria->addSelectColumn($alias . '.contact_id');
+            $criteria->addSelectColumn($alias . '.user_id');
             $criteria->addSelectColumn($alias . '.username');
             $criteria->addSelectColumn($alias . '.group_id');
             $criteria->addSelectColumn($alias . '.last_login');
@@ -472,7 +529,7 @@ class UserTableMap extends TableMap
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
             $criteria = new Criteria(UserTableMap::DATABASE_NAME);
-            $criteria->add(UserTableMap::COL_CONTACT_ID, (array) $values, Criteria::IN);
+            $criteria->add(UserTableMap::COL_USER_ID, (array) $values, Criteria::IN);
         }
 
         $query = UserQuery::create()->mergeWith($criteria);
@@ -518,6 +575,10 @@ class UserTableMap extends TableMap
             $criteria = clone $criteria; // rename for clarity
         } else {
             $criteria = $criteria->buildCriteria(); // build Criteria from User object
+        }
+
+        if ($criteria->containsKey(UserTableMap::COL_USER_ID) && $criteria->keyContainsValue(UserTableMap::COL_USER_ID) ) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.UserTableMap::COL_USER_ID.')');
         }
 
 
