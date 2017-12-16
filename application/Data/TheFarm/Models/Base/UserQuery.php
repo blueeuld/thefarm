@@ -30,6 +30,11 @@ use TheFarm\Models\Map\UserTableMap;
  * @method     ChildUserQuery orderByLocationId($order = Criteria::ASC) Order by the location_id column
  * @method     ChildUserQuery orderByFacebookId($order = Criteria::ASC) Order by the facebook_id column
  * @method     ChildUserQuery orderByUserOrder($order = Criteria::ASC) Order by the user_order column
+ * @method     ChildUserQuery orderByIsActive($order = Criteria::ASC) Order by the is_active column
+ * @method     ChildUserQuery orderByVerificationKey($order = Criteria::ASC) Order by the verification_key column
+ * @method     ChildUserQuery orderByIsVerified($order = Criteria::ASC) Order by the is_verified column
+ * @method     ChildUserQuery orderByIsApproved($order = Criteria::ASC) Order by the is_approved column
+ * @method     ChildUserQuery orderByActivationCode($order = Criteria::ASC) Order by the activation_code column
  * @method     ChildUserQuery orderByCalendarViewPositions($order = Criteria::ASC) Order by the calendar_view_positions column
  * @method     ChildUserQuery orderByCalendarViewStatus($order = Criteria::ASC) Order by the calendar_view_status column
  * @method     ChildUserQuery orderByCalendarShowMyScheduleOnly($order = Criteria::ASC) Order by the calendar_show_my_schedule_only column
@@ -47,6 +52,11 @@ use TheFarm\Models\Map\UserTableMap;
  * @method     ChildUserQuery groupByLocationId() Group by the location_id column
  * @method     ChildUserQuery groupByFacebookId() Group by the facebook_id column
  * @method     ChildUserQuery groupByUserOrder() Group by the user_order column
+ * @method     ChildUserQuery groupByIsActive() Group by the is_active column
+ * @method     ChildUserQuery groupByVerificationKey() Group by the verification_key column
+ * @method     ChildUserQuery groupByIsVerified() Group by the is_verified column
+ * @method     ChildUserQuery groupByIsApproved() Group by the is_approved column
+ * @method     ChildUserQuery groupByActivationCode() Group by the activation_code column
  * @method     ChildUserQuery groupByCalendarViewPositions() Group by the calendar_view_positions column
  * @method     ChildUserQuery groupByCalendarViewStatus() Group by the calendar_view_status column
  * @method     ChildUserQuery groupByCalendarShowMyScheduleOnly() Group by the calendar_show_my_schedule_only column
@@ -92,45 +102,45 @@ use TheFarm\Models\Map\UserTableMap;
  * @method     ChildUserQuery rightJoinWithEventUser() Adds a RIGHT JOIN clause and with to the query using the EventUser relation
  * @method     ChildUserQuery innerJoinWithEventUser() Adds a INNER JOIN clause and with to the query using the EventUser relation
  *
- * @method     ChildUserQuery leftJoinBookingEventRelatedByAuthorId($relationAlias = null) Adds a LEFT JOIN clause to the query using the BookingEventRelatedByAuthorId relation
- * @method     ChildUserQuery rightJoinBookingEventRelatedByAuthorId($relationAlias = null) Adds a RIGHT JOIN clause to the query using the BookingEventRelatedByAuthorId relation
- * @method     ChildUserQuery innerJoinBookingEventRelatedByAuthorId($relationAlias = null) Adds a INNER JOIN clause to the query using the BookingEventRelatedByAuthorId relation
+ * @method     ChildUserQuery leftJoinEventRelatedByAuthorId($relationAlias = null) Adds a LEFT JOIN clause to the query using the EventRelatedByAuthorId relation
+ * @method     ChildUserQuery rightJoinEventRelatedByAuthorId($relationAlias = null) Adds a RIGHT JOIN clause to the query using the EventRelatedByAuthorId relation
+ * @method     ChildUserQuery innerJoinEventRelatedByAuthorId($relationAlias = null) Adds a INNER JOIN clause to the query using the EventRelatedByAuthorId relation
  *
- * @method     ChildUserQuery joinWithBookingEventRelatedByAuthorId($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the BookingEventRelatedByAuthorId relation
+ * @method     ChildUserQuery joinWithEventRelatedByAuthorId($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the EventRelatedByAuthorId relation
  *
- * @method     ChildUserQuery leftJoinWithBookingEventRelatedByAuthorId() Adds a LEFT JOIN clause and with to the query using the BookingEventRelatedByAuthorId relation
- * @method     ChildUserQuery rightJoinWithBookingEventRelatedByAuthorId() Adds a RIGHT JOIN clause and with to the query using the BookingEventRelatedByAuthorId relation
- * @method     ChildUserQuery innerJoinWithBookingEventRelatedByAuthorId() Adds a INNER JOIN clause and with to the query using the BookingEventRelatedByAuthorId relation
+ * @method     ChildUserQuery leftJoinWithEventRelatedByAuthorId() Adds a LEFT JOIN clause and with to the query using the EventRelatedByAuthorId relation
+ * @method     ChildUserQuery rightJoinWithEventRelatedByAuthorId() Adds a RIGHT JOIN clause and with to the query using the EventRelatedByAuthorId relation
+ * @method     ChildUserQuery innerJoinWithEventRelatedByAuthorId() Adds a INNER JOIN clause and with to the query using the EventRelatedByAuthorId relation
  *
- * @method     ChildUserQuery leftJoinBookingEventRelatedByCalledBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the BookingEventRelatedByCalledBy relation
- * @method     ChildUserQuery rightJoinBookingEventRelatedByCalledBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the BookingEventRelatedByCalledBy relation
- * @method     ChildUserQuery innerJoinBookingEventRelatedByCalledBy($relationAlias = null) Adds a INNER JOIN clause to the query using the BookingEventRelatedByCalledBy relation
+ * @method     ChildUserQuery leftJoinEventRelatedByCalledBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the EventRelatedByCalledBy relation
+ * @method     ChildUserQuery rightJoinEventRelatedByCalledBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the EventRelatedByCalledBy relation
+ * @method     ChildUserQuery innerJoinEventRelatedByCalledBy($relationAlias = null) Adds a INNER JOIN clause to the query using the EventRelatedByCalledBy relation
  *
- * @method     ChildUserQuery joinWithBookingEventRelatedByCalledBy($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the BookingEventRelatedByCalledBy relation
+ * @method     ChildUserQuery joinWithEventRelatedByCalledBy($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the EventRelatedByCalledBy relation
  *
- * @method     ChildUserQuery leftJoinWithBookingEventRelatedByCalledBy() Adds a LEFT JOIN clause and with to the query using the BookingEventRelatedByCalledBy relation
- * @method     ChildUserQuery rightJoinWithBookingEventRelatedByCalledBy() Adds a RIGHT JOIN clause and with to the query using the BookingEventRelatedByCalledBy relation
- * @method     ChildUserQuery innerJoinWithBookingEventRelatedByCalledBy() Adds a INNER JOIN clause and with to the query using the BookingEventRelatedByCalledBy relation
+ * @method     ChildUserQuery leftJoinWithEventRelatedByCalledBy() Adds a LEFT JOIN clause and with to the query using the EventRelatedByCalledBy relation
+ * @method     ChildUserQuery rightJoinWithEventRelatedByCalledBy() Adds a RIGHT JOIN clause and with to the query using the EventRelatedByCalledBy relation
+ * @method     ChildUserQuery innerJoinWithEventRelatedByCalledBy() Adds a INNER JOIN clause and with to the query using the EventRelatedByCalledBy relation
  *
- * @method     ChildUserQuery leftJoinBookingEventRelatedByCancelledBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the BookingEventRelatedByCancelledBy relation
- * @method     ChildUserQuery rightJoinBookingEventRelatedByCancelledBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the BookingEventRelatedByCancelledBy relation
- * @method     ChildUserQuery innerJoinBookingEventRelatedByCancelledBy($relationAlias = null) Adds a INNER JOIN clause to the query using the BookingEventRelatedByCancelledBy relation
+ * @method     ChildUserQuery leftJoinEventRelatedByCancelledBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the EventRelatedByCancelledBy relation
+ * @method     ChildUserQuery rightJoinEventRelatedByCancelledBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the EventRelatedByCancelledBy relation
+ * @method     ChildUserQuery innerJoinEventRelatedByCancelledBy($relationAlias = null) Adds a INNER JOIN clause to the query using the EventRelatedByCancelledBy relation
  *
- * @method     ChildUserQuery joinWithBookingEventRelatedByCancelledBy($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the BookingEventRelatedByCancelledBy relation
+ * @method     ChildUserQuery joinWithEventRelatedByCancelledBy($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the EventRelatedByCancelledBy relation
  *
- * @method     ChildUserQuery leftJoinWithBookingEventRelatedByCancelledBy() Adds a LEFT JOIN clause and with to the query using the BookingEventRelatedByCancelledBy relation
- * @method     ChildUserQuery rightJoinWithBookingEventRelatedByCancelledBy() Adds a RIGHT JOIN clause and with to the query using the BookingEventRelatedByCancelledBy relation
- * @method     ChildUserQuery innerJoinWithBookingEventRelatedByCancelledBy() Adds a INNER JOIN clause and with to the query using the BookingEventRelatedByCancelledBy relation
+ * @method     ChildUserQuery leftJoinWithEventRelatedByCancelledBy() Adds a LEFT JOIN clause and with to the query using the EventRelatedByCancelledBy relation
+ * @method     ChildUserQuery rightJoinWithEventRelatedByCancelledBy() Adds a RIGHT JOIN clause and with to the query using the EventRelatedByCancelledBy relation
+ * @method     ChildUserQuery innerJoinWithEventRelatedByCancelledBy() Adds a INNER JOIN clause and with to the query using the EventRelatedByCancelledBy relation
  *
- * @method     ChildUserQuery leftJoinBookingEventRelatedByDeletedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the BookingEventRelatedByDeletedBy relation
- * @method     ChildUserQuery rightJoinBookingEventRelatedByDeletedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the BookingEventRelatedByDeletedBy relation
- * @method     ChildUserQuery innerJoinBookingEventRelatedByDeletedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the BookingEventRelatedByDeletedBy relation
+ * @method     ChildUserQuery leftJoinEventRelatedByDeletedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the EventRelatedByDeletedBy relation
+ * @method     ChildUserQuery rightJoinEventRelatedByDeletedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the EventRelatedByDeletedBy relation
+ * @method     ChildUserQuery innerJoinEventRelatedByDeletedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the EventRelatedByDeletedBy relation
  *
- * @method     ChildUserQuery joinWithBookingEventRelatedByDeletedBy($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the BookingEventRelatedByDeletedBy relation
+ * @method     ChildUserQuery joinWithEventRelatedByDeletedBy($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the EventRelatedByDeletedBy relation
  *
- * @method     ChildUserQuery leftJoinWithBookingEventRelatedByDeletedBy() Adds a LEFT JOIN clause and with to the query using the BookingEventRelatedByDeletedBy relation
- * @method     ChildUserQuery rightJoinWithBookingEventRelatedByDeletedBy() Adds a RIGHT JOIN clause and with to the query using the BookingEventRelatedByDeletedBy relation
- * @method     ChildUserQuery innerJoinWithBookingEventRelatedByDeletedBy() Adds a INNER JOIN clause and with to the query using the BookingEventRelatedByDeletedBy relation
+ * @method     ChildUserQuery leftJoinWithEventRelatedByDeletedBy() Adds a LEFT JOIN clause and with to the query using the EventRelatedByDeletedBy relation
+ * @method     ChildUserQuery rightJoinWithEventRelatedByDeletedBy() Adds a RIGHT JOIN clause and with to the query using the EventRelatedByDeletedBy relation
+ * @method     ChildUserQuery innerJoinWithEventRelatedByDeletedBy() Adds a INNER JOIN clause and with to the query using the EventRelatedByDeletedBy relation
  *
  * @method     ChildUserQuery leftJoinBooking($relationAlias = null) Adds a LEFT JOIN clause to the query using the Booking relation
  * @method     ChildUserQuery rightJoinBooking($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Booking relation
@@ -141,6 +151,26 @@ use TheFarm\Models\Map\UserTableMap;
  * @method     ChildUserQuery leftJoinWithBooking() Adds a LEFT JOIN clause and with to the query using the Booking relation
  * @method     ChildUserQuery rightJoinWithBooking() Adds a RIGHT JOIN clause and with to the query using the Booking relation
  * @method     ChildUserQuery innerJoinWithBooking() Adds a INNER JOIN clause and with to the query using the Booking relation
+ *
+ * @method     ChildUserQuery leftJoinBookingFormRelatedByAuthorId($relationAlias = null) Adds a LEFT JOIN clause to the query using the BookingFormRelatedByAuthorId relation
+ * @method     ChildUserQuery rightJoinBookingFormRelatedByAuthorId($relationAlias = null) Adds a RIGHT JOIN clause to the query using the BookingFormRelatedByAuthorId relation
+ * @method     ChildUserQuery innerJoinBookingFormRelatedByAuthorId($relationAlias = null) Adds a INNER JOIN clause to the query using the BookingFormRelatedByAuthorId relation
+ *
+ * @method     ChildUserQuery joinWithBookingFormRelatedByAuthorId($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the BookingFormRelatedByAuthorId relation
+ *
+ * @method     ChildUserQuery leftJoinWithBookingFormRelatedByAuthorId() Adds a LEFT JOIN clause and with to the query using the BookingFormRelatedByAuthorId relation
+ * @method     ChildUserQuery rightJoinWithBookingFormRelatedByAuthorId() Adds a RIGHT JOIN clause and with to the query using the BookingFormRelatedByAuthorId relation
+ * @method     ChildUserQuery innerJoinWithBookingFormRelatedByAuthorId() Adds a INNER JOIN clause and with to the query using the BookingFormRelatedByAuthorId relation
+ *
+ * @method     ChildUserQuery leftJoinBookingFormRelatedByCompletedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the BookingFormRelatedByCompletedBy relation
+ * @method     ChildUserQuery rightJoinBookingFormRelatedByCompletedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the BookingFormRelatedByCompletedBy relation
+ * @method     ChildUserQuery innerJoinBookingFormRelatedByCompletedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the BookingFormRelatedByCompletedBy relation
+ *
+ * @method     ChildUserQuery joinWithBookingFormRelatedByCompletedBy($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the BookingFormRelatedByCompletedBy relation
+ *
+ * @method     ChildUserQuery leftJoinWithBookingFormRelatedByCompletedBy() Adds a LEFT JOIN clause and with to the query using the BookingFormRelatedByCompletedBy relation
+ * @method     ChildUserQuery rightJoinWithBookingFormRelatedByCompletedBy() Adds a RIGHT JOIN clause and with to the query using the BookingFormRelatedByCompletedBy relation
+ * @method     ChildUserQuery innerJoinWithBookingFormRelatedByCompletedBy() Adds a INNER JOIN clause and with to the query using the BookingFormRelatedByCompletedBy relation
  *
  * @method     ChildUserQuery leftJoinItemsRelatedUser($relationAlias = null) Adds a LEFT JOIN clause to the query using the ItemsRelatedUser relation
  * @method     ChildUserQuery rightJoinItemsRelatedUser($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ItemsRelatedUser relation
@@ -172,7 +202,7 @@ use TheFarm\Models\Map\UserTableMap;
  * @method     ChildUserQuery rightJoinWithProviderSchedule() Adds a RIGHT JOIN clause and with to the query using the ProviderSchedule relation
  * @method     ChildUserQuery innerJoinWithProviderSchedule() Adds a INNER JOIN clause and with to the query using the ProviderSchedule relation
  *
- * @method     \TheFarm\Models\GroupQuery|\TheFarm\Models\LocationQuery|\TheFarm\Models\EventUserQuery|\TheFarm\Models\BookingEventQuery|\TheFarm\Models\BookingQuery|\TheFarm\Models\ItemsRelatedUserQuery|\TheFarm\Models\UserWorkPlanDayQuery|\TheFarm\Models\ProviderScheduleQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \TheFarm\Models\GroupQuery|\TheFarm\Models\LocationQuery|\TheFarm\Models\EventUserQuery|\TheFarm\Models\EventQuery|\TheFarm\Models\BookingQuery|\TheFarm\Models\BookingFormQuery|\TheFarm\Models\ItemsRelatedUserQuery|\TheFarm\Models\UserWorkPlanDayQuery|\TheFarm\Models\ProviderScheduleQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildUser findOne(ConnectionInterface $con = null) Return the first ChildUser matching the query
  * @method     ChildUser findOneOrCreate(ConnectionInterface $con = null) Return the first ChildUser matching the query, or a new ChildUser object populated from the query conditions when no match is found
@@ -187,6 +217,11 @@ use TheFarm\Models\Map\UserTableMap;
  * @method     ChildUser findOneByLocationId(int $location_id) Return the first ChildUser filtered by the location_id column
  * @method     ChildUser findOneByFacebookId(string $facebook_id) Return the first ChildUser filtered by the facebook_id column
  * @method     ChildUser findOneByUserOrder(int $user_order) Return the first ChildUser filtered by the user_order column
+ * @method     ChildUser findOneByIsActive(boolean $is_active) Return the first ChildUser filtered by the is_active column
+ * @method     ChildUser findOneByVerificationKey(string $verification_key) Return the first ChildUser filtered by the verification_key column
+ * @method     ChildUser findOneByIsVerified(boolean $is_verified) Return the first ChildUser filtered by the is_verified column
+ * @method     ChildUser findOneByIsApproved(boolean $is_approved) Return the first ChildUser filtered by the is_approved column
+ * @method     ChildUser findOneByActivationCode(int $activation_code) Return the first ChildUser filtered by the activation_code column
  * @method     ChildUser findOneByCalendarViewPositions(string $calendar_view_positions) Return the first ChildUser filtered by the calendar_view_positions column
  * @method     ChildUser findOneByCalendarViewStatus(string $calendar_view_status) Return the first ChildUser filtered by the calendar_view_status column
  * @method     ChildUser findOneByCalendarShowMyScheduleOnly(string $calendar_show_my_schedule_only) Return the first ChildUser filtered by the calendar_show_my_schedule_only column
@@ -207,6 +242,11 @@ use TheFarm\Models\Map\UserTableMap;
  * @method     ChildUser requireOneByLocationId(int $location_id) Return the first ChildUser filtered by the location_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByFacebookId(string $facebook_id) Return the first ChildUser filtered by the facebook_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByUserOrder(int $user_order) Return the first ChildUser filtered by the user_order column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUser requireOneByIsActive(boolean $is_active) Return the first ChildUser filtered by the is_active column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUser requireOneByVerificationKey(string $verification_key) Return the first ChildUser filtered by the verification_key column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUser requireOneByIsVerified(boolean $is_verified) Return the first ChildUser filtered by the is_verified column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUser requireOneByIsApproved(boolean $is_approved) Return the first ChildUser filtered by the is_approved column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUser requireOneByActivationCode(int $activation_code) Return the first ChildUser filtered by the activation_code column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByCalendarViewPositions(string $calendar_view_positions) Return the first ChildUser filtered by the calendar_view_positions column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByCalendarViewStatus(string $calendar_view_status) Return the first ChildUser filtered by the calendar_view_status column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByCalendarShowMyScheduleOnly(string $calendar_show_my_schedule_only) Return the first ChildUser filtered by the calendar_show_my_schedule_only column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -225,6 +265,11 @@ use TheFarm\Models\Map\UserTableMap;
  * @method     ChildUser[]|ObjectCollection findByLocationId(int $location_id) Return ChildUser objects filtered by the location_id column
  * @method     ChildUser[]|ObjectCollection findByFacebookId(string $facebook_id) Return ChildUser objects filtered by the facebook_id column
  * @method     ChildUser[]|ObjectCollection findByUserOrder(int $user_order) Return ChildUser objects filtered by the user_order column
+ * @method     ChildUser[]|ObjectCollection findByIsActive(boolean $is_active) Return ChildUser objects filtered by the is_active column
+ * @method     ChildUser[]|ObjectCollection findByVerificationKey(string $verification_key) Return ChildUser objects filtered by the verification_key column
+ * @method     ChildUser[]|ObjectCollection findByIsVerified(boolean $is_verified) Return ChildUser objects filtered by the is_verified column
+ * @method     ChildUser[]|ObjectCollection findByIsApproved(boolean $is_approved) Return ChildUser objects filtered by the is_approved column
+ * @method     ChildUser[]|ObjectCollection findByActivationCode(int $activation_code) Return ChildUser objects filtered by the activation_code column
  * @method     ChildUser[]|ObjectCollection findByCalendarViewPositions(string $calendar_view_positions) Return ChildUser objects filtered by the calendar_view_positions column
  * @method     ChildUser[]|ObjectCollection findByCalendarViewStatus(string $calendar_view_status) Return ChildUser objects filtered by the calendar_view_status column
  * @method     ChildUser[]|ObjectCollection findByCalendarShowMyScheduleOnly(string $calendar_show_my_schedule_only) Return ChildUser objects filtered by the calendar_show_my_schedule_only column
@@ -329,7 +374,7 @@ abstract class UserQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT user_id, username, group_id, last_login, password, work_plan, work_plan_code, location_id, facebook_id, user_order, calendar_view_positions, calendar_view_status, calendar_show_my_schedule_only, calendar_view_locations, preferences, calendar_show_no_schedule FROM tf_user WHERE user_id = :p0';
+        $sql = 'SELECT user_id, username, group_id, last_login, password, work_plan, work_plan_code, location_id, facebook_id, user_order, is_active, verification_key, is_verified, is_approved, activation_code, calendar_view_positions, calendar_view_status, calendar_show_my_schedule_only, calendar_view_locations, preferences, calendar_show_no_schedule FROM tf_user WHERE user_id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -754,6 +799,153 @@ abstract class UserQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query on the is_active column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByIsActive(true); // WHERE is_active = true
+     * $query->filterByIsActive('yes'); // WHERE is_active = true
+     * </code>
+     *
+     * @param     boolean|string $isActive The value to use as filter.
+     *              Non-boolean arguments are converted using the following rules:
+     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildUserQuery The current query, for fluid interface
+     */
+    public function filterByIsActive($isActive = null, $comparison = null)
+    {
+        if (is_string($isActive)) {
+            $isActive = in_array(strtolower($isActive), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+        }
+
+        return $this->addUsingAlias(UserTableMap::COL_IS_ACTIVE, $isActive, $comparison);
+    }
+
+    /**
+     * Filter the query on the verification_key column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByVerificationKey('fooValue');   // WHERE verification_key = 'fooValue'
+     * $query->filterByVerificationKey('%fooValue%', Criteria::LIKE); // WHERE verification_key LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $verificationKey The value to use as filter.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildUserQuery The current query, for fluid interface
+     */
+    public function filterByVerificationKey($verificationKey = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($verificationKey)) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(UserTableMap::COL_VERIFICATION_KEY, $verificationKey, $comparison);
+    }
+
+    /**
+     * Filter the query on the is_verified column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByIsVerified(true); // WHERE is_verified = true
+     * $query->filterByIsVerified('yes'); // WHERE is_verified = true
+     * </code>
+     *
+     * @param     boolean|string $isVerified The value to use as filter.
+     *              Non-boolean arguments are converted using the following rules:
+     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildUserQuery The current query, for fluid interface
+     */
+    public function filterByIsVerified($isVerified = null, $comparison = null)
+    {
+        if (is_string($isVerified)) {
+            $isVerified = in_array(strtolower($isVerified), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+        }
+
+        return $this->addUsingAlias(UserTableMap::COL_IS_VERIFIED, $isVerified, $comparison);
+    }
+
+    /**
+     * Filter the query on the is_approved column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByIsApproved(true); // WHERE is_approved = true
+     * $query->filterByIsApproved('yes'); // WHERE is_approved = true
+     * </code>
+     *
+     * @param     boolean|string $isApproved The value to use as filter.
+     *              Non-boolean arguments are converted using the following rules:
+     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildUserQuery The current query, for fluid interface
+     */
+    public function filterByIsApproved($isApproved = null, $comparison = null)
+    {
+        if (is_string($isApproved)) {
+            $isApproved = in_array(strtolower($isApproved), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+        }
+
+        return $this->addUsingAlias(UserTableMap::COL_IS_APPROVED, $isApproved, $comparison);
+    }
+
+    /**
+     * Filter the query on the activation_code column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByActivationCode(1234); // WHERE activation_code = 1234
+     * $query->filterByActivationCode(array(12, 34)); // WHERE activation_code IN (12, 34)
+     * $query->filterByActivationCode(array('min' => 12)); // WHERE activation_code > 12
+     * </code>
+     *
+     * @param     mixed $activationCode The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildUserQuery The current query, for fluid interface
+     */
+    public function filterByActivationCode($activationCode = null, $comparison = null)
+    {
+        if (is_array($activationCode)) {
+            $useMinMax = false;
+            if (isset($activationCode['min'])) {
+                $this->addUsingAlias(UserTableMap::COL_ACTIVATION_CODE, $activationCode['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($activationCode['max'])) {
+                $this->addUsingAlias(UserTableMap::COL_ACTIVATION_CODE, $activationCode['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(UserTableMap::COL_ACTIVATION_CODE, $activationCode, $comparison);
+    }
+
+    /**
      * Filter the query on the calendar_view_positions column
      *
      * Example usage:
@@ -1131,40 +1323,40 @@ abstract class UserQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \TheFarm\Models\BookingEvent object
+     * Filter the query by a related \TheFarm\Models\Event object
      *
-     * @param \TheFarm\Models\BookingEvent|ObjectCollection $bookingEvent the related object to use as filter
+     * @param \TheFarm\Models\Event|ObjectCollection $event the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildUserQuery The current query, for fluid interface
      */
-    public function filterByBookingEventRelatedByAuthorId($bookingEvent, $comparison = null)
+    public function filterByEventRelatedByAuthorId($event, $comparison = null)
     {
-        if ($bookingEvent instanceof \TheFarm\Models\BookingEvent) {
+        if ($event instanceof \TheFarm\Models\Event) {
             return $this
-                ->addUsingAlias(UserTableMap::COL_USER_ID, $bookingEvent->getAuthorId(), $comparison);
-        } elseif ($bookingEvent instanceof ObjectCollection) {
+                ->addUsingAlias(UserTableMap::COL_USER_ID, $event->getAuthorId(), $comparison);
+        } elseif ($event instanceof ObjectCollection) {
             return $this
-                ->useBookingEventRelatedByAuthorIdQuery()
-                ->filterByPrimaryKeys($bookingEvent->getPrimaryKeys())
+                ->useEventRelatedByAuthorIdQuery()
+                ->filterByPrimaryKeys($event->getPrimaryKeys())
                 ->endUse();
         } else {
-            throw new PropelException('filterByBookingEventRelatedByAuthorId() only accepts arguments of type \TheFarm\Models\BookingEvent or Collection');
+            throw new PropelException('filterByEventRelatedByAuthorId() only accepts arguments of type \TheFarm\Models\Event or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the BookingEventRelatedByAuthorId relation
+     * Adds a JOIN clause to the query using the EventRelatedByAuthorId relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildUserQuery The current query, for fluid interface
      */
-    public function joinBookingEventRelatedByAuthorId($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function joinEventRelatedByAuthorId($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('BookingEventRelatedByAuthorId');
+        $relationMap = $tableMap->getRelation('EventRelatedByAuthorId');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -1179,14 +1371,14 @@ abstract class UserQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'BookingEventRelatedByAuthorId');
+            $this->addJoinObject($join, 'EventRelatedByAuthorId');
         }
 
         return $this;
     }
 
     /**
-     * Use the BookingEventRelatedByAuthorId relation BookingEvent object
+     * Use the EventRelatedByAuthorId relation Event object
      *
      * @see useQuery()
      *
@@ -1194,50 +1386,50 @@ abstract class UserQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \TheFarm\Models\BookingEventQuery A secondary query class using the current class as primary query
+     * @return \TheFarm\Models\EventQuery A secondary query class using the current class as primary query
      */
-    public function useBookingEventRelatedByAuthorIdQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function useEventRelatedByAuthorIdQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         return $this
-            ->joinBookingEventRelatedByAuthorId($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'BookingEventRelatedByAuthorId', '\TheFarm\Models\BookingEventQuery');
+            ->joinEventRelatedByAuthorId($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'EventRelatedByAuthorId', '\TheFarm\Models\EventQuery');
     }
 
     /**
-     * Filter the query by a related \TheFarm\Models\BookingEvent object
+     * Filter the query by a related \TheFarm\Models\Event object
      *
-     * @param \TheFarm\Models\BookingEvent|ObjectCollection $bookingEvent the related object to use as filter
+     * @param \TheFarm\Models\Event|ObjectCollection $event the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildUserQuery The current query, for fluid interface
      */
-    public function filterByBookingEventRelatedByCalledBy($bookingEvent, $comparison = null)
+    public function filterByEventRelatedByCalledBy($event, $comparison = null)
     {
-        if ($bookingEvent instanceof \TheFarm\Models\BookingEvent) {
+        if ($event instanceof \TheFarm\Models\Event) {
             return $this
-                ->addUsingAlias(UserTableMap::COL_USER_ID, $bookingEvent->getCalledBy(), $comparison);
-        } elseif ($bookingEvent instanceof ObjectCollection) {
+                ->addUsingAlias(UserTableMap::COL_USER_ID, $event->getCalledBy(), $comparison);
+        } elseif ($event instanceof ObjectCollection) {
             return $this
-                ->useBookingEventRelatedByCalledByQuery()
-                ->filterByPrimaryKeys($bookingEvent->getPrimaryKeys())
+                ->useEventRelatedByCalledByQuery()
+                ->filterByPrimaryKeys($event->getPrimaryKeys())
                 ->endUse();
         } else {
-            throw new PropelException('filterByBookingEventRelatedByCalledBy() only accepts arguments of type \TheFarm\Models\BookingEvent or Collection');
+            throw new PropelException('filterByEventRelatedByCalledBy() only accepts arguments of type \TheFarm\Models\Event or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the BookingEventRelatedByCalledBy relation
+     * Adds a JOIN clause to the query using the EventRelatedByCalledBy relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildUserQuery The current query, for fluid interface
      */
-    public function joinBookingEventRelatedByCalledBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function joinEventRelatedByCalledBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('BookingEventRelatedByCalledBy');
+        $relationMap = $tableMap->getRelation('EventRelatedByCalledBy');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -1252,14 +1444,14 @@ abstract class UserQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'BookingEventRelatedByCalledBy');
+            $this->addJoinObject($join, 'EventRelatedByCalledBy');
         }
 
         return $this;
     }
 
     /**
-     * Use the BookingEventRelatedByCalledBy relation BookingEvent object
+     * Use the EventRelatedByCalledBy relation Event object
      *
      * @see useQuery()
      *
@@ -1267,50 +1459,50 @@ abstract class UserQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \TheFarm\Models\BookingEventQuery A secondary query class using the current class as primary query
+     * @return \TheFarm\Models\EventQuery A secondary query class using the current class as primary query
      */
-    public function useBookingEventRelatedByCalledByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function useEventRelatedByCalledByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         return $this
-            ->joinBookingEventRelatedByCalledBy($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'BookingEventRelatedByCalledBy', '\TheFarm\Models\BookingEventQuery');
+            ->joinEventRelatedByCalledBy($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'EventRelatedByCalledBy', '\TheFarm\Models\EventQuery');
     }
 
     /**
-     * Filter the query by a related \TheFarm\Models\BookingEvent object
+     * Filter the query by a related \TheFarm\Models\Event object
      *
-     * @param \TheFarm\Models\BookingEvent|ObjectCollection $bookingEvent the related object to use as filter
+     * @param \TheFarm\Models\Event|ObjectCollection $event the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildUserQuery The current query, for fluid interface
      */
-    public function filterByBookingEventRelatedByCancelledBy($bookingEvent, $comparison = null)
+    public function filterByEventRelatedByCancelledBy($event, $comparison = null)
     {
-        if ($bookingEvent instanceof \TheFarm\Models\BookingEvent) {
+        if ($event instanceof \TheFarm\Models\Event) {
             return $this
-                ->addUsingAlias(UserTableMap::COL_USER_ID, $bookingEvent->getCancelledBy(), $comparison);
-        } elseif ($bookingEvent instanceof ObjectCollection) {
+                ->addUsingAlias(UserTableMap::COL_USER_ID, $event->getCancelledBy(), $comparison);
+        } elseif ($event instanceof ObjectCollection) {
             return $this
-                ->useBookingEventRelatedByCancelledByQuery()
-                ->filterByPrimaryKeys($bookingEvent->getPrimaryKeys())
+                ->useEventRelatedByCancelledByQuery()
+                ->filterByPrimaryKeys($event->getPrimaryKeys())
                 ->endUse();
         } else {
-            throw new PropelException('filterByBookingEventRelatedByCancelledBy() only accepts arguments of type \TheFarm\Models\BookingEvent or Collection');
+            throw new PropelException('filterByEventRelatedByCancelledBy() only accepts arguments of type \TheFarm\Models\Event or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the BookingEventRelatedByCancelledBy relation
+     * Adds a JOIN clause to the query using the EventRelatedByCancelledBy relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildUserQuery The current query, for fluid interface
      */
-    public function joinBookingEventRelatedByCancelledBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function joinEventRelatedByCancelledBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('BookingEventRelatedByCancelledBy');
+        $relationMap = $tableMap->getRelation('EventRelatedByCancelledBy');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -1325,14 +1517,14 @@ abstract class UserQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'BookingEventRelatedByCancelledBy');
+            $this->addJoinObject($join, 'EventRelatedByCancelledBy');
         }
 
         return $this;
     }
 
     /**
-     * Use the BookingEventRelatedByCancelledBy relation BookingEvent object
+     * Use the EventRelatedByCancelledBy relation Event object
      *
      * @see useQuery()
      *
@@ -1340,50 +1532,50 @@ abstract class UserQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \TheFarm\Models\BookingEventQuery A secondary query class using the current class as primary query
+     * @return \TheFarm\Models\EventQuery A secondary query class using the current class as primary query
      */
-    public function useBookingEventRelatedByCancelledByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function useEventRelatedByCancelledByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         return $this
-            ->joinBookingEventRelatedByCancelledBy($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'BookingEventRelatedByCancelledBy', '\TheFarm\Models\BookingEventQuery');
+            ->joinEventRelatedByCancelledBy($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'EventRelatedByCancelledBy', '\TheFarm\Models\EventQuery');
     }
 
     /**
-     * Filter the query by a related \TheFarm\Models\BookingEvent object
+     * Filter the query by a related \TheFarm\Models\Event object
      *
-     * @param \TheFarm\Models\BookingEvent|ObjectCollection $bookingEvent the related object to use as filter
+     * @param \TheFarm\Models\Event|ObjectCollection $event the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildUserQuery The current query, for fluid interface
      */
-    public function filterByBookingEventRelatedByDeletedBy($bookingEvent, $comparison = null)
+    public function filterByEventRelatedByDeletedBy($event, $comparison = null)
     {
-        if ($bookingEvent instanceof \TheFarm\Models\BookingEvent) {
+        if ($event instanceof \TheFarm\Models\Event) {
             return $this
-                ->addUsingAlias(UserTableMap::COL_USER_ID, $bookingEvent->getDeletedBy(), $comparison);
-        } elseif ($bookingEvent instanceof ObjectCollection) {
+                ->addUsingAlias(UserTableMap::COL_USER_ID, $event->getDeletedBy(), $comparison);
+        } elseif ($event instanceof ObjectCollection) {
             return $this
-                ->useBookingEventRelatedByDeletedByQuery()
-                ->filterByPrimaryKeys($bookingEvent->getPrimaryKeys())
+                ->useEventRelatedByDeletedByQuery()
+                ->filterByPrimaryKeys($event->getPrimaryKeys())
                 ->endUse();
         } else {
-            throw new PropelException('filterByBookingEventRelatedByDeletedBy() only accepts arguments of type \TheFarm\Models\BookingEvent or Collection');
+            throw new PropelException('filterByEventRelatedByDeletedBy() only accepts arguments of type \TheFarm\Models\Event or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the BookingEventRelatedByDeletedBy relation
+     * Adds a JOIN clause to the query using the EventRelatedByDeletedBy relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildUserQuery The current query, for fluid interface
      */
-    public function joinBookingEventRelatedByDeletedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function joinEventRelatedByDeletedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('BookingEventRelatedByDeletedBy');
+        $relationMap = $tableMap->getRelation('EventRelatedByDeletedBy');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -1398,14 +1590,14 @@ abstract class UserQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'BookingEventRelatedByDeletedBy');
+            $this->addJoinObject($join, 'EventRelatedByDeletedBy');
         }
 
         return $this;
     }
 
     /**
-     * Use the BookingEventRelatedByDeletedBy relation BookingEvent object
+     * Use the EventRelatedByDeletedBy relation Event object
      *
      * @see useQuery()
      *
@@ -1413,13 +1605,13 @@ abstract class UserQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \TheFarm\Models\BookingEventQuery A secondary query class using the current class as primary query
+     * @return \TheFarm\Models\EventQuery A secondary query class using the current class as primary query
      */
-    public function useBookingEventRelatedByDeletedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function useEventRelatedByDeletedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         return $this
-            ->joinBookingEventRelatedByDeletedBy($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'BookingEventRelatedByDeletedBy', '\TheFarm\Models\BookingEventQuery');
+            ->joinEventRelatedByDeletedBy($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'EventRelatedByDeletedBy', '\TheFarm\Models\EventQuery');
     }
 
     /**
@@ -1493,6 +1685,152 @@ abstract class UserQuery extends ModelCriteria
         return $this
             ->joinBooking($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'Booking', '\TheFarm\Models\BookingQuery');
+    }
+
+    /**
+     * Filter the query by a related \TheFarm\Models\BookingForm object
+     *
+     * @param \TheFarm\Models\BookingForm|ObjectCollection $bookingForm the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildUserQuery The current query, for fluid interface
+     */
+    public function filterByBookingFormRelatedByAuthorId($bookingForm, $comparison = null)
+    {
+        if ($bookingForm instanceof \TheFarm\Models\BookingForm) {
+            return $this
+                ->addUsingAlias(UserTableMap::COL_USER_ID, $bookingForm->getAuthorId(), $comparison);
+        } elseif ($bookingForm instanceof ObjectCollection) {
+            return $this
+                ->useBookingFormRelatedByAuthorIdQuery()
+                ->filterByPrimaryKeys($bookingForm->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByBookingFormRelatedByAuthorId() only accepts arguments of type \TheFarm\Models\BookingForm or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the BookingFormRelatedByAuthorId relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildUserQuery The current query, for fluid interface
+     */
+    public function joinBookingFormRelatedByAuthorId($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('BookingFormRelatedByAuthorId');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'BookingFormRelatedByAuthorId');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the BookingFormRelatedByAuthorId relation BookingForm object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \TheFarm\Models\BookingFormQuery A secondary query class using the current class as primary query
+     */
+    public function useBookingFormRelatedByAuthorIdQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinBookingFormRelatedByAuthorId($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'BookingFormRelatedByAuthorId', '\TheFarm\Models\BookingFormQuery');
+    }
+
+    /**
+     * Filter the query by a related \TheFarm\Models\BookingForm object
+     *
+     * @param \TheFarm\Models\BookingForm|ObjectCollection $bookingForm the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildUserQuery The current query, for fluid interface
+     */
+    public function filterByBookingFormRelatedByCompletedBy($bookingForm, $comparison = null)
+    {
+        if ($bookingForm instanceof \TheFarm\Models\BookingForm) {
+            return $this
+                ->addUsingAlias(UserTableMap::COL_USER_ID, $bookingForm->getCompletedBy(), $comparison);
+        } elseif ($bookingForm instanceof ObjectCollection) {
+            return $this
+                ->useBookingFormRelatedByCompletedByQuery()
+                ->filterByPrimaryKeys($bookingForm->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByBookingFormRelatedByCompletedBy() only accepts arguments of type \TheFarm\Models\BookingForm or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the BookingFormRelatedByCompletedBy relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildUserQuery The current query, for fluid interface
+     */
+    public function joinBookingFormRelatedByCompletedBy($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('BookingFormRelatedByCompletedBy');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'BookingFormRelatedByCompletedBy');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the BookingFormRelatedByCompletedBy relation BookingForm object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \TheFarm\Models\BookingFormQuery A secondary query class using the current class as primary query
+     */
+    public function useBookingFormRelatedByCompletedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinBookingFormRelatedByCompletedBy($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'BookingFormRelatedByCompletedBy', '\TheFarm\Models\BookingFormQuery');
     }
 
     /**

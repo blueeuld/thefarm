@@ -16,7 +16,7 @@ use TheFarm\Models\EventUserQuery as ChildEventUserQuery;
 use TheFarm\Models\Map\EventUserTableMap;
 
 /**
- * Base class that represents a query for the 'tf_booking_event_users' table.
+ * Base class that represents a query for the 'tf_event_user' table.
  *
  *
  *
@@ -36,15 +36,15 @@ use TheFarm\Models\Map\EventUserTableMap;
  * @method     ChildEventUserQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildEventUserQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
  *
- * @method     ChildEventUserQuery leftJoinBookingEvent($relationAlias = null) Adds a LEFT JOIN clause to the query using the BookingEvent relation
- * @method     ChildEventUserQuery rightJoinBookingEvent($relationAlias = null) Adds a RIGHT JOIN clause to the query using the BookingEvent relation
- * @method     ChildEventUserQuery innerJoinBookingEvent($relationAlias = null) Adds a INNER JOIN clause to the query using the BookingEvent relation
+ * @method     ChildEventUserQuery leftJoinEvent($relationAlias = null) Adds a LEFT JOIN clause to the query using the Event relation
+ * @method     ChildEventUserQuery rightJoinEvent($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Event relation
+ * @method     ChildEventUserQuery innerJoinEvent($relationAlias = null) Adds a INNER JOIN clause to the query using the Event relation
  *
- * @method     ChildEventUserQuery joinWithBookingEvent($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the BookingEvent relation
+ * @method     ChildEventUserQuery joinWithEvent($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Event relation
  *
- * @method     ChildEventUserQuery leftJoinWithBookingEvent() Adds a LEFT JOIN clause and with to the query using the BookingEvent relation
- * @method     ChildEventUserQuery rightJoinWithBookingEvent() Adds a RIGHT JOIN clause and with to the query using the BookingEvent relation
- * @method     ChildEventUserQuery innerJoinWithBookingEvent() Adds a INNER JOIN clause and with to the query using the BookingEvent relation
+ * @method     ChildEventUserQuery leftJoinWithEvent() Adds a LEFT JOIN clause and with to the query using the Event relation
+ * @method     ChildEventUserQuery rightJoinWithEvent() Adds a RIGHT JOIN clause and with to the query using the Event relation
+ * @method     ChildEventUserQuery innerJoinWithEvent() Adds a INNER JOIN clause and with to the query using the Event relation
  *
  * @method     ChildEventUserQuery leftJoinUser($relationAlias = null) Adds a LEFT JOIN clause to the query using the User relation
  * @method     ChildEventUserQuery rightJoinUser($relationAlias = null) Adds a RIGHT JOIN clause to the query using the User relation
@@ -56,7 +56,7 @@ use TheFarm\Models\Map\EventUserTableMap;
  * @method     ChildEventUserQuery rightJoinWithUser() Adds a RIGHT JOIN clause and with to the query using the User relation
  * @method     ChildEventUserQuery innerJoinWithUser() Adds a INNER JOIN clause and with to the query using the User relation
  *
- * @method     \TheFarm\Models\BookingEventQuery|\TheFarm\Models\UserQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \TheFarm\Models\EventQuery|\TheFarm\Models\UserQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildEventUser findOne(ConnectionInterface $con = null) Return the first ChildEventUser matching the query
  * @method     ChildEventUser findOneOrCreate(ConnectionInterface $con = null) Return the first ChildEventUser matching the query, or a new ChildEventUser object populated from the query conditions when no match is found
@@ -174,7 +174,7 @@ abstract class EventUserQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT event_id, user_id, is_guest FROM tf_booking_event_users WHERE event_id = :p0 AND user_id = :p1';
+        $sql = 'SELECT event_id, user_id, is_guest FROM tf_event_user WHERE event_id = :p0 AND user_id = :p1';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key[0], PDO::PARAM_INT);
@@ -286,7 +286,7 @@ abstract class EventUserQuery extends ModelCriteria
      * $query->filterByEventId(array('min' => 12)); // WHERE event_id > 12
      * </code>
      *
-     * @see       filterByBookingEvent()
+     * @see       filterByEvent()
      *
      * @param     mixed $eventId The value to use as filter.
      *              Use scalar values for equality.
@@ -390,44 +390,44 @@ abstract class EventUserQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \TheFarm\Models\BookingEvent object
+     * Filter the query by a related \TheFarm\Models\Event object
      *
-     * @param \TheFarm\Models\BookingEvent|ObjectCollection $bookingEvent The related object(s) to use as filter
+     * @param \TheFarm\Models\Event|ObjectCollection $event The related object(s) to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
      * @return ChildEventUserQuery The current query, for fluid interface
      */
-    public function filterByBookingEvent($bookingEvent, $comparison = null)
+    public function filterByEvent($event, $comparison = null)
     {
-        if ($bookingEvent instanceof \TheFarm\Models\BookingEvent) {
+        if ($event instanceof \TheFarm\Models\Event) {
             return $this
-                ->addUsingAlias(EventUserTableMap::COL_EVENT_ID, $bookingEvent->getEventId(), $comparison);
-        } elseif ($bookingEvent instanceof ObjectCollection) {
+                ->addUsingAlias(EventUserTableMap::COL_EVENT_ID, $event->getEventId(), $comparison);
+        } elseif ($event instanceof ObjectCollection) {
             if (null === $comparison) {
                 $comparison = Criteria::IN;
             }
 
             return $this
-                ->addUsingAlias(EventUserTableMap::COL_EVENT_ID, $bookingEvent->toKeyValue('PrimaryKey', 'EventId'), $comparison);
+                ->addUsingAlias(EventUserTableMap::COL_EVENT_ID, $event->toKeyValue('PrimaryKey', 'EventId'), $comparison);
         } else {
-            throw new PropelException('filterByBookingEvent() only accepts arguments of type \TheFarm\Models\BookingEvent or Collection');
+            throw new PropelException('filterByEvent() only accepts arguments of type \TheFarm\Models\Event or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the BookingEvent relation
+     * Adds a JOIN clause to the query using the Event relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildEventUserQuery The current query, for fluid interface
      */
-    public function joinBookingEvent($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinEvent($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('BookingEvent');
+        $relationMap = $tableMap->getRelation('Event');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -442,14 +442,14 @@ abstract class EventUserQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'BookingEvent');
+            $this->addJoinObject($join, 'Event');
         }
 
         return $this;
     }
 
     /**
-     * Use the BookingEvent relation BookingEvent object
+     * Use the Event relation Event object
      *
      * @see useQuery()
      *
@@ -457,13 +457,13 @@ abstract class EventUserQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \TheFarm\Models\BookingEventQuery A secondary query class using the current class as primary query
+     * @return \TheFarm\Models\EventQuery A secondary query class using the current class as primary query
      */
-    public function useBookingEventQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useEventQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinBookingEvent($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'BookingEvent', '\TheFarm\Models\BookingEventQuery');
+            ->joinEvent($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Event', '\TheFarm\Models\EventQuery');
     }
 
     /**
@@ -562,7 +562,7 @@ abstract class EventUserQuery extends ModelCriteria
     }
 
     /**
-     * Deletes all rows from the tf_booking_event_users table.
+     * Deletes all rows from the tf_event_user table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).

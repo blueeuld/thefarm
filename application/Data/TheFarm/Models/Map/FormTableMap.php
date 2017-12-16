@@ -170,13 +170,13 @@ class FormTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('FormEntry', '\\TheFarm\\Models\\FormEntry', RelationMap::ONE_TO_MANY, array (
+        $this->addRelation('BookingForm', '\\TheFarm\\Models\\BookingForm', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
     0 => ':form_id',
     1 => ':form_id',
   ),
-), null, null, 'FormEntries', false);
+), null, null, 'BookingForms', false);
         $this->addRelation('FormField', '\\TheFarm\\Models\\FormField', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (

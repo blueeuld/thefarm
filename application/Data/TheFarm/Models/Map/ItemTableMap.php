@@ -219,13 +219,13 @@ class ItemTableMap extends TableMap
     1 => ':file_id',
   ),
 ), null, null, null, false);
-        $this->addRelation('BookingEvent', '\\TheFarm\\Models\\BookingEvent', RelationMap::ONE_TO_MANY, array (
+        $this->addRelation('Event', '\\TheFarm\\Models\\Event', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
     0 => ':item_id',
     1 => ':item_id',
   ),
-), null, null, 'BookingEvents', false);
+), null, null, 'Events', false);
         $this->addRelation('BookingItem', '\\TheFarm\\Models\\BookingItem', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (

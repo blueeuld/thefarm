@@ -177,13 +177,13 @@ class FacilityTableMap extends TableMap
     1 => ':location_id',
   ),
 ), null, null, null, false);
-        $this->addRelation('BookingEvent', '\\TheFarm\\Models\\BookingEvent', RelationMap::ONE_TO_MANY, array (
+        $this->addRelation('Event', '\\TheFarm\\Models\\Event', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
     0 => ':facility_id',
     1 => ':facility_id',
   ),
-), null, null, 'BookingEvents', false);
+), null, null, 'Events', false);
         $this->addRelation('ItemsRelatedFacility', '\\TheFarm\\Models\\ItemsRelatedFacility', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (

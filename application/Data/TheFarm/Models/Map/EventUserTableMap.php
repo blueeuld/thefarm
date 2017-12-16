@@ -16,7 +16,7 @@ use TheFarm\Models\EventUserQuery;
 
 
 /**
- * This class defines the structure of the 'tf_booking_event_users' table.
+ * This class defines the structure of the 'tf_event_user' table.
  *
  *
  *
@@ -44,7 +44,7 @@ class EventUserTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = 'tf_booking_event_users';
+    const TABLE_NAME = 'tf_event_user';
 
     /**
      * The related Propel class for this table
@@ -74,17 +74,17 @@ class EventUserTableMap extends TableMap
     /**
      * the column name for the event_id field
      */
-    const COL_EVENT_ID = 'tf_booking_event_users.event_id';
+    const COL_EVENT_ID = 'tf_event_user.event_id';
 
     /**
      * the column name for the user_id field
      */
-    const COL_USER_ID = 'tf_booking_event_users.user_id';
+    const COL_USER_ID = 'tf_event_user.user_id';
 
     /**
      * the column name for the is_guest field
      */
-    const COL_IS_GUEST = 'tf_booking_event_users.is_guest';
+    const COL_IS_GUEST = 'tf_event_user.is_guest';
 
     /**
      * The default string format for model objects of the related table
@@ -129,14 +129,14 @@ class EventUserTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('tf_booking_event_users');
+        $this->setName('tf_event_user');
         $this->setPhpName('EventUser');
         $this->setIdentifierQuoting(false);
         $this->setClassName('\\TheFarm\\Models\\EventUser');
         $this->setPackage('TheFarm.Models');
         $this->setUseIdGenerator(false);
         // columns
-        $this->addForeignPrimaryKey('event_id', 'EventId', 'INTEGER' , 'tf_booking_events', 'event_id', true, null, 0);
+        $this->addForeignPrimaryKey('event_id', 'EventId', 'INTEGER' , 'tf_event', 'event_id', true, null, 0);
         $this->addForeignPrimaryKey('user_id', 'UserId', 'INTEGER' , 'tf_user', 'user_id', true, null, 0);
         $this->addColumn('is_guest', 'IsGuest', 'BOOLEAN', false, 1, false);
     } // initialize()
@@ -146,7 +146,7 @@ class EventUserTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('BookingEvent', '\\TheFarm\\Models\\BookingEvent', RelationMap::MANY_TO_ONE, array (
+        $this->addRelation('Event', '\\TheFarm\\Models\\Event', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
     0 => ':event_id',
@@ -450,7 +450,7 @@ class EventUserTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the tf_booking_event_users table.
+     * Deletes all rows from the tf_event_user table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).

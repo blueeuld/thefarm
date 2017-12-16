@@ -16,7 +16,7 @@ use TheFarm\Models\FieldQuery;
 
 
 /**
- * This class defines the structure of the 'tf_fields' table.
+ * This class defines the structure of the 'tf_field' table.
  *
  *
  *
@@ -44,7 +44,7 @@ class FieldTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = 'tf_fields';
+    const TABLE_NAME = 'tf_field';
 
     /**
      * The related Propel class for this table
@@ -74,42 +74,42 @@ class FieldTableMap extends TableMap
     /**
      * the column name for the field_id field
      */
-    const COL_FIELD_ID = 'tf_fields.field_id';
+    const COL_FIELD_ID = 'tf_field.field_id';
 
     /**
      * the column name for the field_name field
      */
-    const COL_FIELD_NAME = 'tf_fields.field_name';
+    const COL_FIELD_NAME = 'tf_field.field_name';
 
     /**
      * the column name for the field_label field
      */
-    const COL_FIELD_LABEL = 'tf_fields.field_label';
+    const COL_FIELD_LABEL = 'tf_field.field_label';
 
     /**
      * the column name for the field_type field
      */
-    const COL_FIELD_TYPE = 'tf_fields.field_type';
+    const COL_FIELD_TYPE = 'tf_field.field_type';
 
     /**
-     * the column name for the settings field
+     * the column name for the field_options field
      */
-    const COL_SETTINGS = 'tf_fields.settings';
+    const COL_FIELD_OPTIONS = 'tf_field.field_options';
 
     /**
      * the column name for the required field
      */
-    const COL_REQUIRED = 'tf_fields.required';
+    const COL_REQUIRED = 'tf_field.required';
 
     /**
      * the column name for the entry_date field
      */
-    const COL_ENTRY_DATE = 'tf_fields.entry_date';
+    const COL_ENTRY_DATE = 'tf_field.entry_date';
 
     /**
      * the column name for the edit_date field
      */
-    const COL_EDIT_DATE = 'tf_fields.edit_date';
+    const COL_EDIT_DATE = 'tf_field.edit_date';
 
     /**
      * The default string format for model objects of the related table
@@ -123,10 +123,10 @@ class FieldTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('FieldId', 'FieldName', 'FieldLabel', 'FieldType', 'Settings', 'Required', 'EntryDate', 'EditDate', ),
-        self::TYPE_CAMELNAME     => array('fieldId', 'fieldName', 'fieldLabel', 'fieldType', 'settings', 'required', 'entryDate', 'editDate', ),
-        self::TYPE_COLNAME       => array(FieldTableMap::COL_FIELD_ID, FieldTableMap::COL_FIELD_NAME, FieldTableMap::COL_FIELD_LABEL, FieldTableMap::COL_FIELD_TYPE, FieldTableMap::COL_SETTINGS, FieldTableMap::COL_REQUIRED, FieldTableMap::COL_ENTRY_DATE, FieldTableMap::COL_EDIT_DATE, ),
-        self::TYPE_FIELDNAME     => array('field_id', 'field_name', 'field_label', 'field_type', 'settings', 'required', 'entry_date', 'edit_date', ),
+        self::TYPE_PHPNAME       => array('FieldId', 'FieldName', 'FieldLabel', 'FieldType', 'FieldOptions', 'Required', 'EntryDate', 'EditDate', ),
+        self::TYPE_CAMELNAME     => array('fieldId', 'fieldName', 'fieldLabel', 'fieldType', 'fieldOptions', 'required', 'entryDate', 'editDate', ),
+        self::TYPE_COLNAME       => array(FieldTableMap::COL_FIELD_ID, FieldTableMap::COL_FIELD_NAME, FieldTableMap::COL_FIELD_LABEL, FieldTableMap::COL_FIELD_TYPE, FieldTableMap::COL_FIELD_OPTIONS, FieldTableMap::COL_REQUIRED, FieldTableMap::COL_ENTRY_DATE, FieldTableMap::COL_EDIT_DATE, ),
+        self::TYPE_FIELDNAME     => array('field_id', 'field_name', 'field_label', 'field_type', 'field_options', 'required', 'entry_date', 'edit_date', ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
@@ -137,10 +137,10 @@ class FieldTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('FieldId' => 0, 'FieldName' => 1, 'FieldLabel' => 2, 'FieldType' => 3, 'Settings' => 4, 'Required' => 5, 'EntryDate' => 6, 'EditDate' => 7, ),
-        self::TYPE_CAMELNAME     => array('fieldId' => 0, 'fieldName' => 1, 'fieldLabel' => 2, 'fieldType' => 3, 'settings' => 4, 'required' => 5, 'entryDate' => 6, 'editDate' => 7, ),
-        self::TYPE_COLNAME       => array(FieldTableMap::COL_FIELD_ID => 0, FieldTableMap::COL_FIELD_NAME => 1, FieldTableMap::COL_FIELD_LABEL => 2, FieldTableMap::COL_FIELD_TYPE => 3, FieldTableMap::COL_SETTINGS => 4, FieldTableMap::COL_REQUIRED => 5, FieldTableMap::COL_ENTRY_DATE => 6, FieldTableMap::COL_EDIT_DATE => 7, ),
-        self::TYPE_FIELDNAME     => array('field_id' => 0, 'field_name' => 1, 'field_label' => 2, 'field_type' => 3, 'settings' => 4, 'required' => 5, 'entry_date' => 6, 'edit_date' => 7, ),
+        self::TYPE_PHPNAME       => array('FieldId' => 0, 'FieldName' => 1, 'FieldLabel' => 2, 'FieldType' => 3, 'FieldOptions' => 4, 'Required' => 5, 'EntryDate' => 6, 'EditDate' => 7, ),
+        self::TYPE_CAMELNAME     => array('fieldId' => 0, 'fieldName' => 1, 'fieldLabel' => 2, 'fieldType' => 3, 'fieldOptions' => 4, 'required' => 5, 'entryDate' => 6, 'editDate' => 7, ),
+        self::TYPE_COLNAME       => array(FieldTableMap::COL_FIELD_ID => 0, FieldTableMap::COL_FIELD_NAME => 1, FieldTableMap::COL_FIELD_LABEL => 2, FieldTableMap::COL_FIELD_TYPE => 3, FieldTableMap::COL_FIELD_OPTIONS => 4, FieldTableMap::COL_REQUIRED => 5, FieldTableMap::COL_ENTRY_DATE => 6, FieldTableMap::COL_EDIT_DATE => 7, ),
+        self::TYPE_FIELDNAME     => array('field_id' => 0, 'field_name' => 1, 'field_label' => 2, 'field_type' => 3, 'field_options' => 4, 'required' => 5, 'entry_date' => 6, 'edit_date' => 7, ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
@@ -154,7 +154,7 @@ class FieldTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('tf_fields');
+        $this->setName('tf_field');
         $this->setPhpName('Field');
         $this->setIdentifierQuoting(false);
         $this->setClassName('\\TheFarm\\Models\\Field');
@@ -165,7 +165,7 @@ class FieldTableMap extends TableMap
         $this->addColumn('field_name', 'FieldName', 'VARCHAR', true, 100, null);
         $this->addColumn('field_label', 'FieldLabel', 'VARCHAR', true, 255, null);
         $this->addColumn('field_type', 'FieldType', 'VARCHAR', true, 32, null);
-        $this->addColumn('settings', 'Settings', 'LONGVARCHAR', true, null, null);
+        $this->addColumn('field_options', 'FieldOptions', 'LONGVARCHAR', true, null, null);
         $this->addColumn('required', 'Required', 'CHAR', true, null, null);
         $this->addColumn('entry_date', 'EntryDate', 'INTEGER', true, 10, null);
         $this->addColumn('edit_date', 'EditDate', 'INTEGER', true, 10, null);
@@ -176,13 +176,13 @@ class FieldTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('FormEntry', '\\TheFarm\\Models\\FormEntry', RelationMap::ONE_TO_MANY, array (
+        $this->addRelation('BookingFormEntry', '\\TheFarm\\Models\\BookingFormEntry', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
     0 => ':field_id',
     1 => ':field_id',
   ),
-), null, null, 'FormEntries', false);
+), null, null, 'BookingFormEntries', false);
         $this->addRelation('FormField', '\\TheFarm\\Models\\FormField', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
@@ -337,7 +337,7 @@ class FieldTableMap extends TableMap
             $criteria->addSelectColumn(FieldTableMap::COL_FIELD_NAME);
             $criteria->addSelectColumn(FieldTableMap::COL_FIELD_LABEL);
             $criteria->addSelectColumn(FieldTableMap::COL_FIELD_TYPE);
-            $criteria->addSelectColumn(FieldTableMap::COL_SETTINGS);
+            $criteria->addSelectColumn(FieldTableMap::COL_FIELD_OPTIONS);
             $criteria->addSelectColumn(FieldTableMap::COL_REQUIRED);
             $criteria->addSelectColumn(FieldTableMap::COL_ENTRY_DATE);
             $criteria->addSelectColumn(FieldTableMap::COL_EDIT_DATE);
@@ -346,7 +346,7 @@ class FieldTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.field_name');
             $criteria->addSelectColumn($alias . '.field_label');
             $criteria->addSelectColumn($alias . '.field_type');
-            $criteria->addSelectColumn($alias . '.settings');
+            $criteria->addSelectColumn($alias . '.field_options');
             $criteria->addSelectColumn($alias . '.required');
             $criteria->addSelectColumn($alias . '.entry_date');
             $criteria->addSelectColumn($alias . '.edit_date');
@@ -418,7 +418,7 @@ class FieldTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the tf_fields table.
+     * Deletes all rows from the tf_field table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).

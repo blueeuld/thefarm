@@ -40,13 +40,8 @@ use TheFarm\Models\Map\ContactTableMap;
  * @method     ChildContactQuery orderByWeight($order = Criteria::ASC) Order by the weight column
  * @method     ChildContactQuery orderByPhone($order = Criteria::ASC) Order by the phone column
  * @method     ChildContactQuery orderByPositionCd($order = Criteria::ASC) Order by the position_cd column
- * @method     ChildContactQuery orderByIsActive($order = Criteria::ASC) Order by the is_active column
- * @method     ChildContactQuery orderByVerificationKey($order = Criteria::ASC) Order by the verification_key column
- * @method     ChildContactQuery orderByIsVerified($order = Criteria::ASC) Order by the is_verified column
  * @method     ChildContactQuery orderByNickname($order = Criteria::ASC) Order by the nickname column
  * @method     ChildContactQuery orderByBio($order = Criteria::ASC) Order by the bio column
- * @method     ChildContactQuery orderByIsApproved($order = Criteria::ASC) Order by the is_approved column
- * @method     ChildContactQuery orderByActivationCode($order = Criteria::ASC) Order by the activation_code column
  *
  * @method     ChildContactQuery groupByContactId() Group by the contact_id column
  * @method     ChildContactQuery groupByFirstName() Group by the first_name column
@@ -68,13 +63,8 @@ use TheFarm\Models\Map\ContactTableMap;
  * @method     ChildContactQuery groupByWeight() Group by the weight column
  * @method     ChildContactQuery groupByPhone() Group by the phone column
  * @method     ChildContactQuery groupByPositionCd() Group by the position_cd column
- * @method     ChildContactQuery groupByIsActive() Group by the is_active column
- * @method     ChildContactQuery groupByVerificationKey() Group by the verification_key column
- * @method     ChildContactQuery groupByIsVerified() Group by the is_verified column
  * @method     ChildContactQuery groupByNickname() Group by the nickname column
  * @method     ChildContactQuery groupByBio() Group by the bio column
- * @method     ChildContactQuery groupByIsApproved() Group by the is_approved column
- * @method     ChildContactQuery groupByActivationCode() Group by the activation_code column
  *
  * @method     ChildContactQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildContactQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -129,13 +119,8 @@ use TheFarm\Models\Map\ContactTableMap;
  * @method     ChildContact findOneByWeight(string $weight) Return the first ChildContact filtered by the weight column
  * @method     ChildContact findOneByPhone(string $phone) Return the first ChildContact filtered by the phone column
  * @method     ChildContact findOneByPositionCd(string $position_cd) Return the first ChildContact filtered by the position_cd column
- * @method     ChildContact findOneByIsActive(boolean $is_active) Return the first ChildContact filtered by the is_active column
- * @method     ChildContact findOneByVerificationKey(string $verification_key) Return the first ChildContact filtered by the verification_key column
- * @method     ChildContact findOneByIsVerified(boolean $is_verified) Return the first ChildContact filtered by the is_verified column
  * @method     ChildContact findOneByNickname(string $nickname) Return the first ChildContact filtered by the nickname column
- * @method     ChildContact findOneByBio(string $bio) Return the first ChildContact filtered by the bio column
- * @method     ChildContact findOneByIsApproved(boolean $is_approved) Return the first ChildContact filtered by the is_approved column
- * @method     ChildContact findOneByActivationCode(int $activation_code) Return the first ChildContact filtered by the activation_code column *
+ * @method     ChildContact findOneByBio(string $bio) Return the first ChildContact filtered by the bio column *
 
  * @method     ChildContact requirePk($key, ConnectionInterface $con = null) Return the ChildContact by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildContact requireOne(ConnectionInterface $con = null) Return the first ChildContact matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -160,13 +145,8 @@ use TheFarm\Models\Map\ContactTableMap;
  * @method     ChildContact requireOneByWeight(string $weight) Return the first ChildContact filtered by the weight column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildContact requireOneByPhone(string $phone) Return the first ChildContact filtered by the phone column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildContact requireOneByPositionCd(string $position_cd) Return the first ChildContact filtered by the position_cd column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildContact requireOneByIsActive(boolean $is_active) Return the first ChildContact filtered by the is_active column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildContact requireOneByVerificationKey(string $verification_key) Return the first ChildContact filtered by the verification_key column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildContact requireOneByIsVerified(boolean $is_verified) Return the first ChildContact filtered by the is_verified column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildContact requireOneByNickname(string $nickname) Return the first ChildContact filtered by the nickname column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildContact requireOneByBio(string $bio) Return the first ChildContact filtered by the bio column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildContact requireOneByIsApproved(boolean $is_approved) Return the first ChildContact filtered by the is_approved column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildContact requireOneByActivationCode(int $activation_code) Return the first ChildContact filtered by the activation_code column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildContact[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildContact objects based on current ModelCriteria
  * @method     ChildContact[]|ObjectCollection findByContactId(int $contact_id) Return ChildContact objects filtered by the contact_id column
@@ -189,13 +169,8 @@ use TheFarm\Models\Map\ContactTableMap;
  * @method     ChildContact[]|ObjectCollection findByWeight(string $weight) Return ChildContact objects filtered by the weight column
  * @method     ChildContact[]|ObjectCollection findByPhone(string $phone) Return ChildContact objects filtered by the phone column
  * @method     ChildContact[]|ObjectCollection findByPositionCd(string $position_cd) Return ChildContact objects filtered by the position_cd column
- * @method     ChildContact[]|ObjectCollection findByIsActive(boolean $is_active) Return ChildContact objects filtered by the is_active column
- * @method     ChildContact[]|ObjectCollection findByVerificationKey(string $verification_key) Return ChildContact objects filtered by the verification_key column
- * @method     ChildContact[]|ObjectCollection findByIsVerified(boolean $is_verified) Return ChildContact objects filtered by the is_verified column
  * @method     ChildContact[]|ObjectCollection findByNickname(string $nickname) Return ChildContact objects filtered by the nickname column
  * @method     ChildContact[]|ObjectCollection findByBio(string $bio) Return ChildContact objects filtered by the bio column
- * @method     ChildContact[]|ObjectCollection findByIsApproved(boolean $is_approved) Return ChildContact objects filtered by the is_approved column
- * @method     ChildContact[]|ObjectCollection findByActivationCode(int $activation_code) Return ChildContact objects filtered by the activation_code column
  * @method     ChildContact[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -294,7 +269,7 @@ abstract class ContactQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT contact_id, first_name, last_name, middle_name, email, title, date_joined, avatar, civil_status, nationality, country_dominicile, etnic_origin, dob, place_of_birth, age, gender, height, weight, phone, position_cd, is_active, verification_key, is_verified, nickname, bio, is_approved, activation_code FROM tf_contacts WHERE contact_id = :p0';
+        $sql = 'SELECT contact_id, first_name, last_name, middle_name, email, title, date_joined, avatar, civil_status, nationality, country_dominicile, etnic_origin, dob, place_of_birth, age, gender, height, weight, phone, position_cd, nickname, bio FROM tf_contacts WHERE contact_id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -953,85 +928,6 @@ abstract class ContactQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the is_active column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByIsActive(true); // WHERE is_active = true
-     * $query->filterByIsActive('yes'); // WHERE is_active = true
-     * </code>
-     *
-     * @param     boolean|string $isActive The value to use as filter.
-     *              Non-boolean arguments are converted using the following rules:
-     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
-     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
-     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildContactQuery The current query, for fluid interface
-     */
-    public function filterByIsActive($isActive = null, $comparison = null)
-    {
-        if (is_string($isActive)) {
-            $isActive = in_array(strtolower($isActive), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
-        }
-
-        return $this->addUsingAlias(ContactTableMap::COL_IS_ACTIVE, $isActive, $comparison);
-    }
-
-    /**
-     * Filter the query on the verification_key column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByVerificationKey('fooValue');   // WHERE verification_key = 'fooValue'
-     * $query->filterByVerificationKey('%fooValue%', Criteria::LIKE); // WHERE verification_key LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $verificationKey The value to use as filter.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildContactQuery The current query, for fluid interface
-     */
-    public function filterByVerificationKey($verificationKey = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($verificationKey)) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(ContactTableMap::COL_VERIFICATION_KEY, $verificationKey, $comparison);
-    }
-
-    /**
-     * Filter the query on the is_verified column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByIsVerified(true); // WHERE is_verified = true
-     * $query->filterByIsVerified('yes'); // WHERE is_verified = true
-     * </code>
-     *
-     * @param     boolean|string $isVerified The value to use as filter.
-     *              Non-boolean arguments are converted using the following rules:
-     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
-     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
-     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildContactQuery The current query, for fluid interface
-     */
-    public function filterByIsVerified($isVerified = null, $comparison = null)
-    {
-        if (is_string($isVerified)) {
-            $isVerified = in_array(strtolower($isVerified), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
-        }
-
-        return $this->addUsingAlias(ContactTableMap::COL_IS_VERIFIED, $isVerified, $comparison);
-    }
-
-    /**
      * Filter the query on the nickname column
      *
      * Example usage:
@@ -1079,74 +975,6 @@ abstract class ContactQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(ContactTableMap::COL_BIO, $bio, $comparison);
-    }
-
-    /**
-     * Filter the query on the is_approved column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByIsApproved(true); // WHERE is_approved = true
-     * $query->filterByIsApproved('yes'); // WHERE is_approved = true
-     * </code>
-     *
-     * @param     boolean|string $isApproved The value to use as filter.
-     *              Non-boolean arguments are converted using the following rules:
-     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
-     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
-     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildContactQuery The current query, for fluid interface
-     */
-    public function filterByIsApproved($isApproved = null, $comparison = null)
-    {
-        if (is_string($isApproved)) {
-            $isApproved = in_array(strtolower($isApproved), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
-        }
-
-        return $this->addUsingAlias(ContactTableMap::COL_IS_APPROVED, $isApproved, $comparison);
-    }
-
-    /**
-     * Filter the query on the activation_code column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByActivationCode(1234); // WHERE activation_code = 1234
-     * $query->filterByActivationCode(array(12, 34)); // WHERE activation_code IN (12, 34)
-     * $query->filterByActivationCode(array('min' => 12)); // WHERE activation_code > 12
-     * </code>
-     *
-     * @param     mixed $activationCode The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildContactQuery The current query, for fluid interface
-     */
-    public function filterByActivationCode($activationCode = null, $comparison = null)
-    {
-        if (is_array($activationCode)) {
-            $useMinMax = false;
-            if (isset($activationCode['min'])) {
-                $this->addUsingAlias(ContactTableMap::COL_ACTIVATION_CODE, $activationCode['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($activationCode['max'])) {
-                $this->addUsingAlias(ContactTableMap::COL_ACTIVATION_CODE, $activationCode['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(ContactTableMap::COL_ACTIVATION_CODE, $activationCode, $comparison);
     }
 
     /**

@@ -16,7 +16,7 @@ use TheFarm\Models\BookingFormQuery;
 
 
 /**
- * This class defines the structure of the 'tf_booking_forms' table.
+ * This class defines the structure of the 'tf_booking_form' table.
  *
  *
  *
@@ -44,7 +44,7 @@ class BookingFormTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = 'tf_booking_forms';
+    const TABLE_NAME = 'tf_booking_form';
 
     /**
      * The related Propel class for this table
@@ -72,44 +72,44 @@ class BookingFormTableMap extends TableMap
     const NUM_HYDRATE_COLUMNS = 8;
 
     /**
+     * the column name for the booking_form_id field
+     */
+    const COL_BOOKING_FORM_ID = 'tf_booking_form.booking_form_id';
+
+    /**
      * the column name for the booking_id field
      */
-    const COL_BOOKING_ID = 'tf_booking_forms.booking_id';
+    const COL_BOOKING_ID = 'tf_booking_form.booking_id';
 
     /**
      * the column name for the form_id field
      */
-    const COL_FORM_ID = 'tf_booking_forms.form_id';
+    const COL_FORM_ID = 'tf_booking_form.form_id';
 
     /**
-     * the column name for the required field
+     * the column name for the author_id field
      */
-    const COL_REQUIRED = 'tf_booking_forms.required';
+    const COL_AUTHOR_ID = 'tf_booking_form.author_id';
 
     /**
-     * the column name for the submitted field
+     * the column name for the entry_date field
      */
-    const COL_SUBMITTED = 'tf_booking_forms.submitted';
+    const COL_ENTRY_DATE = 'tf_booking_form.entry_date';
 
     /**
-     * the column name for the notify_user_on_submit field
+     * the column name for the edit_date field
      */
-    const COL_NOTIFY_USER_ON_SUBMIT = 'tf_booking_forms.notify_user_on_submit';
-
-    /**
-     * the column name for the submitted_date field
-     */
-    const COL_SUBMITTED_DATE = 'tf_booking_forms.submitted_date';
+    const COL_EDIT_DATE = 'tf_booking_form.edit_date';
 
     /**
      * the column name for the completed_by field
      */
-    const COL_COMPLETED_BY = 'tf_booking_forms.completed_by';
+    const COL_COMPLETED_BY = 'tf_booking_form.completed_by';
 
     /**
      * the column name for the completed_date field
      */
-    const COL_COMPLETED_DATE = 'tf_booking_forms.completed_date';
+    const COL_COMPLETED_DATE = 'tf_booking_form.completed_date';
 
     /**
      * The default string format for model objects of the related table
@@ -123,10 +123,10 @@ class BookingFormTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('BookingId', 'FormId', 'Required', 'Submitted', 'NotifyUserOnSubmit', 'SubmittedDate', 'CompletedBy', 'CompletedDate', ),
-        self::TYPE_CAMELNAME     => array('bookingId', 'formId', 'required', 'submitted', 'notifyUserOnSubmit', 'submittedDate', 'completedBy', 'completedDate', ),
-        self::TYPE_COLNAME       => array(BookingFormTableMap::COL_BOOKING_ID, BookingFormTableMap::COL_FORM_ID, BookingFormTableMap::COL_REQUIRED, BookingFormTableMap::COL_SUBMITTED, BookingFormTableMap::COL_NOTIFY_USER_ON_SUBMIT, BookingFormTableMap::COL_SUBMITTED_DATE, BookingFormTableMap::COL_COMPLETED_BY, BookingFormTableMap::COL_COMPLETED_DATE, ),
-        self::TYPE_FIELDNAME     => array('booking_id', 'form_id', 'required', 'submitted', 'notify_user_on_submit', 'submitted_date', 'completed_by', 'completed_date', ),
+        self::TYPE_PHPNAME       => array('BookingFormId', 'BookingId', 'FormId', 'AuthorId', 'EntryDate', 'EditDate', 'CompletedBy', 'CompletedDate', ),
+        self::TYPE_CAMELNAME     => array('bookingFormId', 'bookingId', 'formId', 'authorId', 'entryDate', 'editDate', 'completedBy', 'completedDate', ),
+        self::TYPE_COLNAME       => array(BookingFormTableMap::COL_BOOKING_FORM_ID, BookingFormTableMap::COL_BOOKING_ID, BookingFormTableMap::COL_FORM_ID, BookingFormTableMap::COL_AUTHOR_ID, BookingFormTableMap::COL_ENTRY_DATE, BookingFormTableMap::COL_EDIT_DATE, BookingFormTableMap::COL_COMPLETED_BY, BookingFormTableMap::COL_COMPLETED_DATE, ),
+        self::TYPE_FIELDNAME     => array('booking_form_id', 'booking_id', 'form_id', 'author_id', 'entry_date', 'edit_date', 'completed_by', 'completed_date', ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
@@ -137,10 +137,10 @@ class BookingFormTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('BookingId' => 0, 'FormId' => 1, 'Required' => 2, 'Submitted' => 3, 'NotifyUserOnSubmit' => 4, 'SubmittedDate' => 5, 'CompletedBy' => 6, 'CompletedDate' => 7, ),
-        self::TYPE_CAMELNAME     => array('bookingId' => 0, 'formId' => 1, 'required' => 2, 'submitted' => 3, 'notifyUserOnSubmit' => 4, 'submittedDate' => 5, 'completedBy' => 6, 'completedDate' => 7, ),
-        self::TYPE_COLNAME       => array(BookingFormTableMap::COL_BOOKING_ID => 0, BookingFormTableMap::COL_FORM_ID => 1, BookingFormTableMap::COL_REQUIRED => 2, BookingFormTableMap::COL_SUBMITTED => 3, BookingFormTableMap::COL_NOTIFY_USER_ON_SUBMIT => 4, BookingFormTableMap::COL_SUBMITTED_DATE => 5, BookingFormTableMap::COL_COMPLETED_BY => 6, BookingFormTableMap::COL_COMPLETED_DATE => 7, ),
-        self::TYPE_FIELDNAME     => array('booking_id' => 0, 'form_id' => 1, 'required' => 2, 'submitted' => 3, 'notify_user_on_submit' => 4, 'submitted_date' => 5, 'completed_by' => 6, 'completed_date' => 7, ),
+        self::TYPE_PHPNAME       => array('BookingFormId' => 0, 'BookingId' => 1, 'FormId' => 2, 'AuthorId' => 3, 'EntryDate' => 4, 'EditDate' => 5, 'CompletedBy' => 6, 'CompletedDate' => 7, ),
+        self::TYPE_CAMELNAME     => array('bookingFormId' => 0, 'bookingId' => 1, 'formId' => 2, 'authorId' => 3, 'entryDate' => 4, 'editDate' => 5, 'completedBy' => 6, 'completedDate' => 7, ),
+        self::TYPE_COLNAME       => array(BookingFormTableMap::COL_BOOKING_FORM_ID => 0, BookingFormTableMap::COL_BOOKING_ID => 1, BookingFormTableMap::COL_FORM_ID => 2, BookingFormTableMap::COL_AUTHOR_ID => 3, BookingFormTableMap::COL_ENTRY_DATE => 4, BookingFormTableMap::COL_EDIT_DATE => 5, BookingFormTableMap::COL_COMPLETED_BY => 6, BookingFormTableMap::COL_COMPLETED_DATE => 7, ),
+        self::TYPE_FIELDNAME     => array('booking_form_id' => 0, 'booking_id' => 1, 'form_id' => 2, 'author_id' => 3, 'entry_date' => 4, 'edit_date' => 5, 'completed_by' => 6, 'completed_date' => 7, ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
@@ -154,21 +154,21 @@ class BookingFormTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('tf_booking_forms');
+        $this->setName('tf_booking_form');
         $this->setPhpName('BookingForm');
         $this->setIdentifierQuoting(false);
         $this->setClassName('\\TheFarm\\Models\\BookingForm');
         $this->setPackage('TheFarm.Models');
-        $this->setUseIdGenerator(false);
+        $this->setUseIdGenerator(true);
         // columns
-        $this->addPrimaryKey('booking_id', 'BookingId', 'INTEGER', true, null, null);
-        $this->addPrimaryKey('form_id', 'FormId', 'INTEGER', true, null, null);
-        $this->addColumn('required', 'Required', 'BOOLEAN', false, 1, false);
-        $this->addColumn('submitted', 'Submitted', 'BOOLEAN', false, 1, false);
-        $this->addColumn('notify_user_on_submit', 'NotifyUserOnSubmit', 'VARCHAR', true, 255, '');
-        $this->addColumn('submitted_date', 'SubmittedDate', 'INTEGER', false, 10, 0);
-        $this->addColumn('completed_by', 'CompletedBy', 'INTEGER', false, null, null);
-        $this->addColumn('completed_date', 'CompletedDate', 'INTEGER', false, 10, 0);
+        $this->addPrimaryKey('booking_form_id', 'BookingFormId', 'INTEGER', true, null, null);
+        $this->addForeignKey('booking_id', 'BookingId', 'INTEGER', 'tf_bookings', 'booking_id', true, null, null);
+        $this->addForeignKey('form_id', 'FormId', 'INTEGER', 'tf_forms', 'form_id', true, null, null);
+        $this->addForeignKey('author_id', 'AuthorId', 'INTEGER', 'tf_user', 'user_id', false, null, null);
+        $this->addColumn('entry_date', 'EntryDate', 'TIMESTAMP', false, null, null);
+        $this->addColumn('edit_date', 'EditDate', 'TIMESTAMP', false, null, null);
+        $this->addForeignKey('completed_by', 'CompletedBy', 'INTEGER', 'tf_user', 'user_id', false, null, null);
+        $this->addColumn('completed_date', 'CompletedDate', 'TIMESTAMP', false, null, null);
     } // initialize()
 
     /**
@@ -176,60 +176,42 @@ class BookingFormTableMap extends TableMap
      */
     public function buildRelations()
     {
+        $this->addRelation('Booking', '\\TheFarm\\Models\\Booking', RelationMap::MANY_TO_ONE, array (
+  0 =>
+  array (
+    0 => ':booking_id',
+    1 => ':booking_id',
+  ),
+), null, null, null, false);
+        $this->addRelation('Form', '\\TheFarm\\Models\\Form', RelationMap::MANY_TO_ONE, array (
+  0 =>
+  array (
+    0 => ':form_id',
+    1 => ':form_id',
+  ),
+), null, null, null, false);
+        $this->addRelation('UserRelatedByAuthorId', '\\TheFarm\\Models\\User', RelationMap::MANY_TO_ONE, array (
+  0 =>
+  array (
+    0 => ':author_id',
+    1 => ':user_id',
+  ),
+), null, null, null, false);
+        $this->addRelation('UserRelatedByCompletedBy', '\\TheFarm\\Models\\User', RelationMap::MANY_TO_ONE, array (
+  0 =>
+  array (
+    0 => ':completed_by',
+    1 => ':user_id',
+  ),
+), null, null, null, false);
+        $this->addRelation('BookingFormEntry', '\\TheFarm\\Models\\BookingFormEntry', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':booking_form_id',
+    1 => ':booking_form_id',
+  ),
+), null, null, 'BookingFormEntries', false);
     } // buildRelations()
-
-    /**
-     * Adds an object to the instance pool.
-     *
-     * Propel keeps cached copies of objects in an instance pool when they are retrieved
-     * from the database. In some cases you may need to explicitly add objects
-     * to the cache in order to ensure that the same objects are always returned by find*()
-     * and findPk*() calls.
-     *
-     * @param \TheFarm\Models\BookingForm $obj A \TheFarm\Models\BookingForm object.
-     * @param string $key             (optional) key to use for instance map (for performance boost if key was already calculated externally).
-     */
-    public static function addInstanceToPool($obj, $key = null)
-    {
-        if (Propel::isInstancePoolingEnabled()) {
-            if (null === $key) {
-                $key = serialize([(null === $obj->getBookingId() || is_scalar($obj->getBookingId()) || is_callable([$obj->getBookingId(), '__toString']) ? (string) $obj->getBookingId() : $obj->getBookingId()), (null === $obj->getFormId() || is_scalar($obj->getFormId()) || is_callable([$obj->getFormId(), '__toString']) ? (string) $obj->getFormId() : $obj->getFormId())]);
-            } // if key === null
-            self::$instances[$key] = $obj;
-        }
-    }
-
-    /**
-     * Removes an object from the instance pool.
-     *
-     * Propel keeps cached copies of objects in an instance pool when they are retrieved
-     * from the database.  In some cases -- especially when you override doDelete
-     * methods in your stub classes -- you may need to explicitly remove objects
-     * from the cache in order to prevent returning objects that no longer exist.
-     *
-     * @param mixed $value A \TheFarm\Models\BookingForm object or a primary key value.
-     */
-    public static function removeInstanceFromPool($value)
-    {
-        if (Propel::isInstancePoolingEnabled() && null !== $value) {
-            if (is_object($value) && $value instanceof \TheFarm\Models\BookingForm) {
-                $key = serialize([(null === $value->getBookingId() || is_scalar($value->getBookingId()) || is_callable([$value->getBookingId(), '__toString']) ? (string) $value->getBookingId() : $value->getBookingId()), (null === $value->getFormId() || is_scalar($value->getFormId()) || is_callable([$value->getFormId(), '__toString']) ? (string) $value->getFormId() : $value->getFormId())]);
-
-            } elseif (is_array($value) && count($value) === 2) {
-                // assume we've been passed a primary key";
-                $key = serialize([(null === $value[0] || is_scalar($value[0]) || is_callable([$value[0], '__toString']) ? (string) $value[0] : $value[0]), (null === $value[1] || is_scalar($value[1]) || is_callable([$value[1], '__toString']) ? (string) $value[1] : $value[1])]);
-            } elseif ($value instanceof Criteria) {
-                self::$instances = [];
-
-                return;
-            } else {
-                $e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or \TheFarm\Models\BookingForm object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value, true)));
-                throw $e;
-            }
-
-            unset(self::$instances[$key]);
-        }
-    }
 
     /**
      * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
@@ -247,11 +229,11 @@ class BookingFormTableMap extends TableMap
     public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
         // If the PK cannot be derived from the row, return NULL.
-        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('BookingId', TableMap::TYPE_PHPNAME, $indexType)] === null && $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('FormId', TableMap::TYPE_PHPNAME, $indexType)] === null) {
+        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('BookingFormId', TableMap::TYPE_PHPNAME, $indexType)] === null) {
             return null;
         }
 
-        return serialize([(null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('BookingId', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('BookingId', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('BookingId', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('BookingId', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('BookingId', TableMap::TYPE_PHPNAME, $indexType)]), (null === $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('FormId', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('FormId', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('FormId', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('FormId', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('FormId', TableMap::TYPE_PHPNAME, $indexType)])]);
+        return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('BookingFormId', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('BookingFormId', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('BookingFormId', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('BookingFormId', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('BookingFormId', TableMap::TYPE_PHPNAME, $indexType)];
     }
 
     /**
@@ -268,20 +250,11 @@ class BookingFormTableMap extends TableMap
      */
     public static function getPrimaryKeyFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-            $pks = [];
-
-        $pks[] = (int) $row[
+        return (int) $row[
             $indexType == TableMap::TYPE_NUM
                 ? 0 + $offset
-                : self::translateFieldName('BookingId', TableMap::TYPE_PHPNAME, $indexType)
+                : self::translateFieldName('BookingFormId', TableMap::TYPE_PHPNAME, $indexType)
         ];
-        $pks[] = (int) $row[
-            $indexType == TableMap::TYPE_NUM
-                ? 1 + $offset
-                : self::translateFieldName('FormId', TableMap::TYPE_PHPNAME, $indexType)
-        ];
-
-        return $pks;
     }
 
     /**
@@ -381,21 +354,21 @@ class BookingFormTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
+            $criteria->addSelectColumn(BookingFormTableMap::COL_BOOKING_FORM_ID);
             $criteria->addSelectColumn(BookingFormTableMap::COL_BOOKING_ID);
             $criteria->addSelectColumn(BookingFormTableMap::COL_FORM_ID);
-            $criteria->addSelectColumn(BookingFormTableMap::COL_REQUIRED);
-            $criteria->addSelectColumn(BookingFormTableMap::COL_SUBMITTED);
-            $criteria->addSelectColumn(BookingFormTableMap::COL_NOTIFY_USER_ON_SUBMIT);
-            $criteria->addSelectColumn(BookingFormTableMap::COL_SUBMITTED_DATE);
+            $criteria->addSelectColumn(BookingFormTableMap::COL_AUTHOR_ID);
+            $criteria->addSelectColumn(BookingFormTableMap::COL_ENTRY_DATE);
+            $criteria->addSelectColumn(BookingFormTableMap::COL_EDIT_DATE);
             $criteria->addSelectColumn(BookingFormTableMap::COL_COMPLETED_BY);
             $criteria->addSelectColumn(BookingFormTableMap::COL_COMPLETED_DATE);
         } else {
+            $criteria->addSelectColumn($alias . '.booking_form_id');
             $criteria->addSelectColumn($alias . '.booking_id');
             $criteria->addSelectColumn($alias . '.form_id');
-            $criteria->addSelectColumn($alias . '.required');
-            $criteria->addSelectColumn($alias . '.submitted');
-            $criteria->addSelectColumn($alias . '.notify_user_on_submit');
-            $criteria->addSelectColumn($alias . '.submitted_date');
+            $criteria->addSelectColumn($alias . '.author_id');
+            $criteria->addSelectColumn($alias . '.entry_date');
+            $criteria->addSelectColumn($alias . '.edit_date');
             $criteria->addSelectColumn($alias . '.completed_by');
             $criteria->addSelectColumn($alias . '.completed_date');
         }
@@ -449,17 +422,7 @@ class BookingFormTableMap extends TableMap
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
             $criteria = new Criteria(BookingFormTableMap::DATABASE_NAME);
-            // primary key is composite; we therefore, expect
-            // the primary key passed to be an array of pkey values
-            if (count($values) == count($values, COUNT_RECURSIVE)) {
-                // array is not multi-dimensional
-                $values = array($values);
-            }
-            foreach ($values as $value) {
-                $criterion = $criteria->getNewCriterion(BookingFormTableMap::COL_BOOKING_ID, $value[0]);
-                $criterion->addAnd($criteria->getNewCriterion(BookingFormTableMap::COL_FORM_ID, $value[1]));
-                $criteria->addOr($criterion);
-            }
+            $criteria->add(BookingFormTableMap::COL_BOOKING_FORM_ID, (array) $values, Criteria::IN);
         }
 
         $query = BookingFormQuery::create()->mergeWith($criteria);
@@ -476,7 +439,7 @@ class BookingFormTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the tf_booking_forms table.
+     * Deletes all rows from the tf_booking_form table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
@@ -505,6 +468,10 @@ class BookingFormTableMap extends TableMap
             $criteria = clone $criteria; // rename for clarity
         } else {
             $criteria = $criteria->buildCriteria(); // build Criteria from BookingForm object
+        }
+
+        if ($criteria->containsKey(BookingFormTableMap::COL_BOOKING_FORM_ID) && $criteria->keyContainsValue(BookingFormTableMap::COL_BOOKING_FORM_ID) ) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.BookingFormTableMap::COL_BOOKING_FORM_ID.')');
         }
 
 

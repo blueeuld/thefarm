@@ -16,7 +16,7 @@ use TheFarm\Models\FieldQuery as ChildFieldQuery;
 use TheFarm\Models\Map\FieldTableMap;
 
 /**
- * Base class that represents a query for the 'tf_fields' table.
+ * Base class that represents a query for the 'tf_field' table.
  *
  *
  *
@@ -24,7 +24,7 @@ use TheFarm\Models\Map\FieldTableMap;
  * @method     ChildFieldQuery orderByFieldName($order = Criteria::ASC) Order by the field_name column
  * @method     ChildFieldQuery orderByFieldLabel($order = Criteria::ASC) Order by the field_label column
  * @method     ChildFieldQuery orderByFieldType($order = Criteria::ASC) Order by the field_type column
- * @method     ChildFieldQuery orderBySettings($order = Criteria::ASC) Order by the settings column
+ * @method     ChildFieldQuery orderByFieldOptions($order = Criteria::ASC) Order by the field_options column
  * @method     ChildFieldQuery orderByRequired($order = Criteria::ASC) Order by the required column
  * @method     ChildFieldQuery orderByEntryDate($order = Criteria::ASC) Order by the entry_date column
  * @method     ChildFieldQuery orderByEditDate($order = Criteria::ASC) Order by the edit_date column
@@ -33,7 +33,7 @@ use TheFarm\Models\Map\FieldTableMap;
  * @method     ChildFieldQuery groupByFieldName() Group by the field_name column
  * @method     ChildFieldQuery groupByFieldLabel() Group by the field_label column
  * @method     ChildFieldQuery groupByFieldType() Group by the field_type column
- * @method     ChildFieldQuery groupBySettings() Group by the settings column
+ * @method     ChildFieldQuery groupByFieldOptions() Group by the field_options column
  * @method     ChildFieldQuery groupByRequired() Group by the required column
  * @method     ChildFieldQuery groupByEntryDate() Group by the entry_date column
  * @method     ChildFieldQuery groupByEditDate() Group by the edit_date column
@@ -46,15 +46,15 @@ use TheFarm\Models\Map\FieldTableMap;
  * @method     ChildFieldQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildFieldQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
  *
- * @method     ChildFieldQuery leftJoinFormEntry($relationAlias = null) Adds a LEFT JOIN clause to the query using the FormEntry relation
- * @method     ChildFieldQuery rightJoinFormEntry($relationAlias = null) Adds a RIGHT JOIN clause to the query using the FormEntry relation
- * @method     ChildFieldQuery innerJoinFormEntry($relationAlias = null) Adds a INNER JOIN clause to the query using the FormEntry relation
+ * @method     ChildFieldQuery leftJoinBookingFormEntry($relationAlias = null) Adds a LEFT JOIN clause to the query using the BookingFormEntry relation
+ * @method     ChildFieldQuery rightJoinBookingFormEntry($relationAlias = null) Adds a RIGHT JOIN clause to the query using the BookingFormEntry relation
+ * @method     ChildFieldQuery innerJoinBookingFormEntry($relationAlias = null) Adds a INNER JOIN clause to the query using the BookingFormEntry relation
  *
- * @method     ChildFieldQuery joinWithFormEntry($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the FormEntry relation
+ * @method     ChildFieldQuery joinWithBookingFormEntry($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the BookingFormEntry relation
  *
- * @method     ChildFieldQuery leftJoinWithFormEntry() Adds a LEFT JOIN clause and with to the query using the FormEntry relation
- * @method     ChildFieldQuery rightJoinWithFormEntry() Adds a RIGHT JOIN clause and with to the query using the FormEntry relation
- * @method     ChildFieldQuery innerJoinWithFormEntry() Adds a INNER JOIN clause and with to the query using the FormEntry relation
+ * @method     ChildFieldQuery leftJoinWithBookingFormEntry() Adds a LEFT JOIN clause and with to the query using the BookingFormEntry relation
+ * @method     ChildFieldQuery rightJoinWithBookingFormEntry() Adds a RIGHT JOIN clause and with to the query using the BookingFormEntry relation
+ * @method     ChildFieldQuery innerJoinWithBookingFormEntry() Adds a INNER JOIN clause and with to the query using the BookingFormEntry relation
  *
  * @method     ChildFieldQuery leftJoinFormField($relationAlias = null) Adds a LEFT JOIN clause to the query using the FormField relation
  * @method     ChildFieldQuery rightJoinFormField($relationAlias = null) Adds a RIGHT JOIN clause to the query using the FormField relation
@@ -66,7 +66,7 @@ use TheFarm\Models\Map\FieldTableMap;
  * @method     ChildFieldQuery rightJoinWithFormField() Adds a RIGHT JOIN clause and with to the query using the FormField relation
  * @method     ChildFieldQuery innerJoinWithFormField() Adds a INNER JOIN clause and with to the query using the FormField relation
  *
- * @method     \TheFarm\Models\FormEntryQuery|\TheFarm\Models\FormFieldQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \TheFarm\Models\BookingFormEntryQuery|\TheFarm\Models\FormFieldQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildField findOne(ConnectionInterface $con = null) Return the first ChildField matching the query
  * @method     ChildField findOneOrCreate(ConnectionInterface $con = null) Return the first ChildField matching the query, or a new ChildField object populated from the query conditions when no match is found
@@ -75,7 +75,7 @@ use TheFarm\Models\Map\FieldTableMap;
  * @method     ChildField findOneByFieldName(string $field_name) Return the first ChildField filtered by the field_name column
  * @method     ChildField findOneByFieldLabel(string $field_label) Return the first ChildField filtered by the field_label column
  * @method     ChildField findOneByFieldType(string $field_type) Return the first ChildField filtered by the field_type column
- * @method     ChildField findOneBySettings(string $settings) Return the first ChildField filtered by the settings column
+ * @method     ChildField findOneByFieldOptions(string $field_options) Return the first ChildField filtered by the field_options column
  * @method     ChildField findOneByRequired(string $required) Return the first ChildField filtered by the required column
  * @method     ChildField findOneByEntryDate(int $entry_date) Return the first ChildField filtered by the entry_date column
  * @method     ChildField findOneByEditDate(int $edit_date) Return the first ChildField filtered by the edit_date column *
@@ -87,7 +87,7 @@ use TheFarm\Models\Map\FieldTableMap;
  * @method     ChildField requireOneByFieldName(string $field_name) Return the first ChildField filtered by the field_name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildField requireOneByFieldLabel(string $field_label) Return the first ChildField filtered by the field_label column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildField requireOneByFieldType(string $field_type) Return the first ChildField filtered by the field_type column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildField requireOneBySettings(string $settings) Return the first ChildField filtered by the settings column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildField requireOneByFieldOptions(string $field_options) Return the first ChildField filtered by the field_options column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildField requireOneByRequired(string $required) Return the first ChildField filtered by the required column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildField requireOneByEntryDate(int $entry_date) Return the first ChildField filtered by the entry_date column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildField requireOneByEditDate(int $edit_date) Return the first ChildField filtered by the edit_date column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -97,7 +97,7 @@ use TheFarm\Models\Map\FieldTableMap;
  * @method     ChildField[]|ObjectCollection findByFieldName(string $field_name) Return ChildField objects filtered by the field_name column
  * @method     ChildField[]|ObjectCollection findByFieldLabel(string $field_label) Return ChildField objects filtered by the field_label column
  * @method     ChildField[]|ObjectCollection findByFieldType(string $field_type) Return ChildField objects filtered by the field_type column
- * @method     ChildField[]|ObjectCollection findBySettings(string $settings) Return ChildField objects filtered by the settings column
+ * @method     ChildField[]|ObjectCollection findByFieldOptions(string $field_options) Return ChildField objects filtered by the field_options column
  * @method     ChildField[]|ObjectCollection findByRequired(string $required) Return ChildField objects filtered by the required column
  * @method     ChildField[]|ObjectCollection findByEntryDate(int $entry_date) Return ChildField objects filtered by the entry_date column
  * @method     ChildField[]|ObjectCollection findByEditDate(int $edit_date) Return ChildField objects filtered by the edit_date column
@@ -199,7 +199,7 @@ abstract class FieldQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT field_id, field_name, field_label, field_type, settings, required, entry_date, edit_date FROM tf_fields WHERE field_id = :p0';
+        $sql = 'SELECT field_id, field_name, field_label, field_type, field_options, required, entry_date, edit_date FROM tf_field WHERE field_id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -406,28 +406,28 @@ abstract class FieldQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the settings column
+     * Filter the query on the field_options column
      *
      * Example usage:
      * <code>
-     * $query->filterBySettings('fooValue');   // WHERE settings = 'fooValue'
-     * $query->filterBySettings('%fooValue%', Criteria::LIKE); // WHERE settings LIKE '%fooValue%'
+     * $query->filterByFieldOptions('fooValue');   // WHERE field_options = 'fooValue'
+     * $query->filterByFieldOptions('%fooValue%', Criteria::LIKE); // WHERE field_options LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $settings The value to use as filter.
+     * @param     string $fieldOptions The value to use as filter.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildFieldQuery The current query, for fluid interface
      */
-    public function filterBySettings($settings = null, $comparison = null)
+    public function filterByFieldOptions($fieldOptions = null, $comparison = null)
     {
         if (null === $comparison) {
-            if (is_array($settings)) {
+            if (is_array($fieldOptions)) {
                 $comparison = Criteria::IN;
             }
         }
 
-        return $this->addUsingAlias(FieldTableMap::COL_SETTINGS, $settings, $comparison);
+        return $this->addUsingAlias(FieldTableMap::COL_FIELD_OPTIONS, $fieldOptions, $comparison);
     }
 
     /**
@@ -538,40 +538,40 @@ abstract class FieldQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \TheFarm\Models\FormEntry object
+     * Filter the query by a related \TheFarm\Models\BookingFormEntry object
      *
-     * @param \TheFarm\Models\FormEntry|ObjectCollection $formEntry the related object to use as filter
+     * @param \TheFarm\Models\BookingFormEntry|ObjectCollection $bookingFormEntry the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildFieldQuery The current query, for fluid interface
      */
-    public function filterByFormEntry($formEntry, $comparison = null)
+    public function filterByBookingFormEntry($bookingFormEntry, $comparison = null)
     {
-        if ($formEntry instanceof \TheFarm\Models\FormEntry) {
+        if ($bookingFormEntry instanceof \TheFarm\Models\BookingFormEntry) {
             return $this
-                ->addUsingAlias(FieldTableMap::COL_FIELD_ID, $formEntry->getFieldId(), $comparison);
-        } elseif ($formEntry instanceof ObjectCollection) {
+                ->addUsingAlias(FieldTableMap::COL_FIELD_ID, $bookingFormEntry->getFieldId(), $comparison);
+        } elseif ($bookingFormEntry instanceof ObjectCollection) {
             return $this
-                ->useFormEntryQuery()
-                ->filterByPrimaryKeys($formEntry->getPrimaryKeys())
+                ->useBookingFormEntryQuery()
+                ->filterByPrimaryKeys($bookingFormEntry->getPrimaryKeys())
                 ->endUse();
         } else {
-            throw new PropelException('filterByFormEntry() only accepts arguments of type \TheFarm\Models\FormEntry or Collection');
+            throw new PropelException('filterByBookingFormEntry() only accepts arguments of type \TheFarm\Models\BookingFormEntry or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the FormEntry relation
+     * Adds a JOIN clause to the query using the BookingFormEntry relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildFieldQuery The current query, for fluid interface
      */
-    public function joinFormEntry($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinBookingFormEntry($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('FormEntry');
+        $relationMap = $tableMap->getRelation('BookingFormEntry');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -586,14 +586,14 @@ abstract class FieldQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'FormEntry');
+            $this->addJoinObject($join, 'BookingFormEntry');
         }
 
         return $this;
     }
 
     /**
-     * Use the FormEntry relation FormEntry object
+     * Use the BookingFormEntry relation BookingFormEntry object
      *
      * @see useQuery()
      *
@@ -601,13 +601,13 @@ abstract class FieldQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \TheFarm\Models\FormEntryQuery A secondary query class using the current class as primary query
+     * @return \TheFarm\Models\BookingFormEntryQuery A secondary query class using the current class as primary query
      */
-    public function useFormEntryQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useBookingFormEntryQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinFormEntry($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'FormEntry', '\TheFarm\Models\FormEntryQuery');
+            ->joinBookingFormEntry($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'BookingFormEntry', '\TheFarm\Models\BookingFormEntryQuery');
     }
 
     /**
@@ -700,7 +700,7 @@ abstract class FieldQuery extends ModelCriteria
     }
 
     /**
-     * Deletes all rows from the tf_fields table.
+     * Deletes all rows from the tf_field table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).

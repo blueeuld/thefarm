@@ -16,17 +16,17 @@ use TheFarm\Models\FormFieldQuery as ChildFormFieldQuery;
 use TheFarm\Models\Map\FormFieldTableMap;
 
 /**
- * Base class that represents a query for the 'tf_form_fields' table.
+ * Base class that represents a query for the 'tf_form_field' table.
  *
  *
  *
  * @method     ChildFormFieldQuery orderByFieldId($order = Criteria::ASC) Order by the field_id column
  * @method     ChildFormFieldQuery orderByFormId($order = Criteria::ASC) Order by the form_id column
- * @method     ChildFormFieldQuery orderByGuestOnly($order = Criteria::ASC) Order by the guest_only column
+ * @method     ChildFormFieldQuery orderByFormFieldOrder($order = Criteria::ASC) Order by the form_field_order column
  *
  * @method     ChildFormFieldQuery groupByFieldId() Group by the field_id column
  * @method     ChildFormFieldQuery groupByFormId() Group by the form_id column
- * @method     ChildFormFieldQuery groupByGuestOnly() Group by the guest_only column
+ * @method     ChildFormFieldQuery groupByFormFieldOrder() Group by the form_field_order column
  *
  * @method     ChildFormFieldQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildFormFieldQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -63,19 +63,19 @@ use TheFarm\Models\Map\FormFieldTableMap;
  *
  * @method     ChildFormField findOneByFieldId(int $field_id) Return the first ChildFormField filtered by the field_id column
  * @method     ChildFormField findOneByFormId(int $form_id) Return the first ChildFormField filtered by the form_id column
- * @method     ChildFormField findOneByGuestOnly(string $guest_only) Return the first ChildFormField filtered by the guest_only column *
+ * @method     ChildFormField findOneByFormFieldOrder(int $form_field_order) Return the first ChildFormField filtered by the form_field_order column *
 
  * @method     ChildFormField requirePk($key, ConnectionInterface $con = null) Return the ChildFormField by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildFormField requireOne(ConnectionInterface $con = null) Return the first ChildFormField matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildFormField requireOneByFieldId(int $field_id) Return the first ChildFormField filtered by the field_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildFormField requireOneByFormId(int $form_id) Return the first ChildFormField filtered by the form_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildFormField requireOneByGuestOnly(string $guest_only) Return the first ChildFormField filtered by the guest_only column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildFormField requireOneByFormFieldOrder(int $form_field_order) Return the first ChildFormField filtered by the form_field_order column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildFormField[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildFormField objects based on current ModelCriteria
  * @method     ChildFormField[]|ObjectCollection findByFieldId(int $field_id) Return ChildFormField objects filtered by the field_id column
  * @method     ChildFormField[]|ObjectCollection findByFormId(int $form_id) Return ChildFormField objects filtered by the form_id column
- * @method     ChildFormField[]|ObjectCollection findByGuestOnly(string $guest_only) Return ChildFormField objects filtered by the guest_only column
+ * @method     ChildFormField[]|ObjectCollection findByFormFieldOrder(int $form_field_order) Return ChildFormField objects filtered by the form_field_order column
  * @method     ChildFormField[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -174,7 +174,7 @@ abstract class FormFieldQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT field_id, form_id, guest_only FROM tf_form_fields WHERE field_id = :p0 AND form_id = :p1';
+        $sql = 'SELECT field_id, form_id, form_field_order FROM tf_form_field WHERE field_id = :p0 AND form_id = :p1';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key[0], PDO::PARAM_INT);
@@ -363,28 +363,44 @@ abstract class FormFieldQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the guest_only column
+     * Filter the query on the form_field_order column
      *
      * Example usage:
      * <code>
-     * $query->filterByGuestOnly('fooValue');   // WHERE guest_only = 'fooValue'
-     * $query->filterByGuestOnly('%fooValue%', Criteria::LIKE); // WHERE guest_only LIKE '%fooValue%'
+     * $query->filterByFormFieldOrder(1234); // WHERE form_field_order = 1234
+     * $query->filterByFormFieldOrder(array(12, 34)); // WHERE form_field_order IN (12, 34)
+     * $query->filterByFormFieldOrder(array('min' => 12)); // WHERE form_field_order > 12
      * </code>
      *
-     * @param     string $guestOnly The value to use as filter.
+     * @param     mixed $formFieldOrder The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildFormFieldQuery The current query, for fluid interface
      */
-    public function filterByGuestOnly($guestOnly = null, $comparison = null)
+    public function filterByFormFieldOrder($formFieldOrder = null, $comparison = null)
     {
-        if (null === $comparison) {
-            if (is_array($guestOnly)) {
+        if (is_array($formFieldOrder)) {
+            $useMinMax = false;
+            if (isset($formFieldOrder['min'])) {
+                $this->addUsingAlias(FormFieldTableMap::COL_FORM_FIELD_ORDER, $formFieldOrder['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($formFieldOrder['max'])) {
+                $this->addUsingAlias(FormFieldTableMap::COL_FORM_FIELD_ORDER, $formFieldOrder['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
                 $comparison = Criteria::IN;
             }
         }
 
-        return $this->addUsingAlias(FormFieldTableMap::COL_GUEST_ONLY, $guestOnly, $comparison);
+        return $this->addUsingAlias(FormFieldTableMap::COL_FORM_FIELD_ORDER, $formFieldOrder, $comparison);
     }
 
     /**
@@ -560,7 +576,7 @@ abstract class FormFieldQuery extends ModelCriteria
     }
 
     /**
-     * Deletes all rows from the tf_form_fields table.
+     * Deletes all rows from the tf_form_field table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).

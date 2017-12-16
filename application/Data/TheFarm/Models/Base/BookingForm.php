@@ -2,6 +2,7 @@
 
 namespace TheFarm\Models\Base;
 
+use \DateTime;
 use \Exception;
 use \PDO;
 use Propel\Runtime\Propel;
@@ -9,17 +10,29 @@ use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
 use Propel\Runtime\Collection\Collection;
+use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
+use Propel\Runtime\Util\PropelDateTime;
+use TheFarm\Models\Booking as ChildBooking;
+use TheFarm\Models\BookingForm as ChildBookingForm;
+use TheFarm\Models\BookingFormEntry as ChildBookingFormEntry;
+use TheFarm\Models\BookingFormEntryQuery as ChildBookingFormEntryQuery;
 use TheFarm\Models\BookingFormQuery as ChildBookingFormQuery;
+use TheFarm\Models\BookingQuery as ChildBookingQuery;
+use TheFarm\Models\Form as ChildForm;
+use TheFarm\Models\FormQuery as ChildFormQuery;
+use TheFarm\Models\User as ChildUser;
+use TheFarm\Models\UserQuery as ChildUserQuery;
+use TheFarm\Models\Map\BookingFormEntryTableMap;
 use TheFarm\Models\Map\BookingFormTableMap;
 
 /**
- * Base class that represents a row from the 'tf_booking_forms' table.
+ * Base class that represents a row from the 'tf_booking_form' table.
  *
  *
  *
@@ -60,6 +73,13 @@ abstract class BookingForm implements ActiveRecordInterface
     protected $virtualColumns = array();
 
     /**
+     * The value for the booking_form_id field.
+     *
+     * @var        int
+     */
+    protected $booking_form_id;
+
+    /**
      * The value for the booking_id field.
      *
      * @var        int
@@ -74,36 +94,25 @@ abstract class BookingForm implements ActiveRecordInterface
     protected $form_id;
 
     /**
-     * The value for the required field.
+     * The value for the author_id field.
      *
-     * Note: this column has a database default value of: false
-     * @var        boolean
-     */
-    protected $required;
-
-    /**
-     * The value for the submitted field.
-     *
-     * Note: this column has a database default value of: false
-     * @var        boolean
-     */
-    protected $submitted;
-
-    /**
-     * The value for the notify_user_on_submit field.
-     *
-     * Note: this column has a database default value of: ''
-     * @var        string
-     */
-    protected $notify_user_on_submit;
-
-    /**
-     * The value for the submitted_date field.
-     *
-     * Note: this column has a database default value of: 0
      * @var        int
      */
-    protected $submitted_date;
+    protected $author_id;
+
+    /**
+     * The value for the entry_date field.
+     *
+     * @var        DateTime
+     */
+    protected $entry_date;
+
+    /**
+     * The value for the edit_date field.
+     *
+     * @var        DateTime
+     */
+    protected $edit_date;
 
     /**
      * The value for the completed_by field.
@@ -115,10 +124,35 @@ abstract class BookingForm implements ActiveRecordInterface
     /**
      * The value for the completed_date field.
      *
-     * Note: this column has a database default value of: 0
-     * @var        int
+     * @var        DateTime
      */
     protected $completed_date;
+
+    /**
+     * @var        ChildBooking
+     */
+    protected $aBooking;
+
+    /**
+     * @var        ChildForm
+     */
+    protected $aForm;
+
+    /**
+     * @var        ChildUser
+     */
+    protected $aUserRelatedByAuthorId;
+
+    /**
+     * @var        ChildUser
+     */
+    protected $aUserRelatedByCompletedBy;
+
+    /**
+     * @var        ObjectCollection|ChildBookingFormEntry[] Collection to store aggregation of ChildBookingFormEntry objects.
+     */
+    protected $collBookingFormEntries;
+    protected $collBookingFormEntriesPartial;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -129,27 +163,16 @@ abstract class BookingForm implements ActiveRecordInterface
     protected $alreadyInSave = false;
 
     /**
-     * Applies default values to this object.
-     * This method should be called from the object's constructor (or
-     * equivalent initialization method).
-     * @see __construct()
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildBookingFormEntry[]
      */
-    public function applyDefaultValues()
-    {
-        $this->required = false;
-        $this->submitted = false;
-        $this->notify_user_on_submit = '';
-        $this->submitted_date = 0;
-        $this->completed_date = 0;
-    }
+    protected $bookingFormEntriesScheduledForDeletion = null;
 
     /**
      * Initializes internal state of TheFarm\Models\Base\BookingForm object.
-     * @see applyDefaults()
      */
     public function __construct()
     {
-        $this->applyDefaultValues();
     }
 
     /**
@@ -371,6 +394,16 @@ abstract class BookingForm implements ActiveRecordInterface
     }
 
     /**
+     * Get the [booking_form_id] column value.
+     *
+     * @return int
+     */
+    public function getBookingFormId()
+    {
+        return $this->booking_form_id;
+    }
+
+    /**
      * Get the [booking_id] column value.
      *
      * @return int
@@ -391,63 +424,53 @@ abstract class BookingForm implements ActiveRecordInterface
     }
 
     /**
-     * Get the [required] column value.
-     *
-     * @return boolean
-     */
-    public function getRequired()
-    {
-        return $this->required;
-    }
-
-    /**
-     * Get the [required] column value.
-     *
-     * @return boolean
-     */
-    public function isRequired()
-    {
-        return $this->getRequired();
-    }
-
-    /**
-     * Get the [submitted] column value.
-     *
-     * @return boolean
-     */
-    public function getSubmitted()
-    {
-        return $this->submitted;
-    }
-
-    /**
-     * Get the [submitted] column value.
-     *
-     * @return boolean
-     */
-    public function isSubmitted()
-    {
-        return $this->getSubmitted();
-    }
-
-    /**
-     * Get the [notify_user_on_submit] column value.
-     *
-     * @return string
-     */
-    public function getNotifyUserOnSubmit()
-    {
-        return $this->notify_user_on_submit;
-    }
-
-    /**
-     * Get the [submitted_date] column value.
+     * Get the [author_id] column value.
      *
      * @return int
      */
-    public function getSubmittedDate()
+    public function getAuthorId()
     {
-        return $this->submitted_date;
+        return $this->author_id;
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [entry_date] column value.
+     *
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getEntryDate($format = NULL)
+    {
+        if ($format === null) {
+            return $this->entry_date;
+        } else {
+            return $this->entry_date instanceof \DateTimeInterface ? $this->entry_date->format($format) : null;
+        }
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [edit_date] column value.
+     *
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getEditDate($format = NULL)
+    {
+        if ($format === null) {
+            return $this->edit_date;
+        } else {
+            return $this->edit_date instanceof \DateTimeInterface ? $this->edit_date->format($format) : null;
+        }
     }
 
     /**
@@ -461,14 +484,44 @@ abstract class BookingForm implements ActiveRecordInterface
     }
 
     /**
-     * Get the [completed_date] column value.
+     * Get the [optionally formatted] temporal [completed_date] column value.
      *
-     * @return int
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
      */
-    public function getCompletedDate()
+    public function getCompletedDate($format = NULL)
     {
-        return $this->completed_date;
+        if ($format === null) {
+            return $this->completed_date;
+        } else {
+            return $this->completed_date instanceof \DateTimeInterface ? $this->completed_date->format($format) : null;
+        }
     }
+
+    /**
+     * Set the value of [booking_form_id] column.
+     *
+     * @param int $v new value
+     * @return $this|\TheFarm\Models\BookingForm The current object (for fluent API support)
+     */
+    public function setBookingFormId($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->booking_form_id !== $v) {
+            $this->booking_form_id = $v;
+            $this->modifiedColumns[BookingFormTableMap::COL_BOOKING_FORM_ID] = true;
+        }
+
+        return $this;
+    } // setBookingFormId()
 
     /**
      * Set the value of [booking_id] column.
@@ -485,6 +538,10 @@ abstract class BookingForm implements ActiveRecordInterface
         if ($this->booking_id !== $v) {
             $this->booking_id = $v;
             $this->modifiedColumns[BookingFormTableMap::COL_BOOKING_ID] = true;
+        }
+
+        if ($this->aBooking !== null && $this->aBooking->getBookingId() !== $v) {
+            $this->aBooking = null;
         }
 
         return $this;
@@ -507,104 +564,76 @@ abstract class BookingForm implements ActiveRecordInterface
             $this->modifiedColumns[BookingFormTableMap::COL_FORM_ID] = true;
         }
 
+        if ($this->aForm !== null && $this->aForm->getFormId() !== $v) {
+            $this->aForm = null;
+        }
+
         return $this;
     } // setFormId()
 
     /**
-     * Sets the value of the [required] column.
-     * Non-boolean arguments are converted using the following rules:
-     *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
-     *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
-     * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
-     *
-     * @param  boolean|integer|string $v The new value
-     * @return $this|\TheFarm\Models\BookingForm The current object (for fluent API support)
-     */
-    public function setRequired($v)
-    {
-        if ($v !== null) {
-            if (is_string($v)) {
-                $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
-            } else {
-                $v = (boolean) $v;
-            }
-        }
-
-        if ($this->required !== $v) {
-            $this->required = $v;
-            $this->modifiedColumns[BookingFormTableMap::COL_REQUIRED] = true;
-        }
-
-        return $this;
-    } // setRequired()
-
-    /**
-     * Sets the value of the [submitted] column.
-     * Non-boolean arguments are converted using the following rules:
-     *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
-     *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
-     * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
-     *
-     * @param  boolean|integer|string $v The new value
-     * @return $this|\TheFarm\Models\BookingForm The current object (for fluent API support)
-     */
-    public function setSubmitted($v)
-    {
-        if ($v !== null) {
-            if (is_string($v)) {
-                $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
-            } else {
-                $v = (boolean) $v;
-            }
-        }
-
-        if ($this->submitted !== $v) {
-            $this->submitted = $v;
-            $this->modifiedColumns[BookingFormTableMap::COL_SUBMITTED] = true;
-        }
-
-        return $this;
-    } // setSubmitted()
-
-    /**
-     * Set the value of [notify_user_on_submit] column.
-     *
-     * @param string $v new value
-     * @return $this|\TheFarm\Models\BookingForm The current object (for fluent API support)
-     */
-    public function setNotifyUserOnSubmit($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->notify_user_on_submit !== $v) {
-            $this->notify_user_on_submit = $v;
-            $this->modifiedColumns[BookingFormTableMap::COL_NOTIFY_USER_ON_SUBMIT] = true;
-        }
-
-        return $this;
-    } // setNotifyUserOnSubmit()
-
-    /**
-     * Set the value of [submitted_date] column.
+     * Set the value of [author_id] column.
      *
      * @param int $v new value
      * @return $this|\TheFarm\Models\BookingForm The current object (for fluent API support)
      */
-    public function setSubmittedDate($v)
+    public function setAuthorId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
         }
 
-        if ($this->submitted_date !== $v) {
-            $this->submitted_date = $v;
-            $this->modifiedColumns[BookingFormTableMap::COL_SUBMITTED_DATE] = true;
+        if ($this->author_id !== $v) {
+            $this->author_id = $v;
+            $this->modifiedColumns[BookingFormTableMap::COL_AUTHOR_ID] = true;
+        }
+
+        if ($this->aUserRelatedByAuthorId !== null && $this->aUserRelatedByAuthorId->getUserId() !== $v) {
+            $this->aUserRelatedByAuthorId = null;
         }
 
         return $this;
-    } // setSubmittedDate()
+    } // setAuthorId()
+
+    /**
+     * Sets the value of [entry_date] column to a normalized version of the date/time value specified.
+     *
+     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
+     * @return $this|\TheFarm\Models\BookingForm The current object (for fluent API support)
+     */
+    public function setEntryDate($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->entry_date !== null || $dt !== null) {
+            if ($this->entry_date === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->entry_date->format("Y-m-d H:i:s.u")) {
+                $this->entry_date = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[BookingFormTableMap::COL_ENTRY_DATE] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    } // setEntryDate()
+
+    /**
+     * Sets the value of [edit_date] column to a normalized version of the date/time value specified.
+     *
+     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
+     * @return $this|\TheFarm\Models\BookingForm The current object (for fluent API support)
+     */
+    public function setEditDate($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->edit_date !== null || $dt !== null) {
+            if ($this->edit_date === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->edit_date->format("Y-m-d H:i:s.u")) {
+                $this->edit_date = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[BookingFormTableMap::COL_EDIT_DATE] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    } // setEditDate()
 
     /**
      * Set the value of [completed_by] column.
@@ -623,25 +652,29 @@ abstract class BookingForm implements ActiveRecordInterface
             $this->modifiedColumns[BookingFormTableMap::COL_COMPLETED_BY] = true;
         }
 
+        if ($this->aUserRelatedByCompletedBy !== null && $this->aUserRelatedByCompletedBy->getUserId() !== $v) {
+            $this->aUserRelatedByCompletedBy = null;
+        }
+
         return $this;
     } // setCompletedBy()
 
     /**
-     * Set the value of [completed_date] column.
+     * Sets the value of [completed_date] column to a normalized version of the date/time value specified.
      *
-     * @param int $v new value
+     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
      * @return $this|\TheFarm\Models\BookingForm The current object (for fluent API support)
      */
     public function setCompletedDate($v)
     {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->completed_date !== $v) {
-            $this->completed_date = $v;
-            $this->modifiedColumns[BookingFormTableMap::COL_COMPLETED_DATE] = true;
-        }
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->completed_date !== null || $dt !== null) {
+            if ($this->completed_date === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->completed_date->format("Y-m-d H:i:s.u")) {
+                $this->completed_date = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[BookingFormTableMap::COL_COMPLETED_DATE] = true;
+            }
+        } // if either are not null
 
         return $this;
     } // setCompletedDate()
@@ -656,26 +689,6 @@ abstract class BookingForm implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
-            if ($this->required !== false) {
-                return false;
-            }
-
-            if ($this->submitted !== false) {
-                return false;
-            }
-
-            if ($this->notify_user_on_submit !== '') {
-                return false;
-            }
-
-            if ($this->submitted_date !== 0) {
-                return false;
-            }
-
-            if ($this->completed_date !== 0) {
-                return false;
-            }
-
         // otherwise, everything was equal, so return TRUE
         return true;
     } // hasOnlyDefaultValues()
@@ -702,29 +715,38 @@ abstract class BookingForm implements ActiveRecordInterface
     {
         try {
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : BookingFormTableMap::translateFieldName('BookingId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : BookingFormTableMap::translateFieldName('BookingFormId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->booking_form_id = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : BookingFormTableMap::translateFieldName('BookingId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->booking_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : BookingFormTableMap::translateFieldName('FormId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : BookingFormTableMap::translateFieldName('FormId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->form_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : BookingFormTableMap::translateFieldName('Required', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->required = (null !== $col) ? (boolean) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : BookingFormTableMap::translateFieldName('AuthorId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->author_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : BookingFormTableMap::translateFieldName('Submitted', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->submitted = (null !== $col) ? (boolean) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : BookingFormTableMap::translateFieldName('EntryDate', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->entry_date = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : BookingFormTableMap::translateFieldName('NotifyUserOnSubmit', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->notify_user_on_submit = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : BookingFormTableMap::translateFieldName('SubmittedDate', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->submitted_date = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : BookingFormTableMap::translateFieldName('EditDate', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->edit_date = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : BookingFormTableMap::translateFieldName('CompletedBy', TableMap::TYPE_PHPNAME, $indexType)];
             $this->completed_by = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : BookingFormTableMap::translateFieldName('CompletedDate', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->completed_date = (null !== $col) ? (int) $col : null;
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->completed_date = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -755,6 +777,18 @@ abstract class BookingForm implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
+        if ($this->aBooking !== null && $this->booking_id !== $this->aBooking->getBookingId()) {
+            $this->aBooking = null;
+        }
+        if ($this->aForm !== null && $this->form_id !== $this->aForm->getFormId()) {
+            $this->aForm = null;
+        }
+        if ($this->aUserRelatedByAuthorId !== null && $this->author_id !== $this->aUserRelatedByAuthorId->getUserId()) {
+            $this->aUserRelatedByAuthorId = null;
+        }
+        if ($this->aUserRelatedByCompletedBy !== null && $this->completed_by !== $this->aUserRelatedByCompletedBy->getUserId()) {
+            $this->aUserRelatedByCompletedBy = null;
+        }
     } // ensureConsistency
 
     /**
@@ -793,6 +827,12 @@ abstract class BookingForm implements ActiveRecordInterface
         $this->hydrate($row, 0, true, $dataFetcher->getIndexType()); // rehydrate
 
         if ($deep) {  // also de-associate any related objects?
+
+            $this->aBooking = null;
+            $this->aForm = null;
+            $this->aUserRelatedByAuthorId = null;
+            $this->aUserRelatedByCompletedBy = null;
+            $this->collBookingFormEntries = null;
 
         } // if (deep)
     }
@@ -897,6 +937,39 @@ abstract class BookingForm implements ActiveRecordInterface
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
 
+            // We call the save method on the following object(s) if they
+            // were passed to this object by their corresponding set
+            // method.  This object relates to these object(s) by a
+            // foreign key reference.
+
+            if ($this->aBooking !== null) {
+                if ($this->aBooking->isModified() || $this->aBooking->isNew()) {
+                    $affectedRows += $this->aBooking->save($con);
+                }
+                $this->setBooking($this->aBooking);
+            }
+
+            if ($this->aForm !== null) {
+                if ($this->aForm->isModified() || $this->aForm->isNew()) {
+                    $affectedRows += $this->aForm->save($con);
+                }
+                $this->setForm($this->aForm);
+            }
+
+            if ($this->aUserRelatedByAuthorId !== null) {
+                if ($this->aUserRelatedByAuthorId->isModified() || $this->aUserRelatedByAuthorId->isNew()) {
+                    $affectedRows += $this->aUserRelatedByAuthorId->save($con);
+                }
+                $this->setUserRelatedByAuthorId($this->aUserRelatedByAuthorId);
+            }
+
+            if ($this->aUserRelatedByCompletedBy !== null) {
+                if ($this->aUserRelatedByCompletedBy->isModified() || $this->aUserRelatedByCompletedBy->isNew()) {
+                    $affectedRows += $this->aUserRelatedByCompletedBy->save($con);
+                }
+                $this->setUserRelatedByCompletedBy($this->aUserRelatedByCompletedBy);
+            }
+
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -906,6 +979,24 @@ abstract class BookingForm implements ActiveRecordInterface
                     $affectedRows += $this->doUpdate($con);
                 }
                 $this->resetModified();
+            }
+
+            if ($this->bookingFormEntriesScheduledForDeletion !== null) {
+                if (!$this->bookingFormEntriesScheduledForDeletion->isEmpty()) {
+                    foreach ($this->bookingFormEntriesScheduledForDeletion as $bookingFormEntry) {
+                        // need to save related object because we set the relation to null
+                        $bookingFormEntry->save($con);
+                    }
+                    $this->bookingFormEntriesScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collBookingFormEntries !== null) {
+                foreach ($this->collBookingFormEntries as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
             }
 
             $this->alreadyInSave = false;
@@ -928,25 +1019,29 @@ abstract class BookingForm implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
+        $this->modifiedColumns[BookingFormTableMap::COL_BOOKING_FORM_ID] = true;
+        if (null !== $this->booking_form_id) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . BookingFormTableMap::COL_BOOKING_FORM_ID . ')');
+        }
 
          // check the columns in natural order for more readable SQL queries
+        if ($this->isColumnModified(BookingFormTableMap::COL_BOOKING_FORM_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'booking_form_id';
+        }
         if ($this->isColumnModified(BookingFormTableMap::COL_BOOKING_ID)) {
             $modifiedColumns[':p' . $index++]  = 'booking_id';
         }
         if ($this->isColumnModified(BookingFormTableMap::COL_FORM_ID)) {
             $modifiedColumns[':p' . $index++]  = 'form_id';
         }
-        if ($this->isColumnModified(BookingFormTableMap::COL_REQUIRED)) {
-            $modifiedColumns[':p' . $index++]  = 'required';
+        if ($this->isColumnModified(BookingFormTableMap::COL_AUTHOR_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'author_id';
         }
-        if ($this->isColumnModified(BookingFormTableMap::COL_SUBMITTED)) {
-            $modifiedColumns[':p' . $index++]  = 'submitted';
+        if ($this->isColumnModified(BookingFormTableMap::COL_ENTRY_DATE)) {
+            $modifiedColumns[':p' . $index++]  = 'entry_date';
         }
-        if ($this->isColumnModified(BookingFormTableMap::COL_NOTIFY_USER_ON_SUBMIT)) {
-            $modifiedColumns[':p' . $index++]  = 'notify_user_on_submit';
-        }
-        if ($this->isColumnModified(BookingFormTableMap::COL_SUBMITTED_DATE)) {
-            $modifiedColumns[':p' . $index++]  = 'submitted_date';
+        if ($this->isColumnModified(BookingFormTableMap::COL_EDIT_DATE)) {
+            $modifiedColumns[':p' . $index++]  = 'edit_date';
         }
         if ($this->isColumnModified(BookingFormTableMap::COL_COMPLETED_BY)) {
             $modifiedColumns[':p' . $index++]  = 'completed_by';
@@ -956,7 +1051,7 @@ abstract class BookingForm implements ActiveRecordInterface
         }
 
         $sql = sprintf(
-            'INSERT INTO tf_booking_forms (%s) VALUES (%s)',
+            'INSERT INTO tf_booking_form (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -965,29 +1060,29 @@ abstract class BookingForm implements ActiveRecordInterface
             $stmt = $con->prepare($sql);
             foreach ($modifiedColumns as $identifier => $columnName) {
                 switch ($columnName) {
+                    case 'booking_form_id':
+                        $stmt->bindValue($identifier, $this->booking_form_id, PDO::PARAM_INT);
+                        break;
                     case 'booking_id':
                         $stmt->bindValue($identifier, $this->booking_id, PDO::PARAM_INT);
                         break;
                     case 'form_id':
                         $stmt->bindValue($identifier, $this->form_id, PDO::PARAM_INT);
                         break;
-                    case 'required':
-                        $stmt->bindValue($identifier, (int) $this->required, PDO::PARAM_INT);
+                    case 'author_id':
+                        $stmt->bindValue($identifier, $this->author_id, PDO::PARAM_INT);
                         break;
-                    case 'submitted':
-                        $stmt->bindValue($identifier, (int) $this->submitted, PDO::PARAM_INT);
+                    case 'entry_date':
+                        $stmt->bindValue($identifier, $this->entry_date ? $this->entry_date->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
                         break;
-                    case 'notify_user_on_submit':
-                        $stmt->bindValue($identifier, $this->notify_user_on_submit, PDO::PARAM_STR);
-                        break;
-                    case 'submitted_date':
-                        $stmt->bindValue($identifier, $this->submitted_date, PDO::PARAM_INT);
+                    case 'edit_date':
+                        $stmt->bindValue($identifier, $this->edit_date ? $this->edit_date->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
                         break;
                     case 'completed_by':
                         $stmt->bindValue($identifier, $this->completed_by, PDO::PARAM_INT);
                         break;
                     case 'completed_date':
-                        $stmt->bindValue($identifier, $this->completed_date, PDO::PARAM_INT);
+                        $stmt->bindValue($identifier, $this->completed_date ? $this->completed_date->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -996,6 +1091,13 @@ abstract class BookingForm implements ActiveRecordInterface
             Propel::log($e->getMessage(), Propel::LOG_ERR);
             throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), 0, $e);
         }
+
+        try {
+            $pk = $con->lastInsertId();
+        } catch (Exception $e) {
+            throw new PropelException('Unable to get autoincrement id.', 0, $e);
+        }
+        $this->setBookingFormId($pk);
 
         $this->setNew(false);
     }
@@ -1045,22 +1147,22 @@ abstract class BookingForm implements ActiveRecordInterface
     {
         switch ($pos) {
             case 0:
-                return $this->getBookingId();
+                return $this->getBookingFormId();
                 break;
             case 1:
-                return $this->getFormId();
+                return $this->getBookingId();
                 break;
             case 2:
-                return $this->getRequired();
+                return $this->getFormId();
                 break;
             case 3:
-                return $this->getSubmitted();
+                return $this->getAuthorId();
                 break;
             case 4:
-                return $this->getNotifyUserOnSubmit();
+                return $this->getEntryDate();
                 break;
             case 5:
-                return $this->getSubmittedDate();
+                return $this->getEditDate();
                 break;
             case 6:
                 return $this->getCompletedBy();
@@ -1085,10 +1187,11 @@ abstract class BookingForm implements ActiveRecordInterface
      *                    Defaults to TableMap::TYPE_PHPNAME.
      * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
      * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
+     * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
      *
      * @return array an associative array containing the field names (as keys) and field values
      */
-    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array())
+    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
 
         if (isset($alreadyDumpedObjects['BookingForm'][$this->hashCode()])) {
@@ -1097,20 +1200,109 @@ abstract class BookingForm implements ActiveRecordInterface
         $alreadyDumpedObjects['BookingForm'][$this->hashCode()] = true;
         $keys = BookingFormTableMap::getFieldNames($keyType);
         $result = array(
-            $keys[0] => $this->getBookingId(),
-            $keys[1] => $this->getFormId(),
-            $keys[2] => $this->getRequired(),
-            $keys[3] => $this->getSubmitted(),
-            $keys[4] => $this->getNotifyUserOnSubmit(),
-            $keys[5] => $this->getSubmittedDate(),
+            $keys[0] => $this->getBookingFormId(),
+            $keys[1] => $this->getBookingId(),
+            $keys[2] => $this->getFormId(),
+            $keys[3] => $this->getAuthorId(),
+            $keys[4] => $this->getEntryDate(),
+            $keys[5] => $this->getEditDate(),
             $keys[6] => $this->getCompletedBy(),
             $keys[7] => $this->getCompletedDate(),
         );
+        if ($result[$keys[4]] instanceof \DateTimeInterface) {
+            $result[$keys[4]] = $result[$keys[4]]->format('c');
+        }
+
+        if ($result[$keys[5]] instanceof \DateTimeInterface) {
+            $result[$keys[5]] = $result[$keys[5]]->format('c');
+        }
+
+        if ($result[$keys[7]] instanceof \DateTimeInterface) {
+            $result[$keys[7]] = $result[$keys[7]]->format('c');
+        }
+
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
             $result[$key] = $virtualColumn;
         }
 
+        if ($includeForeignObjects) {
+            if (null !== $this->aBooking) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'booking';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'tf_bookings';
+                        break;
+                    default:
+                        $key = 'Booking';
+                }
+
+                $result[$key] = $this->aBooking->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->aForm) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'form';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'tf_forms';
+                        break;
+                    default:
+                        $key = 'Form';
+                }
+
+                $result[$key] = $this->aForm->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->aUserRelatedByAuthorId) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'user';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'tf_user';
+                        break;
+                    default:
+                        $key = 'User';
+                }
+
+                $result[$key] = $this->aUserRelatedByAuthorId->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->aUserRelatedByCompletedBy) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'user';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'tf_user';
+                        break;
+                    default:
+                        $key = 'User';
+                }
+
+                $result[$key] = $this->aUserRelatedByCompletedBy->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->collBookingFormEntries) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'bookingFormEntries';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'tf_booking_form_entries';
+                        break;
+                    default:
+                        $key = 'BookingFormEntries';
+                }
+
+                $result[$key] = $this->collBookingFormEntries->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+        }
 
         return $result;
     }
@@ -1145,22 +1337,22 @@ abstract class BookingForm implements ActiveRecordInterface
     {
         switch ($pos) {
             case 0:
-                $this->setBookingId($value);
+                $this->setBookingFormId($value);
                 break;
             case 1:
-                $this->setFormId($value);
+                $this->setBookingId($value);
                 break;
             case 2:
-                $this->setRequired($value);
+                $this->setFormId($value);
                 break;
             case 3:
-                $this->setSubmitted($value);
+                $this->setAuthorId($value);
                 break;
             case 4:
-                $this->setNotifyUserOnSubmit($value);
+                $this->setEntryDate($value);
                 break;
             case 5:
-                $this->setSubmittedDate($value);
+                $this->setEditDate($value);
                 break;
             case 6:
                 $this->setCompletedBy($value);
@@ -1195,22 +1387,22 @@ abstract class BookingForm implements ActiveRecordInterface
         $keys = BookingFormTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) {
-            $this->setBookingId($arr[$keys[0]]);
+            $this->setBookingFormId($arr[$keys[0]]);
         }
         if (array_key_exists($keys[1], $arr)) {
-            $this->setFormId($arr[$keys[1]]);
+            $this->setBookingId($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setRequired($arr[$keys[2]]);
+            $this->setFormId($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setSubmitted($arr[$keys[3]]);
+            $this->setAuthorId($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
-            $this->setNotifyUserOnSubmit($arr[$keys[4]]);
+            $this->setEntryDate($arr[$keys[4]]);
         }
         if (array_key_exists($keys[5], $arr)) {
-            $this->setSubmittedDate($arr[$keys[5]]);
+            $this->setEditDate($arr[$keys[5]]);
         }
         if (array_key_exists($keys[6], $arr)) {
             $this->setCompletedBy($arr[$keys[6]]);
@@ -1259,23 +1451,23 @@ abstract class BookingForm implements ActiveRecordInterface
     {
         $criteria = new Criteria(BookingFormTableMap::DATABASE_NAME);
 
+        if ($this->isColumnModified(BookingFormTableMap::COL_BOOKING_FORM_ID)) {
+            $criteria->add(BookingFormTableMap::COL_BOOKING_FORM_ID, $this->booking_form_id);
+        }
         if ($this->isColumnModified(BookingFormTableMap::COL_BOOKING_ID)) {
             $criteria->add(BookingFormTableMap::COL_BOOKING_ID, $this->booking_id);
         }
         if ($this->isColumnModified(BookingFormTableMap::COL_FORM_ID)) {
             $criteria->add(BookingFormTableMap::COL_FORM_ID, $this->form_id);
         }
-        if ($this->isColumnModified(BookingFormTableMap::COL_REQUIRED)) {
-            $criteria->add(BookingFormTableMap::COL_REQUIRED, $this->required);
+        if ($this->isColumnModified(BookingFormTableMap::COL_AUTHOR_ID)) {
+            $criteria->add(BookingFormTableMap::COL_AUTHOR_ID, $this->author_id);
         }
-        if ($this->isColumnModified(BookingFormTableMap::COL_SUBMITTED)) {
-            $criteria->add(BookingFormTableMap::COL_SUBMITTED, $this->submitted);
+        if ($this->isColumnModified(BookingFormTableMap::COL_ENTRY_DATE)) {
+            $criteria->add(BookingFormTableMap::COL_ENTRY_DATE, $this->entry_date);
         }
-        if ($this->isColumnModified(BookingFormTableMap::COL_NOTIFY_USER_ON_SUBMIT)) {
-            $criteria->add(BookingFormTableMap::COL_NOTIFY_USER_ON_SUBMIT, $this->notify_user_on_submit);
-        }
-        if ($this->isColumnModified(BookingFormTableMap::COL_SUBMITTED_DATE)) {
-            $criteria->add(BookingFormTableMap::COL_SUBMITTED_DATE, $this->submitted_date);
+        if ($this->isColumnModified(BookingFormTableMap::COL_EDIT_DATE)) {
+            $criteria->add(BookingFormTableMap::COL_EDIT_DATE, $this->edit_date);
         }
         if ($this->isColumnModified(BookingFormTableMap::COL_COMPLETED_BY)) {
             $criteria->add(BookingFormTableMap::COL_COMPLETED_BY, $this->completed_by);
@@ -1300,8 +1492,7 @@ abstract class BookingForm implements ActiveRecordInterface
     public function buildPkeyCriteria()
     {
         $criteria = ChildBookingFormQuery::create();
-        $criteria->add(BookingFormTableMap::COL_BOOKING_ID, $this->booking_id);
-        $criteria->add(BookingFormTableMap::COL_FORM_ID, $this->form_id);
+        $criteria->add(BookingFormTableMap::COL_BOOKING_FORM_ID, $this->booking_form_id);
 
         return $criteria;
     }
@@ -1314,8 +1505,7 @@ abstract class BookingForm implements ActiveRecordInterface
      */
     public function hashCode()
     {
-        $validPk = null !== $this->getBookingId() &&
-            null !== $this->getFormId();
+        $validPk = null !== $this->getBookingFormId();
 
         $validPrimaryKeyFKs = 0;
         $primaryKeyFKs = [];
@@ -1330,29 +1520,23 @@ abstract class BookingForm implements ActiveRecordInterface
     }
 
     /**
-     * Returns the composite primary key for this object.
-     * The array elements will be in same order as specified in XML.
-     * @return array
+     * Returns the primary key for this object (row).
+     * @return int
      */
     public function getPrimaryKey()
     {
-        $pks = array();
-        $pks[0] = $this->getBookingId();
-        $pks[1] = $this->getFormId();
-
-        return $pks;
+        return $this->getBookingFormId();
     }
 
     /**
-     * Set the [composite] primary key.
+     * Generic method to set the primary key (booking_form_id column).
      *
-     * @param      array $keys The elements of the composite key (order must match the order in XML file).
+     * @param       int $key Primary key.
      * @return void
      */
-    public function setPrimaryKey($keys)
+    public function setPrimaryKey($key)
     {
-        $this->setBookingId($keys[0]);
-        $this->setFormId($keys[1]);
+        $this->setBookingFormId($key);
     }
 
     /**
@@ -1361,7 +1545,7 @@ abstract class BookingForm implements ActiveRecordInterface
      */
     public function isPrimaryKeyNull()
     {
-        return (null === $this->getBookingId()) && (null === $this->getFormId());
+        return null === $this->getBookingFormId();
     }
 
     /**
@@ -1379,14 +1563,28 @@ abstract class BookingForm implements ActiveRecordInterface
     {
         $copyObj->setBookingId($this->getBookingId());
         $copyObj->setFormId($this->getFormId());
-        $copyObj->setRequired($this->getRequired());
-        $copyObj->setSubmitted($this->getSubmitted());
-        $copyObj->setNotifyUserOnSubmit($this->getNotifyUserOnSubmit());
-        $copyObj->setSubmittedDate($this->getSubmittedDate());
+        $copyObj->setAuthorId($this->getAuthorId());
+        $copyObj->setEntryDate($this->getEntryDate());
+        $copyObj->setEditDate($this->getEditDate());
         $copyObj->setCompletedBy($this->getCompletedBy());
         $copyObj->setCompletedDate($this->getCompletedDate());
+
+        if ($deepCopy) {
+            // important: temporarily setNew(false) because this affects the behavior of
+            // the getter/setter methods for fkey referrer objects.
+            $copyObj->setNew(false);
+
+            foreach ($this->getBookingFormEntries() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addBookingFormEntry($relObj->copy($deepCopy));
+                }
+            }
+
+        } // if ($deepCopy)
+
         if ($makeNew) {
             $copyObj->setNew(true);
+            $copyObj->setBookingFormId(NULL); // this is a auto-increment column, so set to default value
         }
     }
 
@@ -1413,23 +1611,505 @@ abstract class BookingForm implements ActiveRecordInterface
     }
 
     /**
+     * Declares an association between this object and a ChildBooking object.
+     *
+     * @param  ChildBooking $v
+     * @return $this|\TheFarm\Models\BookingForm The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setBooking(ChildBooking $v = null)
+    {
+        if ($v === null) {
+            $this->setBookingId(NULL);
+        } else {
+            $this->setBookingId($v->getBookingId());
+        }
+
+        $this->aBooking = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildBooking object, it will not be re-added.
+        if ($v !== null) {
+            $v->addBookingForm($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildBooking object
+     *
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildBooking The associated ChildBooking object.
+     * @throws PropelException
+     */
+    public function getBooking(ConnectionInterface $con = null)
+    {
+        if ($this->aBooking === null && ($this->booking_id !== null)) {
+            $this->aBooking = ChildBookingQuery::create()->findPk($this->booking_id, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aBooking->addBookingForms($this);
+             */
+        }
+
+        return $this->aBooking;
+    }
+
+    /**
+     * Declares an association between this object and a ChildForm object.
+     *
+     * @param  ChildForm $v
+     * @return $this|\TheFarm\Models\BookingForm The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setForm(ChildForm $v = null)
+    {
+        if ($v === null) {
+            $this->setFormId(NULL);
+        } else {
+            $this->setFormId($v->getFormId());
+        }
+
+        $this->aForm = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildForm object, it will not be re-added.
+        if ($v !== null) {
+            $v->addBookingForm($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildForm object
+     *
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildForm The associated ChildForm object.
+     * @throws PropelException
+     */
+    public function getForm(ConnectionInterface $con = null)
+    {
+        if ($this->aForm === null && ($this->form_id !== null)) {
+            $this->aForm = ChildFormQuery::create()->findPk($this->form_id, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aForm->addBookingForms($this);
+             */
+        }
+
+        return $this->aForm;
+    }
+
+    /**
+     * Declares an association between this object and a ChildUser object.
+     *
+     * @param  ChildUser $v
+     * @return $this|\TheFarm\Models\BookingForm The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setUserRelatedByAuthorId(ChildUser $v = null)
+    {
+        if ($v === null) {
+            $this->setAuthorId(NULL);
+        } else {
+            $this->setAuthorId($v->getUserId());
+        }
+
+        $this->aUserRelatedByAuthorId = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildUser object, it will not be re-added.
+        if ($v !== null) {
+            $v->addBookingFormRelatedByAuthorId($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildUser object
+     *
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildUser The associated ChildUser object.
+     * @throws PropelException
+     */
+    public function getUserRelatedByAuthorId(ConnectionInterface $con = null)
+    {
+        if ($this->aUserRelatedByAuthorId === null && ($this->author_id !== null)) {
+            $this->aUserRelatedByAuthorId = ChildUserQuery::create()->findPk($this->author_id, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aUserRelatedByAuthorId->addBookingFormsRelatedByAuthorId($this);
+             */
+        }
+
+        return $this->aUserRelatedByAuthorId;
+    }
+
+    /**
+     * Declares an association between this object and a ChildUser object.
+     *
+     * @param  ChildUser $v
+     * @return $this|\TheFarm\Models\BookingForm The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setUserRelatedByCompletedBy(ChildUser $v = null)
+    {
+        if ($v === null) {
+            $this->setCompletedBy(NULL);
+        } else {
+            $this->setCompletedBy($v->getUserId());
+        }
+
+        $this->aUserRelatedByCompletedBy = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildUser object, it will not be re-added.
+        if ($v !== null) {
+            $v->addBookingFormRelatedByCompletedBy($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildUser object
+     *
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildUser The associated ChildUser object.
+     * @throws PropelException
+     */
+    public function getUserRelatedByCompletedBy(ConnectionInterface $con = null)
+    {
+        if ($this->aUserRelatedByCompletedBy === null && ($this->completed_by !== null)) {
+            $this->aUserRelatedByCompletedBy = ChildUserQuery::create()->findPk($this->completed_by, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aUserRelatedByCompletedBy->addBookingFormsRelatedByCompletedBy($this);
+             */
+        }
+
+        return $this->aUserRelatedByCompletedBy;
+    }
+
+
+    /**
+     * Initializes a collection based on the name of a relation.
+     * Avoids crafting an 'init[$relationName]s' method name
+     * that wouldn't work when StandardEnglishPluralizer is used.
+     *
+     * @param      string $relationName The name of the relation to initialize
+     * @return void
+     */
+    public function initRelation($relationName)
+    {
+        if ('BookingFormEntry' == $relationName) {
+            $this->initBookingFormEntries();
+            return;
+        }
+    }
+
+    /**
+     * Clears out the collBookingFormEntries collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addBookingFormEntries()
+     */
+    public function clearBookingFormEntries()
+    {
+        $this->collBookingFormEntries = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collBookingFormEntries collection loaded partially.
+     */
+    public function resetPartialBookingFormEntries($v = true)
+    {
+        $this->collBookingFormEntriesPartial = $v;
+    }
+
+    /**
+     * Initializes the collBookingFormEntries collection.
+     *
+     * By default this just sets the collBookingFormEntries collection to an empty array (like clearcollBookingFormEntries());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initBookingFormEntries($overrideExisting = true)
+    {
+        if (null !== $this->collBookingFormEntries && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = BookingFormEntryTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collBookingFormEntries = new $collectionClassName;
+        $this->collBookingFormEntries->setModel('\TheFarm\Models\BookingFormEntry');
+    }
+
+    /**
+     * Gets an array of ChildBookingFormEntry objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildBookingForm is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildBookingFormEntry[] List of ChildBookingFormEntry objects
+     * @throws PropelException
+     */
+    public function getBookingFormEntries(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collBookingFormEntriesPartial && !$this->isNew();
+        if (null === $this->collBookingFormEntries || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collBookingFormEntries) {
+                // return empty collection
+                $this->initBookingFormEntries();
+            } else {
+                $collBookingFormEntries = ChildBookingFormEntryQuery::create(null, $criteria)
+                    ->filterByBookingForm($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collBookingFormEntriesPartial && count($collBookingFormEntries)) {
+                        $this->initBookingFormEntries(false);
+
+                        foreach ($collBookingFormEntries as $obj) {
+                            if (false == $this->collBookingFormEntries->contains($obj)) {
+                                $this->collBookingFormEntries->append($obj);
+                            }
+                        }
+
+                        $this->collBookingFormEntriesPartial = true;
+                    }
+
+                    return $collBookingFormEntries;
+                }
+
+                if ($partial && $this->collBookingFormEntries) {
+                    foreach ($this->collBookingFormEntries as $obj) {
+                        if ($obj->isNew()) {
+                            $collBookingFormEntries[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collBookingFormEntries = $collBookingFormEntries;
+                $this->collBookingFormEntriesPartial = false;
+            }
+        }
+
+        return $this->collBookingFormEntries;
+    }
+
+    /**
+     * Sets a collection of ChildBookingFormEntry objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $bookingFormEntries A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildBookingForm The current object (for fluent API support)
+     */
+    public function setBookingFormEntries(Collection $bookingFormEntries, ConnectionInterface $con = null)
+    {
+        /** @var ChildBookingFormEntry[] $bookingFormEntriesToDelete */
+        $bookingFormEntriesToDelete = $this->getBookingFormEntries(new Criteria(), $con)->diff($bookingFormEntries);
+
+
+        $this->bookingFormEntriesScheduledForDeletion = $bookingFormEntriesToDelete;
+
+        foreach ($bookingFormEntriesToDelete as $bookingFormEntryRemoved) {
+            $bookingFormEntryRemoved->setBookingForm(null);
+        }
+
+        $this->collBookingFormEntries = null;
+        foreach ($bookingFormEntries as $bookingFormEntry) {
+            $this->addBookingFormEntry($bookingFormEntry);
+        }
+
+        $this->collBookingFormEntries = $bookingFormEntries;
+        $this->collBookingFormEntriesPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related BookingFormEntry objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related BookingFormEntry objects.
+     * @throws PropelException
+     */
+    public function countBookingFormEntries(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collBookingFormEntriesPartial && !$this->isNew();
+        if (null === $this->collBookingFormEntries || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collBookingFormEntries) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getBookingFormEntries());
+            }
+
+            $query = ChildBookingFormEntryQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByBookingForm($this)
+                ->count($con);
+        }
+
+        return count($this->collBookingFormEntries);
+    }
+
+    /**
+     * Method called to associate a ChildBookingFormEntry object to this object
+     * through the ChildBookingFormEntry foreign key attribute.
+     *
+     * @param  ChildBookingFormEntry $l ChildBookingFormEntry
+     * @return $this|\TheFarm\Models\BookingForm The current object (for fluent API support)
+     */
+    public function addBookingFormEntry(ChildBookingFormEntry $l)
+    {
+        if ($this->collBookingFormEntries === null) {
+            $this->initBookingFormEntries();
+            $this->collBookingFormEntriesPartial = true;
+        }
+
+        if (!$this->collBookingFormEntries->contains($l)) {
+            $this->doAddBookingFormEntry($l);
+
+            if ($this->bookingFormEntriesScheduledForDeletion and $this->bookingFormEntriesScheduledForDeletion->contains($l)) {
+                $this->bookingFormEntriesScheduledForDeletion->remove($this->bookingFormEntriesScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildBookingFormEntry $bookingFormEntry The ChildBookingFormEntry object to add.
+     */
+    protected function doAddBookingFormEntry(ChildBookingFormEntry $bookingFormEntry)
+    {
+        $this->collBookingFormEntries[]= $bookingFormEntry;
+        $bookingFormEntry->setBookingForm($this);
+    }
+
+    /**
+     * @param  ChildBookingFormEntry $bookingFormEntry The ChildBookingFormEntry object to remove.
+     * @return $this|ChildBookingForm The current object (for fluent API support)
+     */
+    public function removeBookingFormEntry(ChildBookingFormEntry $bookingFormEntry)
+    {
+        if ($this->getBookingFormEntries()->contains($bookingFormEntry)) {
+            $pos = $this->collBookingFormEntries->search($bookingFormEntry);
+            $this->collBookingFormEntries->remove($pos);
+            if (null === $this->bookingFormEntriesScheduledForDeletion) {
+                $this->bookingFormEntriesScheduledForDeletion = clone $this->collBookingFormEntries;
+                $this->bookingFormEntriesScheduledForDeletion->clear();
+            }
+            $this->bookingFormEntriesScheduledForDeletion[]= $bookingFormEntry;
+            $bookingFormEntry->setBookingForm(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this BookingForm is new, it will return
+     * an empty collection; or if this BookingForm has previously
+     * been saved, it will retrieve related BookingFormEntries from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in BookingForm.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildBookingFormEntry[] List of ChildBookingFormEntry objects
+     */
+    public function getBookingFormEntriesJoinField(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildBookingFormEntryQuery::create(null, $criteria);
+        $query->joinWith('Field', $joinBehavior);
+
+        return $this->getBookingFormEntries($query, $con);
+    }
+
+    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
      */
     public function clear()
     {
+        if (null !== $this->aBooking) {
+            $this->aBooking->removeBookingForm($this);
+        }
+        if (null !== $this->aForm) {
+            $this->aForm->removeBookingForm($this);
+        }
+        if (null !== $this->aUserRelatedByAuthorId) {
+            $this->aUserRelatedByAuthorId->removeBookingFormRelatedByAuthorId($this);
+        }
+        if (null !== $this->aUserRelatedByCompletedBy) {
+            $this->aUserRelatedByCompletedBy->removeBookingFormRelatedByCompletedBy($this);
+        }
+        $this->booking_form_id = null;
         $this->booking_id = null;
         $this->form_id = null;
-        $this->required = null;
-        $this->submitted = null;
-        $this->notify_user_on_submit = null;
-        $this->submitted_date = null;
+        $this->author_id = null;
+        $this->entry_date = null;
+        $this->edit_date = null;
         $this->completed_by = null;
         $this->completed_date = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
-        $this->applyDefaultValues();
         $this->resetModified();
         $this->setNew(true);
         $this->setDeleted(false);
@@ -1446,8 +2126,18 @@ abstract class BookingForm implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
+            if ($this->collBookingFormEntries) {
+                foreach ($this->collBookingFormEntries as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
 
+        $this->collBookingFormEntries = null;
+        $this->aBooking = null;
+        $this->aForm = null;
+        $this->aUserRelatedByAuthorId = null;
+        $this->aUserRelatedByCompletedBy = null;
     }
 
     /**

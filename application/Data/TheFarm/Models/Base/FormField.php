@@ -23,7 +23,7 @@ use TheFarm\Models\FormQuery as ChildFormQuery;
 use TheFarm\Models\Map\FormFieldTableMap;
 
 /**
- * Base class that represents a row from the 'tf_form_fields' table.
+ * Base class that represents a row from the 'tf_form_field' table.
  *
  *
  *
@@ -80,11 +80,12 @@ abstract class FormField implements ActiveRecordInterface
     protected $form_id;
 
     /**
-     * The value for the guest_only field.
+     * The value for the form_field_order field.
      *
-     * @var        string
+     * Note: this column has a database default value of: 0
+     * @var        int
      */
-    protected $guest_only;
+    protected $form_field_order;
 
     /**
      * @var        ChildField
@@ -114,6 +115,7 @@ abstract class FormField implements ActiveRecordInterface
     {
         $this->field_id = 0;
         $this->form_id = 0;
+        $this->form_field_order = 0;
     }
 
     /**
@@ -364,13 +366,13 @@ abstract class FormField implements ActiveRecordInterface
     }
 
     /**
-     * Get the [guest_only] column value.
+     * Get the [form_field_order] column value.
      *
-     * @return string
+     * @return int
      */
-    public function getGuestOnly()
+    public function getFormFieldOrder()
     {
-        return $this->guest_only;
+        return $this->form_field_order;
     }
 
     /**
@@ -422,24 +424,24 @@ abstract class FormField implements ActiveRecordInterface
     } // setFormId()
 
     /**
-     * Set the value of [guest_only] column.
+     * Set the value of [form_field_order] column.
      *
-     * @param string $v new value
+     * @param int $v new value
      * @return $this|\TheFarm\Models\FormField The current object (for fluent API support)
      */
-    public function setGuestOnly($v)
+    public function setFormFieldOrder($v)
     {
         if ($v !== null) {
-            $v = (string) $v;
+            $v = (int) $v;
         }
 
-        if ($this->guest_only !== $v) {
-            $this->guest_only = $v;
-            $this->modifiedColumns[FormFieldTableMap::COL_GUEST_ONLY] = true;
+        if ($this->form_field_order !== $v) {
+            $this->form_field_order = $v;
+            $this->modifiedColumns[FormFieldTableMap::COL_FORM_FIELD_ORDER] = true;
         }
 
         return $this;
-    } // setGuestOnly()
+    } // setFormFieldOrder()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -456,6 +458,10 @@ abstract class FormField implements ActiveRecordInterface
             }
 
             if ($this->form_id !== 0) {
+                return false;
+            }
+
+            if ($this->form_field_order !== 0) {
                 return false;
             }
 
@@ -491,8 +497,8 @@ abstract class FormField implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : FormFieldTableMap::translateFieldName('FormId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->form_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : FormFieldTableMap::translateFieldName('GuestOnly', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->guest_only = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : FormFieldTableMap::translateFieldName('FormFieldOrder', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->form_field_order = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -731,12 +737,12 @@ abstract class FormField implements ActiveRecordInterface
         if ($this->isColumnModified(FormFieldTableMap::COL_FORM_ID)) {
             $modifiedColumns[':p' . $index++]  = 'form_id';
         }
-        if ($this->isColumnModified(FormFieldTableMap::COL_GUEST_ONLY)) {
-            $modifiedColumns[':p' . $index++]  = 'guest_only';
+        if ($this->isColumnModified(FormFieldTableMap::COL_FORM_FIELD_ORDER)) {
+            $modifiedColumns[':p' . $index++]  = 'form_field_order';
         }
 
         $sql = sprintf(
-            'INSERT INTO tf_form_fields (%s) VALUES (%s)',
+            'INSERT INTO tf_form_field (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -751,8 +757,8 @@ abstract class FormField implements ActiveRecordInterface
                     case 'form_id':
                         $stmt->bindValue($identifier, $this->form_id, PDO::PARAM_INT);
                         break;
-                    case 'guest_only':
-                        $stmt->bindValue($identifier, $this->guest_only, PDO::PARAM_STR);
+                    case 'form_field_order':
+                        $stmt->bindValue($identifier, $this->form_field_order, PDO::PARAM_INT);
                         break;
                 }
             }
@@ -816,7 +822,7 @@ abstract class FormField implements ActiveRecordInterface
                 return $this->getFormId();
                 break;
             case 2:
-                return $this->getGuestOnly();
+                return $this->getFormFieldOrder();
                 break;
             default:
                 return null;
@@ -850,7 +856,7 @@ abstract class FormField implements ActiveRecordInterface
         $result = array(
             $keys[0] => $this->getFieldId(),
             $keys[1] => $this->getFormId(),
-            $keys[2] => $this->getGuestOnly(),
+            $keys[2] => $this->getFormFieldOrder(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -865,7 +871,7 @@ abstract class FormField implements ActiveRecordInterface
                         $key = 'field';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = 'tf_fields';
+                        $key = 'tf_field';
                         break;
                     default:
                         $key = 'Field';
@@ -929,7 +935,7 @@ abstract class FormField implements ActiveRecordInterface
                 $this->setFormId($value);
                 break;
             case 2:
-                $this->setGuestOnly($value);
+                $this->setFormFieldOrder($value);
                 break;
         } // switch()
 
@@ -964,7 +970,7 @@ abstract class FormField implements ActiveRecordInterface
             $this->setFormId($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setGuestOnly($arr[$keys[2]]);
+            $this->setFormFieldOrder($arr[$keys[2]]);
         }
     }
 
@@ -1013,8 +1019,8 @@ abstract class FormField implements ActiveRecordInterface
         if ($this->isColumnModified(FormFieldTableMap::COL_FORM_ID)) {
             $criteria->add(FormFieldTableMap::COL_FORM_ID, $this->form_id);
         }
-        if ($this->isColumnModified(FormFieldTableMap::COL_GUEST_ONLY)) {
-            $criteria->add(FormFieldTableMap::COL_GUEST_ONLY, $this->guest_only);
+        if ($this->isColumnModified(FormFieldTableMap::COL_FORM_FIELD_ORDER)) {
+            $criteria->add(FormFieldTableMap::COL_FORM_FIELD_ORDER, $this->form_field_order);
         }
 
         return $criteria;
@@ -1053,14 +1059,14 @@ abstract class FormField implements ActiveRecordInterface
         $validPrimaryKeyFKs = 2;
         $primaryKeyFKs = [];
 
-        //relation tf_form_fields_fk_56efb6 to table tf_fields
+        //relation tf_form_field_fk_0427a6 to table tf_field
         if ($this->aField && $hash = spl_object_hash($this->aField)) {
             $primaryKeyFKs[] = $hash;
         } else {
             $validPrimaryKeyFKs = false;
         }
 
-        //relation tf_form_fields_fk_8ba9c8 to table tf_forms
+        //relation tf_form_field_fk_8ba9c8 to table tf_forms
         if ($this->aForm && $hash = spl_object_hash($this->aForm)) {
             $primaryKeyFKs[] = $hash;
         } else {
@@ -1126,7 +1132,7 @@ abstract class FormField implements ActiveRecordInterface
     {
         $copyObj->setFieldId($this->getFieldId());
         $copyObj->setFormId($this->getFormId());
-        $copyObj->setGuestOnly($this->getGuestOnly());
+        $copyObj->setFormFieldOrder($this->getFormFieldOrder());
         if ($makeNew) {
             $copyObj->setNew(true);
         }
@@ -1271,7 +1277,7 @@ abstract class FormField implements ActiveRecordInterface
         }
         $this->field_id = null;
         $this->form_id = null;
-        $this->guest_only = null;
+        $this->form_field_order = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();

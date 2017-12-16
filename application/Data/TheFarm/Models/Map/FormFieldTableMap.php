@@ -16,7 +16,7 @@ use TheFarm\Models\FormFieldQuery;
 
 
 /**
- * This class defines the structure of the 'tf_form_fields' table.
+ * This class defines the structure of the 'tf_form_field' table.
  *
  *
  *
@@ -44,7 +44,7 @@ class FormFieldTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = 'tf_form_fields';
+    const TABLE_NAME = 'tf_form_field';
 
     /**
      * The related Propel class for this table
@@ -74,17 +74,17 @@ class FormFieldTableMap extends TableMap
     /**
      * the column name for the field_id field
      */
-    const COL_FIELD_ID = 'tf_form_fields.field_id';
+    const COL_FIELD_ID = 'tf_form_field.field_id';
 
     /**
      * the column name for the form_id field
      */
-    const COL_FORM_ID = 'tf_form_fields.form_id';
+    const COL_FORM_ID = 'tf_form_field.form_id';
 
     /**
-     * the column name for the guest_only field
+     * the column name for the form_field_order field
      */
-    const COL_GUEST_ONLY = 'tf_form_fields.guest_only';
+    const COL_FORM_FIELD_ORDER = 'tf_form_field.form_field_order';
 
     /**
      * The default string format for model objects of the related table
@@ -98,10 +98,10 @@ class FormFieldTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('FieldId', 'FormId', 'GuestOnly', ),
-        self::TYPE_CAMELNAME     => array('fieldId', 'formId', 'guestOnly', ),
-        self::TYPE_COLNAME       => array(FormFieldTableMap::COL_FIELD_ID, FormFieldTableMap::COL_FORM_ID, FormFieldTableMap::COL_GUEST_ONLY, ),
-        self::TYPE_FIELDNAME     => array('field_id', 'form_id', 'guest_only', ),
+        self::TYPE_PHPNAME       => array('FieldId', 'FormId', 'FormFieldOrder', ),
+        self::TYPE_CAMELNAME     => array('fieldId', 'formId', 'formFieldOrder', ),
+        self::TYPE_COLNAME       => array(FormFieldTableMap::COL_FIELD_ID, FormFieldTableMap::COL_FORM_ID, FormFieldTableMap::COL_FORM_FIELD_ORDER, ),
+        self::TYPE_FIELDNAME     => array('field_id', 'form_id', 'form_field_order', ),
         self::TYPE_NUM           => array(0, 1, 2, )
     );
 
@@ -112,10 +112,10 @@ class FormFieldTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('FieldId' => 0, 'FormId' => 1, 'GuestOnly' => 2, ),
-        self::TYPE_CAMELNAME     => array('fieldId' => 0, 'formId' => 1, 'guestOnly' => 2, ),
-        self::TYPE_COLNAME       => array(FormFieldTableMap::COL_FIELD_ID => 0, FormFieldTableMap::COL_FORM_ID => 1, FormFieldTableMap::COL_GUEST_ONLY => 2, ),
-        self::TYPE_FIELDNAME     => array('field_id' => 0, 'form_id' => 1, 'guest_only' => 2, ),
+        self::TYPE_PHPNAME       => array('FieldId' => 0, 'FormId' => 1, 'FormFieldOrder' => 2, ),
+        self::TYPE_CAMELNAME     => array('fieldId' => 0, 'formId' => 1, 'formFieldOrder' => 2, ),
+        self::TYPE_COLNAME       => array(FormFieldTableMap::COL_FIELD_ID => 0, FormFieldTableMap::COL_FORM_ID => 1, FormFieldTableMap::COL_FORM_FIELD_ORDER => 2, ),
+        self::TYPE_FIELDNAME     => array('field_id' => 0, 'form_id' => 1, 'form_field_order' => 2, ),
         self::TYPE_NUM           => array(0, 1, 2, )
     );
 
@@ -129,16 +129,16 @@ class FormFieldTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('tf_form_fields');
+        $this->setName('tf_form_field');
         $this->setPhpName('FormField');
         $this->setIdentifierQuoting(false);
         $this->setClassName('\\TheFarm\\Models\\FormField');
         $this->setPackage('TheFarm.Models');
         $this->setUseIdGenerator(false);
         // columns
-        $this->addForeignPrimaryKey('field_id', 'FieldId', 'INTEGER' , 'tf_fields', 'field_id', true, null, 0);
+        $this->addForeignPrimaryKey('field_id', 'FieldId', 'INTEGER' , 'tf_field', 'field_id', true, null, 0);
         $this->addForeignPrimaryKey('form_id', 'FormId', 'INTEGER' , 'tf_forms', 'form_id', true, null, 0);
-        $this->addColumn('guest_only', 'GuestOnly', 'CHAR', true, null, null);
+        $this->addColumn('form_field_order', 'FormFieldOrder', 'INTEGER', false, null, 0);
     } // initialize()
 
     /**
@@ -367,11 +367,11 @@ class FormFieldTableMap extends TableMap
         if (null === $alias) {
             $criteria->addSelectColumn(FormFieldTableMap::COL_FIELD_ID);
             $criteria->addSelectColumn(FormFieldTableMap::COL_FORM_ID);
-            $criteria->addSelectColumn(FormFieldTableMap::COL_GUEST_ONLY);
+            $criteria->addSelectColumn(FormFieldTableMap::COL_FORM_FIELD_ORDER);
         } else {
             $criteria->addSelectColumn($alias . '.field_id');
             $criteria->addSelectColumn($alias . '.form_id');
-            $criteria->addSelectColumn($alias . '.guest_only');
+            $criteria->addSelectColumn($alias . '.form_field_order');
         }
     }
 
@@ -450,7 +450,7 @@ class FormFieldTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the tf_form_fields table.
+     * Deletes all rows from the tf_form_field table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).

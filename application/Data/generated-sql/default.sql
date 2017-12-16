@@ -227,6 +227,62 @@ CREATE TABLE `tf_bookings`
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
+-- tf_booking_form
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `tf_booking_form`;
+
+CREATE TABLE `tf_booking_form`
+(
+    `booking_form_id` INTEGER NOT NULL AUTO_INCREMENT,
+    `booking_id` INTEGER NOT NULL,
+    `form_id` INTEGER NOT NULL,
+    `author_id` INTEGER,
+    `entry_date` DATETIME,
+    `edit_date` DATETIME,
+    `completed_by` INTEGER,
+    `completed_date` DATETIME,
+    PRIMARY KEY (`booking_form_id`),
+    INDEX `fi_king_booking_pk` (`booking_id`),
+    INDEX `fi_king_form_form_pk` (`form_id`),
+    INDEX `fi_king_form_author_pk` (`author_id`),
+    INDEX `fi_king_form_cb_pk` (`completed_by`),
+    CONSTRAINT `booking_booking_pk`
+        FOREIGN KEY (`booking_id`)
+        REFERENCES `tf_bookings` (`booking_id`),
+    CONSTRAINT `booking_form_form_pk`
+        FOREIGN KEY (`form_id`)
+        REFERENCES `tf_forms` (`form_id`),
+    CONSTRAINT `booking_form_author_pk`
+        FOREIGN KEY (`author_id`)
+        REFERENCES `tf_user` (`user_id`),
+    CONSTRAINT `booking_form_cb_pk`
+        FOREIGN KEY (`completed_by`)
+        REFERENCES `tf_user` (`user_id`)
+) ENGINE=InnoDB;
+
+-- ---------------------------------------------------------------------
+-- tf_booking_form_entry
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `tf_booking_form_entry`;
+
+CREATE TABLE `tf_booking_form_entry`
+(
+    `booking_form_id` INTEGER,
+    `field_id` INTEGER NOT NULL,
+    `field_value` VARCHAR(200),
+    INDEX `tf_booking_form_entry_fi_782e8c` (`booking_form_id`),
+    INDEX `tf_booking_form_entry_fi_0427a6` (`field_id`),
+    CONSTRAINT `tf_booking_form_entry_fk_782e8c`
+        FOREIGN KEY (`booking_form_id`)
+        REFERENCES `tf_booking_form` (`booking_form_id`),
+    CONSTRAINT `tf_booking_form_entry_fk_0427a6`
+        FOREIGN KEY (`field_id`)
+        REFERENCES `tf_field` (`field_id`)
+) ENGINE=InnoDB;
+
+-- ---------------------------------------------------------------------
 -- tf_categories
 -- ---------------------------------------------------------------------
 
@@ -297,13 +353,8 @@ CREATE TABLE `tf_contacts`
     `weight` VARCHAR(10) DEFAULT '' NOT NULL,
     `phone` VARCHAR(50) DEFAULT '',
     `position_cd` VARCHAR(50),
-    `is_active` TINYINT(1) NOT NULL,
-    `verification_key` VARCHAR(255) DEFAULT '',
-    `is_verified` TINYINT(1) DEFAULT 0,
     `nickname` VARCHAR(50) DEFAULT '',
     `bio` TEXT NOT NULL,
-    `is_approved` TINYINT(1) DEFAULT 0,
-    `activation_code` INTEGER,
     PRIMARY KEY (`contact_id`),
     INDEX `fi_ition_fk` (`position_cd`),
     CONSTRAINT `position_fk`
@@ -368,18 +419,18 @@ CREATE TABLE `tf_facilities`
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
--- tf_fields
+-- tf_field
 -- ---------------------------------------------------------------------
 
-DROP TABLE IF EXISTS `tf_fields`;
+DROP TABLE IF EXISTS `tf_field`;
 
-CREATE TABLE `tf_fields`
+CREATE TABLE `tf_field`
 (
     `field_id` INTEGER NOT NULL AUTO_INCREMENT,
     `field_name` VARCHAR(100) NOT NULL,
     `field_label` VARCHAR(255) NOT NULL,
     `field_type` VARCHAR(32) NOT NULL,
-    `settings` TEXT NOT NULL,
+    `field_options` TEXT NOT NULL,
     `required` CHAR NOT NULL,
     `entry_date` INTEGER(10) NOT NULL,
     `edit_date` INTEGER(10) NOT NULL,
@@ -407,219 +458,22 @@ CREATE TABLE `tf_files`
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
--- tf_form_entries
+-- tf_form_field
 -- ---------------------------------------------------------------------
 
-DROP TABLE IF EXISTS `tf_form_entries`;
+DROP TABLE IF EXISTS `tf_form_field`;
 
-CREATE TABLE `tf_form_entries`
-(
-    `entry_id` INTEGER NOT NULL AUTO_INCREMENT,
-    `booking_id` INTEGER,
-    `form_id` INTEGER NOT NULL,
-    `field_id` INTEGER NOT NULL,
-    `field_value` VARCHAR(200),
-    PRIMARY KEY (`entry_id`),
-    INDEX `form_entries_booking_fk` (`booking_id`),
-    INDEX `form_entries_form_fk` (`form_id`),
-    INDEX `form_entries_field_fk` (`field_id`),
-    CONSTRAINT `form_entries_booking_fk`
-        FOREIGN KEY (`booking_id`)
-        REFERENCES `tf_bookings` (`booking_id`),
-    CONSTRAINT `form_entries_field_fk`
-        FOREIGN KEY (`field_id`)
-        REFERENCES `tf_fields` (`field_id`),
-    CONSTRAINT `form_entries_form_fk`
-        FOREIGN KEY (`form_id`)
-        REFERENCES `tf_forms` (`form_id`)
-) ENGINE=InnoDB;
-
--- ---------------------------------------------------------------------
--- tf_form_entries_1
--- ---------------------------------------------------------------------
-
-DROP TABLE IF EXISTS `tf_form_entries_1`;
-
-CREATE TABLE `tf_form_entries_1`
-(
-    `entry_id` int(5) unsigned NOT NULL AUTO_INCREMENT,
-    `booking_id` INTEGER(5) NOT NULL,
-    `field_id_29` TEXT,
-    `field_id_52` TEXT,
-    `field_id_54` TEXT,
-    `field_id_53` TEXT,
-    `field_id_55` TEXT,
-    `field_id_58` TEXT,
-    `field_id_57` TEXT,
-    `field_id_56` TEXT,
-    `field_id_51` TEXT,
-    `field_id_50` TEXT,
-    `field_id_49` TEXT,
-    `field_id_48` TEXT,
-    `field_id_47` TEXT,
-    `field_id_46` TEXT,
-    `field_id_45` TEXT,
-    `field_id_44` TEXT,
-    `field_id_43` TEXT,
-    `field_id_42` TEXT,
-    `field_id_41` TEXT,
-    `field_id_40` TEXT,
-    `field_id_37` TEXT,
-    `field_id_35` TEXT,
-    `field_id_33` TEXT,
-    `field_id_32` TEXT,
-    `field_id_31` TEXT,
-    `field_id_30` TEXT,
-    `field_id_28` TEXT,
-    `field_id_26` TEXT,
-    `field_id_25` TEXT,
-    `field_id_19` TEXT,
-    `field_id_18` TEXT,
-    `field_id_17` TEXT,
-    `field_id_6` TEXT,
-    `field_id_5` TEXT,
-    `field_id_4` TEXT,
-    `field_id_2` TEXT,
-    `field_id_1` TEXT,
-    `author_id` INTEGER(5) NOT NULL,
-    `entry_date` INTEGER(10) NOT NULL,
-    `edit_date` INTEGER(10) NOT NULL,
-    `completed_by` int(5) unsigned,
-    `completed_date` int(10) unsigned,
-    PRIMARY KEY (`entry_id`)
-) ENGINE=MyISAM;
-
--- ---------------------------------------------------------------------
--- tf_form_entries_2
--- ---------------------------------------------------------------------
-
-DROP TABLE IF EXISTS `tf_form_entries_2`;
-
-CREATE TABLE `tf_form_entries_2`
-(
-    `entry_id` int(5) unsigned NOT NULL AUTO_INCREMENT,
-    `booking_id` INTEGER(5) NOT NULL,
-    `author_id` INTEGER(5) NOT NULL,
-    `entry_date` INTEGER(10) NOT NULL,
-    `edit_date` INTEGER(10) NOT NULL,
-    `completed_by` int(5) unsigned,
-    `completed_date` int(10) unsigned,
-    PRIMARY KEY (`entry_id`)
-) ENGINE=MyISAM;
-
--- ---------------------------------------------------------------------
--- tf_form_entries_3
--- ---------------------------------------------------------------------
-
-DROP TABLE IF EXISTS `tf_form_entries_3`;
-
-CREATE TABLE `tf_form_entries_3`
-(
-    `entry_id` int(5) unsigned NOT NULL AUTO_INCREMENT,
-    `booking_id` INTEGER(5) NOT NULL,
-    `author_id` INTEGER(5) NOT NULL,
-    `entry_date` INTEGER(10) NOT NULL,
-    `edit_date` INTEGER(10) NOT NULL,
-    `completed_by` int(5) unsigned,
-    `completed_date` int(10) unsigned,
-    PRIMARY KEY (`entry_id`)
-) ENGINE=MyISAM;
-
--- ---------------------------------------------------------------------
--- tf_form_entries_5
--- ---------------------------------------------------------------------
-
-DROP TABLE IF EXISTS `tf_form_entries_5`;
-
-CREATE TABLE `tf_form_entries_5`
-(
-    `entry_id` int(5) unsigned NOT NULL AUTO_INCREMENT,
-    `booking_id` INTEGER(5) NOT NULL,
-    `author_id` INTEGER(5) NOT NULL,
-    `entry_date` INTEGER(10) NOT NULL,
-    `edit_date` INTEGER(10) NOT NULL,
-    `completed_by` int(5) unsigned,
-    `completed_date` int(10) unsigned,
-    PRIMARY KEY (`entry_id`)
-) ENGINE=MyISAM;
-
--- ---------------------------------------------------------------------
--- tf_form_entries_6
--- ---------------------------------------------------------------------
-
-DROP TABLE IF EXISTS `tf_form_entries_6`;
-
-CREATE TABLE `tf_form_entries_6`
-(
-    `entry_id` int(5) unsigned NOT NULL AUTO_INCREMENT,
-    `booking_id` INTEGER(5) NOT NULL,
-    `field_id_18` TEXT,
-    `field_id_17` TEXT,
-    `field_id_5` TEXT,
-    `field_id_4` TEXT,
-    `author_id` INTEGER(5) NOT NULL,
-    `entry_date` INTEGER(10) NOT NULL,
-    `edit_date` INTEGER(10) NOT NULL,
-    `completed_by` int(5) unsigned,
-    `completed_date` int(10) unsigned,
-    PRIMARY KEY (`entry_id`)
-) ENGINE=MyISAM;
-
--- ---------------------------------------------------------------------
--- tf_form_entries_8
--- ---------------------------------------------------------------------
-
-DROP TABLE IF EXISTS `tf_form_entries_8`;
-
-CREATE TABLE `tf_form_entries_8`
-(
-    `entry_id` int(5) unsigned NOT NULL AUTO_INCREMENT,
-    `booking_id` INTEGER(5) NOT NULL,
-    `field_id_196` TEXT,
-    `author_id` INTEGER(5) NOT NULL,
-    `entry_date` INTEGER(10) NOT NULL,
-    `edit_date` INTEGER(10) NOT NULL,
-    `completed_by` INTEGER(5) NOT NULL,
-    `completed_date` INTEGER(10) NOT NULL,
-    PRIMARY KEY (`entry_id`)
-) ENGINE=MyISAM;
-
--- ---------------------------------------------------------------------
--- tf_form_entries_9
--- ---------------------------------------------------------------------
-
-DROP TABLE IF EXISTS `tf_form_entries_9`;
-
-CREATE TABLE `tf_form_entries_9`
-(
-    `entry_id` int(5) unsigned NOT NULL AUTO_INCREMENT,
-    `booking_id` INTEGER(5) NOT NULL,
-    `field_id_197` TEXT,
-    `author_id` INTEGER(5) NOT NULL,
-    `entry_date` INTEGER(10) NOT NULL,
-    `edit_date` INTEGER(10) NOT NULL,
-    `completed_by` INTEGER(5) NOT NULL,
-    `completed_date` INTEGER(10) NOT NULL,
-    PRIMARY KEY (`entry_id`)
-) ENGINE=MyISAM;
-
--- ---------------------------------------------------------------------
--- tf_form_fields
--- ---------------------------------------------------------------------
-
-DROP TABLE IF EXISTS `tf_form_fields`;
-
-CREATE TABLE `tf_form_fields`
+CREATE TABLE `tf_form_field`
 (
     `field_id` INTEGER DEFAULT 0 NOT NULL,
     `form_id` INTEGER DEFAULT 0 NOT NULL,
-    `guest_only` CHAR NOT NULL,
+    `form_field_order` INTEGER DEFAULT 0,
     PRIMARY KEY (`field_id`,`form_id`),
-    INDEX `tf_form_fields_fi_8ba9c8` (`form_id`),
-    CONSTRAINT `tf_form_fields_fk_56efb6`
+    INDEX `tf_form_field_fi_8ba9c8` (`form_id`),
+    CONSTRAINT `tf_form_field_fk_0427a6`
         FOREIGN KEY (`field_id`)
-        REFERENCES `tf_fields` (`field_id`),
-    CONSTRAINT `tf_form_fields_fk_8ba9c8`
+        REFERENCES `tf_field` (`field_id`),
+    CONSTRAINT `tf_form_field_fk_8ba9c8`
         FOREIGN KEY (`form_id`)
         REFERENCES `tf_forms` (`form_id`)
 ) ENGINE=InnoDB;
@@ -1077,6 +931,11 @@ CREATE TABLE `tf_user`
     `location_id` INTEGER,
     `facebook_id` VARCHAR(50) NOT NULL,
     `user_order` INTEGER(5) DEFAULT 0 NOT NULL,
+    `is_active` TINYINT(1) NOT NULL,
+    `verification_key` VARCHAR(255) DEFAULT '',
+    `is_verified` TINYINT(1) DEFAULT 0,
+    `is_approved` TINYINT(1) DEFAULT 0,
+    `activation_code` INTEGER,
     `calendar_view_positions` VARCHAR(100) DEFAULT '',
     `calendar_view_status` VARCHAR(255),
     `calendar_show_my_schedule_only` VARCHAR(1) DEFAULT 'y',

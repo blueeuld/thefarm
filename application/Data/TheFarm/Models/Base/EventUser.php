@@ -15,15 +15,15 @@ use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
-use TheFarm\Models\BookingEvent as ChildBookingEvent;
-use TheFarm\Models\BookingEventQuery as ChildBookingEventQuery;
+use TheFarm\Models\Event as ChildEvent;
+use TheFarm\Models\EventQuery as ChildEventQuery;
 use TheFarm\Models\EventUserQuery as ChildEventUserQuery;
 use TheFarm\Models\User as ChildUser;
 use TheFarm\Models\UserQuery as ChildUserQuery;
 use TheFarm\Models\Map\EventUserTableMap;
 
 /**
- * Base class that represents a row from the 'tf_booking_event_users' table.
+ * Base class that represents a row from the 'tf_event_user' table.
  *
  *
  *
@@ -88,9 +88,9 @@ abstract class EventUser implements ActiveRecordInterface
     protected $is_guest;
 
     /**
-     * @var        ChildBookingEvent
+     * @var        ChildEvent
      */
-    protected $aBookingEvent;
+    protected $aEvent;
 
     /**
      * @var        ChildUser
@@ -402,8 +402,8 @@ abstract class EventUser implements ActiveRecordInterface
             $this->modifiedColumns[EventUserTableMap::COL_EVENT_ID] = true;
         }
 
-        if ($this->aBookingEvent !== null && $this->aBookingEvent->getEventId() !== $v) {
-            $this->aBookingEvent = null;
+        if ($this->aEvent !== null && $this->aEvent->getEventId() !== $v) {
+            $this->aEvent = null;
         }
 
         return $this;
@@ -547,8 +547,8 @@ abstract class EventUser implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-        if ($this->aBookingEvent !== null && $this->event_id !== $this->aBookingEvent->getEventId()) {
-            $this->aBookingEvent = null;
+        if ($this->aEvent !== null && $this->event_id !== $this->aEvent->getEventId()) {
+            $this->aEvent = null;
         }
         if ($this->aUser !== null && $this->user_id !== $this->aUser->getUserId()) {
             $this->aUser = null;
@@ -592,7 +592,7 @@ abstract class EventUser implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->aBookingEvent = null;
+            $this->aEvent = null;
             $this->aUser = null;
         } // if (deep)
     }
@@ -702,11 +702,11 @@ abstract class EventUser implements ActiveRecordInterface
             // method.  This object relates to these object(s) by a
             // foreign key reference.
 
-            if ($this->aBookingEvent !== null) {
-                if ($this->aBookingEvent->isModified() || $this->aBookingEvent->isNew()) {
-                    $affectedRows += $this->aBookingEvent->save($con);
+            if ($this->aEvent !== null) {
+                if ($this->aEvent->isModified() || $this->aEvent->isNew()) {
+                    $affectedRows += $this->aEvent->save($con);
                 }
-                $this->setBookingEvent($this->aBookingEvent);
+                $this->setEvent($this->aEvent);
             }
 
             if ($this->aUser !== null) {
@@ -760,7 +760,7 @@ abstract class EventUser implements ActiveRecordInterface
         }
 
         $sql = sprintf(
-            'INSERT INTO tf_booking_event_users (%s) VALUES (%s)',
+            'INSERT INTO tf_event_user (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -882,20 +882,20 @@ abstract class EventUser implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->aBookingEvent) {
+            if (null !== $this->aEvent) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'bookingEvent';
+                        $key = 'event';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = 'tf_booking_events';
+                        $key = 'tf_event';
                         break;
                     default:
-                        $key = 'BookingEvent';
+                        $key = 'Event';
                 }
 
-                $result[$key] = $this->aBookingEvent->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+                $result[$key] = $this->aEvent->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
             if (null !== $this->aUser) {
 
@@ -1077,14 +1077,14 @@ abstract class EventUser implements ActiveRecordInterface
         $validPrimaryKeyFKs = 2;
         $primaryKeyFKs = [];
 
-        //relation tf_booking_event_users_fk_0f1f34 to table tf_booking_events
-        if ($this->aBookingEvent && $hash = spl_object_hash($this->aBookingEvent)) {
+        //relation tf_event_user_fk_11d4fb to table tf_event
+        if ($this->aEvent && $hash = spl_object_hash($this->aEvent)) {
             $primaryKeyFKs[] = $hash;
         } else {
             $validPrimaryKeyFKs = false;
         }
 
-        //relation tf_booking_event_users_fk_e09fae to table tf_user
+        //relation tf_event_user_fk_e09fae to table tf_user
         if ($this->aUser && $hash = spl_object_hash($this->aUser)) {
             $primaryKeyFKs[] = $hash;
         } else {
@@ -1179,13 +1179,13 @@ abstract class EventUser implements ActiveRecordInterface
     }
 
     /**
-     * Declares an association between this object and a ChildBookingEvent object.
+     * Declares an association between this object and a ChildEvent object.
      *
-     * @param  ChildBookingEvent $v
+     * @param  ChildEvent $v
      * @return $this|\TheFarm\Models\EventUser The current object (for fluent API support)
      * @throws PropelException
      */
-    public function setBookingEvent(ChildBookingEvent $v = null)
+    public function setEvent(ChildEvent $v = null)
     {
         if ($v === null) {
             $this->setEventId(0);
@@ -1193,10 +1193,10 @@ abstract class EventUser implements ActiveRecordInterface
             $this->setEventId($v->getEventId());
         }
 
-        $this->aBookingEvent = $v;
+        $this->aEvent = $v;
 
         // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildBookingEvent object, it will not be re-added.
+        // If this object has already been added to the ChildEvent object, it will not be re-added.
         if ($v !== null) {
             $v->addEventUser($this);
         }
@@ -1207,26 +1207,26 @@ abstract class EventUser implements ActiveRecordInterface
 
 
     /**
-     * Get the associated ChildBookingEvent object
+     * Get the associated ChildEvent object
      *
      * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildBookingEvent The associated ChildBookingEvent object.
+     * @return ChildEvent The associated ChildEvent object.
      * @throws PropelException
      */
-    public function getBookingEvent(ConnectionInterface $con = null)
+    public function getEvent(ConnectionInterface $con = null)
     {
-        if ($this->aBookingEvent === null && ($this->event_id !== null)) {
-            $this->aBookingEvent = ChildBookingEventQuery::create()->findPk($this->event_id, $con);
+        if ($this->aEvent === null && ($this->event_id !== null)) {
+            $this->aEvent = ChildEventQuery::create()->findPk($this->event_id, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aBookingEvent->addEventUsers($this);
+                $this->aEvent->addEventUsers($this);
              */
         }
 
-        return $this->aBookingEvent;
+        return $this->aEvent;
     }
 
     /**
@@ -1287,8 +1287,8 @@ abstract class EventUser implements ActiveRecordInterface
      */
     public function clear()
     {
-        if (null !== $this->aBookingEvent) {
-            $this->aBookingEvent->removeEventUser($this);
+        if (null !== $this->aEvent) {
+            $this->aEvent->removeEventUser($this);
         }
         if (null !== $this->aUser) {
             $this->aUser->removeEventUser($this);
@@ -1317,7 +1317,7 @@ abstract class EventUser implements ActiveRecordInterface
         if ($deep) {
         } // if ($deep)
 
-        $this->aBookingEvent = null;
+        $this->aEvent = null;
         $this->aUser = null;
     }
 

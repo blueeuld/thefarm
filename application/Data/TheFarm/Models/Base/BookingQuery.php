@@ -124,15 +124,15 @@ use TheFarm\Models\Map\BookingTableMap;
  * @method     ChildBookingQuery rightJoinWithBookingAttachment() Adds a RIGHT JOIN clause and with to the query using the BookingAttachment relation
  * @method     ChildBookingQuery innerJoinWithBookingAttachment() Adds a INNER JOIN clause and with to the query using the BookingAttachment relation
  *
- * @method     ChildBookingQuery leftJoinBookingEvent($relationAlias = null) Adds a LEFT JOIN clause to the query using the BookingEvent relation
- * @method     ChildBookingQuery rightJoinBookingEvent($relationAlias = null) Adds a RIGHT JOIN clause to the query using the BookingEvent relation
- * @method     ChildBookingQuery innerJoinBookingEvent($relationAlias = null) Adds a INNER JOIN clause to the query using the BookingEvent relation
+ * @method     ChildBookingQuery leftJoinEvent($relationAlias = null) Adds a LEFT JOIN clause to the query using the Event relation
+ * @method     ChildBookingQuery rightJoinEvent($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Event relation
+ * @method     ChildBookingQuery innerJoinEvent($relationAlias = null) Adds a INNER JOIN clause to the query using the Event relation
  *
- * @method     ChildBookingQuery joinWithBookingEvent($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the BookingEvent relation
+ * @method     ChildBookingQuery joinWithEvent($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Event relation
  *
- * @method     ChildBookingQuery leftJoinWithBookingEvent() Adds a LEFT JOIN clause and with to the query using the BookingEvent relation
- * @method     ChildBookingQuery rightJoinWithBookingEvent() Adds a RIGHT JOIN clause and with to the query using the BookingEvent relation
- * @method     ChildBookingQuery innerJoinWithBookingEvent() Adds a INNER JOIN clause and with to the query using the BookingEvent relation
+ * @method     ChildBookingQuery leftJoinWithEvent() Adds a LEFT JOIN clause and with to the query using the Event relation
+ * @method     ChildBookingQuery rightJoinWithEvent() Adds a RIGHT JOIN clause and with to the query using the Event relation
+ * @method     ChildBookingQuery innerJoinWithEvent() Adds a INNER JOIN clause and with to the query using the Event relation
  *
  * @method     ChildBookingQuery leftJoinBookingItem($relationAlias = null) Adds a LEFT JOIN clause to the query using the BookingItem relation
  * @method     ChildBookingQuery rightJoinBookingItem($relationAlias = null) Adds a RIGHT JOIN clause to the query using the BookingItem relation
@@ -144,17 +144,17 @@ use TheFarm\Models\Map\BookingTableMap;
  * @method     ChildBookingQuery rightJoinWithBookingItem() Adds a RIGHT JOIN clause and with to the query using the BookingItem relation
  * @method     ChildBookingQuery innerJoinWithBookingItem() Adds a INNER JOIN clause and with to the query using the BookingItem relation
  *
- * @method     ChildBookingQuery leftJoinFormEntry($relationAlias = null) Adds a LEFT JOIN clause to the query using the FormEntry relation
- * @method     ChildBookingQuery rightJoinFormEntry($relationAlias = null) Adds a RIGHT JOIN clause to the query using the FormEntry relation
- * @method     ChildBookingQuery innerJoinFormEntry($relationAlias = null) Adds a INNER JOIN clause to the query using the FormEntry relation
+ * @method     ChildBookingQuery leftJoinBookingForm($relationAlias = null) Adds a LEFT JOIN clause to the query using the BookingForm relation
+ * @method     ChildBookingQuery rightJoinBookingForm($relationAlias = null) Adds a RIGHT JOIN clause to the query using the BookingForm relation
+ * @method     ChildBookingQuery innerJoinBookingForm($relationAlias = null) Adds a INNER JOIN clause to the query using the BookingForm relation
  *
- * @method     ChildBookingQuery joinWithFormEntry($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the FormEntry relation
+ * @method     ChildBookingQuery joinWithBookingForm($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the BookingForm relation
  *
- * @method     ChildBookingQuery leftJoinWithFormEntry() Adds a LEFT JOIN clause and with to the query using the FormEntry relation
- * @method     ChildBookingQuery rightJoinWithFormEntry() Adds a RIGHT JOIN clause and with to the query using the FormEntry relation
- * @method     ChildBookingQuery innerJoinWithFormEntry() Adds a INNER JOIN clause and with to the query using the FormEntry relation
+ * @method     ChildBookingQuery leftJoinWithBookingForm() Adds a LEFT JOIN clause and with to the query using the BookingForm relation
+ * @method     ChildBookingQuery rightJoinWithBookingForm() Adds a RIGHT JOIN clause and with to the query using the BookingForm relation
+ * @method     ChildBookingQuery innerJoinWithBookingForm() Adds a INNER JOIN clause and with to the query using the BookingForm relation
  *
- * @method     \TheFarm\Models\UserQuery|\TheFarm\Models\ContactQuery|\TheFarm\Models\PackageQuery|\TheFarm\Models\ItemQuery|\TheFarm\Models\EventStatusQuery|\TheFarm\Models\BookingAttachmentQuery|\TheFarm\Models\BookingEventQuery|\TheFarm\Models\BookingItemQuery|\TheFarm\Models\FormEntryQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \TheFarm\Models\UserQuery|\TheFarm\Models\ContactQuery|\TheFarm\Models\PackageQuery|\TheFarm\Models\ItemQuery|\TheFarm\Models\EventStatusQuery|\TheFarm\Models\BookingAttachmentQuery|\TheFarm\Models\EventQuery|\TheFarm\Models\BookingItemQuery|\TheFarm\Models\BookingFormQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildBooking findOne(ConnectionInterface $con = null) Return the first ChildBooking matching the query
  * @method     ChildBooking findOneOrCreate(ConnectionInterface $con = null) Return the first ChildBooking matching the query, or a new ChildBooking object populated from the query conditions when no match is found
@@ -1490,40 +1490,40 @@ abstract class BookingQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \TheFarm\Models\BookingEvent object
+     * Filter the query by a related \TheFarm\Models\Event object
      *
-     * @param \TheFarm\Models\BookingEvent|ObjectCollection $bookingEvent the related object to use as filter
+     * @param \TheFarm\Models\Event|ObjectCollection $event the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildBookingQuery The current query, for fluid interface
      */
-    public function filterByBookingEvent($bookingEvent, $comparison = null)
+    public function filterByEvent($event, $comparison = null)
     {
-        if ($bookingEvent instanceof \TheFarm\Models\BookingEvent) {
+        if ($event instanceof \TheFarm\Models\Event) {
             return $this
-                ->addUsingAlias(BookingTableMap::COL_BOOKING_ID, $bookingEvent->getBookingId(), $comparison);
-        } elseif ($bookingEvent instanceof ObjectCollection) {
+                ->addUsingAlias(BookingTableMap::COL_BOOKING_ID, $event->getBookingId(), $comparison);
+        } elseif ($event instanceof ObjectCollection) {
             return $this
-                ->useBookingEventQuery()
-                ->filterByPrimaryKeys($bookingEvent->getPrimaryKeys())
+                ->useEventQuery()
+                ->filterByPrimaryKeys($event->getPrimaryKeys())
                 ->endUse();
         } else {
-            throw new PropelException('filterByBookingEvent() only accepts arguments of type \TheFarm\Models\BookingEvent or Collection');
+            throw new PropelException('filterByEvent() only accepts arguments of type \TheFarm\Models\Event or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the BookingEvent relation
+     * Adds a JOIN clause to the query using the Event relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildBookingQuery The current query, for fluid interface
      */
-    public function joinBookingEvent($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function joinEvent($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('BookingEvent');
+        $relationMap = $tableMap->getRelation('Event');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -1538,14 +1538,14 @@ abstract class BookingQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'BookingEvent');
+            $this->addJoinObject($join, 'Event');
         }
 
         return $this;
     }
 
     /**
-     * Use the BookingEvent relation BookingEvent object
+     * Use the Event relation Event object
      *
      * @see useQuery()
      *
@@ -1553,13 +1553,13 @@ abstract class BookingQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \TheFarm\Models\BookingEventQuery A secondary query class using the current class as primary query
+     * @return \TheFarm\Models\EventQuery A secondary query class using the current class as primary query
      */
-    public function useBookingEventQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function useEventQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         return $this
-            ->joinBookingEvent($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'BookingEvent', '\TheFarm\Models\BookingEventQuery');
+            ->joinEvent($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Event', '\TheFarm\Models\EventQuery');
     }
 
     /**
@@ -1636,40 +1636,40 @@ abstract class BookingQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \TheFarm\Models\FormEntry object
+     * Filter the query by a related \TheFarm\Models\BookingForm object
      *
-     * @param \TheFarm\Models\FormEntry|ObjectCollection $formEntry the related object to use as filter
+     * @param \TheFarm\Models\BookingForm|ObjectCollection $bookingForm the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildBookingQuery The current query, for fluid interface
      */
-    public function filterByFormEntry($formEntry, $comparison = null)
+    public function filterByBookingForm($bookingForm, $comparison = null)
     {
-        if ($formEntry instanceof \TheFarm\Models\FormEntry) {
+        if ($bookingForm instanceof \TheFarm\Models\BookingForm) {
             return $this
-                ->addUsingAlias(BookingTableMap::COL_BOOKING_ID, $formEntry->getBookingId(), $comparison);
-        } elseif ($formEntry instanceof ObjectCollection) {
+                ->addUsingAlias(BookingTableMap::COL_BOOKING_ID, $bookingForm->getBookingId(), $comparison);
+        } elseif ($bookingForm instanceof ObjectCollection) {
             return $this
-                ->useFormEntryQuery()
-                ->filterByPrimaryKeys($formEntry->getPrimaryKeys())
+                ->useBookingFormQuery()
+                ->filterByPrimaryKeys($bookingForm->getPrimaryKeys())
                 ->endUse();
         } else {
-            throw new PropelException('filterByFormEntry() only accepts arguments of type \TheFarm\Models\FormEntry or Collection');
+            throw new PropelException('filterByBookingForm() only accepts arguments of type \TheFarm\Models\BookingForm or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the FormEntry relation
+     * Adds a JOIN clause to the query using the BookingForm relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildBookingQuery The current query, for fluid interface
      */
-    public function joinFormEntry($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function joinBookingForm($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('FormEntry');
+        $relationMap = $tableMap->getRelation('BookingForm');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -1684,14 +1684,14 @@ abstract class BookingQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'FormEntry');
+            $this->addJoinObject($join, 'BookingForm');
         }
 
         return $this;
     }
 
     /**
-     * Use the FormEntry relation FormEntry object
+     * Use the BookingForm relation BookingForm object
      *
      * @see useQuery()
      *
@@ -1699,13 +1699,13 @@ abstract class BookingQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \TheFarm\Models\FormEntryQuery A secondary query class using the current class as primary query
+     * @return \TheFarm\Models\BookingFormQuery A secondary query class using the current class as primary query
      */
-    public function useFormEntryQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function useBookingFormQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinFormEntry($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'FormEntry', '\TheFarm\Models\FormEntryQuery');
+            ->joinBookingForm($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'BookingForm', '\TheFarm\Models\BookingFormQuery');
     }
 
     /**

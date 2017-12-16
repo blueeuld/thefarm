@@ -272,13 +272,13 @@ class BookingTableMap extends TableMap
     1 => ':booking_id',
   ),
 ), null, null, 'BookingAttachments', false);
-        $this->addRelation('BookingEvent', '\\TheFarm\\Models\\BookingEvent', RelationMap::ONE_TO_MANY, array (
+        $this->addRelation('Event', '\\TheFarm\\Models\\Event', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
     0 => ':booking_id',
     1 => ':booking_id',
   ),
-), null, null, 'BookingEvents', false);
+), null, null, 'Events', false);
         $this->addRelation('BookingItem', '\\TheFarm\\Models\\BookingItem', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
@@ -286,13 +286,13 @@ class BookingTableMap extends TableMap
     1 => ':booking_id',
   ),
 ), null, null, 'BookingItems', false);
-        $this->addRelation('FormEntry', '\\TheFarm\\Models\\FormEntry', RelationMap::ONE_TO_MANY, array (
+        $this->addRelation('BookingForm', '\\TheFarm\\Models\\BookingForm', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
     0 => ':booking_id',
     1 => ':booking_id',
   ),
-), null, null, 'FormEntries', false);
+), null, null, 'BookingForms', false);
     } // buildRelations()
 
     /**

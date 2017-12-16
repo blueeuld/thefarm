@@ -164,13 +164,13 @@ class EventStatusTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('BookingEvent', '\\TheFarm\\Models\\BookingEvent', RelationMap::ONE_TO_MANY, array (
+        $this->addRelation('Event', '\\TheFarm\\Models\\Event', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
     0 => ':status',
     1 => ':status_cd',
   ),
-), null, null, 'BookingEvents', false);
+), null, null, 'Events', false);
         $this->addRelation('Booking', '\\TheFarm\\Models\\Booking', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (

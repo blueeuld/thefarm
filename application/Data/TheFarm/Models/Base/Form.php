@@ -16,15 +16,15 @@ use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
+use TheFarm\Models\BookingForm as ChildBookingForm;
+use TheFarm\Models\BookingFormQuery as ChildBookingFormQuery;
 use TheFarm\Models\Form as ChildForm;
-use TheFarm\Models\FormEntry as ChildFormEntry;
-use TheFarm\Models\FormEntryQuery as ChildFormEntryQuery;
 use TheFarm\Models\FormField as ChildFormField;
 use TheFarm\Models\FormFieldQuery as ChildFormFieldQuery;
 use TheFarm\Models\FormQuery as ChildFormQuery;
 use TheFarm\Models\ItemForm as ChildItemForm;
 use TheFarm\Models\ItemFormQuery as ChildItemFormQuery;
-use TheFarm\Models\Map\FormEntryTableMap;
+use TheFarm\Models\Map\BookingFormTableMap;
 use TheFarm\Models\Map\FormFieldTableMap;
 use TheFarm\Models\Map\FormTableMap;
 use TheFarm\Models\Map\ItemFormTableMap;
@@ -120,10 +120,10 @@ abstract class Form implements ActiveRecordInterface
     protected $edit_date;
 
     /**
-     * @var        ObjectCollection|ChildFormEntry[] Collection to store aggregation of ChildFormEntry objects.
+     * @var        ObjectCollection|ChildBookingForm[] Collection to store aggregation of ChildBookingForm objects.
      */
-    protected $collFormEntries;
-    protected $collFormEntriesPartial;
+    protected $collBookingForms;
+    protected $collBookingFormsPartial;
 
     /**
      * @var        ObjectCollection|ChildFormField[] Collection to store aggregation of ChildFormField objects.
@@ -147,9 +147,9 @@ abstract class Form implements ActiveRecordInterface
 
     /**
      * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildFormEntry[]
+     * @var ObjectCollection|ChildBookingForm[]
      */
-    protected $formEntriesScheduledForDeletion = null;
+    protected $bookingFormsScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -723,7 +723,7 @@ abstract class Form implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->collFormEntries = null;
+            $this->collBookingForms = null;
 
             $this->collFormFields = null;
 
@@ -843,17 +843,17 @@ abstract class Form implements ActiveRecordInterface
                 $this->resetModified();
             }
 
-            if ($this->formEntriesScheduledForDeletion !== null) {
-                if (!$this->formEntriesScheduledForDeletion->isEmpty()) {
-                    \TheFarm\Models\FormEntryQuery::create()
-                        ->filterByPrimaryKeys($this->formEntriesScheduledForDeletion->getPrimaryKeys(false))
+            if ($this->bookingFormsScheduledForDeletion !== null) {
+                if (!$this->bookingFormsScheduledForDeletion->isEmpty()) {
+                    \TheFarm\Models\BookingFormQuery::create()
+                        ->filterByPrimaryKeys($this->bookingFormsScheduledForDeletion->getPrimaryKeys(false))
                         ->delete($con);
-                    $this->formEntriesScheduledForDeletion = null;
+                    $this->bookingFormsScheduledForDeletion = null;
                 }
             }
 
-            if ($this->collFormEntries !== null) {
-                foreach ($this->collFormEntries as $referrerFK) {
+            if ($this->collBookingForms !== null) {
+                foreach ($this->collBookingForms as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -1100,20 +1100,20 @@ abstract class Form implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->collFormEntries) {
+            if (null !== $this->collBookingForms) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'formEntries';
+                        $key = 'bookingForms';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = 'tf_form_entriess';
+                        $key = 'tf_booking_forms';
                         break;
                     default:
-                        $key = 'FormEntries';
+                        $key = 'BookingForms';
                 }
 
-                $result[$key] = $this->collFormEntries->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+                $result[$key] = $this->collBookingForms->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
             if (null !== $this->collFormFields) {
 
@@ -1122,7 +1122,7 @@ abstract class Form implements ActiveRecordInterface
                         $key = 'formFields';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = 'tf_form_fieldss';
+                        $key = 'tf_form_fields';
                         break;
                     default:
                         $key = 'FormFields';
@@ -1407,9 +1407,9 @@ abstract class Form implements ActiveRecordInterface
             // the getter/setter methods for fkey referrer objects.
             $copyObj->setNew(false);
 
-            foreach ($this->getFormEntries() as $relObj) {
+            foreach ($this->getBookingForms() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addFormEntry($relObj->copy($deepCopy));
+                    $copyObj->addBookingForm($relObj->copy($deepCopy));
                 }
             }
 
@@ -1466,8 +1466,8 @@ abstract class Form implements ActiveRecordInterface
      */
     public function initRelation($relationName)
     {
-        if ('FormEntry' == $relationName) {
-            $this->initFormEntries();
+        if ('BookingForm' == $relationName) {
+            $this->initBookingForms();
             return;
         }
         if ('FormField' == $relationName) {
@@ -1481,31 +1481,31 @@ abstract class Form implements ActiveRecordInterface
     }
 
     /**
-     * Clears out the collFormEntries collection
+     * Clears out the collBookingForms collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
      * @return void
-     * @see        addFormEntries()
+     * @see        addBookingForms()
      */
-    public function clearFormEntries()
+    public function clearBookingForms()
     {
-        $this->collFormEntries = null; // important to set this to NULL since that means it is uninitialized
+        $this->collBookingForms = null; // important to set this to NULL since that means it is uninitialized
     }
 
     /**
-     * Reset is the collFormEntries collection loaded partially.
+     * Reset is the collBookingForms collection loaded partially.
      */
-    public function resetPartialFormEntries($v = true)
+    public function resetPartialBookingForms($v = true)
     {
-        $this->collFormEntriesPartial = $v;
+        $this->collBookingFormsPartial = $v;
     }
 
     /**
-     * Initializes the collFormEntries collection.
+     * Initializes the collBookingForms collection.
      *
-     * By default this just sets the collFormEntries collection to an empty array (like clearcollFormEntries());
+     * By default this just sets the collBookingForms collection to an empty array (like clearcollBookingForms());
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
@@ -1514,20 +1514,20 @@ abstract class Form implements ActiveRecordInterface
      *
      * @return void
      */
-    public function initFormEntries($overrideExisting = true)
+    public function initBookingForms($overrideExisting = true)
     {
-        if (null !== $this->collFormEntries && !$overrideExisting) {
+        if (null !== $this->collBookingForms && !$overrideExisting) {
             return;
         }
 
-        $collectionClassName = FormEntryTableMap::getTableMap()->getCollectionClassName();
+        $collectionClassName = BookingFormTableMap::getTableMap()->getCollectionClassName();
 
-        $this->collFormEntries = new $collectionClassName;
-        $this->collFormEntries->setModel('\TheFarm\Models\FormEntry');
+        $this->collBookingForms = new $collectionClassName;
+        $this->collBookingForms->setModel('\TheFarm\Models\BookingForm');
     }
 
     /**
-     * Gets an array of ChildFormEntry objects which contain a foreign key that references this object.
+     * Gets an array of ChildBookingForm objects which contain a foreign key that references this object.
      *
      * If the $criteria is not null, it is used to always fetch the results from the database.
      * Otherwise the results are fetched from the database the first time, then cached.
@@ -1537,108 +1537,108 @@ abstract class Form implements ActiveRecordInterface
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildFormEntry[] List of ChildFormEntry objects
+     * @return ObjectCollection|ChildBookingForm[] List of ChildBookingForm objects
      * @throws PropelException
      */
-    public function getFormEntries(Criteria $criteria = null, ConnectionInterface $con = null)
+    public function getBookingForms(Criteria $criteria = null, ConnectionInterface $con = null)
     {
-        $partial = $this->collFormEntriesPartial && !$this->isNew();
-        if (null === $this->collFormEntries || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collFormEntries) {
+        $partial = $this->collBookingFormsPartial && !$this->isNew();
+        if (null === $this->collBookingForms || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collBookingForms) {
                 // return empty collection
-                $this->initFormEntries();
+                $this->initBookingForms();
             } else {
-                $collFormEntries = ChildFormEntryQuery::create(null, $criteria)
+                $collBookingForms = ChildBookingFormQuery::create(null, $criteria)
                     ->filterByForm($this)
                     ->find($con);
 
                 if (null !== $criteria) {
-                    if (false !== $this->collFormEntriesPartial && count($collFormEntries)) {
-                        $this->initFormEntries(false);
+                    if (false !== $this->collBookingFormsPartial && count($collBookingForms)) {
+                        $this->initBookingForms(false);
 
-                        foreach ($collFormEntries as $obj) {
-                            if (false == $this->collFormEntries->contains($obj)) {
-                                $this->collFormEntries->append($obj);
+                        foreach ($collBookingForms as $obj) {
+                            if (false == $this->collBookingForms->contains($obj)) {
+                                $this->collBookingForms->append($obj);
                             }
                         }
 
-                        $this->collFormEntriesPartial = true;
+                        $this->collBookingFormsPartial = true;
                     }
 
-                    return $collFormEntries;
+                    return $collBookingForms;
                 }
 
-                if ($partial && $this->collFormEntries) {
-                    foreach ($this->collFormEntries as $obj) {
+                if ($partial && $this->collBookingForms) {
+                    foreach ($this->collBookingForms as $obj) {
                         if ($obj->isNew()) {
-                            $collFormEntries[] = $obj;
+                            $collBookingForms[] = $obj;
                         }
                     }
                 }
 
-                $this->collFormEntries = $collFormEntries;
-                $this->collFormEntriesPartial = false;
+                $this->collBookingForms = $collBookingForms;
+                $this->collBookingFormsPartial = false;
             }
         }
 
-        return $this->collFormEntries;
+        return $this->collBookingForms;
     }
 
     /**
-     * Sets a collection of ChildFormEntry objects related by a one-to-many relationship
+     * Sets a collection of ChildBookingForm objects related by a one-to-many relationship
      * to the current object.
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param      Collection $formEntries A Propel collection.
+     * @param      Collection $bookingForms A Propel collection.
      * @param      ConnectionInterface $con Optional connection object
      * @return $this|ChildForm The current object (for fluent API support)
      */
-    public function setFormEntries(Collection $formEntries, ConnectionInterface $con = null)
+    public function setBookingForms(Collection $bookingForms, ConnectionInterface $con = null)
     {
-        /** @var ChildFormEntry[] $formEntriesToDelete */
-        $formEntriesToDelete = $this->getFormEntries(new Criteria(), $con)->diff($formEntries);
+        /** @var ChildBookingForm[] $bookingFormsToDelete */
+        $bookingFormsToDelete = $this->getBookingForms(new Criteria(), $con)->diff($bookingForms);
 
 
-        $this->formEntriesScheduledForDeletion = $formEntriesToDelete;
+        $this->bookingFormsScheduledForDeletion = $bookingFormsToDelete;
 
-        foreach ($formEntriesToDelete as $formEntryRemoved) {
-            $formEntryRemoved->setForm(null);
+        foreach ($bookingFormsToDelete as $bookingFormRemoved) {
+            $bookingFormRemoved->setForm(null);
         }
 
-        $this->collFormEntries = null;
-        foreach ($formEntries as $formEntry) {
-            $this->addFormEntry($formEntry);
+        $this->collBookingForms = null;
+        foreach ($bookingForms as $bookingForm) {
+            $this->addBookingForm($bookingForm);
         }
 
-        $this->collFormEntries = $formEntries;
-        $this->collFormEntriesPartial = false;
+        $this->collBookingForms = $bookingForms;
+        $this->collBookingFormsPartial = false;
 
         return $this;
     }
 
     /**
-     * Returns the number of related FormEntry objects.
+     * Returns the number of related BookingForm objects.
      *
      * @param      Criteria $criteria
      * @param      boolean $distinct
      * @param      ConnectionInterface $con
-     * @return int             Count of related FormEntry objects.
+     * @return int             Count of related BookingForm objects.
      * @throws PropelException
      */
-    public function countFormEntries(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function countBookingForms(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
     {
-        $partial = $this->collFormEntriesPartial && !$this->isNew();
-        if (null === $this->collFormEntries || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collFormEntries) {
+        $partial = $this->collBookingFormsPartial && !$this->isNew();
+        if (null === $this->collBookingForms || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collBookingForms) {
                 return 0;
             }
 
             if ($partial && !$criteria) {
-                return count($this->getFormEntries());
+                return count($this->getBookingForms());
             }
 
-            $query = ChildFormEntryQuery::create(null, $criteria);
+            $query = ChildBookingFormQuery::create(null, $criteria);
             if ($distinct) {
                 $query->distinct();
             }
@@ -1648,28 +1648,28 @@ abstract class Form implements ActiveRecordInterface
                 ->count($con);
         }
 
-        return count($this->collFormEntries);
+        return count($this->collBookingForms);
     }
 
     /**
-     * Method called to associate a ChildFormEntry object to this object
-     * through the ChildFormEntry foreign key attribute.
+     * Method called to associate a ChildBookingForm object to this object
+     * through the ChildBookingForm foreign key attribute.
      *
-     * @param  ChildFormEntry $l ChildFormEntry
+     * @param  ChildBookingForm $l ChildBookingForm
      * @return $this|\TheFarm\Models\Form The current object (for fluent API support)
      */
-    public function addFormEntry(ChildFormEntry $l)
+    public function addBookingForm(ChildBookingForm $l)
     {
-        if ($this->collFormEntries === null) {
-            $this->initFormEntries();
-            $this->collFormEntriesPartial = true;
+        if ($this->collBookingForms === null) {
+            $this->initBookingForms();
+            $this->collBookingFormsPartial = true;
         }
 
-        if (!$this->collFormEntries->contains($l)) {
-            $this->doAddFormEntry($l);
+        if (!$this->collBookingForms->contains($l)) {
+            $this->doAddBookingForm($l);
 
-            if ($this->formEntriesScheduledForDeletion and $this->formEntriesScheduledForDeletion->contains($l)) {
-                $this->formEntriesScheduledForDeletion->remove($this->formEntriesScheduledForDeletion->search($l));
+            if ($this->bookingFormsScheduledForDeletion and $this->bookingFormsScheduledForDeletion->contains($l)) {
+                $this->bookingFormsScheduledForDeletion->remove($this->bookingFormsScheduledForDeletion->search($l));
             }
         }
 
@@ -1677,29 +1677,29 @@ abstract class Form implements ActiveRecordInterface
     }
 
     /**
-     * @param ChildFormEntry $formEntry The ChildFormEntry object to add.
+     * @param ChildBookingForm $bookingForm The ChildBookingForm object to add.
      */
-    protected function doAddFormEntry(ChildFormEntry $formEntry)
+    protected function doAddBookingForm(ChildBookingForm $bookingForm)
     {
-        $this->collFormEntries[]= $formEntry;
-        $formEntry->setForm($this);
+        $this->collBookingForms[]= $bookingForm;
+        $bookingForm->setForm($this);
     }
 
     /**
-     * @param  ChildFormEntry $formEntry The ChildFormEntry object to remove.
+     * @param  ChildBookingForm $bookingForm The ChildBookingForm object to remove.
      * @return $this|ChildForm The current object (for fluent API support)
      */
-    public function removeFormEntry(ChildFormEntry $formEntry)
+    public function removeBookingForm(ChildBookingForm $bookingForm)
     {
-        if ($this->getFormEntries()->contains($formEntry)) {
-            $pos = $this->collFormEntries->search($formEntry);
-            $this->collFormEntries->remove($pos);
-            if (null === $this->formEntriesScheduledForDeletion) {
-                $this->formEntriesScheduledForDeletion = clone $this->collFormEntries;
-                $this->formEntriesScheduledForDeletion->clear();
+        if ($this->getBookingForms()->contains($bookingForm)) {
+            $pos = $this->collBookingForms->search($bookingForm);
+            $this->collBookingForms->remove($pos);
+            if (null === $this->bookingFormsScheduledForDeletion) {
+                $this->bookingFormsScheduledForDeletion = clone $this->collBookingForms;
+                $this->bookingFormsScheduledForDeletion->clear();
             }
-            $this->formEntriesScheduledForDeletion[]= clone $formEntry;
-            $formEntry->setForm(null);
+            $this->bookingFormsScheduledForDeletion[]= clone $bookingForm;
+            $bookingForm->setForm(null);
         }
 
         return $this;
@@ -1711,7 +1711,7 @@ abstract class Form implements ActiveRecordInterface
      * an identical criteria, it returns the collection.
      * Otherwise if this Form is new, it will return
      * an empty collection; or if this Form has previously
-     * been saved, it will retrieve related FormEntries from storage.
+     * been saved, it will retrieve related BookingForms from storage.
      *
      * This method is protected by default in order to keep the public
      * api reasonable.  You can provide public methods for those you
@@ -1720,14 +1720,14 @@ abstract class Form implements ActiveRecordInterface
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildFormEntry[] List of ChildFormEntry objects
+     * @return ObjectCollection|ChildBookingForm[] List of ChildBookingForm objects
      */
-    public function getFormEntriesJoinBooking(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getBookingFormsJoinBooking(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
-        $query = ChildFormEntryQuery::create(null, $criteria);
+        $query = ChildBookingFormQuery::create(null, $criteria);
         $query->joinWith('Booking', $joinBehavior);
 
-        return $this->getFormEntries($query, $con);
+        return $this->getBookingForms($query, $con);
     }
 
 
@@ -1736,7 +1736,7 @@ abstract class Form implements ActiveRecordInterface
      * an identical criteria, it returns the collection.
      * Otherwise if this Form is new, it will return
      * an empty collection; or if this Form has previously
-     * been saved, it will retrieve related FormEntries from storage.
+     * been saved, it will retrieve related BookingForms from storage.
      *
      * This method is protected by default in order to keep the public
      * api reasonable.  You can provide public methods for those you
@@ -1745,14 +1745,39 @@ abstract class Form implements ActiveRecordInterface
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildFormEntry[] List of ChildFormEntry objects
+     * @return ObjectCollection|ChildBookingForm[] List of ChildBookingForm objects
      */
-    public function getFormEntriesJoinField(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getBookingFormsJoinUserRelatedByAuthorId(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
-        $query = ChildFormEntryQuery::create(null, $criteria);
-        $query->joinWith('Field', $joinBehavior);
+        $query = ChildBookingFormQuery::create(null, $criteria);
+        $query->joinWith('UserRelatedByAuthorId', $joinBehavior);
 
-        return $this->getFormEntries($query, $con);
+        return $this->getBookingForms($query, $con);
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Form is new, it will return
+     * an empty collection; or if this Form has previously
+     * been saved, it will retrieve related BookingForms from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Form.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildBookingForm[] List of ChildBookingForm objects
+     */
+    public function getBookingFormsJoinUserRelatedByCompletedBy(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildBookingFormQuery::create(null, $criteria);
+        $query->joinWith('UserRelatedByCompletedBy', $joinBehavior);
+
+        return $this->getBookingForms($query, $con);
     }
 
     /**
@@ -2293,8 +2318,8 @@ abstract class Form implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
-            if ($this->collFormEntries) {
-                foreach ($this->collFormEntries as $o) {
+            if ($this->collBookingForms) {
+                foreach ($this->collBookingForms as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
@@ -2310,7 +2335,7 @@ abstract class Form implements ActiveRecordInterface
             }
         } // if ($deep)
 
-        $this->collFormEntries = null;
+        $this->collBookingForms = null;
         $this->collFormFields = null;
         $this->collItemForms = null;
     }

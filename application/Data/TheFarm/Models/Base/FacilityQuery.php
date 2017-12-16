@@ -54,15 +54,15 @@ use TheFarm\Models\Map\FacilityTableMap;
  * @method     ChildFacilityQuery rightJoinWithLocation() Adds a RIGHT JOIN clause and with to the query using the Location relation
  * @method     ChildFacilityQuery innerJoinWithLocation() Adds a INNER JOIN clause and with to the query using the Location relation
  *
- * @method     ChildFacilityQuery leftJoinBookingEvent($relationAlias = null) Adds a LEFT JOIN clause to the query using the BookingEvent relation
- * @method     ChildFacilityQuery rightJoinBookingEvent($relationAlias = null) Adds a RIGHT JOIN clause to the query using the BookingEvent relation
- * @method     ChildFacilityQuery innerJoinBookingEvent($relationAlias = null) Adds a INNER JOIN clause to the query using the BookingEvent relation
+ * @method     ChildFacilityQuery leftJoinEvent($relationAlias = null) Adds a LEFT JOIN clause to the query using the Event relation
+ * @method     ChildFacilityQuery rightJoinEvent($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Event relation
+ * @method     ChildFacilityQuery innerJoinEvent($relationAlias = null) Adds a INNER JOIN clause to the query using the Event relation
  *
- * @method     ChildFacilityQuery joinWithBookingEvent($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the BookingEvent relation
+ * @method     ChildFacilityQuery joinWithEvent($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Event relation
  *
- * @method     ChildFacilityQuery leftJoinWithBookingEvent() Adds a LEFT JOIN clause and with to the query using the BookingEvent relation
- * @method     ChildFacilityQuery rightJoinWithBookingEvent() Adds a RIGHT JOIN clause and with to the query using the BookingEvent relation
- * @method     ChildFacilityQuery innerJoinWithBookingEvent() Adds a INNER JOIN clause and with to the query using the BookingEvent relation
+ * @method     ChildFacilityQuery leftJoinWithEvent() Adds a LEFT JOIN clause and with to the query using the Event relation
+ * @method     ChildFacilityQuery rightJoinWithEvent() Adds a RIGHT JOIN clause and with to the query using the Event relation
+ * @method     ChildFacilityQuery innerJoinWithEvent() Adds a INNER JOIN clause and with to the query using the Event relation
  *
  * @method     ChildFacilityQuery leftJoinItemsRelatedFacility($relationAlias = null) Adds a LEFT JOIN clause to the query using the ItemsRelatedFacility relation
  * @method     ChildFacilityQuery rightJoinItemsRelatedFacility($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ItemsRelatedFacility relation
@@ -74,7 +74,7 @@ use TheFarm\Models\Map\FacilityTableMap;
  * @method     ChildFacilityQuery rightJoinWithItemsRelatedFacility() Adds a RIGHT JOIN clause and with to the query using the ItemsRelatedFacility relation
  * @method     ChildFacilityQuery innerJoinWithItemsRelatedFacility() Adds a INNER JOIN clause and with to the query using the ItemsRelatedFacility relation
  *
- * @method     \TheFarm\Models\LocationQuery|\TheFarm\Models\BookingEventQuery|\TheFarm\Models\ItemsRelatedFacilityQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \TheFarm\Models\LocationQuery|\TheFarm\Models\EventQuery|\TheFarm\Models\ItemsRelatedFacilityQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildFacility findOne(ConnectionInterface $con = null) Return the first ChildFacility matching the query
  * @method     ChildFacility findOneOrCreate(ConnectionInterface $con = null) Return the first ChildFacility matching the query, or a new ChildFacility object populated from the query conditions when no match is found
@@ -613,40 +613,40 @@ abstract class FacilityQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \TheFarm\Models\BookingEvent object
+     * Filter the query by a related \TheFarm\Models\Event object
      *
-     * @param \TheFarm\Models\BookingEvent|ObjectCollection $bookingEvent the related object to use as filter
+     * @param \TheFarm\Models\Event|ObjectCollection $event the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildFacilityQuery The current query, for fluid interface
      */
-    public function filterByBookingEvent($bookingEvent, $comparison = null)
+    public function filterByEvent($event, $comparison = null)
     {
-        if ($bookingEvent instanceof \TheFarm\Models\BookingEvent) {
+        if ($event instanceof \TheFarm\Models\Event) {
             return $this
-                ->addUsingAlias(FacilityTableMap::COL_FACILITY_ID, $bookingEvent->getFacilityId(), $comparison);
-        } elseif ($bookingEvent instanceof ObjectCollection) {
+                ->addUsingAlias(FacilityTableMap::COL_FACILITY_ID, $event->getFacilityId(), $comparison);
+        } elseif ($event instanceof ObjectCollection) {
             return $this
-                ->useBookingEventQuery()
-                ->filterByPrimaryKeys($bookingEvent->getPrimaryKeys())
+                ->useEventQuery()
+                ->filterByPrimaryKeys($event->getPrimaryKeys())
                 ->endUse();
         } else {
-            throw new PropelException('filterByBookingEvent() only accepts arguments of type \TheFarm\Models\BookingEvent or Collection');
+            throw new PropelException('filterByEvent() only accepts arguments of type \TheFarm\Models\Event or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the BookingEvent relation
+     * Adds a JOIN clause to the query using the Event relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildFacilityQuery The current query, for fluid interface
      */
-    public function joinBookingEvent($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function joinEvent($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('BookingEvent');
+        $relationMap = $tableMap->getRelation('Event');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -661,14 +661,14 @@ abstract class FacilityQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'BookingEvent');
+            $this->addJoinObject($join, 'Event');
         }
 
         return $this;
     }
 
     /**
-     * Use the BookingEvent relation BookingEvent object
+     * Use the Event relation Event object
      *
      * @see useQuery()
      *
@@ -676,13 +676,13 @@ abstract class FacilityQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \TheFarm\Models\BookingEventQuery A secondary query class using the current class as primary query
+     * @return \TheFarm\Models\EventQuery A secondary query class using the current class as primary query
      */
-    public function useBookingEventQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function useEventQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         return $this
-            ->joinBookingEvent($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'BookingEvent', '\TheFarm\Models\BookingEventQuery');
+            ->joinEvent($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Event', '\TheFarm\Models\EventQuery');
     }
 
     /**
