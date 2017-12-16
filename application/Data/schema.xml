@@ -203,6 +203,53 @@
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
   </table>
+
+  <table name="tf_booking_form" idMethod="native" phpName="BookingForm" namespace="Models">
+    <column name="booking_form_id" phpName="BookingFormId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="booking_id" phpName="BookingId" type="INTEGER" required="true"/>
+    <column name="form_id" phpName="FormId" type="INTEGER" required="true" />
+    <column name="author_id" phpName="AuthorId" type="INTEGER" />
+    <column name="entry_date" phpName="EntryDate" type="TIMESTAMP" />
+    <column name="edit_date" phpName="EditDate" type="TIMESTAMP" />
+    <column name="completed_by" phpName="CompletedBy" type="INTEGER" />
+    <column name="completed_date" phpName="CompletedDate" type="TIMESTAMP" />
+
+    <foreign-key foreignTable="tf_bookings" name="booking_booking_pk">
+      <reference local="booking_id" foreign="booking_id"/>
+    </foreign-key>
+
+    <foreign-key foreignTable="tf_forms" name="booking_form_form_pk">
+      <reference local="form_id" foreign="form_id"/>
+    </foreign-key>
+
+    <foreign-key foreignTable="tf_user" name="booking_form_author_pk">
+      <reference local="author_id" foreign="user_id"/>
+    </foreign-key>
+
+    <foreign-key foreignTable="tf_user" name="booking_form_cb_pk">
+      <reference local="completed_by" foreign="user_id"/>
+    </foreign-key>
+
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+
+  <table name="tf_booking_form_entry" idMethod="native" phpName="BookingFormEntry" namespace="Models">
+    <column name="booking_form_id" phpName="BookingFormId" type="INTEGER"/>
+    <column name="field_id" phpName="FieldId" type="INTEGER" required="true"/>
+    <column name="field_value" phpName="FieldValue" type="VARCHAR" size="200"/>
+    <foreign-key foreignTable="tf_booking_form">
+      <reference local="booking_form_id" foreign="booking_form_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="tf_field">
+      <reference local="field_id" foreign="field_id"/>
+    </foreign-key>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+
   <table name="tf_categories" idMethod="native" phpName="Category" namespace="Models">
     <column name="cat_id" phpName="CatId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="cat_name" phpName="CatName" type="VARCHAR" size="255" required="true"/>
@@ -261,13 +308,8 @@
     <column name="weight" phpName="Weight" type="VARCHAR" size="10" required="true" defaultValue=""/>
     <column name="phone" phpName="Phone" type="VARCHAR" size="50" defaultValue=""/>
     <column name="position_cd" phpName="PositionCd" type="VARCHAR" size="50"/>
-    <column name="is_active" phpName="IsActive" type="BOOLEAN" required="true" />
-    <column name="verification_key" phpName="VerificationKey" type="VARCHAR" size="255" defaultValue=""/>
-    <column name="is_verified" phpName="IsVerified" type="BOOLEAN" defaultValue="0"/>
     <column name="nickname" phpName="Nickname" type="VARCHAR" size="50" defaultValue=""/>
     <column name="bio" phpName="Bio" type="LONGVARCHAR" required="true"/>
-    <column name="is_approved" phpName="IsApproved" type="BOOLEAN" defaultValue="0"/>
-    <column name="activation_code" phpName="ActivationCode" type="INTEGER"/>
     <foreign-key foreignTable="tf_position" phpName="Position" name="position_fk">
       <reference local="position_cd" foreign="position_cd"/>
     </foreign-key>
@@ -315,12 +357,12 @@
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
   </table>
-  <table name="tf_fields" idMethod="native" phpName="Field" namespace="Models">
+  <table name="tf_field" idMethod="native" phpName="Field" namespace="Models">
     <column name="field_id" phpName="FieldId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="field_name" phpName="FieldName" type="VARCHAR" size="100" required="true"/>
     <column name="field_label" phpName="FieldLabel" type="VARCHAR" size="255" required="true"/>
     <column name="field_type" phpName="FieldType" type="VARCHAR" size="32" required="true"/>
-    <column name="settings" phpName="Settings" type="LONGVARCHAR" required="true"/>
+    <column name="field_options" phpName="FieldOptions" type="LONGVARCHAR" required="true"/>
     <column name="required" phpName="Required" type="CHAR" required="true"/>
     <column name="entry_date" phpName="EntryDate" type="INTEGER" size="10" required="true"/>
     <column name="edit_date" phpName="EditDate" type="INTEGER" size="10" required="true"/>
@@ -342,166 +384,11 @@
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
   </table>
-  <table name="tf_form_entries" idMethod="native" phpName="FormEntry" namespace="Models">
-    <column name="entry_id" phpName="EntryId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
-    <column name="booking_id" phpName="BookingId" type="INTEGER"/>
-    <column name="form_id" phpName="FormId" type="INTEGER" required="true"/>
-    <column name="field_id" phpName="FieldId" type="INTEGER" required="true"/>
-    <column name="field_value" phpName="FieldValue" type="VARCHAR" size="200"/>
-    <foreign-key foreignTable="tf_bookings" name="form_entries_booking_fk">
-      <reference local="booking_id" foreign="booking_id"/>
-    </foreign-key>
-    <foreign-key foreignTable="tf_fields" name="form_entries_field_fk">
-      <reference local="field_id" foreign="field_id"/>
-    </foreign-key>
-    <foreign-key foreignTable="tf_forms" name="form_entries_form_fk">
-      <reference local="form_id" foreign="form_id"/>
-    </foreign-key>
-    <index name="form_entries_booking_fk">
-      <index-column name="booking_id"/>
-    </index>
-    <index name="form_entries_form_fk">
-      <index-column name="form_id"/>
-    </index>
-    <index name="form_entries_field_fk">
-      <index-column name="field_id"/>
-    </index>
-    <vendor type="mysql">
-      <parameter name="Engine" value="InnoDB"/>
-    </vendor>
-  </table>
-  <table name="tf_form_entries_1" idMethod="native" phpName="FormEntries1" namespace="Models">
-    <column name="entry_id" phpName="EntryId" type="INTEGER" size="5" sqlType="int(5) unsigned" primaryKey="true" autoIncrement="true" required="true"/>
-    <column name="booking_id" phpName="BookingId" type="INTEGER" size="5" required="true"/>
-    <column name="field_id_29" phpName="FieldId29" type="LONGVARCHAR"/>
-    <column name="field_id_52" phpName="FieldId52" type="LONGVARCHAR"/>
-    <column name="field_id_54" phpName="FieldId54" type="LONGVARCHAR"/>
-    <column name="field_id_53" phpName="FieldId53" type="LONGVARCHAR"/>
-    <column name="field_id_55" phpName="FieldId55" type="LONGVARCHAR"/>
-    <column name="field_id_58" phpName="FieldId58" type="LONGVARCHAR"/>
-    <column name="field_id_57" phpName="FieldId57" type="LONGVARCHAR"/>
-    <column name="field_id_56" phpName="FieldId56" type="LONGVARCHAR"/>
-    <column name="field_id_51" phpName="FieldId51" type="LONGVARCHAR"/>
-    <column name="field_id_50" phpName="FieldId50" type="LONGVARCHAR"/>
-    <column name="field_id_49" phpName="FieldId49" type="LONGVARCHAR"/>
-    <column name="field_id_48" phpName="FieldId48" type="LONGVARCHAR"/>
-    <column name="field_id_47" phpName="FieldId47" type="LONGVARCHAR"/>
-    <column name="field_id_46" phpName="FieldId46" type="LONGVARCHAR"/>
-    <column name="field_id_45" phpName="FieldId45" type="LONGVARCHAR"/>
-    <column name="field_id_44" phpName="FieldId44" type="LONGVARCHAR"/>
-    <column name="field_id_43" phpName="FieldId43" type="LONGVARCHAR"/>
-    <column name="field_id_42" phpName="FieldId42" type="LONGVARCHAR"/>
-    <column name="field_id_41" phpName="FieldId41" type="LONGVARCHAR"/>
-    <column name="field_id_40" phpName="FieldId40" type="LONGVARCHAR"/>
-    <column name="field_id_37" phpName="FieldId37" type="LONGVARCHAR"/>
-    <column name="field_id_35" phpName="FieldId35" type="LONGVARCHAR"/>
-    <column name="field_id_33" phpName="FieldId33" type="LONGVARCHAR"/>
-    <column name="field_id_32" phpName="FieldId32" type="LONGVARCHAR"/>
-    <column name="field_id_31" phpName="FieldId31" type="LONGVARCHAR"/>
-    <column name="field_id_30" phpName="FieldId30" type="LONGVARCHAR"/>
-    <column name="field_id_28" phpName="FieldId28" type="LONGVARCHAR"/>
-    <column name="field_id_26" phpName="FieldId26" type="LONGVARCHAR"/>
-    <column name="field_id_25" phpName="FieldId25" type="LONGVARCHAR"/>
-    <column name="field_id_19" phpName="FieldId19" type="LONGVARCHAR"/>
-    <column name="field_id_18" phpName="FieldId18" type="LONGVARCHAR"/>
-    <column name="field_id_17" phpName="FieldId17" type="LONGVARCHAR"/>
-    <column name="field_id_6" phpName="FieldId6" type="LONGVARCHAR"/>
-    <column name="field_id_5" phpName="FieldId5" type="LONGVARCHAR"/>
-    <column name="field_id_4" phpName="FieldId4" type="LONGVARCHAR"/>
-    <column name="field_id_2" phpName="FieldId2" type="LONGVARCHAR"/>
-    <column name="field_id_1" phpName="FieldId1" type="LONGVARCHAR"/>
-    <column name="author_id" phpName="AuthorId" type="INTEGER" size="5" required="true"/>
-    <column name="entry_date" phpName="EntryDate" type="INTEGER" size="10" required="true"/>
-    <column name="edit_date" phpName="EditDate" type="INTEGER" size="10" required="true"/>
-    <column name="completed_by" phpName="CompletedBy" type="INTEGER" size="5" sqlType="int(5) unsigned"/>
-    <column name="completed_date" phpName="CompletedDate" type="INTEGER" size="10" sqlType="int(10) unsigned"/>
-    <vendor type="mysql">
-      <parameter name="Engine" value="MyISAM"/>
-    </vendor>
-  </table>
-  <table name="tf_form_entries_2" idMethod="native" phpName="FormEntries2" namespace="Models">
-    <column name="entry_id" phpName="EntryId" type="INTEGER" size="5" sqlType="int(5) unsigned" primaryKey="true" autoIncrement="true" required="true"/>
-    <column name="booking_id" phpName="BookingId" type="INTEGER" size="5" required="true"/>
-    <column name="author_id" phpName="AuthorId" type="INTEGER" size="5" required="true"/>
-    <column name="entry_date" phpName="EntryDate" type="INTEGER" size="10" required="true"/>
-    <column name="edit_date" phpName="EditDate" type="INTEGER" size="10" required="true"/>
-    <column name="completed_by" phpName="CompletedBy" type="INTEGER" size="5" sqlType="int(5) unsigned"/>
-    <column name="completed_date" phpName="CompletedDate" type="INTEGER" size="10" sqlType="int(10) unsigned"/>
-    <vendor type="mysql">
-      <parameter name="Engine" value="MyISAM"/>
-    </vendor>
-  </table>
-  <table name="tf_form_entries_3" idMethod="native" phpName="FormEntries3" namespace="Models">
-    <column name="entry_id" phpName="EntryId" type="INTEGER" size="5" sqlType="int(5) unsigned" primaryKey="true" autoIncrement="true" required="true"/>
-    <column name="booking_id" phpName="BookingId" type="INTEGER" size="5" required="true"/>
-    <column name="author_id" phpName="AuthorId" type="INTEGER" size="5" required="true"/>
-    <column name="entry_date" phpName="EntryDate" type="INTEGER" size="10" required="true"/>
-    <column name="edit_date" phpName="EditDate" type="INTEGER" size="10" required="true"/>
-    <column name="completed_by" phpName="CompletedBy" type="INTEGER" size="5" sqlType="int(5) unsigned"/>
-    <column name="completed_date" phpName="CompletedDate" type="INTEGER" size="10" sqlType="int(10) unsigned"/>
-    <vendor type="mysql">
-      <parameter name="Engine" value="MyISAM"/>
-    </vendor>
-  </table>
-  <table name="tf_form_entries_5" idMethod="native" phpName="FormEntries5" namespace="Models">
-    <column name="entry_id" phpName="EntryId" type="INTEGER" size="5" sqlType="int(5) unsigned" primaryKey="true" autoIncrement="true" required="true"/>
-    <column name="booking_id" phpName="BookingId" type="INTEGER" size="5" required="true"/>
-    <column name="author_id" phpName="AuthorId" type="INTEGER" size="5" required="true"/>
-    <column name="entry_date" phpName="EntryDate" type="INTEGER" size="10" required="true"/>
-    <column name="edit_date" phpName="EditDate" type="INTEGER" size="10" required="true"/>
-    <column name="completed_by" phpName="CompletedBy" type="INTEGER" size="5" sqlType="int(5) unsigned"/>
-    <column name="completed_date" phpName="CompletedDate" type="INTEGER" size="10" sqlType="int(10) unsigned"/>
-    <vendor type="mysql">
-      <parameter name="Engine" value="MyISAM"/>
-    </vendor>
-  </table>
-  <table name="tf_form_entries_6" idMethod="native" phpName="FormEntries6" namespace="Models">
-    <column name="entry_id" phpName="EntryId" type="INTEGER" size="5" sqlType="int(5) unsigned" primaryKey="true" autoIncrement="true" required="true"/>
-    <column name="booking_id" phpName="BookingId" type="INTEGER" size="5" required="true"/>
-    <column name="field_id_18" phpName="FieldId18" type="LONGVARCHAR"/>
-    <column name="field_id_17" phpName="FieldId17" type="LONGVARCHAR"/>
-    <column name="field_id_5" phpName="FieldId5" type="LONGVARCHAR"/>
-    <column name="field_id_4" phpName="FieldId4" type="LONGVARCHAR"/>
-    <column name="author_id" phpName="AuthorId" type="INTEGER" size="5" required="true"/>
-    <column name="entry_date" phpName="EntryDate" type="INTEGER" size="10" required="true"/>
-    <column name="edit_date" phpName="EditDate" type="INTEGER" size="10" required="true"/>
-    <column name="completed_by" phpName="CompletedBy" type="INTEGER" size="5" sqlType="int(5) unsigned"/>
-    <column name="completed_date" phpName="CompletedDate" type="INTEGER" size="10" sqlType="int(10) unsigned"/>
-    <vendor type="mysql">
-      <parameter name="Engine" value="MyISAM"/>
-    </vendor>
-  </table>
-  <table name="tf_form_entries_8" idMethod="native" phpName="FormEntries8" namespace="Models">
-    <column name="entry_id" phpName="EntryId" type="INTEGER" size="5" sqlType="int(5) unsigned" primaryKey="true" autoIncrement="true" required="true"/>
-    <column name="booking_id" phpName="BookingId" type="INTEGER" size="5" required="true"/>
-    <column name="field_id_196" phpName="FieldId196" type="LONGVARCHAR"/>
-    <column name="author_id" phpName="AuthorId" type="INTEGER" size="5" required="true"/>
-    <column name="entry_date" phpName="EntryDate" type="INTEGER" size="10" required="true"/>
-    <column name="edit_date" phpName="EditDate" type="INTEGER" size="10" required="true"/>
-    <column name="completed_by" phpName="CompletedBy" type="INTEGER" size="5" required="true"/>
-    <column name="completed_date" phpName="CompletedDate" type="INTEGER" size="10" required="true"/>
-    <vendor type="mysql">
-      <parameter name="Engine" value="MyISAM"/>
-    </vendor>
-  </table>
-  <table name="tf_form_entries_9" idMethod="native" phpName="FormEntries9" namespace="Models">
-    <column name="entry_id" phpName="EntryId" type="INTEGER" size="5" sqlType="int(5) unsigned" primaryKey="true" autoIncrement="true" required="true"/>
-    <column name="booking_id" phpName="BookingId" type="INTEGER" size="5" required="true"/>
-    <column name="field_id_197" phpName="FieldId197" type="LONGVARCHAR"/>
-    <column name="author_id" phpName="AuthorId" type="INTEGER" size="5" required="true"/>
-    <column name="entry_date" phpName="EntryDate" type="INTEGER" size="10" required="true"/>
-    <column name="edit_date" phpName="EditDate" type="INTEGER" size="10" required="true"/>
-    <column name="completed_by" phpName="CompletedBy" type="INTEGER" size="5" required="true"/>
-    <column name="completed_date" phpName="CompletedDate" type="INTEGER" size="10" required="true"/>
-    <vendor type="mysql">
-      <parameter name="Engine" value="MyISAM"/>
-    </vendor>
-  </table>
-  <table name="tf_form_fields" idMethod="native" phpName="FormField" namespace="Models">
+  <table name="tf_form_field" idMethod="native" phpName="FormField" namespace="Models">
     <column name="field_id" phpName="FieldId" type="INTEGER" primaryKey="true" required="true" defaultValue="0"/>
     <column name="form_id" phpName="FormId" type="INTEGER" primaryKey="true" required="true" defaultValue="0"/>
-    <column name="guest_only" phpName="GuestOnly" type="CHAR" required="true"/>
-    <foreign-key foreignTable="tf_fields" phpName="Field">
+    <column name="form_field_order" phpName="FormFieldOrder" type="INTEGER" defaultValue="0" />
+    <foreign-key foreignTable="tf_field" phpName="Field">
       <reference local="field_id" foreign="field_id"/>
     </foreign-key>
     <foreign-key foreignTable="tf_forms" phpName="Form">
@@ -841,6 +728,11 @@
     <column name="location_id" phpName="LocationId" type="INTEGER"/>
     <column name="facebook_id" phpName="FacebookId" type="VARCHAR" size="50" required="true"/>
     <column name="user_order" phpName="UserOrder" type="INTEGER" size="5" required="true" defaultValue="0"/>
+    <column name="is_active" phpName="IsActive" type="BOOLEAN" required="true" />
+    <column name="verification_key" phpName="VerificationKey" type="VARCHAR" size="255" defaultValue=""/>
+    <column name="is_verified" phpName="IsVerified" type="BOOLEAN" defaultValue="0"/>
+    <column name="is_approved" phpName="IsApproved" type="BOOLEAN" defaultValue="0"/>
+    <column name="activation_code" phpName="ActivationCode" type="INTEGER"/>
     <column name="calendar_view_positions" phpName="CalendarViewPositions" type="VARCHAR" size="100" defaultValue=""/>
     <column name="calendar_view_status" phpName="CalendarViewStatus" type="VARCHAR" size="255"/>
     <column name="calendar_show_my_schedule_only" phpName="CalendarShowMyScheduleOnly" type="VARCHAR" size="1" defaultValue="y"/>
