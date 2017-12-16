@@ -16,11 +16,11 @@
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
   </table>
-  <table name="tf_booking_event_users" idMethod="native" phpName="EventUser" namespace="Models">
+  <table name="tf_event_user" idMethod="native" phpName="EventUser" namespace="Models">
     <column name="event_id" phpName="EventId" type="INTEGER" primaryKey="true" required="true" defaultValue="0"/>
     <column name="user_id" phpName="UserId" type="INTEGER" primaryKey="true" required="true" defaultValue="0"/>
     <column name="is_guest" phpName="IsGuest" type="BOOLEAN" defaultValue="0" />
-    <foreign-key foreignTable="tf_booking_events">
+    <foreign-key foreignTable="tf_event">
       <reference local="event_id" foreign="event_id"/>
     </foreign-key>
     <foreign-key foreignTable="tf_user">
@@ -33,7 +33,7 @@
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
   </table>
-  <table name="tf_booking_events" idMethod="native" phpName="BookingEvent" namespace="Models">
+  <table name="tf_event" idMethod="native" phpName="Event" namespace="Models">
     <column name="event_id" phpName="EventId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="booking_id" phpName="BookingId" type="INTEGER"/>
     <column name="event_title" phpName="EventTitle" type="VARCHAR" size="100" required="true"/>

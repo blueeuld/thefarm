@@ -24,33 +24,33 @@ CREATE TABLE `tf_booking_attachments`
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
--- tf_booking_event_users
+-- tf_event_user
 -- ---------------------------------------------------------------------
 
-DROP TABLE IF EXISTS `tf_booking_event_users`;
+DROP TABLE IF EXISTS `tf_event_user`;
 
-CREATE TABLE `tf_booking_event_users`
+CREATE TABLE `tf_event_user`
 (
     `event_id` INTEGER DEFAULT 0 NOT NULL,
     `user_id` INTEGER DEFAULT 0 NOT NULL,
     `is_guest` TINYINT(1) DEFAULT 0,
     PRIMARY KEY (`event_id`,`user_id`),
-    INDEX `tf_booking_event_users_i_6ca017` (`user_id`),
-    CONSTRAINT `tf_booking_event_users_fk_0f1f34`
+    INDEX `tf_event_user_i_6ca017` (`user_id`),
+    CONSTRAINT `tf_event_user_fk_11d4fb`
         FOREIGN KEY (`event_id`)
-        REFERENCES `tf_booking_events` (`event_id`),
-    CONSTRAINT `tf_booking_event_users_fk_e09fae`
+        REFERENCES `tf_event` (`event_id`),
+    CONSTRAINT `tf_event_user_fk_e09fae`
         FOREIGN KEY (`user_id`)
         REFERENCES `tf_user` (`user_id`)
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
--- tf_booking_events
+-- tf_event
 -- ---------------------------------------------------------------------
 
-DROP TABLE IF EXISTS `tf_booking_events`;
+DROP TABLE IF EXISTS `tf_event`;
 
-CREATE TABLE `tf_booking_events`
+CREATE TABLE `tf_event`
 (
     `event_id` INTEGER NOT NULL AUTO_INCREMENT,
     `booking_id` INTEGER,
@@ -107,10 +107,10 @@ CREATE TABLE `tf_booking_events`
     CONSTRAINT `booking_event_deleted_by_fk`
         FOREIGN KEY (`deleted_by`)
         REFERENCES `tf_user` (`user_id`),
-    CONSTRAINT `tf_booking_events_fk_1eba8a`
+    CONSTRAINT `tf_event_fk_1eba8a`
         FOREIGN KEY (`facility_id`)
         REFERENCES `tf_facilities` (`facility_id`),
-    CONSTRAINT `tf_booking_events_fk_b49f13`
+    CONSTRAINT `tf_event_fk_b49f13`
         FOREIGN KEY (`item_id`)
         REFERENCES `tf_items` (`item_id`),
     CONSTRAINT `booking_event_status_fk`
