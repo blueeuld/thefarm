@@ -733,12 +733,6 @@
     <column name="is_verified" phpName="IsVerified" type="BOOLEAN" defaultValue="0"/>
     <column name="is_approved" phpName="IsApproved" type="BOOLEAN" defaultValue="0"/>
     <column name="activation_code" phpName="ActivationCode" type="INTEGER"/>
-    <column name="calendar_view_positions" phpName="CalendarViewPositions" type="VARCHAR" size="100" defaultValue=""/>
-    <column name="calendar_view_status" phpName="CalendarViewStatus" type="VARCHAR" size="255"/>
-    <column name="calendar_show_my_schedule_only" phpName="CalendarShowMyScheduleOnly" type="VARCHAR" size="1" defaultValue="y"/>
-    <column name="calendar_view_locations" phpName="CalendarViewLocations" type="VARCHAR" size="100" defaultValue=""/>
-    <column name="preferences" phpName="Preferences" type="LONGVARCHAR"/>
-    <column name="calendar_show_no_schedule" phpName="CalendarShowNoSchedule" type="VARCHAR" size="1" defaultValue="y"/>
     <foreign-key foreignTable="tf_groups" name="group_fk">
       <reference local="group_id" foreign="group_id"/>
     </foreign-key>

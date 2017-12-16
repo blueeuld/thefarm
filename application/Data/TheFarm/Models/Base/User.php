@@ -198,52 +198,6 @@ abstract class User implements ActiveRecordInterface
     protected $activation_code;
 
     /**
-     * The value for the calendar_view_positions field.
-     *
-     * Note: this column has a database default value of: ''
-     * @var        string
-     */
-    protected $calendar_view_positions;
-
-    /**
-     * The value for the calendar_view_status field.
-     *
-     * @var        string
-     */
-    protected $calendar_view_status;
-
-    /**
-     * The value for the calendar_show_my_schedule_only field.
-     *
-     * Note: this column has a database default value of: 'y'
-     * @var        string
-     */
-    protected $calendar_show_my_schedule_only;
-
-    /**
-     * The value for the calendar_view_locations field.
-     *
-     * Note: this column has a database default value of: ''
-     * @var        string
-     */
-    protected $calendar_view_locations;
-
-    /**
-     * The value for the preferences field.
-     *
-     * @var        string
-     */
-    protected $preferences;
-
-    /**
-     * The value for the calendar_show_no_schedule field.
-     *
-     * Note: this column has a database default value of: 'y'
-     * @var        string
-     */
-    protected $calendar_show_no_schedule;
-
-    /**
      * @var        ChildGroup
      */
     protected $aGroup;
@@ -421,10 +375,6 @@ abstract class User implements ActiveRecordInterface
         $this->verification_key = '';
         $this->is_verified = false;
         $this->is_approved = false;
-        $this->calendar_view_positions = '';
-        $this->calendar_show_my_schedule_only = 'y';
-        $this->calendar_view_locations = '';
-        $this->calendar_show_no_schedule = 'y';
     }
 
     /**
@@ -835,66 +785,6 @@ abstract class User implements ActiveRecordInterface
     }
 
     /**
-     * Get the [calendar_view_positions] column value.
-     *
-     * @return string
-     */
-    public function getCalendarViewPositions()
-    {
-        return $this->calendar_view_positions;
-    }
-
-    /**
-     * Get the [calendar_view_status] column value.
-     *
-     * @return string
-     */
-    public function getCalendarViewStatus()
-    {
-        return $this->calendar_view_status;
-    }
-
-    /**
-     * Get the [calendar_show_my_schedule_only] column value.
-     *
-     * @return string
-     */
-    public function getCalendarShowMyScheduleOnly()
-    {
-        return $this->calendar_show_my_schedule_only;
-    }
-
-    /**
-     * Get the [calendar_view_locations] column value.
-     *
-     * @return string
-     */
-    public function getCalendarViewLocations()
-    {
-        return $this->calendar_view_locations;
-    }
-
-    /**
-     * Get the [preferences] column value.
-     *
-     * @return string
-     */
-    public function getPreferences()
-    {
-        return $this->preferences;
-    }
-
-    /**
-     * Get the [calendar_show_no_schedule] column value.
-     *
-     * @return string
-     */
-    public function getCalendarShowNoSchedule()
-    {
-        return $this->calendar_show_no_schedule;
-    }
-
-    /**
      * Set the value of [user_id] column.
      *
      * @param int $v new value
@@ -1227,126 +1117,6 @@ abstract class User implements ActiveRecordInterface
     } // setActivationCode()
 
     /**
-     * Set the value of [calendar_view_positions] column.
-     *
-     * @param string $v new value
-     * @return $this|\TheFarm\Models\User The current object (for fluent API support)
-     */
-    public function setCalendarViewPositions($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->calendar_view_positions !== $v) {
-            $this->calendar_view_positions = $v;
-            $this->modifiedColumns[UserTableMap::COL_CALENDAR_VIEW_POSITIONS] = true;
-        }
-
-        return $this;
-    } // setCalendarViewPositions()
-
-    /**
-     * Set the value of [calendar_view_status] column.
-     *
-     * @param string $v new value
-     * @return $this|\TheFarm\Models\User The current object (for fluent API support)
-     */
-    public function setCalendarViewStatus($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->calendar_view_status !== $v) {
-            $this->calendar_view_status = $v;
-            $this->modifiedColumns[UserTableMap::COL_CALENDAR_VIEW_STATUS] = true;
-        }
-
-        return $this;
-    } // setCalendarViewStatus()
-
-    /**
-     * Set the value of [calendar_show_my_schedule_only] column.
-     *
-     * @param string $v new value
-     * @return $this|\TheFarm\Models\User The current object (for fluent API support)
-     */
-    public function setCalendarShowMyScheduleOnly($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->calendar_show_my_schedule_only !== $v) {
-            $this->calendar_show_my_schedule_only = $v;
-            $this->modifiedColumns[UserTableMap::COL_CALENDAR_SHOW_MY_SCHEDULE_ONLY] = true;
-        }
-
-        return $this;
-    } // setCalendarShowMyScheduleOnly()
-
-    /**
-     * Set the value of [calendar_view_locations] column.
-     *
-     * @param string $v new value
-     * @return $this|\TheFarm\Models\User The current object (for fluent API support)
-     */
-    public function setCalendarViewLocations($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->calendar_view_locations !== $v) {
-            $this->calendar_view_locations = $v;
-            $this->modifiedColumns[UserTableMap::COL_CALENDAR_VIEW_LOCATIONS] = true;
-        }
-
-        return $this;
-    } // setCalendarViewLocations()
-
-    /**
-     * Set the value of [preferences] column.
-     *
-     * @param string $v new value
-     * @return $this|\TheFarm\Models\User The current object (for fluent API support)
-     */
-    public function setPreferences($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->preferences !== $v) {
-            $this->preferences = $v;
-            $this->modifiedColumns[UserTableMap::COL_PREFERENCES] = true;
-        }
-
-        return $this;
-    } // setPreferences()
-
-    /**
-     * Set the value of [calendar_show_no_schedule] column.
-     *
-     * @param string $v new value
-     * @return $this|\TheFarm\Models\User The current object (for fluent API support)
-     */
-    public function setCalendarShowNoSchedule($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->calendar_show_no_schedule !== $v) {
-            $this->calendar_show_no_schedule = $v;
-            $this->modifiedColumns[UserTableMap::COL_CALENDAR_SHOW_NO_SCHEDULE] = true;
-        }
-
-        return $this;
-    } // setCalendarShowNoSchedule()
-
-    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -1369,22 +1139,6 @@ abstract class User implements ActiveRecordInterface
             }
 
             if ($this->is_approved !== false) {
-                return false;
-            }
-
-            if ($this->calendar_view_positions !== '') {
-                return false;
-            }
-
-            if ($this->calendar_show_my_schedule_only !== 'y') {
-                return false;
-            }
-
-            if ($this->calendar_view_locations !== '') {
-                return false;
-            }
-
-            if ($this->calendar_show_no_schedule !== 'y') {
                 return false;
             }
 
@@ -1458,24 +1212,6 @@ abstract class User implements ActiveRecordInterface
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 14 + $startcol : UserTableMap::translateFieldName('ActivationCode', TableMap::TYPE_PHPNAME, $indexType)];
             $this->activation_code = (null !== $col) ? (int) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 15 + $startcol : UserTableMap::translateFieldName('CalendarViewPositions', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->calendar_view_positions = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 16 + $startcol : UserTableMap::translateFieldName('CalendarViewStatus', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->calendar_view_status = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 17 + $startcol : UserTableMap::translateFieldName('CalendarShowMyScheduleOnly', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->calendar_show_my_schedule_only = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 18 + $startcol : UserTableMap::translateFieldName('CalendarViewLocations', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->calendar_view_locations = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 19 + $startcol : UserTableMap::translateFieldName('Preferences', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->preferences = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 20 + $startcol : UserTableMap::translateFieldName('CalendarShowNoSchedule', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->calendar_show_no_schedule = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -1484,7 +1220,7 @@ abstract class User implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 21; // 21 = UserTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 15; // 15 = UserTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\TheFarm\\Models\\User'), 0, $e);
@@ -2003,24 +1739,6 @@ abstract class User implements ActiveRecordInterface
         if ($this->isColumnModified(UserTableMap::COL_ACTIVATION_CODE)) {
             $modifiedColumns[':p' . $index++]  = 'activation_code';
         }
-        if ($this->isColumnModified(UserTableMap::COL_CALENDAR_VIEW_POSITIONS)) {
-            $modifiedColumns[':p' . $index++]  = 'calendar_view_positions';
-        }
-        if ($this->isColumnModified(UserTableMap::COL_CALENDAR_VIEW_STATUS)) {
-            $modifiedColumns[':p' . $index++]  = 'calendar_view_status';
-        }
-        if ($this->isColumnModified(UserTableMap::COL_CALENDAR_SHOW_MY_SCHEDULE_ONLY)) {
-            $modifiedColumns[':p' . $index++]  = 'calendar_show_my_schedule_only';
-        }
-        if ($this->isColumnModified(UserTableMap::COL_CALENDAR_VIEW_LOCATIONS)) {
-            $modifiedColumns[':p' . $index++]  = 'calendar_view_locations';
-        }
-        if ($this->isColumnModified(UserTableMap::COL_PREFERENCES)) {
-            $modifiedColumns[':p' . $index++]  = 'preferences';
-        }
-        if ($this->isColumnModified(UserTableMap::COL_CALENDAR_SHOW_NO_SCHEDULE)) {
-            $modifiedColumns[':p' . $index++]  = 'calendar_show_no_schedule';
-        }
 
         $sql = sprintf(
             'INSERT INTO tf_user (%s) VALUES (%s)',
@@ -2076,24 +1794,6 @@ abstract class User implements ActiveRecordInterface
                         break;
                     case 'activation_code':
                         $stmt->bindValue($identifier, $this->activation_code, PDO::PARAM_INT);
-                        break;
-                    case 'calendar_view_positions':
-                        $stmt->bindValue($identifier, $this->calendar_view_positions, PDO::PARAM_STR);
-                        break;
-                    case 'calendar_view_status':
-                        $stmt->bindValue($identifier, $this->calendar_view_status, PDO::PARAM_STR);
-                        break;
-                    case 'calendar_show_my_schedule_only':
-                        $stmt->bindValue($identifier, $this->calendar_show_my_schedule_only, PDO::PARAM_STR);
-                        break;
-                    case 'calendar_view_locations':
-                        $stmt->bindValue($identifier, $this->calendar_view_locations, PDO::PARAM_STR);
-                        break;
-                    case 'preferences':
-                        $stmt->bindValue($identifier, $this->preferences, PDO::PARAM_STR);
-                        break;
-                    case 'calendar_show_no_schedule':
-                        $stmt->bindValue($identifier, $this->calendar_show_no_schedule, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -2202,24 +1902,6 @@ abstract class User implements ActiveRecordInterface
             case 14:
                 return $this->getActivationCode();
                 break;
-            case 15:
-                return $this->getCalendarViewPositions();
-                break;
-            case 16:
-                return $this->getCalendarViewStatus();
-                break;
-            case 17:
-                return $this->getCalendarShowMyScheduleOnly();
-                break;
-            case 18:
-                return $this->getCalendarViewLocations();
-                break;
-            case 19:
-                return $this->getPreferences();
-                break;
-            case 20:
-                return $this->getCalendarShowNoSchedule();
-                break;
             default:
                 return null;
                 break;
@@ -2265,12 +1947,6 @@ abstract class User implements ActiveRecordInterface
             $keys[12] => $this->getIsVerified(),
             $keys[13] => $this->getIsApproved(),
             $keys[14] => $this->getActivationCode(),
-            $keys[15] => $this->getCalendarViewPositions(),
-            $keys[16] => $this->getCalendarViewStatus(),
-            $keys[17] => $this->getCalendarShowMyScheduleOnly(),
-            $keys[18] => $this->getCalendarViewLocations(),
-            $keys[19] => $this->getPreferences(),
-            $keys[20] => $this->getCalendarShowNoSchedule(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -2552,24 +2228,6 @@ abstract class User implements ActiveRecordInterface
             case 14:
                 $this->setActivationCode($value);
                 break;
-            case 15:
-                $this->setCalendarViewPositions($value);
-                break;
-            case 16:
-                $this->setCalendarViewStatus($value);
-                break;
-            case 17:
-                $this->setCalendarShowMyScheduleOnly($value);
-                break;
-            case 18:
-                $this->setCalendarViewLocations($value);
-                break;
-            case 19:
-                $this->setPreferences($value);
-                break;
-            case 20:
-                $this->setCalendarShowNoSchedule($value);
-                break;
         } // switch()
 
         return $this;
@@ -2640,24 +2298,6 @@ abstract class User implements ActiveRecordInterface
         }
         if (array_key_exists($keys[14], $arr)) {
             $this->setActivationCode($arr[$keys[14]]);
-        }
-        if (array_key_exists($keys[15], $arr)) {
-            $this->setCalendarViewPositions($arr[$keys[15]]);
-        }
-        if (array_key_exists($keys[16], $arr)) {
-            $this->setCalendarViewStatus($arr[$keys[16]]);
-        }
-        if (array_key_exists($keys[17], $arr)) {
-            $this->setCalendarShowMyScheduleOnly($arr[$keys[17]]);
-        }
-        if (array_key_exists($keys[18], $arr)) {
-            $this->setCalendarViewLocations($arr[$keys[18]]);
-        }
-        if (array_key_exists($keys[19], $arr)) {
-            $this->setPreferences($arr[$keys[19]]);
-        }
-        if (array_key_exists($keys[20], $arr)) {
-            $this->setCalendarShowNoSchedule($arr[$keys[20]]);
         }
     }
 
@@ -2744,24 +2384,6 @@ abstract class User implements ActiveRecordInterface
         }
         if ($this->isColumnModified(UserTableMap::COL_ACTIVATION_CODE)) {
             $criteria->add(UserTableMap::COL_ACTIVATION_CODE, $this->activation_code);
-        }
-        if ($this->isColumnModified(UserTableMap::COL_CALENDAR_VIEW_POSITIONS)) {
-            $criteria->add(UserTableMap::COL_CALENDAR_VIEW_POSITIONS, $this->calendar_view_positions);
-        }
-        if ($this->isColumnModified(UserTableMap::COL_CALENDAR_VIEW_STATUS)) {
-            $criteria->add(UserTableMap::COL_CALENDAR_VIEW_STATUS, $this->calendar_view_status);
-        }
-        if ($this->isColumnModified(UserTableMap::COL_CALENDAR_SHOW_MY_SCHEDULE_ONLY)) {
-            $criteria->add(UserTableMap::COL_CALENDAR_SHOW_MY_SCHEDULE_ONLY, $this->calendar_show_my_schedule_only);
-        }
-        if ($this->isColumnModified(UserTableMap::COL_CALENDAR_VIEW_LOCATIONS)) {
-            $criteria->add(UserTableMap::COL_CALENDAR_VIEW_LOCATIONS, $this->calendar_view_locations);
-        }
-        if ($this->isColumnModified(UserTableMap::COL_PREFERENCES)) {
-            $criteria->add(UserTableMap::COL_PREFERENCES, $this->preferences);
-        }
-        if ($this->isColumnModified(UserTableMap::COL_CALENDAR_SHOW_NO_SCHEDULE)) {
-            $criteria->add(UserTableMap::COL_CALENDAR_SHOW_NO_SCHEDULE, $this->calendar_show_no_schedule);
         }
 
         return $criteria;
@@ -2863,12 +2485,6 @@ abstract class User implements ActiveRecordInterface
         $copyObj->setIsVerified($this->getIsVerified());
         $copyObj->setIsApproved($this->getIsApproved());
         $copyObj->setActivationCode($this->getActivationCode());
-        $copyObj->setCalendarViewPositions($this->getCalendarViewPositions());
-        $copyObj->setCalendarViewStatus($this->getCalendarViewStatus());
-        $copyObj->setCalendarShowMyScheduleOnly($this->getCalendarShowMyScheduleOnly());
-        $copyObj->setCalendarViewLocations($this->getCalendarViewLocations());
-        $copyObj->setPreferences($this->getPreferences());
-        $copyObj->setCalendarShowNoSchedule($this->getCalendarShowNoSchedule());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -6560,12 +6176,6 @@ abstract class User implements ActiveRecordInterface
         $this->is_verified = null;
         $this->is_approved = null;
         $this->activation_code = null;
-        $this->calendar_view_positions = null;
-        $this->calendar_view_status = null;
-        $this->calendar_show_my_schedule_only = null;
-        $this->calendar_view_locations = null;
-        $this->preferences = null;
-        $this->calendar_show_no_schedule = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();

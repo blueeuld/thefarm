@@ -35,12 +35,6 @@ use TheFarm\Models\Map\UserTableMap;
  * @method     ChildUserQuery orderByIsVerified($order = Criteria::ASC) Order by the is_verified column
  * @method     ChildUserQuery orderByIsApproved($order = Criteria::ASC) Order by the is_approved column
  * @method     ChildUserQuery orderByActivationCode($order = Criteria::ASC) Order by the activation_code column
- * @method     ChildUserQuery orderByCalendarViewPositions($order = Criteria::ASC) Order by the calendar_view_positions column
- * @method     ChildUserQuery orderByCalendarViewStatus($order = Criteria::ASC) Order by the calendar_view_status column
- * @method     ChildUserQuery orderByCalendarShowMyScheduleOnly($order = Criteria::ASC) Order by the calendar_show_my_schedule_only column
- * @method     ChildUserQuery orderByCalendarViewLocations($order = Criteria::ASC) Order by the calendar_view_locations column
- * @method     ChildUserQuery orderByPreferences($order = Criteria::ASC) Order by the preferences column
- * @method     ChildUserQuery orderByCalendarShowNoSchedule($order = Criteria::ASC) Order by the calendar_show_no_schedule column
  *
  * @method     ChildUserQuery groupByUserId() Group by the user_id column
  * @method     ChildUserQuery groupByUsername() Group by the username column
@@ -57,12 +51,6 @@ use TheFarm\Models\Map\UserTableMap;
  * @method     ChildUserQuery groupByIsVerified() Group by the is_verified column
  * @method     ChildUserQuery groupByIsApproved() Group by the is_approved column
  * @method     ChildUserQuery groupByActivationCode() Group by the activation_code column
- * @method     ChildUserQuery groupByCalendarViewPositions() Group by the calendar_view_positions column
- * @method     ChildUserQuery groupByCalendarViewStatus() Group by the calendar_view_status column
- * @method     ChildUserQuery groupByCalendarShowMyScheduleOnly() Group by the calendar_show_my_schedule_only column
- * @method     ChildUserQuery groupByCalendarViewLocations() Group by the calendar_view_locations column
- * @method     ChildUserQuery groupByPreferences() Group by the preferences column
- * @method     ChildUserQuery groupByCalendarShowNoSchedule() Group by the calendar_show_no_schedule column
  *
  * @method     ChildUserQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildUserQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -221,13 +209,7 @@ use TheFarm\Models\Map\UserTableMap;
  * @method     ChildUser findOneByVerificationKey(string $verification_key) Return the first ChildUser filtered by the verification_key column
  * @method     ChildUser findOneByIsVerified(boolean $is_verified) Return the first ChildUser filtered by the is_verified column
  * @method     ChildUser findOneByIsApproved(boolean $is_approved) Return the first ChildUser filtered by the is_approved column
- * @method     ChildUser findOneByActivationCode(int $activation_code) Return the first ChildUser filtered by the activation_code column
- * @method     ChildUser findOneByCalendarViewPositions(string $calendar_view_positions) Return the first ChildUser filtered by the calendar_view_positions column
- * @method     ChildUser findOneByCalendarViewStatus(string $calendar_view_status) Return the first ChildUser filtered by the calendar_view_status column
- * @method     ChildUser findOneByCalendarShowMyScheduleOnly(string $calendar_show_my_schedule_only) Return the first ChildUser filtered by the calendar_show_my_schedule_only column
- * @method     ChildUser findOneByCalendarViewLocations(string $calendar_view_locations) Return the first ChildUser filtered by the calendar_view_locations column
- * @method     ChildUser findOneByPreferences(string $preferences) Return the first ChildUser filtered by the preferences column
- * @method     ChildUser findOneByCalendarShowNoSchedule(string $calendar_show_no_schedule) Return the first ChildUser filtered by the calendar_show_no_schedule column *
+ * @method     ChildUser findOneByActivationCode(int $activation_code) Return the first ChildUser filtered by the activation_code column *
 
  * @method     ChildUser requirePk($key, ConnectionInterface $con = null) Return the ChildUser by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOne(ConnectionInterface $con = null) Return the first ChildUser matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -247,12 +229,6 @@ use TheFarm\Models\Map\UserTableMap;
  * @method     ChildUser requireOneByIsVerified(boolean $is_verified) Return the first ChildUser filtered by the is_verified column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByIsApproved(boolean $is_approved) Return the first ChildUser filtered by the is_approved column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByActivationCode(int $activation_code) Return the first ChildUser filtered by the activation_code column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildUser requireOneByCalendarViewPositions(string $calendar_view_positions) Return the first ChildUser filtered by the calendar_view_positions column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildUser requireOneByCalendarViewStatus(string $calendar_view_status) Return the first ChildUser filtered by the calendar_view_status column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildUser requireOneByCalendarShowMyScheduleOnly(string $calendar_show_my_schedule_only) Return the first ChildUser filtered by the calendar_show_my_schedule_only column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildUser requireOneByCalendarViewLocations(string $calendar_view_locations) Return the first ChildUser filtered by the calendar_view_locations column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildUser requireOneByPreferences(string $preferences) Return the first ChildUser filtered by the preferences column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildUser requireOneByCalendarShowNoSchedule(string $calendar_show_no_schedule) Return the first ChildUser filtered by the calendar_show_no_schedule column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildUser[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildUser objects based on current ModelCriteria
  * @method     ChildUser[]|ObjectCollection findByUserId(int $user_id) Return ChildUser objects filtered by the user_id column
@@ -270,12 +246,6 @@ use TheFarm\Models\Map\UserTableMap;
  * @method     ChildUser[]|ObjectCollection findByIsVerified(boolean $is_verified) Return ChildUser objects filtered by the is_verified column
  * @method     ChildUser[]|ObjectCollection findByIsApproved(boolean $is_approved) Return ChildUser objects filtered by the is_approved column
  * @method     ChildUser[]|ObjectCollection findByActivationCode(int $activation_code) Return ChildUser objects filtered by the activation_code column
- * @method     ChildUser[]|ObjectCollection findByCalendarViewPositions(string $calendar_view_positions) Return ChildUser objects filtered by the calendar_view_positions column
- * @method     ChildUser[]|ObjectCollection findByCalendarViewStatus(string $calendar_view_status) Return ChildUser objects filtered by the calendar_view_status column
- * @method     ChildUser[]|ObjectCollection findByCalendarShowMyScheduleOnly(string $calendar_show_my_schedule_only) Return ChildUser objects filtered by the calendar_show_my_schedule_only column
- * @method     ChildUser[]|ObjectCollection findByCalendarViewLocations(string $calendar_view_locations) Return ChildUser objects filtered by the calendar_view_locations column
- * @method     ChildUser[]|ObjectCollection findByPreferences(string $preferences) Return ChildUser objects filtered by the preferences column
- * @method     ChildUser[]|ObjectCollection findByCalendarShowNoSchedule(string $calendar_show_no_schedule) Return ChildUser objects filtered by the calendar_show_no_schedule column
  * @method     ChildUser[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -374,7 +344,7 @@ abstract class UserQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT user_id, username, group_id, last_login, password, work_plan, work_plan_code, location_id, facebook_id, user_order, is_active, verification_key, is_verified, is_approved, activation_code, calendar_view_positions, calendar_view_status, calendar_show_my_schedule_only, calendar_view_locations, preferences, calendar_show_no_schedule FROM tf_user WHERE user_id = :p0';
+        $sql = 'SELECT user_id, username, group_id, last_login, password, work_plan, work_plan_code, location_id, facebook_id, user_order, is_active, verification_key, is_verified, is_approved, activation_code FROM tf_user WHERE user_id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -943,156 +913,6 @@ abstract class UserQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(UserTableMap::COL_ACTIVATION_CODE, $activationCode, $comparison);
-    }
-
-    /**
-     * Filter the query on the calendar_view_positions column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByCalendarViewPositions('fooValue');   // WHERE calendar_view_positions = 'fooValue'
-     * $query->filterByCalendarViewPositions('%fooValue%', Criteria::LIKE); // WHERE calendar_view_positions LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $calendarViewPositions The value to use as filter.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildUserQuery The current query, for fluid interface
-     */
-    public function filterByCalendarViewPositions($calendarViewPositions = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($calendarViewPositions)) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(UserTableMap::COL_CALENDAR_VIEW_POSITIONS, $calendarViewPositions, $comparison);
-    }
-
-    /**
-     * Filter the query on the calendar_view_status column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByCalendarViewStatus('fooValue');   // WHERE calendar_view_status = 'fooValue'
-     * $query->filterByCalendarViewStatus('%fooValue%', Criteria::LIKE); // WHERE calendar_view_status LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $calendarViewStatus The value to use as filter.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildUserQuery The current query, for fluid interface
-     */
-    public function filterByCalendarViewStatus($calendarViewStatus = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($calendarViewStatus)) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(UserTableMap::COL_CALENDAR_VIEW_STATUS, $calendarViewStatus, $comparison);
-    }
-
-    /**
-     * Filter the query on the calendar_show_my_schedule_only column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByCalendarShowMyScheduleOnly('fooValue');   // WHERE calendar_show_my_schedule_only = 'fooValue'
-     * $query->filterByCalendarShowMyScheduleOnly('%fooValue%', Criteria::LIKE); // WHERE calendar_show_my_schedule_only LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $calendarShowMyScheduleOnly The value to use as filter.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildUserQuery The current query, for fluid interface
-     */
-    public function filterByCalendarShowMyScheduleOnly($calendarShowMyScheduleOnly = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($calendarShowMyScheduleOnly)) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(UserTableMap::COL_CALENDAR_SHOW_MY_SCHEDULE_ONLY, $calendarShowMyScheduleOnly, $comparison);
-    }
-
-    /**
-     * Filter the query on the calendar_view_locations column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByCalendarViewLocations('fooValue');   // WHERE calendar_view_locations = 'fooValue'
-     * $query->filterByCalendarViewLocations('%fooValue%', Criteria::LIKE); // WHERE calendar_view_locations LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $calendarViewLocations The value to use as filter.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildUserQuery The current query, for fluid interface
-     */
-    public function filterByCalendarViewLocations($calendarViewLocations = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($calendarViewLocations)) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(UserTableMap::COL_CALENDAR_VIEW_LOCATIONS, $calendarViewLocations, $comparison);
-    }
-
-    /**
-     * Filter the query on the preferences column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByPreferences('fooValue');   // WHERE preferences = 'fooValue'
-     * $query->filterByPreferences('%fooValue%', Criteria::LIKE); // WHERE preferences LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $preferences The value to use as filter.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildUserQuery The current query, for fluid interface
-     */
-    public function filterByPreferences($preferences = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($preferences)) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(UserTableMap::COL_PREFERENCES, $preferences, $comparison);
-    }
-
-    /**
-     * Filter the query on the calendar_show_no_schedule column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByCalendarShowNoSchedule('fooValue');   // WHERE calendar_show_no_schedule = 'fooValue'
-     * $query->filterByCalendarShowNoSchedule('%fooValue%', Criteria::LIKE); // WHERE calendar_show_no_schedule LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $calendarShowNoSchedule The value to use as filter.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildUserQuery The current query, for fluid interface
-     */
-    public function filterByCalendarShowNoSchedule($calendarShowNoSchedule = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($calendarShowNoSchedule)) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(UserTableMap::COL_CALENDAR_SHOW_NO_SCHEDULE, $calendarShowNoSchedule, $comparison);
     }
 
     /**

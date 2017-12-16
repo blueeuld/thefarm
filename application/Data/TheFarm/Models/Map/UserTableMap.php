@@ -59,7 +59,7 @@ class UserTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 21;
+    const NUM_COLUMNS = 15;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class UserTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 21;
+    const NUM_HYDRATE_COLUMNS = 15;
 
     /**
      * the column name for the user_id field
@@ -147,36 +147,6 @@ class UserTableMap extends TableMap
     const COL_ACTIVATION_CODE = 'tf_user.activation_code';
 
     /**
-     * the column name for the calendar_view_positions field
-     */
-    const COL_CALENDAR_VIEW_POSITIONS = 'tf_user.calendar_view_positions';
-
-    /**
-     * the column name for the calendar_view_status field
-     */
-    const COL_CALENDAR_VIEW_STATUS = 'tf_user.calendar_view_status';
-
-    /**
-     * the column name for the calendar_show_my_schedule_only field
-     */
-    const COL_CALENDAR_SHOW_MY_SCHEDULE_ONLY = 'tf_user.calendar_show_my_schedule_only';
-
-    /**
-     * the column name for the calendar_view_locations field
-     */
-    const COL_CALENDAR_VIEW_LOCATIONS = 'tf_user.calendar_view_locations';
-
-    /**
-     * the column name for the preferences field
-     */
-    const COL_PREFERENCES = 'tf_user.preferences';
-
-    /**
-     * the column name for the calendar_show_no_schedule field
-     */
-    const COL_CALENDAR_SHOW_NO_SCHEDULE = 'tf_user.calendar_show_no_schedule';
-
-    /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -188,11 +158,11 @@ class UserTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('UserId', 'Username', 'GroupId', 'LastLogin', 'Password', 'WorkPlan', 'WorkPlanCode', 'LocationId', 'FacebookId', 'UserOrder', 'IsActive', 'VerificationKey', 'IsVerified', 'IsApproved', 'ActivationCode', 'CalendarViewPositions', 'CalendarViewStatus', 'CalendarShowMyScheduleOnly', 'CalendarViewLocations', 'Preferences', 'CalendarShowNoSchedule', ),
-        self::TYPE_CAMELNAME     => array('userId', 'username', 'groupId', 'lastLogin', 'password', 'workPlan', 'workPlanCode', 'locationId', 'facebookId', 'userOrder', 'isActive', 'verificationKey', 'isVerified', 'isApproved', 'activationCode', 'calendarViewPositions', 'calendarViewStatus', 'calendarShowMyScheduleOnly', 'calendarViewLocations', 'preferences', 'calendarShowNoSchedule', ),
-        self::TYPE_COLNAME       => array(UserTableMap::COL_USER_ID, UserTableMap::COL_USERNAME, UserTableMap::COL_GROUP_ID, UserTableMap::COL_LAST_LOGIN, UserTableMap::COL_PASSWORD, UserTableMap::COL_WORK_PLAN, UserTableMap::COL_WORK_PLAN_CODE, UserTableMap::COL_LOCATION_ID, UserTableMap::COL_FACEBOOK_ID, UserTableMap::COL_USER_ORDER, UserTableMap::COL_IS_ACTIVE, UserTableMap::COL_VERIFICATION_KEY, UserTableMap::COL_IS_VERIFIED, UserTableMap::COL_IS_APPROVED, UserTableMap::COL_ACTIVATION_CODE, UserTableMap::COL_CALENDAR_VIEW_POSITIONS, UserTableMap::COL_CALENDAR_VIEW_STATUS, UserTableMap::COL_CALENDAR_SHOW_MY_SCHEDULE_ONLY, UserTableMap::COL_CALENDAR_VIEW_LOCATIONS, UserTableMap::COL_PREFERENCES, UserTableMap::COL_CALENDAR_SHOW_NO_SCHEDULE, ),
-        self::TYPE_FIELDNAME     => array('user_id', 'username', 'group_id', 'last_login', 'password', 'work_plan', 'work_plan_code', 'location_id', 'facebook_id', 'user_order', 'is_active', 'verification_key', 'is_verified', 'is_approved', 'activation_code', 'calendar_view_positions', 'calendar_view_status', 'calendar_show_my_schedule_only', 'calendar_view_locations', 'preferences', 'calendar_show_no_schedule', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, )
+        self::TYPE_PHPNAME       => array('UserId', 'Username', 'GroupId', 'LastLogin', 'Password', 'WorkPlan', 'WorkPlanCode', 'LocationId', 'FacebookId', 'UserOrder', 'IsActive', 'VerificationKey', 'IsVerified', 'IsApproved', 'ActivationCode', ),
+        self::TYPE_CAMELNAME     => array('userId', 'username', 'groupId', 'lastLogin', 'password', 'workPlan', 'workPlanCode', 'locationId', 'facebookId', 'userOrder', 'isActive', 'verificationKey', 'isVerified', 'isApproved', 'activationCode', ),
+        self::TYPE_COLNAME       => array(UserTableMap::COL_USER_ID, UserTableMap::COL_USERNAME, UserTableMap::COL_GROUP_ID, UserTableMap::COL_LAST_LOGIN, UserTableMap::COL_PASSWORD, UserTableMap::COL_WORK_PLAN, UserTableMap::COL_WORK_PLAN_CODE, UserTableMap::COL_LOCATION_ID, UserTableMap::COL_FACEBOOK_ID, UserTableMap::COL_USER_ORDER, UserTableMap::COL_IS_ACTIVE, UserTableMap::COL_VERIFICATION_KEY, UserTableMap::COL_IS_VERIFIED, UserTableMap::COL_IS_APPROVED, UserTableMap::COL_ACTIVATION_CODE, ),
+        self::TYPE_FIELDNAME     => array('user_id', 'username', 'group_id', 'last_login', 'password', 'work_plan', 'work_plan_code', 'location_id', 'facebook_id', 'user_order', 'is_active', 'verification_key', 'is_verified', 'is_approved', 'activation_code', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, )
     );
 
     /**
@@ -202,11 +172,11 @@ class UserTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('UserId' => 0, 'Username' => 1, 'GroupId' => 2, 'LastLogin' => 3, 'Password' => 4, 'WorkPlan' => 5, 'WorkPlanCode' => 6, 'LocationId' => 7, 'FacebookId' => 8, 'UserOrder' => 9, 'IsActive' => 10, 'VerificationKey' => 11, 'IsVerified' => 12, 'IsApproved' => 13, 'ActivationCode' => 14, 'CalendarViewPositions' => 15, 'CalendarViewStatus' => 16, 'CalendarShowMyScheduleOnly' => 17, 'CalendarViewLocations' => 18, 'Preferences' => 19, 'CalendarShowNoSchedule' => 20, ),
-        self::TYPE_CAMELNAME     => array('userId' => 0, 'username' => 1, 'groupId' => 2, 'lastLogin' => 3, 'password' => 4, 'workPlan' => 5, 'workPlanCode' => 6, 'locationId' => 7, 'facebookId' => 8, 'userOrder' => 9, 'isActive' => 10, 'verificationKey' => 11, 'isVerified' => 12, 'isApproved' => 13, 'activationCode' => 14, 'calendarViewPositions' => 15, 'calendarViewStatus' => 16, 'calendarShowMyScheduleOnly' => 17, 'calendarViewLocations' => 18, 'preferences' => 19, 'calendarShowNoSchedule' => 20, ),
-        self::TYPE_COLNAME       => array(UserTableMap::COL_USER_ID => 0, UserTableMap::COL_USERNAME => 1, UserTableMap::COL_GROUP_ID => 2, UserTableMap::COL_LAST_LOGIN => 3, UserTableMap::COL_PASSWORD => 4, UserTableMap::COL_WORK_PLAN => 5, UserTableMap::COL_WORK_PLAN_CODE => 6, UserTableMap::COL_LOCATION_ID => 7, UserTableMap::COL_FACEBOOK_ID => 8, UserTableMap::COL_USER_ORDER => 9, UserTableMap::COL_IS_ACTIVE => 10, UserTableMap::COL_VERIFICATION_KEY => 11, UserTableMap::COL_IS_VERIFIED => 12, UserTableMap::COL_IS_APPROVED => 13, UserTableMap::COL_ACTIVATION_CODE => 14, UserTableMap::COL_CALENDAR_VIEW_POSITIONS => 15, UserTableMap::COL_CALENDAR_VIEW_STATUS => 16, UserTableMap::COL_CALENDAR_SHOW_MY_SCHEDULE_ONLY => 17, UserTableMap::COL_CALENDAR_VIEW_LOCATIONS => 18, UserTableMap::COL_PREFERENCES => 19, UserTableMap::COL_CALENDAR_SHOW_NO_SCHEDULE => 20, ),
-        self::TYPE_FIELDNAME     => array('user_id' => 0, 'username' => 1, 'group_id' => 2, 'last_login' => 3, 'password' => 4, 'work_plan' => 5, 'work_plan_code' => 6, 'location_id' => 7, 'facebook_id' => 8, 'user_order' => 9, 'is_active' => 10, 'verification_key' => 11, 'is_verified' => 12, 'is_approved' => 13, 'activation_code' => 14, 'calendar_view_positions' => 15, 'calendar_view_status' => 16, 'calendar_show_my_schedule_only' => 17, 'calendar_view_locations' => 18, 'preferences' => 19, 'calendar_show_no_schedule' => 20, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, )
+        self::TYPE_PHPNAME       => array('UserId' => 0, 'Username' => 1, 'GroupId' => 2, 'LastLogin' => 3, 'Password' => 4, 'WorkPlan' => 5, 'WorkPlanCode' => 6, 'LocationId' => 7, 'FacebookId' => 8, 'UserOrder' => 9, 'IsActive' => 10, 'VerificationKey' => 11, 'IsVerified' => 12, 'IsApproved' => 13, 'ActivationCode' => 14, ),
+        self::TYPE_CAMELNAME     => array('userId' => 0, 'username' => 1, 'groupId' => 2, 'lastLogin' => 3, 'password' => 4, 'workPlan' => 5, 'workPlanCode' => 6, 'locationId' => 7, 'facebookId' => 8, 'userOrder' => 9, 'isActive' => 10, 'verificationKey' => 11, 'isVerified' => 12, 'isApproved' => 13, 'activationCode' => 14, ),
+        self::TYPE_COLNAME       => array(UserTableMap::COL_USER_ID => 0, UserTableMap::COL_USERNAME => 1, UserTableMap::COL_GROUP_ID => 2, UserTableMap::COL_LAST_LOGIN => 3, UserTableMap::COL_PASSWORD => 4, UserTableMap::COL_WORK_PLAN => 5, UserTableMap::COL_WORK_PLAN_CODE => 6, UserTableMap::COL_LOCATION_ID => 7, UserTableMap::COL_FACEBOOK_ID => 8, UserTableMap::COL_USER_ORDER => 9, UserTableMap::COL_IS_ACTIVE => 10, UserTableMap::COL_VERIFICATION_KEY => 11, UserTableMap::COL_IS_VERIFIED => 12, UserTableMap::COL_IS_APPROVED => 13, UserTableMap::COL_ACTIVATION_CODE => 14, ),
+        self::TYPE_FIELDNAME     => array('user_id' => 0, 'username' => 1, 'group_id' => 2, 'last_login' => 3, 'password' => 4, 'work_plan' => 5, 'work_plan_code' => 6, 'location_id' => 7, 'facebook_id' => 8, 'user_order' => 9, 'is_active' => 10, 'verification_key' => 11, 'is_verified' => 12, 'is_approved' => 13, 'activation_code' => 14, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, )
     );
 
     /**
@@ -241,12 +211,6 @@ class UserTableMap extends TableMap
         $this->addColumn('is_verified', 'IsVerified', 'BOOLEAN', false, 1, false);
         $this->addColumn('is_approved', 'IsApproved', 'BOOLEAN', false, 1, false);
         $this->addColumn('activation_code', 'ActivationCode', 'INTEGER', false, null, null);
-        $this->addColumn('calendar_view_positions', 'CalendarViewPositions', 'VARCHAR', false, 100, '');
-        $this->addColumn('calendar_view_status', 'CalendarViewStatus', 'VARCHAR', false, 255, null);
-        $this->addColumn('calendar_show_my_schedule_only', 'CalendarShowMyScheduleOnly', 'VARCHAR', false, 1, 'y');
-        $this->addColumn('calendar_view_locations', 'CalendarViewLocations', 'VARCHAR', false, 100, '');
-        $this->addColumn('preferences', 'Preferences', 'LONGVARCHAR', false, null, null);
-        $this->addColumn('calendar_show_no_schedule', 'CalendarShowNoSchedule', 'VARCHAR', false, 1, 'y');
     } // initialize()
 
     /**
@@ -504,12 +468,6 @@ class UserTableMap extends TableMap
             $criteria->addSelectColumn(UserTableMap::COL_IS_VERIFIED);
             $criteria->addSelectColumn(UserTableMap::COL_IS_APPROVED);
             $criteria->addSelectColumn(UserTableMap::COL_ACTIVATION_CODE);
-            $criteria->addSelectColumn(UserTableMap::COL_CALENDAR_VIEW_POSITIONS);
-            $criteria->addSelectColumn(UserTableMap::COL_CALENDAR_VIEW_STATUS);
-            $criteria->addSelectColumn(UserTableMap::COL_CALENDAR_SHOW_MY_SCHEDULE_ONLY);
-            $criteria->addSelectColumn(UserTableMap::COL_CALENDAR_VIEW_LOCATIONS);
-            $criteria->addSelectColumn(UserTableMap::COL_PREFERENCES);
-            $criteria->addSelectColumn(UserTableMap::COL_CALENDAR_SHOW_NO_SCHEDULE);
         } else {
             $criteria->addSelectColumn($alias . '.user_id');
             $criteria->addSelectColumn($alias . '.username');
@@ -526,12 +484,6 @@ class UserTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.is_verified');
             $criteria->addSelectColumn($alias . '.is_approved');
             $criteria->addSelectColumn($alias . '.activation_code');
-            $criteria->addSelectColumn($alias . '.calendar_view_positions');
-            $criteria->addSelectColumn($alias . '.calendar_view_status');
-            $criteria->addSelectColumn($alias . '.calendar_show_my_schedule_only');
-            $criteria->addSelectColumn($alias . '.calendar_view_locations');
-            $criteria->addSelectColumn($alias . '.preferences');
-            $criteria->addSelectColumn($alias . '.calendar_show_no_schedule');
         }
     }
 
