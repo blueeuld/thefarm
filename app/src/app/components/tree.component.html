@@ -1,0 +1,33 @@
+<div class="animated fadeIn">
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    Tree Example - Drag and Drop
+                </div>
+                <div class="card-body">
+
+                    <p class="m-b-lg">
+                        Full documentation: <a href="https://angular2-tree.readme.io/" target="_blank">https://angular2-tree.readme.io/</a>
+                    </p>
+
+                    <tree-root #tree [nodes]="nodes" [options]="options">
+                        <ng-template #treeNodeTemplate let-node let-index="index">
+                            <div class="btn btn-secondary btn-md">
+                                <span>{{ node.data.name }}</span>
+                                <a class="pull-right" href="javascript:void(0);"><img class="m-l-sm" src="/assets/img/white_x.png"></a>
+                            </div>
+                        </ng-template>
+                    </tree-root>
+
+                </div>
+            </div>
+        </div>
+        <!--/.col-->
+
+    </div>
+    <!--/.row-->
+
+
+</div>

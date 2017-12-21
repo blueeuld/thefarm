@@ -1,0 +1,277 @@
+//
+// Basic Bootstrap table
+//
+
+.table {
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: $spacer;
+  background-color: $table-bg; // Reset for nesting within parents with `background-color`.
+
+  th,
+  td {
+    padding: $table-cell-padding;
+    vertical-align: top;
+    border-top: $table-border-width solid $table-border-color;
+  }
+
+  thead th {
+    vertical-align: bottom;
+    border-bottom: (2 * $table-border-width) solid $table-border-color;
+  }
+
+  tbody + tbody {
+    border-top: (2 * $table-border-width) solid $table-border-color;
+  }
+
+  .table {
+    background-color: $body-bg;
+  }
+}
+
+
+//
+// Condensed table w/ half padding
+//
+
+.table-sm {
+  th,
+  td {
+    padding: $table-cell-padding-sm;
+  }
+}
+
+
+// Bordered version
+//
+// Add borders all around the table and between all the columns.
+
+.table-bordered {
+  border: $table-border-width solid $table-border-color;
+
+  th,
+  td {
+    border: $table-border-width solid $table-border-color;
+  }
+
+  thead {
+    th,
+    td {
+      border-bottom-width: (2 * $table-border-width);
+    }
+  }
+}
+
+
+// GN version
+//
+
+.table-gn {
+  border: none;
+  background: $white;
+
+  th, td { vertical-align: middle; }
+
+  th {
+    border: none;
+    border-right: $table-border-width solid $white;
+    padding: 18px 10px 18px 10px;
+
+    &:first-child {
+      border-left: $table-border-width solid $table-gn-bg;
+    }
+
+    &:last-child {
+      border-right: $table-border-width solid $table-gn-bg;
+    }
+  }
+
+  thead {
+    th,
+    td {
+      border-bottom-width: 0;
+      background-color: $table-gn-bg;
+      color: $white;
+      font-size: $font-size-md;
+      font-weight: 600;
+    }
+  }
+
+  tbody {
+    td {
+      border-top: none;
+      border-bottom: 2px solid $gn-tbl-b-blue;
+
+      &:first-child {
+        border-left: $table-border-width solid $gn-tbl-b-blue;
+      }
+
+      &:last-child {
+        border-right: $table-border-width solid $gn-tbl-b-blue;
+      }
+    }
+
+    tr:nth-child(even) {
+      background-color: #fafafa;
+    }
+  }
+
+  .user_profile_img {
+    height: 60px; width: 60px; border: 3px solid $gn-tbl-pimg-grey; border-radius: 90px; text-align: center; display: inline-block; position: relative;
+
+    &.active { border: 3px solid $gn-tbl-pimg-green; }
+  }
+
+  tfoot {
+    /*background-color: #f1f1f1; border-right: 1px solid #f1f1f1;*/
+    td { padding: 0rem; }
+    ul{
+      &.pagination {
+        margin-top: 0rem; margin-bottom: 0rem;
+        li { margin-top: 1rem; margin-bottom: 1rem; }
+      }
+    }
+  }
+
+}
+
+.table-dt {
+  th {
+    cursor: pointer;
+    &:active, &:focus, &:hover, &.active { background-color: #58C4F4; }
+  }
+}
+
+
+.table-gn-b {
+
+  background: $white;
+  border: $table-border-width solid #d6d8d9;
+
+  th, td { padding: 0.625rem; }
+
+  thead {
+    tr { border: $table-border-width solid #95cce2; }
+
+    th,
+    td {
+      border: none;
+      background-color: #ecf4f8;
+      color: #2986ab;
+      font-weight: 600;
+    }
+  }
+
+  tbody {
+    td {
+      border-top: none;
+      border-bottom: $table-border-width solid #d6d8d9;
+    }
+  }
+
+}
+
+
+// Zebra-striping
+//
+// Default zebra-stripe styles (alternating gray and transparent backgrounds)
+
+.table-striped {
+  tbody tr:nth-of-type(odd) {
+    background-color: $table-accent-bg;
+  }
+}
+
+
+// Hover effect
+//
+// Placed here since it has to come after the potential zebra striping
+
+.table-hover {
+  tbody tr {
+    @include hover {
+      background-color: $table-hover-bg;
+    }
+  }
+}
+
+
+// Table backgrounds
+//
+// Exact selectors below required to override `.table-striped` and prevent
+// inheritance to nested tables.
+
+@each $color, $value in $theme-colors {
+  @include table-row-variant($color, theme-color-level($color, -9));
+}
+
+@include table-row-variant(active, $table-active-bg);
+
+
+// Inverse styles
+//
+// Same table markup, but inverted color scheme: dark background and light text.
+
+.thead-inverse {
+  th {
+    color: $table-inverse-color;
+    background-color: $table-inverse-bg;
+  }
+}
+
+.thead-default {
+  th {
+    color: $table-head-color;
+    background-color: $table-head-bg;
+  }
+}
+
+.table-inverse {
+  color: $table-inverse-color;
+  background-color: $table-inverse-bg;
+
+  th,
+  td,
+  thead th {
+    border-color: $table-inverse-border-color;
+  }
+
+  &.table-bordered {
+    border: 0;
+  }
+
+  &.table-striped {
+    tbody tr:nth-of-type(odd) {
+      background-color: $table-inverse-accent-bg;
+    }
+  }
+
+  &.table-hover {
+    tbody tr {
+      @include hover {
+        background-color: $table-inverse-hover-bg;
+      }
+    }
+  }
+}
+
+
+// Responsive tables
+//
+// Add `.table-responsive` to `.table`s and we'll make them mobile friendly by
+// enabling horizontal scrolling. Only applies <768px. Everything above that
+// will display normally.
+
+.table-responsive {
+  @include media-breakpoint-down(md) {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -ms-overflow-style: -ms-autohiding-scrollbar; // See https://github.com/twbs/bootstrap/pull/10057
+
+    // Prevent double border on horizontal scroll due to use of `display: block;`
+    &.table-bordered {
+      border: 0;
+    }
+  }
+}

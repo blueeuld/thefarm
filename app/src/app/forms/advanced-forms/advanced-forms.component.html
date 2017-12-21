@@ -1,0 +1,187 @@
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <i class="icon-note"></i> <strong>Angular 2 Input Mask</strong> - Text Mask
+          <div class="card-actions">
+            <a href="https://github.com/digitalBush/jquery.maskedinput"><small class="text-muted">docs</small></a>
+          </div>
+        </div>
+        <div class="card-body">
+          <fieldset class="form-group">
+            <label>Date input</label>
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+              <input type="text" class="form-control" [textMask]="{mask: dateMask}" [(ngModel)]="dateModel">
+            </div>
+            <small class="text-muted">ex. 99/99/9999</small>
+          </fieldset>
+          <fieldset class="form-group">
+            <label>Phone input</label>
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-phone"></i></span>
+              <input type="text" class="form-control" [textMask]="{mask: phoneMask}" [(ngModel)]="phoneModel">
+            </div>
+            <small class="text-muted">ex. (999) 999-9999</small>
+          </fieldset>
+          <fieldset class="form-group">
+            <label>Taxpayer Identification Numbers</label>
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-usd"></i></span>
+              <input type="text" class="form-control" [textMask]="{mask: taxMask}" [(ngModel)]="taxModel">
+            </div>
+            <small class="text-muted">ex. 99-9999999</small>
+          </fieldset>
+          <fieldset class="form-group">
+            <label>Social Security Number</label>
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-male"></i></span>
+              <input type="text" class="form-control" [textMask]="{mask: ssnMask}" [(ngModel)]="ssnModel">
+            </div>
+            <small class="text-muted">ex. 999-99-9999</small>
+          </fieldset>
+          <fieldset class="form-group">
+            <label>Eye Script</label>
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-asterisk"></i></span>
+              <input type="text" class="form-control" [textMask]="{mask: eyeScriptMask}" [(ngModel)]="eyeScriptModel">
+            </div>
+            <small class="text-muted">ex. ~9.99 ~9.99 999</small>
+          </fieldset>
+          <fieldset class="form-group">
+            <label>Credit Card Number</label>
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-credit-card"></i></span>
+              <input type="text" class="form-control" [textMask]="{mask: ccnMask}" [(ngModel)]="ccnModel">
+            </div>
+            <small class="text-muted">ex. 9999 9999 9999 9999</small>
+          </fieldset>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <strong>Ng2-select</strong>
+        </div>
+        <div class="card-body">
+          <ng-select
+            [multiple]="true"
+            [items]="items"
+            (data)="refreshValue($event)"
+            (selected)="selected($event)"
+            (removed)="removed($event)"
+            placeholder="No city selected">
+          </ng-select>
+          <br/>
+          <!-- <pre class="alert alert-info">{{itemsToString(value)}}</pre> -->
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <strong>GN Datepicker - ng2-daterangepciker module</strong>
+
+        </div>
+        <div class="card-body">
+          <pre class="card card-body card-header">Selected date is: {{daterange.start}} - {{daterange.end}}</pre>
+          <div class="row">
+            <div class="col-12 m-b-md">
+              <input type="text" class="form-control" name="daterangeInput" daterangepicker  (selected)="selectedDate($event, daterange)" />
+            </div>
+            <div class="col-12 m-b-md">
+                <p>To get this working, follow these steps :-<br />
+                1) add "ng2-daterangepicker": "2.0.4" to package.json<br />
+                2) load moment.js in angular.cli scripts option : "../node_modules/moment/moment.js" <br />
+                  <span class="text-danger">Note: let me know if you find a way to import moment.js in module, as adding it to angular.cli, will load it on every page load. </span><br />
+                3) Import ng-2daterangepicker in your module <br /><br />
+                  More details can be found here : <a href="https://github.com/evansmwendwa/ng2-daterangepicker" target="_blank">https://github.com/evansmwendwa/ng2-daterangepicker</a> <br />
+                  All of the options that we can use, can be found here : <a href="http://www.daterangepicker.com/#options" target="_blank">http://www.daterangepicker.com/#options</a>
+                </p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+
+    </div><!-- /.col -->
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <strong>Timepicker</strong>
+          <small>A lightweight &amp; configurable timepicker directive</small>
+        </div>
+        <div class="card-body">
+          <timepicker [(ngModel)]="mytime" (change)="changed()" [hourStep]="hstep"
+          [minuteStep]="mstep" [showMeridian]="ismeridian"
+          [readonlyInput]="!isEnabled"></timepicker>
+
+          <pre class="alert alert-info">Time is: {{mytime}}</pre>
+
+          <div class="row">
+            <div class="col-6">
+              Hours step is:
+              <select class="form-control" [(ngModel)]="hstep">
+                <option *ngFor="let opt of options.hstep" [value]="opt">{{opt}}</option>
+              </select>
+            </div>
+            <div class="col-6">
+              Minutes step is:
+              <select class="form-control" [(ngModel)]="mstep">
+                <option *ngFor="let opt of options.mstep" [value]="opt">{{opt}}</option>
+              </select>
+            </div>
+          </div>
+
+          <hr>
+
+          <button type="button" class="btn btn-info" (click)="toggleMode()">12H / 24H</button>
+          <button type="button" class="btn btn-info" (click)="isEnabled=!isEnabled">Enable / Disable input</button>
+          <button type="button" class="btn btn-primary" (click)="update()">Set to 14:00</button>
+          <button type="button" class="btn btn-danger" (click)="clear()">Clear</button>
+        </div>
+      </div>
+
+
+      <div class="card">
+        <div class="card-header">
+          <strong>GN Datepicker - Inbuilt</strong>
+
+        </div>
+        <div class="card-body">
+          <pre class="card card-body card-header">Selected date is: {{bsValue}}</pre>
+          <div class="row">
+            <div class="col-6">
+
+              <input type="text" class="form-control"
+                     [minDate]="minDate"
+                     [maxDate]="maxDate"
+                     #dp="bsDatepicker"
+                     bsDatepicker [(bsValue)]="bsValue">
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <strong>GN DateRange Picker - Inbuilt</strong>
+        </div>
+        <div class="card-body">
+
+          <pre>{{bsRangeValue}}</pre>
+          <pre>{{ bsRangeValue[0] | date:'yMd'}} - {{ bsRangeValue[1] | date:'yMd'}}</pre>
+          <div class="row">
+            <div class="col-6">
+              <input class="form-control" #drp="bsDaterangepicker" bsDaterangepicker [(bsValue)]="bsRangeValue" placeholder="Select Date Range">
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+
+    </div><!-- /.col -->
+  </div><!-- /.row -->
+</div>

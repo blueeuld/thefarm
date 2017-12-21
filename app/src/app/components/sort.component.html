@@ -1,0 +1,61 @@
+<div class="animated fadeIn">
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          Sortable Example
+        </div>
+        <div class="card-body">
+
+          <div class="row">
+
+            <div class="col-xs-6 col-md-3">
+
+              <ng-template #itemTemplate let-item="item" let-index="index">
+                <span>{{item.value}}</span>
+                <a href="javascript:void(0);" (click)="onCrossClick(index)"><img class="m-l-sm" src="/assets/img/white_x.png"></a>
+              </ng-template>
+
+              <bs-sortable
+                      [(ngModel)]="itemStringsLeft1"
+                      [itemTemplate]="itemTemplate"
+
+                      itemClass="btn btn-warning m-r-xs m-b-xs"
+                      itemActiveClass="sortable-item-active"
+                      placeholderItem="Drag here"
+                      placeholderClass="placeholderStyle"
+                      wrapperClass="sortable-wrapper"
+
+              ></bs-sortable>
+              <pre>model: {{ itemStringsLeft1 | json }}</pre>
+            </div>
+
+            <div class="col-xs-6 col-md-3">
+
+              <select class="form-control" (change)="onDropChange($event.target.selectedIndex)" >
+                <option value="">Add Column</option>
+                <option *ngFor="let item of itemStringsRight1">
+                  {{ item }}
+                </option>
+              </select>
+
+              <pre>model: {{ itemStringsRight1 | json }}</pre>
+            </div>
+
+            <div class="col-12 m-t-md">
+              <p>Usage can be found here : <a href="https://valor-software.com/ngx-bootstrap/index-bs4.html#/sortable" target="_blank">https://valor-software.com/ngx-bootstrap/index-bs4.html#/sortable</a></p>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <!--/.col-->
+
+  </div>
+  <!--/.row-->
+
+
+</div>

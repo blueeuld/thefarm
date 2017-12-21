@@ -1,0 +1,15 @@
+{
+    "require" : {
+        "silex/silex": ">=1.3",
+        "propel/propel": "~2.0@dev",
+        "propel/propel-service-provider": "2.x-dev",
+        "monolog/monolog": "^1.0"
+    },
+    "autoload" : {
+        "psr-4": {
+            "TheFarm\\Models\\": "Data/TheFarm/Models",
+            "TheFarm\\Services\\": "Services",
+            "TheFarm\\App\\": "App"
+        }
+    }
+}

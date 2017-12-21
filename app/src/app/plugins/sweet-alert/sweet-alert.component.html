@@ -1,0 +1,35 @@
+<div class="card">
+  <div class="card-header">Sweet Alert Examples</div>
+  <div class="card-body">
+    <button class="btn btn-primary" [swal]="{ title: 'Enter your email', input: 'email' }"
+            (confirm)="saveEmail($event)"
+            (cancel)="handleRefusalToSetEmail($event)">
+      Set my e-mail address
+    </button>
+
+
+    <swal #dialog1 title="This works" type="info"></swal>
+    <button class="btn btn-secondary" (click)="dialog1.show()">Info</button>
+
+
+    <swal #dialog2 title="Don't you dare" type="warning" ></swal>
+    <button class="btn btn-warning" (click)="dialog2.show()">Warning</button>
+
+    <swal #dialog6 title="Are you sure?" type="warning" [options]="{ showCancelButton: true, confirmButtonText: 'Yes', cancelButtonText: 'No' }" ></swal>
+    <button class="btn btn-info" (click)="dialog6.show()">Confirm</button>
+
+    <swal #dialog3 title="This is wrong" type="error" ></swal>
+    <button class="btn btn-danger" (click)="dialog3.show()">Error</button>
+
+    <swal #dialog4 title="There you go" type="success" ></swal>
+    <button class="btn btn-success" (click)="dialog4.show()">Success</button>
+
+    <swal #dialog5 title="How you doin?" type="question"></swal> <!-- You can use (confirm)="goToProfile()" (cancel)="doSomethingElse()" on these swal elements -->
+    <button class="btn btn-info" (click)="dialog5.show()">Question</button>
+
+    <br /><br />
+    Angular Module Link for usage and setup : <a href="https://github.com/toverux/ngsweetalert2" target="_blank">https://github.com/toverux/ngsweetalert2</a><br />
+    Original Plugin Link for options and methods : <a href="https://limonte.github.io/sweetalert2/" target="_blank">https://limonte.github.io/sweetalert2/</a>
+
+  </div>
+</div>

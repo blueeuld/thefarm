@@ -1,0 +1,127 @@
+<div class="animated fadeIn">
+  <div class="card">
+    <div class="card-header">Basic DataTable</div>
+    <div class="card-body">
+
+      <div class="row">
+        <div class="col-md-12 m-b-md">
+          <p>Documentation : <a href="https://github.com/mariuszfoltak/angular2-datatable" target="_blank">https://github.com/mariuszfoltak/angular2-datatable</a></p>
+          <p>Full Example : <a href="http://plnkr.co/edit/PxBaZs?p=preview" target="_blank">http://plnkr.co/edit/PxBaZs?p=preview</a></p>
+
+          <b>pipe: dataTableSearchFilter</b>
+          <h3>Usage</h3>
+
+          array | dataTableSearchFilter : expression : targets
+
+          <h3>Arguments</h3>
+          <table class="table">
+            <thead>
+            <tr>
+              <th>Param</th>
+              <th>Type</th>
+              <th>Details</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td>
+                expression
+              </td>
+              <td>
+                <label class="bg-default">string</label>
+              </td>
+              <td>
+                The string to search.
+              </td>
+            </tr>
+            <tr>
+              <td>
+                targets
+              </td>
+              <td>
+                <label class="bg-warning">Array</label>
+              </td>
+              <td>
+                Array of objects that is used to filter specific properties. For example [&#123;searchable: true, targets: 'email'&#125;, &#123;searchable: true, targets: 'name'&#125;].
+              </td>
+            </tr>
+            </tbody>
+          </table>
+
+        </div>
+
+        <div class="col-md-12">
+          <div class="blue-search-bar">
+
+            <div class="form-group row no-gutter-form">
+              <div class="col-12">
+                <div class="text-right">
+                  <span class="text-white">Search: </span>
+                  <input type="text" class="" [(ngModel)]="filterQuery" placeholder=""/>&nbsp;
+
+                  <span class="text-white">View: </span>
+                  <select class="" [(ngModel)]="rowsOnPage">
+                    <option [ngValue]="10">10</option>
+                    <option [ngValue]="25">25</option>
+                    <option [ngValue]="50">50</option>
+                    <option [ngValue]="100">100</option>
+                  </select>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-gn table-dt" [mfData]="data | dataTableSearchFilter : filterQuery : [{searchable: true, targets: 'name'}, {searchable: true, targets: 'email'}, {searchable: true, targets: 'city'}]" #mf="mfDataTable" [mfSortBy]="sortBy" [mfSortOrder]="sortOrder" [mfRowsOnPage]="rowsOnPage" >
+          <thead>
+          <tr>
+            <th style="width: 15%" [ngClass]="{ 'active': SortName == 'img' }" (click)="thClicked('img')">
+              <mfDefaultSorter by="img" id="img">Photo</mfDefaultSorter>
+              <a href="javascript:void(0);" class="tooltip tooltip-right white" data-tooltip="Its a test. And it works."><span class="info"></span></a>
+            </th>
+            <th style="width: 20%" [ngClass]="{ 'active': SortName == 'name' }" (click)="thClicked('name')">
+              <mfDefaultSorter by="name" id="name">Name</mfDefaultSorter>
+              <a href="javascript:void(0);" class="tooltip tooltip-top orange" data-tooltip="Its a test. And it works."><span class="info"></span></a>
+            </th>
+            <th style="width: 35%" [ngClass]="{ 'active': SortName == 'email' }" (click)="thClicked('email')">
+              <mfDefaultSorter by="email" id="email">Email</mfDefaultSorter>
+              <a href="javascript:void(0);" class="tooltip tooltip-bottom green" data-tooltip="Its a test. And it works."><span class="info"></span></a>
+            </th>
+            <th style="width: 10%" [ngClass]="{ 'active': SortName == 'age' }" (click)="thClicked('age')">
+              <mfDefaultSorter by="age" id="age">Age</mfDefaultSorter>
+              <a href="javascript:void(0);" class="tooltip tooltip-left white" data-tooltip="Its a test. And it works."><span class="info"></span></a>
+            </th>
+            <th style="width: 20%" [ngClass]="{ 'active': SortName == 'city' }" (click)="thClicked('city')">
+              <mfDefaultSorter by="city" id="city">City</mfDefaultSorter>
+            </th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let item of mf.data">
+            <td><img class="user_profile_img" src="{{item.img}}" /></td> <!-- Add class 'active' to show green border around image -->
+            <td>{{item.name}}</td>
+            <td><a class="emlink" href="mailto:{{item.email}}">{{item.email}}</a></td>
+            <td>{{item.age}}</td>
+            <td>{{item.city | uppercase}}</td>
+          </tr>
+          </tbody>
+          <tfoot>
+          <tr>
+            <td colspan="3">
+              <p></p>
+            </td>
+            <td colspan="2">
+              <div class="pull-right">
+                <mfBootstrapPaginator ></mfBootstrapPaginator>
+              </div>
+            </td>
+          </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
